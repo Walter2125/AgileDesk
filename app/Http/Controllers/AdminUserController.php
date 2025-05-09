@@ -16,7 +16,7 @@ class AdminUserController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
             
-        return view('admin.users.index', compact('pendingUsers'));
+        return view('users.admin.index', compact('pendingUsers'));
     }
     
     public function approve(User $user)

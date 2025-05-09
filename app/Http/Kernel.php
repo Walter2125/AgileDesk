@@ -58,6 +58,6 @@ class Kernel extends HttpKernel
 
         // Custom middleware aliases
         'role'            => \App\Http\Middleware\RoleMiddleware::class,
-        'is_approved'     => \App\Http\Middleware\IsApproved::class,
+        'is_approved' => \App\Http\Middleware\IsApproved::class,
     ];
 }

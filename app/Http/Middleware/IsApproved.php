@@ -12,8 +12,8 @@ class IsApproved
     {
         $user = $request->user();
 
-        // Si es colaborador y está rechazado
-        if ($user->role === 'collaborator' && $user->is_rejected) {
+        // Cambiado de $user->role a $user->usertype
+        if ($user->usertype === 'collaborator' && $user->is_rejected) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -22,8 +22,7 @@ class IsApproved
                 ->withErrors(['email' => 'Tu solicitud fue rechazada.']);
         }
 
-        // Si es colaborador y no está aprobado aún
-        if ($user->role === 'collaborator' && ! $user->is_approved) {
+        if ($user->usertype === 'collaborator' && ! $user->is_approved) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -35,3 +34,4 @@ class IsApproved
         return $next($request);
     }
 }
+
