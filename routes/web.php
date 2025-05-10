@@ -9,9 +9,7 @@ use App\Http\Middleware\IsApproved;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => redirect('/login')); // Redirigir a la página de inicio de sesión
 
 // Ruta de dashboard protegida por middleware de autenticación y aprobación
 Route::middleware(['auth', IsApproved::class])->get('dashboard', function () {
