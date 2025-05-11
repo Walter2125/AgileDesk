@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
@@ -29,13 +30,15 @@ class RoleMiddleware
         
         // Verificar si el usuario tiene el rol requerido
         if (Auth::user()->usertype !== $role) {
+            // Guardar el mensaje de error en la sesión con una clave diferente
+            // que será persistente durante múltiples redirecciones
+            Session::flash('persistent_error', 'Acceso restringido');
+            Session::flash('persistent_message', 'No tienes los permisos necesarios para acceder a esta sección.');
+            
             // Determinar la ruta de redirección según el rol del usuario
             $redirectRoute = $this->getRedirectRouteBasedOnUserType();
             
-            return redirect()->route($redirectRoute)->with([
-                'error' => 'Acceso restringido',
-                'message' => 'No tienes los permisos necesarios para acceder a esta sección.'
-            ]);
+            return redirect()->route($redirectRoute);
         }
     
         return $next($request);
@@ -53,7 +56,7 @@ class RoleMiddleware
         return match($userType) {
             'admin' => 'homeadmin',
             'user' => 'HomeUser',
-            default => 'welcome'
-        };
+            default => 'dashboard', // Ruta por defecto para otros tipos de usuario
+        };   
     }
 }

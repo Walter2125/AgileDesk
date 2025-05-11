@@ -8,16 +8,29 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\IsApproved;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 Route::get('/', fn() => redirect('/login')); // Redirigir a la página de inicio de sesión
 
 // Ruta de dashboard protegida por middleware de autenticación y aprobación
 Route::middleware(['auth', IsApproved::class])->get('dashboard', function () {
-        return Auth::user()->usertype === 'admin'
-            ? redirect()->route('homeadmin')
-            : redirect()->route('homeuser');
-    })->name('dashboard');
-
+    // Comprobar si hay mensajes de error persistentes y pasarlos a la siguiente redirección
+    $persistentError = Session::get('persistent_error');
+    $persistentMessage = Session::get('persistent_message');
+    
+    // Determinar la ruta a la que redirigir
+    $route = Auth::user()->usertype === 'admin' ? 'homeadmin' : 'homeuser';
+    
+    // Si hay mensajes persistentes, pasarlos a la siguiente redirección
+    if ($persistentError) {
+        return redirect()->route($route)->with([
+            'error' => $persistentError,
+            'message' => $persistentMessage
+        ]);
+    }
+    
+    return redirect()->route($route);
+})->name('dashboard');
 // Rutas para usuarios autenticados
 Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/homeuser', [UserController::class, 'index'])->name('homeuser');
