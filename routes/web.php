@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\IsApproved;
+use App\Http\Controllers\TareaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,5 +32,11 @@ Route::middleware(['auth', 'role'])
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
     });
+
+// Rutas para Tareas protegidas por autenticación y aprobación
+Route::middleware(['auth', IsApproved::class])->group(function () {
+    Route::get('/tareas', [TareaController::class, 'index'])->name('tareas.index');
+    Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
+});
 
 require __DIR__.'/auth.php';
