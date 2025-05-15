@@ -10,7 +10,7 @@ class Sprint extends Model {
     public function tablero() {
         return $this->belongsTo(Tablero::class);
     }
-    public function historias() {
+    public function historia() {
         return $this->hasMany(Historia::class);
     }
 

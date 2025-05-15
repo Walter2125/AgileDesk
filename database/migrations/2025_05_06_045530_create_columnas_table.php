@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tablero_id')->constrained()->onDelete('cascade');
             $table->string('nombre');
+            $table->boolean('es_backlog')->default(false); // Marca si es la columna Backlog
+            $table->unsignedInteger('posicion')->default(0); // Orden de visualización
             $table->timestamps();
         });
     }

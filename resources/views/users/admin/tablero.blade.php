@@ -4,17 +4,11 @@
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center space-x-4">
-                <h1 class="text-3xl font-bold">{{ $tablero->proyecto->nombre }}</h1>
-
                 <form method="GET">
                     <label class="font-semibold mr-2">Sprint:</label>
                     <select name="sprint_id" onchange="this.form.submit()" class="border rounded p-2">
                         <option value="">-- Todos los Sprints --</option>
-                        @foreach($sprints as $sprint)
-                            <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
-                                {{ $sprint->nombre }}
-                            </option>
-                        @endforeach
+
                     </select>
                 </form>
             </div>

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Columna extends Model {
     protected $fillable = ['tablero_id', 'nombre', 'posicion'];
 
-    public function tablero() {
+    public function tableros() {
         return $this->belongsTo(Tablero::class);
     }
-    public function historia() {
+    public function historias() {
         return $this->hasMany(Historia::class);
     }
 }
