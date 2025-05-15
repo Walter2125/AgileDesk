@@ -238,10 +238,10 @@
 
     <!-- Botones de acción rápida -->
     <div class="button-container mb-4">
-        <a href="#" class="btn">
+        <a href="*" class="btn">
             <i class="bi bi-people me-1"></i> Usuarios
         </a>
-        <a href="#" class="btn">
+        <a href="{{ route('projects.create') }}" class="btn">
             <i class="bi bi-plus-circle me-1"></i> Crear Proyecto
         </a>
     </div>

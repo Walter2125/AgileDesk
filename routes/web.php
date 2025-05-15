@@ -9,6 +9,8 @@ use App\Http\Middleware\IsApproved;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\ProjectController;
+
 
 Route::get('/', fn() => redirect('/login')); // Redirigir a la página de inicio de sesión
 
@@ -39,6 +41,12 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth'])->group(function() {
+    // Ruta para el listado AJAX de usuarios
+    Route::get('/projects/users/list', [ProjectController::class, 'list'])->name('projects.list');
+});
+
+
 // Rutas solo para administradores, donde pueden ver y aprobar colaboradores
 // Panel de administración — solo administradores
 Route::middleware(['auth', 'role:admin'])
@@ -48,6 +56,26 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+
+        // CRUD de proyectos
+        Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('auth');
+        Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store')->middleware('auth');
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+        Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+        Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my')->middleware('auth');
+        Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
+        Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
+
+        // Corregir el nombre del método al que apunta la ruta
+        Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
+
+        // Gestión de usuarios
+        Route::get('/miembros',    [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
+    
+        
     });
+
 
 require __DIR__.'/auth.php';
