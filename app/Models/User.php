@@ -12,6 +12,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    
+
     /**
      * Los atributos que se pueden asignar de forma masiva.
      *
@@ -61,4 +63,11 @@ class User extends Authenticatable
     {
         return $this->usertype === 'admin';
     }
+
+    
+
+  public function projects()
+{
+    return $this->belongsToMany(Project::class);
+}
 }
