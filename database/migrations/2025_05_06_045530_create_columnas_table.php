@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('columnas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tablero_id')->constrained('tableros')->onDelete('cascade');
+            $table->foreignId('tablero_id')->constrained()->onDelete('cascade');
             $table->string('nombre');
-            $table->integer('orden')->default(0);
             $table->timestamps();
         });
     }
