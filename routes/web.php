@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\HistoriasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
@@ -38,6 +39,16 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+//Rutas para las historias
+Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
+Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
+Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
+Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
+Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
+Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
+Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
+
+
 
 // Rutas solo para administradores, donde pueden ver y aprobar colaboradores
 // Panel de administración — solo administradores
