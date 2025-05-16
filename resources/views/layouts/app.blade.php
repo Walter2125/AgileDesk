@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Agile Desk') }}</title>
+    <title>{{ config('app.name', 'Agile-Desk') }}</title>
 
     <!-- Tabler Core CSS (Admin Template) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
@@ -445,7 +445,7 @@
                 <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-code-slash me-2"></i>
-                        <span class="sidebar-text app-name">{{ config('app.name') }}</span>
+                        <span class="sidebar-text app-name">Agile-Desk</span>
                     </div>
                     <!-- Botón para colapsar el sidebar -->
                     <button class="btn btn-sm btn-dark" onclick="toggleSidebar()">
