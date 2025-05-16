@@ -1,21 +1,21 @@
 @extends('layouts.app')
    
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+<!-- Tabler Core CSS (Admin Template) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+
+    <!-- Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 <style>
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #6c757d;
-    }
-    .status-badge { font-size: 0.8rem; }
     .btn-icon {
         width: 36px;
         height: 36px;
@@ -24,20 +24,6 @@
         align-items: center;
         justify-content: center;
     }
-    .action-btn { transition: transform 0.2s; }
-    .action-btn:hover { transform: translateY(-2px); }
-    .search-container {
-        position: relative;
-        max-width: 250px;
-    }
-    .search-container .bi-search {
-        position: absolute;
-        left: 0.75rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6c757d;
-    }
-    .search-input { padding-left: 2.5rem; }
     .alert-flash {
         border-left: 4px solid;
         animation: fadeInOut 5s ease-in-out;
