@@ -21,6 +21,9 @@ class ProjectController extends Controller
 
 
 
+
+
+
     }
 
     public function store(Request $request)
@@ -52,6 +55,7 @@ class ProjectController extends Controller
             Tablero::create([
                 'proyecto_id' => $project->id, // ← aquí estaba mal
             ]);
+
 
             DB::commit();
 
