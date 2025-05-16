@@ -186,14 +186,8 @@ class ProjectController extends Controller
 
     public function listUsers(Request $request)
 {
-    $search = $request->input('search', '');
+    $users = User::where('usertype', '!=', 'admin')->paginate(5);
     $selectedUsers = $request->input('selected_users', []);
-
-    $users = User::where('usertype', '!=', 'admin')
-                ->when($search, function($query) use ($search) {
-                    return $query->where('name', 'like', '%'.$search.'%');
-                })
-                ->paginate(5);
 
     if ($request->ajax()) {
         $html = view('projects.partials.users_table', [
@@ -201,15 +195,12 @@ class ProjectController extends Controller
             'selectedUsers' => $selectedUsers
         ])->render();
 
-        $pagination = $users->links()->toHtml();
-
         return response()->json([
             'html' => $html,
-            'pagination' => $pagination
+            'pagination' => $users->links()->toHtml()
         ]);
     }
 
-    return view('projects.create', compact('users', 'selectedUsers'));
+    return view('projects.create', compact('users'));
 }
-
 }

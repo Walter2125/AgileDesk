@@ -15,7 +15,7 @@
                         <input type="checkbox"
                             class="user-checkbox"
                             value="{{ $user->id }}"
-                            {{ in_array($user->id, $selectedUsers ?? []) ? 'checked' : '' }}>
+                            {{ in_array($user->id, $selectedUsers) ? 'checked' : '' }}>
                     </td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
@@ -25,4 +25,3 @@
         </tbody>
     </table>
 </div>
-

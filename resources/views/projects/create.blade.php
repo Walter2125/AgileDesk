@@ -99,10 +99,34 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(function () {
+    // Recuperar datos del sessionStorage si existen
     let selectedUsers = @json(old('selected_users', []));
+    let formData = JSON.parse(sessionStorage.getItem('projectFormData')) || {
+        name: $('#name').val(),
+        fecha_inicio: $('#fecha_inicio').val(),
+        fecha_fin: $('#fecha_fin').val()
+    };
+
+    // Restaurar valores del formulario
+    $('#name').val(formData.name);
+    $('#fecha_inicio').val(formData.fecha_inicio);
+    $('#fecha_fin').val(formData.fecha_fin);
+
+    // Función para guardar el estado actual
+    function saveFormState() {
+        sessionStorage.setItem('projectFormData', JSON.stringify({
+            name: $('#name').val(),
+            fecha_inicio: $('#fecha_inicio').val(),
+            fecha_fin: $('#fecha_fin').val(),
+            selectedUsers: selectedUsers
+        }));
+    }
+
+    // Guardar estado cuando cambien los campos
+    $('#name, #fecha_inicio, #fecha_fin').on('change input', saveFormState);
 
     function applySelections() {
-        $('input.user-checkbox, input.user-checkbox-search').each(function () {
+        $('input.user-checkbox, input.user-checkbox-search').each(function() {
             const id = $(this).val();
             $(this).prop('checked', selectedUsers.includes(id));
         });
@@ -116,44 +140,42 @@ $(function () {
         });
     }
 
-    $(document).on('change', '.user-checkbox, .user-checkbox-search', function () {
+    $(document).on('change', '.user-checkbox, .user-checkbox-search', function() {
         const id = $(this).val();
         if ($(this).is(':checked')) {
             if (!selectedUsers.includes(id)) selectedUsers.push(id);
         } else {
             selectedUsers = selectedUsers.filter(u => u !== id);
         }
+        saveFormState();
         applySelections();
         updateHiddenInputs();
     });
 
-    // AJAX Paginación
-    $(document).on('click', '#usersTableContainer .pagination a', function (e) {
+    // AJAX Paginación - Versión simplificada
+    $(document).on('click', '#usersTableContainer .pagination a', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
 
         $.ajax({
             url: url,
-            dataType: 'json',
-            success: function (data) {
+            data: {
+                selected_users: selectedUsers
+            },
+            success: function(data) {
                 $('#usersTableContainer').html(
                     data.html + '<div class="d-flex justify-content-center mt-3">' + data.pagination + '</div>'
                 );
-
-                // Esperar a que el DOM se actualice
-                setTimeout(() => {
-                    applySelections();
-                    updateHiddenInputs();
-                }, 50);
+                applySelections();
             },
-            error: function () {
+            error: function() {
                 alert('Error cargando la página de usuarios.');
             }
         });
     });
 
-    // Buscar usuarios
-    $('#userSearch').on('input', function () {
+    // Buscador (sin cambios)
+    $('#userSearch').on('input', function() {
         const q = $(this).val().trim();
         if (q.length < 1) return $('#searchResults').hide();
 
@@ -188,6 +210,11 @@ $(function () {
         if (!$(e.target).closest('#userSearch, #searchResults').length) {
             $('#searchResults').hide();
         }
+    });
+
+    // Limpiar sessionStorage al enviar el formulario
+    $('#projectForm').on('submit', function() {
+        sessionStorage.removeItem('projectFormData');
     });
 
     // Inicializar
