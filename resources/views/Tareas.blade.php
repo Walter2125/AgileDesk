@@ -4,9 +4,9 @@
 <div class="container" style="max-width: 1200px;"> <!-- Aumenta el ancho máximo -->
     <div class="card shadow-sm p-5 mb-5 bg-white rounded">
         <!-- Título con Icono -->
-        <h2 class="text-center mb-4" style="font-weight: bold; font-size: 2.5em;">
-            <span style="font-size: 1.5em;">📝</span> Crear Nueva Tarea
-        </h2>
+        <h3 class="text-center mb-4 fw-bold" style="font-size: 1.8em;">
+    📝 Crear Nueva Tarea
+</h3>
 
         <!-- Mensaje de éxito -->
         @if(session('success'))
@@ -74,9 +74,9 @@
 
     <!-- Lista de Tareas -->
     <div class="card shadow-sm p-5 mb-5 bg-white rounded">
-        <h2 class="text-center mb-4" style="font-weight: bold; font-size: 2.5em;">
-            📋 Lista de Tareas
-        </h2>
+    <h3 class="text-center mb-4 fw-bold" style="font-size: 1.8em;">
+    📋 Lista de Tareas
+</h3>
 
         <table class="table table-bordered">
             <thead>
