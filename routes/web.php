@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TableroController;
+use App\Http\Controllers\ColumnaController;
+use App\Http\Conntroller\SprintController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
