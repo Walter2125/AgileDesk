@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 @section('content')
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,10 +36,10 @@
                         @if(!$columna->es_backlog)
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    Opciones
+
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item edit-column" href="#">Editar nombre</a></li>
+
                                     <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
                                 </ul>
                             </div>

@@ -84,6 +84,9 @@ Route::middleware(['auth', 'role:admin'])
           // Actualizar nombre de columna (PUT)
         Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
 
+        Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
+
+
         //--------------------------------------------------
 
         // Corregir el nombre del método al que apunta la ruta
