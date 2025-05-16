@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
+
 @section('title', 'Editar Proyecto: ' . $project->name)
 
-@section('adminlte_css')
+@section('layouts_css')
 <link rel="stylesheet" href="{{ asset('css/css2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/sprints.css') }}">

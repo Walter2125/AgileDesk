@@ -13,13 +13,16 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    public function create()
-    {
-        $users = User::where('usertype', '!=', 'admin')->get();
-        $selectedUsers = [];
-        return view('projects.create', compact('users', 'selectedUsers'));
-    }
+    
+        public function create(Request $request)
+{
+    $users = User::where('usertype', '!=', 'admin')->paginate(5); // <- Aquí está la paginación
+    $selectedUsers = [];
 
+    return view('projects.create', compact('users', 'selectedUsers'));
+}
+
+       
     public function store(Request $request)
     {
         $request->validate([
@@ -40,12 +43,11 @@ class ProjectController extends Controller
                 'user_id'      => auth()->id(),
             ]);
 
-            // Asignar usuarios (incluyendo al creador)
             $project->users()->sync(array_unique(array_merge(
-                [auth()->id()], 
-                $request->selected_users
+                [auth()->id()],
+            $request->input('selected_users', [])
             )));
-
+            
 
             DB::commit();
 
@@ -81,6 +83,7 @@ class ProjectController extends Controller
         $projects = $user->projects->sortByDesc('created_at');
         return view('projects.myprojects', compact('projects'));
     }
+
 
     public function edit($id)
     {
@@ -182,25 +185,31 @@ class ProjectController extends Controller
 
 
     public function listUsers(Request $request)
-    {
+{
     $search = $request->input('search', '');
-    
-    $users = User::where('role', '!=', 'admin')
+    $selectedUsers = $request->input('selected_users', []);
+
+    $users = User::where('usertype', '!=', 'admin')
                 ->when($search, function($query) use ($search) {
                     return $query->where('name', 'like', '%'.$search.'%');
                 })
                 ->paginate(5);
-    
-    if($request->ajax()) {
-        $html = view('projects.partials.users_table', compact('users'))->render();
+
+    if ($request->ajax()) {
+        $html = view('projects.partials.users_table', [
+            'users' => $users,
+            'selectedUsers' => $selectedUsers
+        ])->render();
+
         $pagination = $users->links()->toHtml();
-        
+
         return response()->json([
             'html' => $html,
             'pagination' => $pagination
         ]);
     }
-    
-    return view('projects.create', compact('users'));
-    }
+
+    return view('projects.create', compact('users', 'selectedUsers'));
+}
+
 }
