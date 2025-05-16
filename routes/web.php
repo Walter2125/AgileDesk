@@ -77,6 +77,12 @@ Route::middleware(['auth', 'role:admin'])
         // Crud de tableros
 
         Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
+        Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
+
+          // Actualizar nombre de columna (PUT)
+        Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
+
+        //--------------------------------------------------
 
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');

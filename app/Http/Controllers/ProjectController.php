@@ -54,6 +54,7 @@ class ProjectController extends Controller
 
             Tablero::create([
                 'proyecto_id' => $project->id, // ← aquí estaba mal
+
             ]);
 
 
