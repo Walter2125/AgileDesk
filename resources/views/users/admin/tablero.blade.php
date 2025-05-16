@@ -42,10 +42,8 @@ $colCount = $tablero->columnas->count();
                         @if(!$columna->es_backlog)
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    Opciones
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item edit-column" href="#">Editar nombre</a></li>
                                     <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
                                 </ul>
                             </div>
