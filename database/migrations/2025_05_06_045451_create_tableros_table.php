@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('tableros', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
+            $table->foreignId('proyecto_id')->constrained('nuevo_proyecto')->onDelete('cascade');
             $table->timestamps();
         });
     }
