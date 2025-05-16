@@ -14,6 +14,16 @@ $colCount = $tablero->columnas->count();
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">{{ $project->name }}</h1>
             <div class="btn-group">
+
+                @if($project->sprints && $project->sprints->count())
+                    <select class="form-select mt-2" id="sprintSelect" aria-label="Seleccionar sprint">
+                        <option selected disabled>Selecciona un sprint</option>
+                        @foreach($project->sprints as $sprint)
+                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                        @endforeach
+                    </select>
+                @endif
+
                 <button
                     class="btn btn-primary"
                     data-bs-toggle="modal"
@@ -51,7 +61,7 @@ $colCount = $tablero->columnas->count();
                     </div>
 
                     <div class="p-2 border-bottom">
-                        <button class="btn btn-sm btn-success w-100"
+                        <button class="btn btn-sm btn-primary w-100"
                                 onclick="alert('Aquí va la lógica para agregar historia a la columna {{ $columna->nombre }}')"
                         >Agregar historia</button>
                     </div>

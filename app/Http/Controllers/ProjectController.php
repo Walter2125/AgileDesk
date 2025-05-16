@@ -52,9 +52,15 @@ class ProjectController extends Controller
                 $request->selected_users
             )));
 
-            Tablero::create([
-                'proyecto_id' => $project->id, // ← aquí estaba mal
+            $tablero = Tablero::create([
+                'proyecto_id' => $project->id,
+            ]);
 
+            // Crear columna Backlog vinculada al tablero
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+                'es_backlog' => true,
             ]);
 
 
