@@ -18,6 +18,12 @@ class ProjectController extends Controller
         $users = User::where('usertype', '!=', 'admin')->get();
         $selectedUsers = [];
         return view('projects.create', compact('users', 'selectedUsers'));
+
+
+
+
+
+
     }
 
     public function store(Request $request)
@@ -42,9 +48,20 @@ class ProjectController extends Controller
 
             // Asignar usuarios (incluyendo al creador)
             $project->users()->sync(array_unique(array_merge(
-                [auth()->id()], 
+                [auth()->id()],
                 $request->selected_users
             )));
+
+            $tablero = Tablero::create([
+                'proyecto_id' => $project->id,
+            ]);
+
+            // Crear columna Backlog vinculada al tablero
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ]);
 
 
             DB::commit();
@@ -54,12 +71,16 @@ class ProjectController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
         }
+
+
+
+
     }
 
     public function searchUsers(Request $request)
     {
         $query = $request->input('query');
-        
+
         $users = User::where('name', 'like', "%{$query}%")
                     ->where('usertype', '!=', 'admin')
                     ->where('id', '!=', auth()->id())
@@ -71,7 +92,7 @@ class ProjectController extends Controller
     public function index()
     {
         $nuevo_proyecto = Project::with('users')->orderBy('created_at', 'desc')->get();
-    
+
         return view('projects.create', compact('nuevo_proyecto'));
     }
 
@@ -86,15 +107,15 @@ class ProjectController extends Controller
     {
         // Obtener el proyecto por su ID, con los usuarios asignados
         $project = Project::with('users')->findOrFail($id);
-    
+
         // Verificar si el usuario logueado es el propietario del proyecto
         if (auth()->id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
-    
+
         // Obtener todos los usuarios PAGINADOS
         $users = User::where('usertype', '!=', 'admin')->paginate(5);
-    
+
         return view('projects.edit', compact('project', 'users'));
     }
 
@@ -184,23 +205,23 @@ class ProjectController extends Controller
     public function listUsers(Request $request)
     {
     $search = $request->input('search', '');
-    
+
     $users = User::where('role', '!=', 'admin')
                 ->when($search, function($query) use ($search) {
                     return $query->where('name', 'like', '%'.$search.'%');
                 })
                 ->paginate(5);
-    
+
     if($request->ajax()) {
         $html = view('projects.partials.users_table', compact('users'))->render();
         $pagination = $users->links()->toHtml();
-        
+
         return response()->json([
             'html' => $html,
             'pagination' => $pagination
         ]);
     }
-    
+
     return view('projects.create', compact('users'));
     }
 }

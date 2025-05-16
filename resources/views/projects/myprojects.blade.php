@@ -3,7 +3,7 @@
 @section('adminlte_css')
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 @stop
-    
+
 @section('content')
     <div class="container mt-5">
         <h1 class="text-primary mb-4">Mis Proyectos</h1>
@@ -41,13 +41,13 @@
                     <div class="col-md-4 mb-4">
                         <div class="card project-card h-100 d-flex flex-column">
                                 <div class="row mb-3">
-                                    <div class="col-md">       
+                                    <div class="col-md">
                                         <div class="card-header bg-white border-0 pt-3 d-flex justify-content-between align-items-center">
                                             <h3 class="card-title font-weight-bold text-dark m-0 d-flex align-items-center">
                                                 <i class="fas fa-project-diagram text-primary mr-2"></i>
                                                 {{ $project->name }}
                                             </h3>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -56,12 +56,12 @@
                                 <div class="project-meta mb-3">
                                     <p class="mb-1">
                                         <i class="far fa-calendar-alt text-muted mr-2"></i>
-                                        <span class="font-weight-bold">Inicio:</span> 
+                                        <span class="font-weight-bold">Inicio:</span>
                                         <span class="text-dark">{{ $project->fecha_inicio }}</span>
                                     </p>
                                     <p>
                                         <i class="far fa-calendar-check text-muted mr-2"></i>
-                                        <span class="font-weight-bold">Fin:</span> 
+                                        <span class="font-weight-bold">Fin:</span>
                                         <span class="text-dark">{{ $project->fecha_fin }}</span>
                                     </p>
                                 </div>
@@ -85,12 +85,12 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                             </div>
-                            
+
                             <div class="card-footer bg-white border-0 pb-3">
                                 <div class="d-flex justify-content-between">
-                                <a href="*" class="btn btn-outline-info btn-sm rounded-pill" aria-label="Crear nuevo sprint">
+                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-outline-info btn-sm rounded-pill" aria-label="Crear nuevo sprint">
                                     <i class="fas fa-eye mr-1"></i> Ver
                                 </a>
                                     @if(auth()->id() === $project->user_id)
@@ -159,54 +159,54 @@
             border: 1px dashed #adb5bd;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
         }
-        
+
         .create-project-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             border-color: #4e73df;
         }
-        
+
         .project-card {
             border-radius: 12px;
             transition: all 0.3s ease;
             border: 1px solid rgba(0,0,0,0.05);
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
         }
-        
+
         .project-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        
+
         .hover-effect {
             transition: all 0.3s ease;
         }
-        
+
         .hover-effect:hover {
             transform: translateY(-3px);
         }
-        
+
         .empty-state {
             background-color: #f8f9fa;
             border-radius: 15px;
             padding: 40px;
         }
-        
+
         .btn-rounded {
             border-radius: 50px;
         }
-        
+
         .team-section {
             background-color: #f8fafc;
             padding: 15px;
             border-radius: 10px;
         }
-        
+
         /* Estilos para los modales */
         .modal-content {
             border-radius: 15px;
         }
-        
+
         .modal-header {
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
@@ -222,9 +222,9 @@
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', async () => {
                 const projectId = button.dataset.projectId;
-        
+
                 if (!confirm('¿Estás seguro de eliminar este proyecto?')) return;
-        
+
                 try {
                     const response = await fetch(`/projects/${projectId}`, {
                         method: 'DELETE',
@@ -233,16 +233,16 @@
                             'Accept': 'application/json'
                         }
                     });
-        
+
                     const result = await response.json();
-        
+
                     if (response.ok && result.success) {
                         alert(result.message);
                         location.reload(); // o elimina el div desde el DOM
                     } else {
                         alert(result.error || 'Error al eliminar el proyecto.');
                     }
-        
+
                 } catch (error) {
                     console.error(error);
                     alert('Ocurrió un error inesperado.');
@@ -250,5 +250,5 @@
             });
         });
         </script>
-        
+
 @stop

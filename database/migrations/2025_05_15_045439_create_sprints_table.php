@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('sprints', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
+            $table->string('nombre');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
+            $table->foreignId('proyecto_id')->constrained('nuevo_proyecto')->onDelete('cascade');
+            $table->foreignId('tablero_id')->constrained('tableros')->onDelete('cascade');
             $table->timestamps();
         });
     }

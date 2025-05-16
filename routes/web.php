@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TableroController;
+use App\Http\Controllers\ColumnaController;
+use App\Http\Conntroller\SprintController;
+use App\Models\Project;
+use App\Models\User;
+use App\Models\Columna;
+use App\Models\Notificaciones;
+use App\Models\Tablero;
+
 
 
 Route::get('/', fn() => redirect('/login')); // Redirigir a la página de inicio de sesión
@@ -19,10 +28,10 @@ Route::middleware(['auth', IsApproved::class])->get('dashboard', function () {
     // Comprobar si hay mensajes de error persistentes y pasarlos a la siguiente redirección
     $persistentError = Session::get('persistent_error');
     $persistentMessage = Session::get('persistent_message');
-    
+
     // Determinar la ruta a la que redirigir
     $route = Auth::user()->usertype === 'admin' ? 'homeadmin' : 'homeuser';
-    
+
     // Si hay mensajes persistentes, pasarlos a la siguiente redirección
     if ($persistentError) {
         return redirect()->route($route)->with([
@@ -30,7 +39,7 @@ Route::middleware(['auth', IsApproved::class])->get('dashboard', function () {
             'message' => $persistentMessage
         ]);
     }
-    
+
     return redirect()->route($route);
 })->name('dashboard');
 // Rutas para usuarios autenticados
@@ -67,14 +76,27 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
 
+        // Crud de tableros
+
+        Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
+        Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
+
+          // Actualizar nombre de columna (PUT)
+        Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
+
+        Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
+
+
+        //--------------------------------------------------
+
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
         // Gestión de usuarios
         Route::get('/miembros',    [UserController::class, 'index'])->name('admin.users.index');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
-    
-        
+
+
     });
 
 
