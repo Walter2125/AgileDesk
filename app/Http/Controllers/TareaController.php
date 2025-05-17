@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class TareaController extends Controller
 {
-   public function index(Historia $historia)
+  public function index(Historia $historia)
     {
         $tareas = $historia->tareas()->with('user')->get();
         $users = User::all();
@@ -17,53 +17,52 @@ class TareaController extends Controller
         return view('tareas.create', compact('tareas', 'users', 'historia'));
     }
 
-   public function store(Request $request, Historia $historia)
-{
-    $validatedData = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'historial' => 'nullable|string',
-        'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
-        'user_id' => 'nullable|exists:users,id',
-    ]);
+    public function store(Request $request, Historia $historia)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string', // ← ahora obligatorio
+            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
+            'user_id' => 'required|exists:users,id', // ← ahora obligatorio
+        ]);
 
-    // Asociar tarea con la historia
-    $historia->tareas()->create($validatedData);
+        // Asociar tarea con la historia
+        $historia->tareas()->create($validatedData);
 
-    return redirect()->route('tareas.index', $historia->id)->with('success', 'Tarea creada con éxito.');
-}
+        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea creada con éxito.');
+    }
 
-public function edit(Historia $historia, Tarea $tarea)
-{
-    $users = User::all();
-    return view('tareas.edit', compact('historia', 'tarea', 'users'));
-}
+    public function edit(Historia $historia, Tarea $tarea)
+    {
+        $users = User::all();
+        return view('tareas.edit', compact('historia', 'tarea', 'users'));
+    }
 
-public function update(Request $request, Historia $historia, Tarea $tarea)
-{
-    $validatedData = $request->validate([
-        'nombre' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
-        'user_id' => 'nullable|exists:users,id',
-    ]);
+    public function update(Request $request, Historia $historia, Tarea $tarea)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string', 
+            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
+            'user_id' => 'required|exists:users,id', 
+        ]);
 
-    $tarea->update($validatedData);
+        $tarea->update($validatedData);
 
-    return redirect()->route('tareas.index', $historia->id)->with('success', 'Tarea actualizada con éxito.');
-}
+        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea actualizada con éxito.');
+    }
 
-public function destroy(Historia $historia, Tarea $tarea)
-{
-    $tarea->delete();
+    public function destroy(Historia $historia, Tarea $tarea)
+    {
+        $tarea->delete();
 
-    return redirect()->route('tareas.index', $historia->id)->with('success', 'Tarea eliminada con éxito.');
-}
+        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea eliminada con éxito.');
+    }
 
-public function lista(Historia $historia)
-{
-    $tareas = $historia->tareas()->with('user')->get();
-    return view('tareas.show', compact('tareas', 'historia'));
-}
+    public function lista(Historia $historia)
+    {
+        $tareas = $historia->tareas()->with('user')->get();
+        return view('tareas.show', compact('tareas', 'historia'));
+    }
 
 }

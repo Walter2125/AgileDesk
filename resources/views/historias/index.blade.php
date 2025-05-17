@@ -36,16 +36,6 @@
             <td>{{ $historia -> nombre }}</td>
             <td>{{  $historia -> descripcion }}</td>
             <td>
-                 <!-- Botón para Crear Nueva Tarea -->
-        <div class="text-center mt-4">
-            <a href="{{ route('tareas.index', $historia->id) }}" class="btn btn-primary">
-                ➕ Crear Tareas
-            </a>
-            <!-- Botón para Ver Todas las Tareas -->
-<!-- Botón para Ver Solo la Lista de Tareas -->
-<a href="{{ route('tareas.lista', $historia->id) }}" class="btn btn-info mb-3">
-    📋 Ver Solo Lista de Tareas
-</a>
         </div>
               <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-primary">VER</a>
                  <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-primary">EDITAR</a>

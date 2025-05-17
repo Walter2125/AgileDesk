@@ -119,7 +119,7 @@ Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->
 Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
 Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
 Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
-Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.lista');
+Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
 
 });
 

@@ -15,6 +15,13 @@
             </div>
         @endif
 
+        
+        @if(session('deleted'))
+            <div class="alert alert-info">
+                {{ session('deleted') }}
+            </div>
+        @endif
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -94,12 +101,20 @@
             </tbody>
         </table>
 
-        <!-- Botón para crear nueva tarea -->
-        <div class="text-end mt-3">
-            <a href="{{ route('tareas.index', $historia->id) }}" class="btn btn-primary">
-                ➕ Crear Nueva Tarea
-            </a>
-        </div>
-    </div>
-</div>
+        <!-- Botones -->
+<div class="d-flex justify-content-between mt-4">
+    <!-- Botón de Cancelar -->
+    <a href="{{ route('historias.show', ['historia' => $historia->id]) }}" 
+   class="btn btn-light text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
+   style="background-color: #e6f2ff;">
+   ⬅️ Cancelar
+</a>
+
+    <!-- Botón de Crear Tarea -->
+    <a href="{{ route('tareas.index', $historia->id) }}" 
+   class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm" 
+   style="background-color: #e6f2ff;">
+    ➕ Crear Nueva Tarea
+</a>
+
 @endsection
