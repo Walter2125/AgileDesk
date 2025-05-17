@@ -16,13 +16,14 @@ class Tarea extends Model
         'historia_id',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
+    // Relación muchos a uno: una tarea pertenece a una historia
     public function historia(): BelongsTo
     {
         return $this->belongsTo(Historia::class, 'historia_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

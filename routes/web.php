@@ -114,8 +114,13 @@ Route::middleware(['auth', 'role:admin'])
 
 // Rutas para Tareas protegidas por autenticación y aprobación
 Route::middleware(['auth', IsApproved::class])->group(function () {
-    Route::get('/tareas', [TareaController::class, 'index'])->name('tareas.index');
-    Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
+Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
+Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->name('tareas.store');
+Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
+Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
+Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.lista');
+
 });
 
 require __DIR__.'/auth.php';
