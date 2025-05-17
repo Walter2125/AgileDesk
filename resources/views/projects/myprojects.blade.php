@@ -180,5 +180,3 @@
     @endif
 </div>
 @endsection
-
-

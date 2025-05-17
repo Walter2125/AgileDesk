@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('prioridad', ['Alta', 'Media', 'Baja'])->default('Media');
             $table->text('descripcion')->nullable();
             $table->foreignId('columna_id')->nullable()->constrained('columnas')->onDelete('cascade');
-            $table->foreignId('tablero_id')->constrained('tableros')->onDelete('cascade');
+            $table->foreignId('tablero_id')->nullable()->constrained('tableros')->onDelete('cascade');
             $table->foreignId('sprint_id')->nullable()->constrained('sprints')->onDelete('set null');
             $table->timestamps();
             $table->unique(['nombre', 'tablero_id'], 'historias_nombre_tablero_unique');

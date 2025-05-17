@@ -1,0 +1,108 @@
+.mi-container {
+    background-color: #ffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(6, 25, 234, 0.1);
+}
+
+.titulo-historia {
+    font-size: 2.5rem;      
+    font-weight: bold;      
+    color: #0c0c0c;            
+    margin-bottom: 25px;     
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.historia-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.historia-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    background-color: #f9fafb;
+}
+
+.historia-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.historia-meta {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.bg-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.bg-secondary {
+    background-color: #64748b;
+    color: white;
+}
+
+.historia-content {
+    padding: 1.5rem;
+}
+
+.historia-section {
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-content {
+    line-height: 1.6;
+    color: #4a5568;
+    white-space: pre-line;
+}
+
+.historia-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #2d3748;
+}

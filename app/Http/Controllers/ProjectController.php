@@ -21,7 +21,6 @@ class ProjectController extends Controller
 
     return view('projects.create', compact('users', 'selectedUsers'));
 }
-
        
     public function store(Request $request)
     {
@@ -47,8 +46,7 @@ class ProjectController extends Controller
                 [auth()->id()],
             $request->input('selected_users', [])
             )));
-            
-
+          
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
@@ -56,12 +54,16 @@ class ProjectController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
         }
+
+
+
+
     }
 
     public function searchUsers(Request $request)
     {
         $query = $request->input('query');
-        
+
         $users = User::where('name', 'like', "%{$query}%")
                     ->where('usertype', '!=', 'admin')
                     ->where('id', '!=', auth()->id())
@@ -73,7 +75,7 @@ class ProjectController extends Controller
     public function index()
     {
         $nuevo_proyecto = Project::with('users')->orderBy('created_at', 'desc')->get();
-    
+
         return view('projects.create', compact('nuevo_proyecto'));
     }
 
@@ -89,15 +91,15 @@ class ProjectController extends Controller
     {
         // Obtener el proyecto por su ID, con los usuarios asignados
         $project = Project::with('users')->findOrFail($id);
-    
+
         // Verificar si el usuario logueado es el propietario del proyecto
         if (auth()->id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
-    
+
         // Obtener todos los usuarios PAGINADOS
         $users = User::where('usertype', '!=', 'admin')->paginate(5);
-    
+
         return view('projects.edit', compact('project', 'users'));
     }
 
@@ -185,6 +187,7 @@ class ProjectController extends Controller
 
 
     public function listUsers(Request $request)
+
 {
     $users = User::where('usertype', '!=', 'admin')->paginate(5);
     $selectedUsers = $request->input('selected_users', []);
@@ -194,7 +197,6 @@ class ProjectController extends Controller
             'users' => $users,
             'selectedUsers' => $selectedUsers
         ])->render();
-
         return response()->json([
             'html' => $html,
             'pagination' => $users->links()->toHtml()

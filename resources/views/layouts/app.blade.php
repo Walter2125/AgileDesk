@@ -5,29 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'Laravel'))</title>
+    <title>{{ config('app.name', 'Agile-Desk') }}</title>
 
     <!-- Tabler Core CSS (Admin Template) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-    
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<!-- 
-    Aqui en esta vista hay un problema, todos los datos son falso tengo que corregirlo, pero para eso necesito 
-    las vistas que aun no estan creadas ademas de los modelos de esto
-
-    --att. Walter
- -->
     <style>
     :root {
         --sidebar-width: 280px;
@@ -50,19 +48,21 @@
         min-height: 100vh;
     }
 
+    /* Sidebar estático */
     #sidebar-wrapper {
         width: var(--sidebar-width);
-        min-height: 100vh;
+        height: 100%;
         background-color: var(--sidebar-bg);
-        transition: all var(--transition-speed) ease;
+        transition: width var(--transition-speed) ease;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         z-index: 1000;
         position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
+        overflow-y: auto;
     }
-
+    /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
         padding: 1.5rem 1rem;
         font-size: 1.5rem;
@@ -103,8 +103,8 @@
 
     #page-content-wrapper {
         width: 100%;
-        padding-left: var(--sidebar-width);
-        transition: all var(--transition-speed) ease;
+        margin-left: var(--sidebar-width); /* Usa margin en lugar de padding */
+        transition: margin-left var(--transition-speed) ease;
         flex: 1;
     }
 
@@ -118,11 +118,13 @@
     }
 
     .navbar-brand {
-        display: none;
+        display: block;
+        font-weight: bold;
+        color: #212529;
     }
 
     .content-wrapper {
-        padding: 1.5rem;
+        padding: 0rem;
         transition: all var(--transition-speed) ease;
     }
 
@@ -132,11 +134,11 @@
     }
 
     body.sidebar-collapsed #page-content-wrapper {
-        padding-left: var(--sidebar-collapsed-width);
+        margin-left: var(--sidebar-collapsed-width); /* Usa margin en lugar de padding */
     }
 
     body.sidebar-collapsed .sidebar-text {
-        display: none;
+        display: inline-block;
     }
 
     body.sidebar-collapsed .list-group-item i {
@@ -190,7 +192,7 @@
         min-width: 0; /* Esto es crucial para que text-overflow funcione */
     }
 
-    .user-info .sidebar-text div, 
+    .user-info .sidebar-text div,
     .user-info .sidebar-text small {
         white-space: nowrap;
         overflow: hidden;
@@ -209,132 +211,15 @@
         z-index: 999;
     }
 
-    /* Pantallas extra pequeñas (móviles, menos de 576px) */
-    @media (max-width: 575.98px) {
-        :root {
-            --sidebar-width: 240px; /* Sidebar más pequeño en móviles */
-        }
-
-        .sidebar-heading {
-            padding: 1rem 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            min-width: 35px;
-        }
-
-        .sidebar-text {
-            max-width: calc(var(--sidebar-width) - 60px);
-            font-size: 0.9rem;
-        }
+    /* Layout vertical para el sidebar */
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
-    /* Pantallas pequeñas (tablets pequeñas, 576px y más) */
-    @media (min-width: 576px) and (max-width: 767.98px) {
-        :root {
-            --sidebar-width: 260px;
-        }
-
-        .sidebar-text {
-            max-width: calc(var(--sidebar-width) - 65px);
-        }
-    }
-
-    /* Pantallas medianas (tablets, 768px y más) */
-    @media (min-width: 768px) and (max-width: 991.98px) {
-        #sidebar-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            z-index: 1000;
-        }
-
-        /* El contenido siempre ocupa toda la pantalla en este tamaño */
-        #page-content-wrapper {
-            padding-left: var(--sidebar-width);
-        }
-
-        /* Cuando el sidebar está colapsado */
-        body.sidebar-collapsed #sidebar-wrapper {
-            width: var(--sidebar-collapsed-width);
-        }
-
-        body.sidebar-collapsed #page-content-wrapper {
-            padding-left: var(--sidebar-collapsed-width);
-        }
-    }
-
-    /* Pantallas grandes (desktops, 992px y más) */
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-        .sidebar-text {
-            max-width: calc(var(--sidebar-width) - 75px);
-        }
-    }
-
-    /* Pantallas extra grandes (desktops grandes, 1200px y más) */
-    @media (min-width: 1200px) {
-        :root {
-            --sidebar-width: 300px; /* Sidebar un poco más ancho en pantallas grandes */
-        }
-
-        .sidebar-text {
-            max-width: calc(var(--sidebar-width) - 80px);
-        }
-    }
-
-    /* Reglas para móviles y tablets en modo portrait */
-    @media (max-width: 768px) {
-        #sidebar-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            margin-left: -100%; /* Ocultar completamente */
-            transition: margin var(--transition-speed) ease;
-            z-index: 1000;
-        }
-
-        /* Mostrar sidebar cuando está abierto */
-        body.sidebar-collapsed #sidebar-wrapper {
-            margin-left: 0;
-            width: var(--sidebar-width); /* Asegurarse que tenga ancho completo en móvil */
-        }
-
-        /* El contenido ocupa toda la pantalla en móvil por defecto */
-        #page-content-wrapper {
-            padding-left: 0;
-        }
-
-        /* Cuando el sidebar está abierto en móvil */
-        body.sidebar-collapsed #page-content-wrapper {
-            padding-left: 0; /* El contenido no se mueve en móvil */
-        }
-
-        /* Mostrar overlay cuando el sidebar está abierto */
-        body.sidebar-collapsed .overlay {
-            display: block;
-        }
-
-        /* Mostrar texto del sidebar al expandirse */
-        body.sidebar-collapsed .sidebar-text {
-            display: inline-block;
-        }
-
-        /* Iconos con margen normal */
-        body.sidebar-collapsed .list-group-item i {
-            margin-right: 0.75rem;
-        }
-
-        /* Marca la navbar-brand como visible en móvil */
-        .navbar-brand {
-            display: block;
-        }
+    .list-group {
+        flex-grow: 1;
     }
 
     /* Custom scrollbar */
@@ -370,6 +255,184 @@
         right: 0.25rem;
         font-size: 0.65rem;
     }
+
+    /* Dispositivos muy pequeños (menos de 320px) */
+    @media (max-width: 320px) {
+        :root {
+            --sidebar-width: 220px;
+        }
+
+        .sidebar-heading {
+            font-size: 1.2rem;
+            padding: 1rem 0.75rem;
+        }
+
+        .list-group-item {
+            padding: 0.5rem 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+        }
+
+        .content-wrapper {
+            padding: 0.15rem;
+        }
+         body.sidebar-collapsed .sidebar-text {
+            display: inline-block;
+        }
+    }
+
+    /* Dispositivos plegables y de tamaño medio */
+    @media (min-width: 321px) and (max-width: 375px) {
+        :root {
+            --sidebar-width: 230px;
+        }
+    }
+
+    /* Media queries optimizados */
+    /* Pantallas extra pequeñas (móviles, menos de 576px) */
+    @media (max-width: 575.98px) {
+        :root {
+            --sidebar-width: 240px; /* Sidebar más pequeño en móviles */
+        }
+
+        #sidebar-wrapper {
+            transform: translateX(-100%); /* Ocultar por defecto en móvil */
+            width: var(--sidebar-width) !important;
+        }
+
+        body.sidebar-collapsed #sidebar-wrapper {
+            transform: translateX(0); /* Mostrar al estar collapsed/abierto */
+            width: var(--sidebar-width) !important;
+        }
+
+        #page-content-wrapper {
+            margin-left: 0 !important;
+        }
+
+        body.sidebar-collapsed .sidebar-text {
+            display: inline-block; /* Mostrar texto en móvil */
+        }
+
+        body.sidebar-collapsed .list-group-item i {
+            margin-right: 0.75rem;
+        }
+
+        .navbar-brand {
+            display: block;
+            font-weight: bold;
+            color: #212529;
+        }
+
+        .sidebar-heading .app-name {
+            display: inline-block !important;
+        }
+    }
+
+    /* Pantallas medianas y pequeñas */
+    @media (min-width: 576px) and (max-width: 991.98px) {
+        #sidebar-wrapper {
+            transform: translateX(-100%);
+            width: var(--sidebar-width) !important;
+        }
+
+        body.sidebar-collapsed #sidebar-wrapper {
+            transform: translateX(0);
+        }
+
+        #page-content-wrapper {
+            margin-left: 0 !important;
+        }
+
+        body.sidebar-collapsed .overlay {
+            display: block;
+        }
+
+        .sidebar-heading .app-name {
+            display: inline-block !important;
+        }
+
+        .navbar-brand {
+            display: block;
+        }
+    }
+
+    /* Pantallas grandes (desktops, 992px y más) */
+    @media (min-width: 992px) {
+        #sidebar-wrapper {
+            transform: translateX(0); /* Siempre visible en escritorio */
+        }
+
+        #page-content-wrapper {
+            margin-left: var(--sidebar-width);
+        }
+
+        body.sidebar-collapsed #page-content-wrapper {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+    }
+
+
+    /* iPads y tablets en modo retrato */
+    @media (min-width: 768px) and (max-width: 991.98px) and (orientation: portrait) {
+        .content-wrapper {
+            padding: 0.25rem;
+        }
+    }
+
+    /* iPads y tablets en modo paisaje */
+    @media (min-width: 768px) and (max-width: 991.98px) and (orientation: landscape) {
+        :root {
+            --sidebar-width: 260px;
+        }
+    }
+
+    /* Pantallas 2K y superiores */
+    @media (min-width: 2048px) {
+        :root {
+            --sidebar-width: 320px;
+            --sidebar-collapsed-width: 80px;
+        }
+
+        .sidebar-heading {
+            font-size: 1.75rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .list-group-item {
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .content-wrapper {
+            padding: 0.5rem;
+        }
+    }
+
+    /* Soporte para pantallas 4K */
+    @media (min-width: 3840px) {
+        :root {
+            --sidebar-width: 400px;
+            --sidebar-collapsed-width: 100px;
+        }
+
+        .sidebar-heading {
+            font-size: 2rem;
+            padding: 2.5rem 2rem;
+        }
+
+        .list-group-item {
+            padding: 1.25rem 2rem;
+            font-size: 1.25rem;
+        }
+
+        .content-wrapper {
+            padding: 1.25rem;
+        }
+    }
 </style>
 
     <!-- Estilos adicionales de las secciones -->
@@ -379,45 +442,64 @@
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
-<div id="sidebar-wrapper">
-    <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-code-slash me-2"></i>
-            <span>{{ config('app.name', 'Laravel') }}</span>
-        </div>
-        <!-- Botón para colapsar el sidebar -->
-        <button class="btn btn-sm btn-dark" onclick="toggleSidebar()">
-            <i class="bi bi-chevron-left" id="sidebar-toggle-icon"></i>
-        </button>
-    </div>
-    
-    <div class="list-group list-group-flush mb-auto">
-        <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action bg-dark text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <i class="bi bi-speedometer2"></i>
-            <span class="sidebar-text">Dashboard</span>
-        </a>
-    
-        <!-- otros botones comentados por ahora -->
-    </div>
-    
-    <!-- User dropdown in sidebar -->
-    <div class="user-dropdown mt-auto">
-        <div class="dropup">
-            <div class="user-info" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="user-avatar">
-                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="sidebar-content">
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-code-slash me-2"></i>
+                        <span class="sidebar-text app-name">Agile-Desk</span>
+                    </div>
+                    <!-- Botón para colapsar el sidebar -->
+                    <button class="btn btn-sm btn-dark" onclick="toggleSidebar()">
+                        <i class="bi bi-chevron-left" id="sidebar-toggle-icon"></i>
+                    </button>
                 </div>
-                <div class="sidebar-text">
-                    <div>{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-                    <small class="text-muted">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+
+                <div class="list-group list-group-flush mb-auto">
+                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="sidebar-text">Inicio</span>
+                    </a>
+
+                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="sidebar-text">Inicio</span>
+                    </a>
+                    <!-- otros botones comentados por ahora -->
                 </div>
-                <i class="bi bi-chevron-up ms-auto sidebar-text"></i>
+
+                <!-- User dropdown in sidebar -->
+                <div class="user-dropdown mt-auto">
+                    <div class="dropup">
+                        <div class="user-info" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                            </div>
+                            <div class="sidebar-text">
+                                <div>{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
+                                <small class="text-muted">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                            </div>
+                        </div>
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            
         </div>
-    </div>
-</div>
+
         <!-- Page Content -->
         <div id="page-content-wrapper">
             @include('layouts.navigation')
@@ -449,19 +531,38 @@
         // Sidebar toggle functionality
         function toggleSidebar() {
             document.body.classList.toggle('sidebar-collapsed');
-            
+
             // Cambiar el ícono del botón de colapsar
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             if (toggleIcon) {
                 if (document.body.classList.contains('sidebar-collapsed')) {
-                    toggleIcon.classList.remove('bi-chevron-left');
-                    toggleIcon.classList.add('bi-chevron-right');
+                    // En dispositivos pequeños, 'sidebar-collapsed' significa abierto
+                    if (window.innerWidth < 992) {
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    } else {
+                        // En dispositivos grandes, 'sidebar-collapsed' significa cerrado
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    }
                 } else {
                     toggleIcon.classList.remove('bi-chevron-right');
                     toggleIcon.classList.add('bi-chevron-left');
                 }
             }
         }
+
+        // Detectar cambios en el tamaño de la ventana
+        window.addEventListener('resize', function() {
+            // Si la pantalla se hace grande (más de 992px) y el sidebar estaba oculto, mostrarlo
+            if (window.innerWidth >= 992 && !document.body.classList.contains('sidebar-collapsed')) {
+                const toggleIcon = document.getElementById('sidebar-toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('bi-chevron-right');
+                    toggleIcon.classList.add('bi-chevron-left');
+                }
+            }
+        });
 
         // Close alerts automatically after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
