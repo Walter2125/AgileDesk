@@ -11,9 +11,10 @@ $colCount = $tablero->columnas->count();
 
     <div class="container py-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h4">{{ $project->name }}</h1>
-            <div class="btn-group">
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center px-4">
+                <h1 class="display-9 fw-bold mb-0">{{ $project->name }}</h1>
+                <div class="btn-group">
 
                 @if($project->sprints && $project->sprints->count())
                     <select class="form-select mt-2" id="sprintSelect" aria-label="Seleccionar sprint">
@@ -34,8 +35,9 @@ $colCount = $tablero->columnas->count();
             </div>
         </div>
 
-        <div id="kanban-board" class="d-flex overflow-auto pb-3" style="min-height: 500px;">
-            @foreach($tablero->columnas as $columna)
+            <div class="overflow-auto pb-3" style="width: 100%;">
+                <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
+                @foreach($tablero->columnas as $columna)
                 <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2" style="{{ $widthStyle }} min-height: 500px;">
                     <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                         @if($columna->es_backlog)

@@ -12,7 +12,7 @@ $colCount = $tablero->columnas->count();
     <div class="container py-4">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h4">{{ $project->name }}</h1>
+            <h1 class="display-6 ms-3 mb-0">{{ $project->name }}</h1>
             <div class="btn-group">
 
                 @if($project->sprints && $project->sprints->count())
