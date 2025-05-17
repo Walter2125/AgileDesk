@@ -13,19 +13,15 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    public function create()
-    {
-        $users = User::where('usertype', '!=', 'admin')->get();
-        $selectedUsers = [];
-        return view('projects.create', compact('users', 'selectedUsers'));
+    
+        public function create(Request $request)
+{
+    $users = User::where('usertype', '!=', 'admin')->paginate(5); // <- Aquí está la paginación
+    $selectedUsers = [];
 
-
-
-
-
-
-    }
-
+    return view('projects.create', compact('users', 'selectedUsers'));
+}
+       
     public function store(Request $request)
     {
         $request->validate([
@@ -46,24 +42,11 @@ class ProjectController extends Controller
                 'user_id'      => auth()->id(),
             ]);
 
-            // Asignar usuarios (incluyendo al creador)
             $project->users()->sync(array_unique(array_merge(
                 [auth()->id()],
-                $request->selected_users
+            $request->input('selected_users', [])
             )));
-
-            $tablero = Tablero::create([
-                'proyecto_id' => $project->id,
-            ]);
-
-            // Crear columna Backlog vinculada al tablero
-            $tablero->columnas()->create([
-                'nombre' => 'Backlog',
-                'posicion' => 1,
-                'es_backlog' => true,
-            ]);
-
-
+          
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
@@ -102,6 +85,7 @@ class ProjectController extends Controller
         $projects = $user->projects->sortByDesc('created_at');
         return view('projects.myprojects', compact('projects'));
     }
+
 
     public function edit($id)
     {
@@ -203,25 +187,22 @@ class ProjectController extends Controller
 
 
     public function listUsers(Request $request)
-    {
-    $search = $request->input('search', '');
 
-    $users = User::where('role', '!=', 'admin')
-                ->when($search, function($query) use ($search) {
-                    return $query->where('name', 'like', '%'.$search.'%');
-                })
-                ->paginate(5);
+{
+    $users = User::where('usertype', '!=', 'admin')->paginate(5);
+    $selectedUsers = $request->input('selected_users', []);
 
-    if($request->ajax()) {
-        $html = view('projects.partials.users_table', compact('users'))->render();
-        $pagination = $users->links()->toHtml();
-
+    if ($request->ajax()) {
+        $html = view('projects.partials.users_table', [
+            'users' => $users,
+            'selectedUsers' => $selectedUsers
+        ])->render();
         return response()->json([
             'html' => $html,
-            'pagination' => $pagination
+            'pagination' => $users->links()->toHtml()
         ]);
     }
 
     return view('projects.create', compact('users'));
-    }
+}
 }
