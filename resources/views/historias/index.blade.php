@@ -36,6 +36,7 @@
             <td>{{ $historia -> nombre }}</td>
             <td>{{  $historia -> descripcion }}</td>
             <td>
+        </div>
               <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-primary">VER</a>
                  <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-primary">EDITAR</a>
                  <form action="{{ route('historias.destroy', $historia->id) }}" method="post">

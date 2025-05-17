@@ -7,7 +7,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\IsApproved;
+use App\Http\Controllers\TareaController;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProjectController;
@@ -110,5 +112,15 @@ Route::middleware(['auth', 'role:admin'])
 
     });
 
+// Rutas para Tareas protegidas por autenticación y aprobación
+Route::middleware(['auth', IsApproved::class])->group(function () {
+Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
+Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->name('tareas.store');
+Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
+Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
+Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
+
+});
 
 require __DIR__.'/auth.php';
