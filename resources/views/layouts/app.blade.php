@@ -62,7 +62,7 @@
         bottom: 0;
         overflow-y: auto;
     }
-
+    /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
         padding: 1.5rem 1rem;
         font-size: 1.5rem;
@@ -124,7 +124,7 @@
     }
 
     .content-wrapper {
-        padding: 1.5rem;
+        padding: 0rem;
         transition: all var(--transition-speed) ease;
     }
 
@@ -278,7 +278,7 @@
         }
 
         .content-wrapper {
-            padding: 1rem;
+            padding: 0.15rem;
         }
          body.sidebar-collapsed .sidebar-text {
             display: inline-block;
@@ -379,7 +379,7 @@
     /* iPads y tablets en modo retrato */
     @media (min-width: 768px) and (max-width: 991.98px) and (orientation: portrait) {
         .content-wrapper {
-            padding: 1.25rem;
+            padding: 0.25rem;
         }
     }
 
@@ -408,7 +408,7 @@
         }
 
         .content-wrapper {
-            padding: 2rem;
+            padding: 0.5rem;
         }
     }
 
@@ -430,7 +430,7 @@
         }
 
         .content-wrapper {
-            padding: 2.5rem;
+            padding: 1.25rem;
         }
     }
 </style>

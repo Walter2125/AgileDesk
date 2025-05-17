@@ -9,8 +9,6 @@ $colCount = $tablero->columnas->count();
             : 'width: 300px; flex-shrink: 0;';
     @endphp
 
-    <div class="container py-4">
-
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">{{ $project->name }}</h1>
             <div class="btn-group">
@@ -72,7 +70,6 @@ $colCount = $tablero->columnas->count();
                 </div>
             @endforeach
         </div>
-    </div>
 
     <!-- Modal Bootstrap para agregar columna -->
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
