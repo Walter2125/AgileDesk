@@ -23,7 +23,6 @@ class TareaController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string', // ← ahora obligatorio
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
-            'user_id' => 'required|exists:users,id', // ← ahora obligatorio
         ]);
 
         // Asociar tarea con la historia
@@ -44,7 +43,6 @@ class TareaController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string', 
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
-            'user_id' => 'required|exists:users,id', 
         ]);
 
         $tarea->update($validatedData);
@@ -61,7 +59,8 @@ class TareaController extends Controller
 
     public function lista(Historia $historia)
     {
-        $tareas = $historia->tareas()->with('user')->get();
+    $tareas = $historia->tareas()->with('user')->paginate(5);
+
         return view('tareas.show', compact('tareas', 'historia'));
     }
 

@@ -77,22 +77,6 @@
                 @enderror
             </div>
 
-            <!-- Usuario Responsable -->
-            <div class="mb-4">
-                <label for="user_id" class="form-label fw-bold">Usuario Responsable <span class="text-danger">*</span></label>
-                <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
-                    <option value="">Sin asignar</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('user_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
             <!-- Botones -->
             <div class="d-flex justify-content-between">
                 <a href="{{ route('tareas.show', $historia->id) }}" class="btn btn-secondary">

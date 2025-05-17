@@ -43,19 +43,6 @@
                 </select>
             </div>
 
-            <!-- Usuario Responsable -->
-            <div class="mb-4">
-                <label for="user_id" class="form-label fw-bold">Usuario Responsable</label>
-                <select name="user_id" id="user_id" class="form-control">
-                    <option value="">Sin asignar</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ $tarea->user_id == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
             <!-- Botones -->
             <div class="d-flex justify-content-between">
 <a href="{{ route('tareas.show', $historia->id) }}" 

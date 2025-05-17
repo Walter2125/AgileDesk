@@ -29,7 +29,6 @@
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Actividad</th>
-                    <th>Usuario</th>
                     <th>Fecha de Creación</th>
                     <th>Acciones</th>
                 </tr>
@@ -41,7 +40,6 @@
                         <td>{{ $tarea->nombre }}</td>
                         <td>{{ $tarea->descripcion }}</td>
                         <td>{{ $tarea->actividad }}</td>
-                        <td>{{ optional($tarea->user)->name ?? 'Sin asignar' }}</td>
                         <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
                         <td class="text-center">
 
@@ -100,6 +98,11 @@
                 @endforelse
             </tbody>
         </table>
+
+         <!-- Paginación -->
+        <div class="d-flex justify-content-center mt-4">
+            {{ $tareas->links() }}
+        </div>
 
         <!-- Botones -->
 <div class="d-flex justify-content-between mt-4">
