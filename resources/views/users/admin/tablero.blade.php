@@ -34,7 +34,7 @@ $colCount = $tablero->columnas->count();
 
         <div id="kanban-board" class="d-flex overflow-auto pb-3" style="min-height: 500px;">
             @foreach($tablero->columnas as $columna)
-                <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2" style="{{ $widthStyle }} min-height: 500px;">
+                <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2">
                     <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                         @if($columna->es_backlog)
                             <strong>{{ $columna->nombre }}</strong>
@@ -59,14 +59,28 @@ $colCount = $tablero->columnas->count();
                     </div>
 
                     <div class="p-2 border-bottom">
-                        <button class="btn btn-sm btn-primary w-100"
-                                onclick="alert('Aquí va la lógica para agregar historia a la columna {{ $columna->nombre }}')"
-                        >Agregar historia</button>
+                        <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                        class="btn btn-sm btn-primary w-100">
+                            Agregar historias
+                        </a>
                     </div>
 
-                    <div class="overflow-auto p-2" style="flex: 1;">
-                        <!-- Aquí irían las historias -->
+
+                   <div class="overflow-auto p-2" style="flex: 1;">
+                        @foreach ($columna->historias as $historia)
+                            <a href="{{ route('historias.show', $historia->id) }}" 
+                            class="card mb-2 p-2 text-decoration-none text-dark d-block" 
+                            style="max-width: 250px; /* ancho máximo de la tarjeta */
+                                    white-space: nowrap; 
+                                    overflow: hidden; 
+                                    text-overflow: ellipsis;">
+                                <strong class="d-block" title="{{ $historia->nombre }}">
+                                    {{ $historia->nombre }}
+                                </strong>
+                            </a>
+                        @endforeach
                     </div>
+
                 </div>
             @endforeach
         </div>

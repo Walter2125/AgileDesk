@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Sprint;
 use App\Models\Columna;
 use App\Models\Project;
-use App\Models\Sprint;
+use App\Models\Tablero;
 use Illuminate\Http\Request;
 
 class TableroController extends Controller
@@ -35,7 +36,7 @@ class TableroController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+  public function show(string $id)
     {
         $project = Project::findOrFail($id);
         $tablero = $project->tablero()->with('columnas')->firstOrFail();
@@ -57,6 +58,10 @@ class TableroController extends Controller
         return view('users.admin.tablero', compact('project', 'tablero'));
 
     }
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.
