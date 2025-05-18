@@ -1,76 +1,186 @@
 @extends('layouts.app')
 
-
 @section('content')
-    <div class="container mt-5">
-        <h1>Editar Proyecto: {{ $project->name }}</h1>
+    <div class="container-fluid p-0">
+        <div class="row m-0">
+            <div class="col-12 p-4">
+                <h2 class="mb-4">Editar Proyecto: {{ $project->name }}</h2>
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
 
-        <form action="{{ route('projects.update', $project->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}">
+                    @csrf
+                    @method('PUT')
 
-            <!-- Nombre del Proyecto -->
-            <div class="mb-3">
-                <label for="name" class="form-label">Nombre del Proyecto</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $project->name) }}" required>
-            </div>
+                    <!-- Nombre -->
+                    <div class="form-group mb-3">
+                        <label for="name">Nombre del Proyecto</label>
+                        <input id="name" type="text" class="form-control" name="name"
+                               value="{{ old('name', $project->name) }}" required autocomplete="off">
+                    </div>
 
-            <!-- Fechas -->
-            <div class="mb-3">
-                <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ old('fecha_inicio', $project->fecha_inicio) }}" required>
-            </div>
+                    <!-- Fechas -->
+                    <div class="form-group mb-3">
+                        <label for="fecha_inicio">Fecha de Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+                               value="{{ old('fecha_inicio', $project->fecha_inicio) }}" required>
+                    </div>
 
-            <div class="mb-3">
-                <label for="fecha_fin" class="form-label">Fecha de Fin</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ old('fecha_fin', $project->fecha_fin) }}" required>
-            </div>
+                    <div class="form-group mb-3">
+                        <label for="fecha_fin">Fecha de Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+                               value="{{ old('fecha_fin', $project->fecha_fin) }}" required>
+                    </div>
 
-            <!-- Dueño del Proyecto (Administrador) -->
-            <div class="mb-3">
-                <label class="form-label">Administrador del Proyecto</label>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        {{ $project->creator->name }}
-                    </label>
-                </div>
-            </div>
-
-            <!-- Selección de Usuarios -->
-            <div class="mb-3">
-                <label for="users" class="form-label">Seleccionar Usuarios</label>
-                <div id="user_list">
-                    @foreach($users as $user)
-                        <!-- Mostrar al creador como seleccionado, pero no editable -->
+                    <!-- Administrador del Proyecto -->
+                    <div class="mb-3">
+                        <label class="form-label">Administrador del Proyecto</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="users[]" value="{{ $user->id }}" id="user{{ $user->id }}"
-                                {{ in_array($user->id, $project->users->pluck('id')->toArray()) ? 'checked' : '' }}
-                                {{ $user->id == $project->user_id ? 'disabled' : '' }}>
-                            <label class="form-check-label" for="user{{ $user->id }}">{{ $user->name }}</label>
+                            <label class="form-check-label">
+                                {{ $project->creator->name }}
+                            </label>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
 
-                <small class="form-text text-muted">Selecciona uno o más usuarios para asignar al proyecto.</small>
+                    <!-- Buscador y tabla -->
+                    <div class="form-group mb-3">
+                        <label>Buscar Usuarios</label>
+                        <div class="search-container mb-3">
+                            <input type="text" class="form-control" id="userSearch" placeholder="Escribe el nombre de un usuario...">
+                            <div id="searchResults" class="mt-2"></div>
+                        </div>
+
+                        <div id="usersTableContainer">
+                            @include('projects.partials.users_table', [
+                                'users' => $users,
+                                'selectedUsers' => $selectedUsers,
+                                'creatorId' => $project->user_id
+                            ])
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $users->links() }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campo oculto con usuarios seleccionados -->
+                    <div id="selectedUsersInputs">
+                        @foreach($selectedUsers as $id)
+                            <input type="hidden" name="users[]" value="{{ $id }}">
+                        @endforeach
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
+                        <a href="{{ route('projects.my') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
             </div>
-
-            <!-- Botón para Guardar Proyecto -->
-            <button type="submit" class="btn btn-primary mt-3">Actualizar Proyecto</button>
-        </form>
+        </div>
     </div>
+@endsection
 
+@section('styles')
     <style>
-        #user_list .form-check {
-            margin-bottom: 10px;
-        }
-
-        #user_list {
-            max-height: 200px;
-            overflow-y: auto;
+        .search-container { position: relative; }
+        #searchResults {
+            position: absolute; width: 100%; z-index: 1000;
+            background: #fff; border: 1px solid #ddd; border-radius: 4px;
+            max-height: 300px; overflow-y: auto; display: none;
         }
     </style>
+@endsection
+
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            let selectedUsers = @json($selectedUsers);
+
+            function applySelections() {
+                $('input.user-checkbox, input.user-checkbox-search').each(function() {
+                    const id = $(this).val();
+                    $(this).prop('checked', selectedUsers.includes(parseInt(id)));
+                });
+            }
+
+            function updateHiddenInputs() {
+                const container = $('#selectedUsersInputs');
+                container.empty();
+                selectedUsers.forEach(id => {
+                    container.append(`<input type="hidden" name="users[]" value="${id}">`);
+                });
+            }
+
+            $(document).on('change', '.user-checkbox, .user-checkbox-search', function() {
+                const id = parseInt($(this).val());
+                if ($(this).is(':checked')) {
+                    if (!selectedUsers.includes(id)) selectedUsers.push(id);
+                } else {
+                    selectedUsers = selectedUsers.filter(u => u !== id);
+                }
+                applySelections();
+                updateHiddenInputs();
+            });
+
+            // AJAX Paginación
+            $(document).on('click', '#usersTableContainer .pagination a', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('href');
+
+                $.ajax({
+                    url: url,
+                    data: { selected_users: selectedUsers },
+                    success: function(data) {
+                        $('#usersTableContainer').html(data.html + data.pagination);
+                        applySelections();
+                    },
+                    error: function() {
+                        alert('Error cargando la página de usuarios.');
+                    }
+                });
+            });
+
+            // Buscador AJAX
+            $('#userSearch').on('input', function() {
+                const q = $(this).val().trim();
+                if (q.length < 1) return $('#searchResults').hide();
+
+                $.getJSON('{{ route("projects.searchUsers") }}', { query: q })
+                    .done(users => {
+                        if (!users.length) {
+                            return $('#searchResults').html('<div class="p-2">No se encontraron usuarios</div>').show();
+                        }
+
+                        let html = '<table class="table table-sm"><tbody>';
+                        users.forEach(u => {
+                            const checked = selectedUsers.includes(u.id) ? 'checked' : '';
+                            html += `
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="user-checkbox-search" value="${u.id}" ${checked}>
+                            </td>
+                            <td>${u.name}</td>
+                            <td>${u.email}</td>
+                        </tr>`;
+                        });
+                        $('#searchResults').html(html + '</tbody></table>').show();
+                    })
+                    .fail(() => $('#searchResults').html('<div class="p-2">Error en la búsqueda</div>').show());
+            });
+
+            // Ocultar resultados al hacer clic fuera
+            $(document).on('click', e => {
+                if (!$(e.target).closest('#userSearch, #searchResults').length) {
+                    $('#searchResults').hide();
+                }
+            });
+
+            // Inicialización
+            applySelections();
+            updateHiddenInputs();
+        });
+    </script>
 @endsection

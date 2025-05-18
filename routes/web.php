@@ -88,6 +88,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my')->middleware('auth');
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
+        Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
 
         // Crud de tableros
 
