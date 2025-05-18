@@ -20,5 +20,12 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); 
     }
+    
+    //relacion nesesaria con historias
+    public function historias()
+{
+    return $this->hasMany(Historia::class, 'proyecto_id');
+}
+
 }
 

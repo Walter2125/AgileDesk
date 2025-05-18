@@ -13,4 +13,8 @@ class Columna extends Model {
     public function historias() {
         return $this->hasMany(Historia::class);
     }
+    public function tablero()
+{
+    return $this->belongsTo(Tablero::class);
+}
 }

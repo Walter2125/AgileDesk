@@ -16,5 +16,9 @@ class Tablero extends Model {
     public function sprints() {
         return $this->hasMany(Sprint::class);
     }
+    public function proyecto()
+{
+    return $this->belongsTo(Project::class, 'proyecto_id');
+}
 }
 
