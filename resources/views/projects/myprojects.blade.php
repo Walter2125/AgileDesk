@@ -402,7 +402,7 @@
                             </div>
 
                             <div class="action-buttons">
-                                <a href="#" class="btn btn-view">
+                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
 

@@ -23,9 +23,14 @@ class Project extends Model
     
     //relacion nesesaria con historias
     public function historias()
-{
-    return $this->hasMany(Historia::class, 'proyecto_id');
-}
-
+    {
+        return $this->hasMany(Historia::class, 'proyecto_id');
+    }
+    
+    //relacion de tablero
+    public function tablero()
+    {
+        return $this->hasOne(Tablero::class, 'proyecto_id');
+    }
 }
 
