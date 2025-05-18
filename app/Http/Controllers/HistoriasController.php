@@ -148,11 +148,7 @@ public function createFromColumna($columnaId)
             return redirect()->route('tableros.show', ['project' => $proyectoId])
                             ->with('success', 'Historia borrada con éxito');
         }
-    public function destroy(Historia $historia)
-    {
-        $historia->delete();
-        return redirect()->route('historias.index')->with('success', 'Historia Borrada con Exito');
-    }
+    
 /**
      * Buscar historias.
      */
