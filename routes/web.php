@@ -14,6 +14,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TableroController;
 use App\Http\Controllers\ColumnaController;
 use App\Http\Conntroller\SprintController;
+use App\Http\Controllers\HistorialCambioController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
@@ -76,6 +77,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+        //historial de cambios
+        Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 
         // CRUD de proyectos
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('auth');
