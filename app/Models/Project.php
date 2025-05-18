@@ -26,5 +26,11 @@ class Project extends Model
     {
         return $this->hasOne(Tablero::class, 'proyecto_id');
     }
+    
+    //relacion nesesaria con historias
+    public function historias()
+{
+    return $this->hasMany(Historia::class, 'proyecto_id');
+}
 
 }

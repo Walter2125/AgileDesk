@@ -35,14 +35,20 @@
             <input type="number" name="trabajo_estimado" id="trabajo_estimado" class="form-control rounded " min="0" value="{{ $historia->trabajo_estimado }}" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
         </div>
 
-         <div class="mb-3">
+        <div class="mb-3">
             <label for="usuario_id" class="form-label">Asignado a:</label>
-            <select name="usuario_id" id="usuario_id" class="form-control" disabled>
-                <option value="">(Usuarios aún no disponibles)</option>
+            <select name="usuario_id" id="usuario_id" class="form-control">
+                <option value="">-- Seleccionar usuario --</option>
+                @foreach($usuarios as $usuario)
+                   <option value="{{ $usuario->id }}"
+                        {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                        {{ $usuario->name }}
+                    </option>
+                @endforeach
             </select>
         </div> 
 
-        <!-- Prioridad -->
+     
         <div class="mb-3">
             <label for="prioridad" class="form-label" >Prioridad</label>
              <select name="prioridad" id="prioridad" class="form-control rounded">
@@ -63,6 +69,8 @@
      
 
          <div class="mb-3 d-flex justify-content-end">
+            <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-secondary me-2">Atras</a>
+  
             <button type="submit" class="btn btn-primary">Actualizar</button>
         </div>
     </form>
