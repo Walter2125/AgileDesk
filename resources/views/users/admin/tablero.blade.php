@@ -11,8 +11,8 @@ $colCount = $tablero->columnas->count();
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">{{ $project->name }}</h1>
+            
             <div class="btn-group">
-
                 @if($project->sprints && $project->sprints->count())
                     <select class="form-select mt-2" id="sprintSelect" aria-label="Seleccionar sprint">
                         <option selected disabled>Selecciona un sprint</option>
@@ -31,6 +31,11 @@ $colCount = $tablero->columnas->count();
                 <button class="btn btn-outline-primary">Crear sprint</button>
             </div>
         </div>
+        
+         <!-- Filtro de Búsqueda de Historias (Modificado) -->
+           <<div class="input-group mb-3" style="width: 300px;">
+                <input type="text" id="filtroHistorias" class="form-control" placeholder="Buscar historias..." style="border-radius: 20px; padding-right: 20px; background-color: rgba(173, 216, 230, 0.6); color: #000; border: none;" aria-label="Buscar historias">
+            </div>
 
         <div id="kanban-board" class="d-flex overflow-auto pb-3" style="min-height: 500px;">
             @foreach($tablero->columnas as $columna)
@@ -132,4 +137,25 @@ $colCount = $tablero->columnas->count();
             });
         });
     </script>
+
+     <!-- AJAX para actualizar nombre y limpiar filtro con ENTER -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroHistorias = document.getElementById("filtroHistorias");
+            
+            filtroHistorias.addEventListener("input", function () {
+                const filtro = this.value.toLowerCase();
+                // Aquí puedes agregar la lógica para filtrar historias
+            });
+
+            // Limpiar con ENTER
+            filtroHistorias.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    this.value = "";
+                    this.dispatchEvent(new Event("input"));
+                }
+            });
+        });
+    </script>
+
 @endsection

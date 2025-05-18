@@ -46,6 +46,16 @@ class ProjectController extends Controller
                 [auth()->id()],
             $request->input('selected_users', [])
             )));
+
+            $tablero = Tablero::create([
+            'proyecto_id' => $project->id,
+           ]);
+
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ]);
           
             DB::commit();
 

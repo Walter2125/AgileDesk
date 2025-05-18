@@ -120,7 +120,7 @@
 
                             <!-- Botones -->
                             <div class="mt-3 d-flex flex-wrap gap-2">
-                                <a href="*" class="btn btn-info btn-sm rounded-pill">
+                                <a href="{{ route('tableros.show', $project->id) }}"  class="btn btn-info btn-sm rounded-pill">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
 

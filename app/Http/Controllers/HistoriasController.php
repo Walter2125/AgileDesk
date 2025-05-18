@@ -115,4 +115,13 @@ class HistoriasController extends Controller
         $historia->delete();
         return redirect()->route('historias.index')->with('success', 'Historia Borrada con Exito');
     }
+/**
+     * Buscar historias.
+     */
+     public function search(Request $request)
+    {
+        $query = $request->input('q');
+        $historias = Historia::where('nombre', 'LIKE', "%$query%")->get();
+        return response()->json($historias);
+    }
 }

@@ -20,5 +20,10 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); 
     }
+
+     public function tablero()
+    {
+        return $this->hasOne(Tablero::class, 'proyecto_id'); 
+    }
 }
 
