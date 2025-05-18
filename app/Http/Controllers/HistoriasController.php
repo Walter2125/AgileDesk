@@ -50,6 +50,7 @@ public function createFromColumna($columnaId)
              'proyecto_id' => 'required|exists:nuevo_proyecto,id',
             'columna_id' => 'exists:columnas,id',
             'tablero_id' => 'exists:tableros,id',
+               'usuario_id' => 'nullable|exists:users,id',
         ],
 [   'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
@@ -71,6 +72,7 @@ public function createFromColumna($columnaId)
         $historia->proyecto_id = $request->proyecto_id;
         $historia->columna_id = $request->columna_id; 
         $historia->tablero_id = $request->tablero_id;
+       $historia->usuario_id = $request->usuario_id; 
         $historia->save();
 
         
