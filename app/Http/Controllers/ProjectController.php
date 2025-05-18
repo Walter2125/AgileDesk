@@ -13,15 +13,21 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    
-        public function create(Request $request)
-{
-    $users = User::where('usertype', '!=', 'admin')->paginate(5); // <- Aquí está la paginación
-    $selectedUsers = [];
 
-    return view('projects.create', compact('users', 'selectedUsers'));
-}
-       
+    public function create(Request $request)
+    {
+        $users = User::where('usertype', '!=', 'admin')
+            ->where('is_approved', true)
+            ->where('is_rejected', false)
+            ->paginate(5)
+            ->withPath(route('projects.listUsers'));
+
+        $selectedUsers = [];
+
+        return view('projects.create', compact('users', 'selectedUsers'));
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +52,7 @@ class ProjectController extends Controller
                 [auth()->id()],
             $request->input('selected_users', [])
             )));
-          
+
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
@@ -65,12 +71,15 @@ class ProjectController extends Controller
         $query = $request->input('query');
 
         $users = User::where('name', 'like', "%{$query}%")
-                    ->where('usertype', '!=', 'admin')
-                    ->where('id', '!=', auth()->id())
-                    ->get(['id', 'name', 'email']);
+            ->where('usertype', '!=', 'admin')
+            ->where('is_approved', true)
+            ->where('is_rejected', false)
+            ->where('id', '!=', auth()->id())
+            ->get(['id', 'name', 'email']);
 
         return response()->json($users);
     }
+
 
     public function index()
     {
@@ -89,19 +98,25 @@ class ProjectController extends Controller
 
     public function edit($id)
     {
-        // Obtener el proyecto por su ID, con los usuarios asignados
         $project = Project::with('users')->findOrFail($id);
 
-        // Verificar si el usuario logueado es el propietario del proyecto
         if (auth()->id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        // Obtener todos los usuarios PAGINADOS
-        $users = User::where('usertype', '!=', 'admin')->paginate(5);
+        $users = User::where('usertype', '!=', 'admin')
+            ->where('is_approved', true)
+            ->where('is_rejected', false)
+            ->where('id', '!=', $project->user_id)
+            ->paginate(5)
+            ->withPath(route('projects.listUsers'));
 
-        return view('projects.edit', compact('project', 'users'));
+        $selectedUsers = $project->users->pluck('id')->toArray();
+
+        return view('projects.edit', compact('project', 'users', 'selectedUsers'));
     }
+
+
 
     public function update(Request $request, $id)
     {
@@ -187,22 +202,30 @@ class ProjectController extends Controller
 
 
     public function listUsers(Request $request)
+    {
+        $users = User::where('usertype', '!=', 'admin')
+            ->where('is_approved', true)
+            ->where('is_rejected', false)
+            ->paginate(5)
+            ->withPath(route('projects.listUsers')); // <--- Esto es clave
 
-{
-    $users = User::where('usertype', '!=', 'admin')->paginate(5);
-    $selectedUsers = $request->input('selected_users', []);
+        $selectedUsers = $request->input('selected_users', []);
 
-    if ($request->ajax()) {
-        $html = view('projects.partials.users_table', [
-            'users' => $users,
-            'selectedUsers' => $selectedUsers
-        ])->render();
-        return response()->json([
-            'html' => $html,
-            'pagination' => $users->links()->toHtml()
-        ]);
+        if ($request->ajax()) {
+            $html = view('projects.partials.users_table', [
+                'users' => $users,
+                'selectedUsers' => $selectedUsers
+            ])->render();
+
+            $pagination = view('projects.partials.pagination_links', ['users' => $users])->render();
+
+            return response()->json([
+                'html' => $html,
+                'pagination' => $pagination,
+            ]);
+        }
+
+        return view('projects.create', compact('users', 'selectedUsers'));
     }
 
-    return view('projects.create', compact('users'));
-}
 }

@@ -152,7 +152,7 @@ $(function () {
         updateHiddenInputs();
     });
 
-    // AJAX Paginación - Versión simplificada
+    // AJAX Paginación
     $(document).on('click', '#usersTableContainer .pagination a', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
@@ -163,9 +163,7 @@ $(function () {
                 selected_users: selectedUsers
             },
             success: function(data) {
-                $('#usersTableContainer').html(
-                    data.html + '<div class="d-flex justify-content-center mt-3">' + data.pagination + '</div>'
-                );
+                $('#usersTableContainer').html(data.html + data.pagination);
                 applySelections();
             },
             error: function() {
@@ -173,6 +171,8 @@ $(function () {
             }
         });
     });
+
+
 
     // Buscador (sin cambios)
     $('#userSearch').on('input', function() {
