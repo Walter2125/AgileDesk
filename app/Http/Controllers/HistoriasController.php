@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Columna;
 use App\Models\Historia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,12 +15,23 @@ class HistoriasController extends Controller
     public function index()
     {
         $historias = Historia::all();
+     
         return view('historias.index', compact('historias'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
+public function createFromColumna($columnaId)
+{
+    $columna = Columna::with('tablero.proyecto')->findOrFail($columnaId);
+    $tablero = $columna->tablero;
+    $proyecto = $tablero->proyecto;
+    $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+
+    return view('historias.create', compact('columna', 'tablero', 'proyecto','usuarios'));
+}
+ 
     public function create()
     {
         return view('historias.create');
@@ -35,6 +47,9 @@ class HistoriasController extends Controller
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
             'descripcion' => 'nullable|string|max:1000',
+             'proyecto_id' => 'required|exists:nuevo_proyecto,id',
+            'columna_id' => 'exists:columnas,id',
+            'tablero_id' => 'exists:tableros,id',
         ],
 [   'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
@@ -53,9 +68,14 @@ class HistoriasController extends Controller
         $historia->trabajo_estimado = $request->trabajo_estimado;
         $historia->prioridad = $request->prioridad;
         $historia->descripcion =$request->descripcion;
+        $historia->proyecto_id = $request->proyecto_id;
+        $historia->columna_id = $request->columna_id; 
+        $historia->tablero_id = $request->tablero_id;
         $historia->save();
 
-        return redirect()->route('historias.index')->with('success', 'Historia Creada con Exito');
+        
+    return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
+                     ->with('success', 'Historia creada con éxito');
     }
 
     /**
@@ -63,53 +83,71 @@ class HistoriasController extends Controller
      */
     public function show(Historia $historia)
     {
+        $historia->load('usuario');
         return view('historias.show',compact('historia'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Historia $historia)
-    {
-        return view('historias.edit',compact('historia'));
-    }
+    public function edit($id)
+{
+    $historia = Historia::with(['proyecto', 'usuario'])->findOrFail($id);
+    $proyecto = $historia->proyecto;
+    $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+
+    return view('historias.edit', compact('historia', 'usuarios'));
+}
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Historia $historia)
-    {
-          $request -> validate([
-            'nombre'=> 'required|string|min:3|max:255',
-            'trabajo_estimado' => 'nullable|integer|min:0',
-            'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
-        ],
-[   'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+{
+    $request->validate([
+        'nombre'=> 'required|string|min:3|max:255',
+        'trabajo_estimado' => 'nullable|integer|min:0',
+        'prioridad' => 'required|in:Alta,Media,Baja',
+        'descripcion' => 'nullable|string|max:1000',
+        'usuario_id' => 'nullable|exists:users,id',  // si asignas usuario
+    ], [
+        'nombre.required' => 'El nombre es obligatorio.',
+        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+        'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+        'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+        'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+        'prioridad.required' => 'Debe seleccionar una prioridad.',
+        'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+    ]);
 
-            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
-            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+    // Actualizar con un solo update
+    $historia->update([
+        'nombre' => $request->nombre,
+        'trabajo_estimado' => $request->trabajo_estimado,
+        'prioridad' => $request->prioridad,
+        'descripcion' => $request->descripcion,
+        'usuario_id' => $request->usuario_id, // si tienes este campo en historias
+    ]);
 
-            'prioridad.required' => 'Debe seleccionar una prioridad.',
-            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+    // Redirigir a la vista show pasando el ID
+    return redirect()->route('historias.show', $historia->id)
+                     ->with('success', 'Historia editada con éxito');
+}
 
-
-        ]);
-        $historia->update();
-        $historia->nombre = $request->nombre;
-        $historia->trabajo_estimado = $request->trabajo_estimado;
-        $historia->prioridad = $request->prioridad;
-        $historia->descripcion =$request->descripcion;
-        $historia->save();
-
-        return redirect()->route('historias.index')->with('success', 'Historia Editada con Exito'); 
-    }
 
     /**
      * Remove the specified resource from storage.
      */
+   public function destroy(Historia $historia)
+        {
+            $proyectoId = $historia->proyecto_id; // Guardas el ID antes de eliminar
+
+            $historia->delete(); // Eliminas la historia
+
+            return redirect()->route('tableros.show', ['project' => $proyectoId])
+                            ->with('success', 'Historia borrada con éxito');
+        }
     public function destroy(Historia $historia)
     {
         $historia->delete();

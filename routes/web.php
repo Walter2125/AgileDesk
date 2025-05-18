@@ -53,6 +53,11 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 //Rutas para las historias
+
+Route::get('/historias/create/columna/{columna}', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
+
+Route::get('/columnas/{columna}/historias/create', [HistoriasController::class, 'createFromColumna'])
+    ->name('historias.create.fromColumna');
 Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
 Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
 Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
@@ -89,6 +94,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my')->middleware('auth');
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
+        Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
 
         // Crud de tableros
 

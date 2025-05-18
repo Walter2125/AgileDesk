@@ -21,6 +21,9 @@
     <form action="{{ route('historias.store') }}" method="POST">
         @csrf
         <h1 class="titulo-historia">Crea una nueva Historia</h1>
+        
+        <input type="hidden" name="proyecto_id" value="{{ $proyecto->id }}">
+        <input type="hidden" name="columna_id" value="{{ $columna->id }}">
       
 
        <div class="mb-3 ">
@@ -35,10 +38,13 @@
             <input type="number" name="trabajo_estimado" id="trabajo_estimado" class="form-control rounded" min="0" value="{{ old('trabajo_estimado') }}" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
         </div>
         
-        <div class="mb-3">
+       <div class="mb-3">
             <label for="usuario_id" class="form-label">Asignado a:</label>
-            <select name="usuario_id" id="usuario_id" class="form-control" disabled>
-                <option value="">(Usuarios aún no disponibles)</option>
+            <select name="usuario_id" id="usuario_id" class="form-control">
+                <option value="">Selecciona un usuario</option>
+                @foreach ($usuarios as $usuario)
+                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                @endforeach
             </select>
         </div>
 
@@ -59,6 +65,10 @@
         </div>
 
         <div class="mb-3 d-flex justify-content-end">
+             <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}" 
+               class="btn btn-secondary me-2">
+                Cancelar
+            </a>
             <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
     </form>
