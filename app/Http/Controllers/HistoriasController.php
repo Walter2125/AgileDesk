@@ -6,9 +6,24 @@ use App\Models\Columna;
 use App\Models\Historia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
 
 class HistoriasController extends Controller
 {
+    
+    private function cargarTableroDesdeHistoria(Historia $historia)
+{
+    $historia->load('columna.tablero.project');
+        $tablero = $historia->columna?->tablero;
+        View::share('tablero', $tablero);
+        return $tablero;
+}
+private function compartirContextoDesdeColumna(Columna $columna)
+{
+    $tablero = $columna->tablero;
+    View::share('tablero', $tablero);
+}
+
     /**
      * Display a listing of the resource.
      */
@@ -25,6 +40,7 @@ class HistoriasController extends Controller
 public function createFromColumna($columnaId)
 {
     $columna = Columna::with('tablero.proyecto')->findOrFail($columnaId);
+    $this->compartirContextoDesdeColumna($columna);
     $tablero = $columna->tablero;
     $proyecto = $tablero->proyecto;
     $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
@@ -85,6 +101,7 @@ public function createFromColumna($columnaId)
      */
     public function show(Historia $historia)
     {
+        $tablero = $this->cargarTableroDesdeHistoria($historia);
         $historia->load('usuario');
         return view('historias.show',compact('historia'));
     }
@@ -95,6 +112,7 @@ public function createFromColumna($columnaId)
     public function edit($id)
 {
     $historia = Historia::with(['proyecto', 'usuario'])->findOrFail($id);
+    $this->cargarTableroDesdeHistoria($historia);
     $proyecto = $historia->proyecto;
     $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
 

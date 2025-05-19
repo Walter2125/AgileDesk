@@ -516,7 +516,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     @endif
-
+                    <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
                     @yield('content')
                 </main>
             </div>
