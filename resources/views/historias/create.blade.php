@@ -2,7 +2,16 @@
 
 @section('title')
 
+@section('mensaje-superior')
+    <div class="mt-4 text-lg font-semibold text-blue-600">
+        
+       <h1 class="titulo-historia">📝Crea una nueva Historia</h1>
+    </div>
+@endsection
+
+
 @section('content')
+
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
 <div class="container-fluid mi-container ">
@@ -20,7 +29,7 @@
 
     <form action="{{ route('historias.store') }}" method="POST">
         @csrf
-        <h1 class="titulo-historia">Crea una nueva Historia</h1>
+       <!-- <h1 class="titulo-historia">Crea una nueva Historia</h1>-->
         
         <input type="hidden" name="proyecto_id" value="{{ $proyecto->id }}">
         <input type="hidden" name="columna_id" value="{{ $columna->id }}">
@@ -74,5 +83,11 @@
         </div>
     </form>
 </div>
+<script>
+    // Esto reemplaza la URL anterior en el historial
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
 
 @endsection

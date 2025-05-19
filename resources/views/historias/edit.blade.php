@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('title')
+         @section('mensaje-superior')
+            <div class="mt-4 text-lg font-semibold text-blue-600">
+                
+            <h1 class="titulo-historia">📝Editar Historia</h1>
+            </div>
+        @endsection
 
 @section('content')
 
@@ -18,7 +24,6 @@
             
         @endif
 
-         <h1 class="titulo-historia">Editar Historia</h1>
 
     <form action="{{ route('historias.update',$historia->id) }}" method="POST">
         @csrf
