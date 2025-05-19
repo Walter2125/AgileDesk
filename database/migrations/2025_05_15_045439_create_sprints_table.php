@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('sprints', function (Blueprint $table) {
             $table->id();
+            $table->integer('numero_sprint')->default(1);
+
             $table->string('nombre');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');

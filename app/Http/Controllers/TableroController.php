@@ -42,6 +42,15 @@ class TableroController extends Controller
 
         return view('users.admin.tablero', compact('project', 'tablero'));
 
+        if ($tablero->columnas->isEmpty()) {
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+            ]);
+
+            // Recargar para reflejar la nueva columna
+            return redirect()->route('tableros.show', $project->id);
+        }
 
         if ($tablero->columnas->where('es_backlog', true)->isEmpty()) {
             $tablero->columnas()->create([
@@ -52,7 +61,7 @@ class TableroController extends Controller
             return redirect()->route('tableros.show', $project->id);
         }
 
-
+        return view('users.admin.tablero', compact('project', 'tablero'));
 
         return view('users.admin.tablero', compact('project', 'tablero'));
 

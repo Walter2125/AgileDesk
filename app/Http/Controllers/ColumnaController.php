@@ -64,9 +64,9 @@ class ColumnaController extends Controller
     {
         $tablero = $columna->tablero;
 
-        // Aquí podrías preguntar a qué columna mover sus historias antes de borrar
 
-        // Si quieres mover historias antes, aquí iría la lógica
+
+
 
         $columna->delete();
 

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TableroController;
 use App\Http\Controllers\ColumnaController;
-use App\Http\Conntroller\SprintController;
+use App\Http\Controllers\SprintController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
@@ -88,6 +88,19 @@ Route::middleware(['auth', 'role:admin'])
 
 
         //--------------------------------------------------
+
+        // Crud de Sprints
+
+        Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');
+
+
+        // Crear un sprint para el proyecto
+        Route::post('/projects/{project}/tablero/sprints', [SprintController::class, 'store'])->name('sprints.store');
+
+        // Eliminar un sprint (sin necesidad de pasar por tablero)
+        Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
+
+        //------------------------------------------------------
 
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
