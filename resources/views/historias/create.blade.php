@@ -11,6 +11,12 @@
 
 
 @section('content')
+   <meta http-equiv="Cache-Control" content="no-store" />
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
@@ -83,11 +89,7 @@
         </div>
     </form>
 </div>
-<script>
-    // Esto reemplaza la URL anterior en el historial
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-</script>
+
+
 
 @endsection
