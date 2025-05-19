@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
+ @section('mensaje-superior')
+            <div class="mt-4 text-lg font-semibold text-blue-600">
+                
+            <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
+            </div>
+        @endsection
+
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     @php
 
 $colCount = $tablero->columnas->count();
@@ -10,6 +18,12 @@ $colCount = $tablero->columnas->count();
     @endphp
 
     <div class="container py-4">
+
+             @if (session('success'))
+                <div class="alert alert-success mt-2" id="success-alert">
+                    {{ session('success') }}
+                </div>
+            @endif
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">{{ $project->name }}</h1>
@@ -113,6 +127,20 @@ $colCount = $tablero->columnas->count();
 
     <!-- AJAX para actualizar nombre -->
     <script>
+
+                    
+            //ocultar la alerta
+            setTimeout(function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500); // quitarlo del DOM
+                }
+            }, 3000); // 3000ms = 3 segundos
+
+            
+
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".editable-title").forEach(input => {
                 input.addEventListener("blur", function () {

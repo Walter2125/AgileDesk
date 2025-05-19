@@ -1,13 +1,18 @@
 @extends('layouts.app')
+        @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+        
+         <h1 class="titulo-historia">
+            📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
+        </h1>
+            </div>
+        @endsection
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <div class="container" style="max-width: 1200px;">
     <!-- Tarjeta de Crear Nueva Tarea -->
     <div class="card shadow-sm p-5 mb-5 bg-white rounded">
-        <!-- Título con Icono -->
-        <h3 class="text-center mb-4 fw-bold" style="font-size: 1.8em;">
-            📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
-        </h3>
 
         <!-- Mensaje de éxito -->
         @if(session('success'))

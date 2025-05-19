@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('title')
+        @section('mensaje-superior')
+            <div class="mt-4 text-lg font-semibold text-blue-600">
+                
+            <h1 class="titulo-historia">📖Detalle de la Historia</h1>
+            </div>
+        @endsection
 
 @section('content')
 
@@ -9,10 +15,27 @@
 
 <div class="container-fluid mi-container ">
 
+             @if (session('success'))
+                <div class="alert alert-success mt-2" id="success-alert">
+                    {{ session('success') }}
+                </div>
+
+                <script>
+                    setTimeout(function() {
+                        const alert = document.getElementById('success-alert');
+                        if (alert) {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
+            @endif
+
        
 
     <div class="historia-container-fluid">
-          <h1 class="titulo-historia">Detalle de la Historia</h1>
+         
    
     <div class="historia-header">
         <h2 class="historia-title" 
@@ -105,5 +128,6 @@
                     </div>
         </div>
 </div>
+
 
 @endsection
