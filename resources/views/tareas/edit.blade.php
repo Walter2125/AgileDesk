@@ -1,12 +1,21 @@
 @extends('layouts.app')
+        @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+        
+         <h1 class="titulo-historia">
+            ✏️ Editar Tarea: {{ $tarea->nombre }}
+        </h1>
+            </div>
+        @endsection
+            
 
 @section('content')
+
+
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <div class="container" style="max-width: 1200px;">
     <div class="card shadow-sm p-5 mb-5 bg-white rounded">
-        <!-- Título con Icono -->
-        <h3 class="text-center mb-4 fw-bold" style="font-size: 1.8em;">
-            ✏️ Editar Tarea: {{ $tarea->nombre }}
-        </h3>
+        
 
         <!-- Mensaje de éxito -->
         @if(session('success'))

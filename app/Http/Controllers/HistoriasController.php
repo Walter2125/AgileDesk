@@ -59,7 +59,7 @@ public function createFromColumna($columnaId)
     public function store(Request $request)
     {
         $request -> validate([
-            'nombre'=> 'required|string|min:3|max:255',
+            'nombre'=> 'required|string|min:3|max:255|unique:historias,nombre',
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
             'descripcion' => 'nullable|string|max:1000',
@@ -71,12 +71,14 @@ public function createFromColumna($columnaId)
 [   'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
             'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+             'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
 
             'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
             'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
 
             'prioridad.required' => 'Debe seleccionar una prioridad.',
             'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+
 
 
         ]);
@@ -126,15 +128,16 @@ public function createFromColumna($columnaId)
     public function update(Request $request, Historia $historia)
 {
     $request->validate([
-        'nombre'=> 'required|string|min:3|max:255',
+         'nombre'=> 'required|string|min:3|max:255|unique:historias,nombre',
         'trabajo_estimado' => 'nullable|integer|min:0',
         'prioridad' => 'required|in:Alta,Media,Baja',
         'descripcion' => 'nullable|string|max:1000',
-        'usuario_id' => 'nullable|exists:users,id',  // si asignas usuario
+        'usuario_id' => 'nullable|exists:users,id',  // si para asignar usuario
     ], [
         'nombre.required' => 'El nombre es obligatorio.',
         'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
         'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+        'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
         'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
         'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
         'prioridad.required' => 'Debe seleccionar una prioridad.',

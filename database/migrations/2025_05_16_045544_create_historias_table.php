@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('historias', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre')->unique();
             $table->integer('trabajo_estimado')->nullable();
             $table->enum('prioridad', ['Alta', 'Media', 'Baja'])->default('Media');
             $table->text('descripcion')->nullable();

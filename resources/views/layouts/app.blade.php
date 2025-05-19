@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
     <!-- Bootstrap Icons -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Fonts -->
@@ -437,6 +439,7 @@
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
+    
 </head>
 <body class="font-sans antialiased">
     <!-- Overlay for mobile -->
