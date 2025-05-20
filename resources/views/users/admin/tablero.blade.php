@@ -90,17 +90,18 @@ $colCount = $tablero->columnas->count();
 
                    <div class="overflow-auto p-2" style="flex: 1;">
                         @foreach ($columna->historias as $historia)
-                            <a href="{{ route('historias.show', $historia->id) }}"
-                            class="card mb-2 p-2 text-decoration-none text-dark d-block"
-                            style="max-width: 250px; /* ancho máximo de la tarjeta */
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;">
-                                <strong class="d-block" title="{{ $historia->nombre }}">
-                                    {{ $historia->nombre }}
-                                </strong>
-                            </a>
-                        @endforeach
+                           <a href="{{ route('historias.show', $historia->id) }}"
+                              class="card mb-2 p-2 text-decoration-none text-dark d-block"
+                              style="
+                              width: 100%;
+                              word-break: break-word;
+                              overflow: hidden;">
+                               <strong class="d-block" title="{{ $historia->nombre }}">
+                                   {{ $historia->nombre }}
+                               </strong>
+                           </a>
+
+                       @endforeach
                     </div>
 
                 </div>
