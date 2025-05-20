@@ -3,7 +3,7 @@
 @section('title')
         @section('mensaje-superior')
             <div class="mt-4 text-lg font-semibold text-blue-600">
-                
+
             <h1 class="titulo-historia">📖Detalle de la Historia</h1>
             </div>
         @endsection
@@ -32,14 +32,14 @@
                 </script>
             @endif
 
-       
+
 
     <div class="historia-container-fluid">
-         
-   
+
+
     <div class="historia-header">
-        <h2 class="historia-title" 
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;" 
+        <h2 class="historia-title"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
             title="{{ $historia->nombre }}">
             {{ $historia->nombre }}
         </h2>
@@ -50,9 +50,9 @@
         </div>
     </div>
 
-  
+
     <div class="historia-content">
-    
+
         <div class="historia-section">
             <h3 class="section-title">Descripción</h3>
             <div class="section-content">
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-    
+
         <div class="historia-details">
             <div class="detail-item">
                 <span class="detail-label">Estado:</span>
@@ -84,17 +84,17 @@
     </div>
 </div>
 
-<a href="{{ route('tareas.show', $historia->id) }}" 
+<a href="{{ route('tareas.show', $historia->id) }}"
    class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
    style="background-color: #e6f2ff;">
    📋 Agregar Tareas
 </a>
-   
+
         <div class="mb-3 d-flex justify-content-end">
                     <a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="btn btn-secondary">Atras</a>
 
                     <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-primary ms-2">Editar</a>
-                
+
                 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
                             @csrf
                             @method('DELETE')
@@ -116,7 +116,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            
+
                             <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')

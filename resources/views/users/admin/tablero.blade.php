@@ -2,7 +2,7 @@
 
  @section('mensaje-superior')
             <div class="mt-4 text-lg font-semibold text-blue-600">
-                
+
             <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
             </div>
         @endsection
@@ -19,60 +19,66 @@ $colCount = $tablero->columnas->count();
 
     <div class="container py-4">
 
-             @if (session('success'))
-                <div class="alert alert-success mt-2" id="success-alert">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <!-- Contenedor para select y botones -->
+            <div class="d-flex align-items-center gap-3 flex-wrap">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h4">{{ $project->name }}</h1>
-            <div class="btn-group">
-
-                @if($project->sprints && $project->sprints->count())
-                    <select class="form-select mt-2" id="sprintSelect" aria-label="Seleccionar sprint">
+                <!-- Select de sprints -->
+                @if($tablero->sprints && $tablero->sprints->count())
+                    <select class="form-select"
+                            id="sprintSelect"
+                            aria-label="Seleccionar sprint"
+                            style="min-width: 200px; max-width: 240px;">
                         <option selected disabled>Selecciona un sprint</option>
-                        @foreach($project->sprints as $sprint)
+                        @foreach($tablero->sprints as $sprint)
                             <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
                         @endforeach
                     </select>
                 @endif
 
-                <button
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalAgregarColumna"
-                >Agregar columna</button>
+                <!-- Botón para agregar columna -->
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna">
+                    Agregar columna
+                </button>
 
-                <button class="btn btn-outline-primary">Crear sprint</button>
+                <!-- Botón para crear sprint -->
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint">
+                    Crear sprint
+                </button>
             </div>
         </div>
 
-        <div id="kanban-board" class="d-flex overflow-auto pb-3" style="min-height: 500px;">
-            @foreach($tablero->columnas as $columna)
-                <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2">
-                    <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
-                        @if($columna->es_backlog)
-                            <strong>{{ $columna->nombre }}</strong>
-                        @else
-                            <input
-                                type="text"
-                                value="{{ $columna->nombre }}"
-                                class="form-control form-control-sm me-2 editable-title"
-                                data-column-id="{{ $columna->id }}"
-                            >
-                        @endif
+        <!-- Contenedor de columnas scrollable horizontal -->
+        <div class="overflow-auto pb-3" style="width: 100%;">
+            <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
+                @foreach($tablero->columnas as $columna)
+                    <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2"
+                         style="{{ $widthStyle }} min-height: 500px;">
+                        <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
+                            @if($columna->es_backlog)
+                                <strong>{{ $columna->nombre }}</strong>
+                            @else
+                                <input type="text"
+                                       value="{{ $columna->nombre }}"
+                                       class="form-control form-control-sm me-2 editable-title"
+                                       data-column-id="{{ $columna->id }}">
+                            @endif
 
-                        @if(!$columna->es_backlog)
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
-                                </ul>
-                            </div>
-                        @endif
-                    </div>
+                            @if(!$columna->es_backlog)
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle"
+                                            type="button"
+                                            data-bs-toggle="dropdown"></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
 
                     <div class="p-2 border-bottom">
                         <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
@@ -84,17 +90,18 @@ $colCount = $tablero->columnas->count();
 
                    <div class="overflow-auto p-2" style="flex: 1;">
                         @foreach ($columna->historias as $historia)
-                            <a href="{{ route('historias.show', $historia->id) }}" 
-                            class="card mb-2 p-2 text-decoration-none text-dark d-block" 
-                            style="max-width: 250px; /* ancho máximo de la tarjeta */
-                                    white-space: nowrap; 
-                                    overflow: hidden; 
-                                    text-overflow: ellipsis;">
-                                <strong class="d-block" title="{{ $historia->nombre }}">
-                                    {{ $historia->nombre }}
-                                </strong>
-                            </a>
-                        @endforeach
+                           <a href="{{ route('historias.show', $historia->id) }}"
+                              class="card mb-2 p-2 text-decoration-none text-dark d-block"
+                              style="
+                              width: 100%;
+                              word-break: break-word;
+                              overflow: hidden;">
+                               <strong class="d-block" title="{{ $historia->nombre }}">
+                                   {{ $historia->nombre }}
+                               </strong>
+                           </a>
+
+                       @endforeach
                     </div>
 
                 </div>
@@ -102,7 +109,8 @@ $colCount = $tablero->columnas->count();
         </div>
     </div>
 
-    <!-- Modal Bootstrap para agregar columna -->
+
+        <!-- Modal Bootstrap para agregar columna -->
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
@@ -125,10 +133,42 @@ $colCount = $tablero->columnas->count();
         </div>
     </div>
 
-    <!-- AJAX para actualizar nombre -->
+            <!-- Modal para crear sprint -->
+            <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
+                    @csrf
+                        <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalCrearSprintLabel">Crear Sprint <span id="numeroSprint"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fecha_fin" class="form-label">Fecha de fin</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Crear sprint</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- AJAX para actualizar nombre -->
     <script>
 
-                    
+
             //ocultar la alerta
             setTimeout(function() {
                 const alert = document.getElementById('success-alert');
@@ -139,7 +179,7 @@ $colCount = $tablero->columnas->count();
                 }
             }, 3000); // 3000ms = 3 segundos
 
-            
+
 
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".editable-title").forEach(input => {
@@ -177,4 +217,40 @@ $colCount = $tablero->columnas->count();
             });
         });
     </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
+                    const numeroSprintSpan = document.getElementById('numeroSprint');
+
+                    // Obtén el último número de sprint del backend, o 0 si no hay
+                    let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+
+                    btnAbrirCrearSprint.addEventListener('click', () => {
+                        const nuevoNumero = ultimoNumeroSprint + 1;
+                        numeroSprintSpan.textContent = nuevoNumero;
+
+                        // Limpiar inputs de fecha al abrir
+                        document.getElementById('fecha_inicio').value = '';
+                        document.getElementById('fecha_fin').value = '';
+                    });
+
+                    // Opcional: validar que fecha_fin sea mayor que fecha_inicio antes de enviar
+                    document.getElementById('formCrearSprint').addEventListener('submit', function(e) {
+                        const inicio = document.getElementById('fecha_inicio').value;
+                        const fin = document.getElementById('fecha_fin').value;
+
+                        if (inicio === '' || fin === '') {
+                            alert('Por favor selecciona ambas fechas.');
+                            e.preventDefault();
+                            return;
+                        }
+
+                        if (fin <= inicio) {
+                            alert('La fecha de fin debe ser mayor que la fecha de inicio.');
+                            e.preventDefault();
+                        }
+                    });
+                });
+            </script>
+
 @endsection

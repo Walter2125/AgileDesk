@@ -439,7 +439,7 @@
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
-    
+
 </head>
 <body class="font-sans antialiased">
     <!-- Overlay for mobile -->
@@ -464,12 +464,6 @@
                     <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
-                    </a>
-
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <i class="bi bi-speedometer2"></i>
-                        <span class="sidebar-text">Inicio</span>
-
                     </a>
                      <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white">
                         <i class="bi bi-speedometer2"></i>
