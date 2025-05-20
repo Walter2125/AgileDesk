@@ -86,16 +86,19 @@ public function createFromColumna($columnaId)
 
 
         ]);
+        $columna = Columna::with('tablero')->findOrFail($request->columna_id);
         $historia = new Historia();
         $historia->nombre = $request->nombre;
         $historia->trabajo_estimado = $request->trabajo_estimado;
         $historia->prioridad = $request->prioridad;
-        $historia->descripcion =$request->descripcion;
+        $historia->descripcion = $request->descripcion;
         $historia->proyecto_id = $request->proyecto_id;
         $historia->columna_id = $request->columna_id;
+
         $historia->tablero_id = $request->tablero_id;
        $historia->usuario_id = $request->usuario_id;
         $historia->sprint_id = $request->sprint_id;
+
         $historia->save();
 
 
