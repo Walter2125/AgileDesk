@@ -2,17 +2,21 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\HistoriasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\IsApproved;
+use App\Http\Controllers\TareaController;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TableroController;
 use App\Http\Controllers\ColumnaController;
 use App\Http\Controllers\SprintController;
+use App\Http\Controllers\HistorialCambioController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
@@ -49,6 +53,21 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+//Rutas para las historias
+
+Route::get('/historias/create/columna/{columna}', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
+
+Route::get('/columnas/{columna}/historias/create', [HistoriasController::class, 'createFromColumna'])
+    ->name('historias.create.fromColumna');
+Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
+Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
+Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
+Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
+Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
+Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
+Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
+
+
 
 Route::middleware(['auth'])->group(function() {
     // Ruta para el listado AJAX de usuarios
@@ -65,6 +84,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+        //historial de cambios
+        Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 
         // CRUD de proyectos
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create')->middleware('auth');
@@ -75,6 +96,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my')->middleware('auth');
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
+        Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
 
         // Crud de tableros
 
@@ -112,5 +134,15 @@ Route::middleware(['auth', 'role:admin'])
 
     });
 
+// Rutas para Tareas protegidas por autenticación y aprobación
+Route::middleware(['auth', IsApproved::class])->group(function () {
+Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
+Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->name('tareas.store');
+Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
+Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
+Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
+
+});
 
 require __DIR__.'/auth.php';

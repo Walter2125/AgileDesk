@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Tablero extends Model {
     protected $fillable = ['proyecto_id'];
 
-    public function proyecto() {
+   // public function proyectos() {
+     //   return $this->belongsTo(Project::class);
+ //   }
+
+    public function proyecto()
+    {
         return $this->belongsTo(Project::class, 'proyecto_id');
     }
     public function columnas() {
@@ -16,5 +21,11 @@ class Tablero extends Model {
     public function sprints() {
         return $this->hasMany(Sprint::class);
     }
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'proyecto_id');
+    }
+
+
 }
 

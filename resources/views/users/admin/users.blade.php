@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('adminlte_css')
+@section('layouts_css')
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -27,7 +27,6 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Email</th>
-                                    <th>Rol</th>
                                     <th>Fecha de creación</th>
                                 </tr>
                             </thead>
@@ -37,8 +36,8 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
-                                            <span class="badge bg-{{ $user->role == 'admin' ? 'danger' : 'primary' }}">
-                                                {{ $user->role }}
+                                            <span class="badge bg-{{ $user->usertype == 'admin' ? 'danger' : 'primary' }}">
+                                                {{ $user->usertype }}
                                             </span>
                                         </td>
                                         <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
@@ -57,7 +56,7 @@
     </div>
 @stop
 
-@section('adminlte_js')
+@section('layouts_js')
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

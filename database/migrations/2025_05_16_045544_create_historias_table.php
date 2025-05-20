@@ -13,23 +13,29 @@ return new class extends Migration
     {
         Schema::create('historias', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre')->unique();
             $table->integer('trabajo_estimado')->nullable();
             $table->enum('prioridad', ['Alta', 'Media', 'Baja'])->default('Media');
             $table->text('descripcion')->nullable();
             $table->foreignId('columna_id')->nullable()->constrained('columnas')->onDelete('cascade');
-            $table->foreignId('tablero_id')->constrained('tableros')->onDelete('cascade');
+            $table->foreignId('tablero_id')->nullable()->constrained('tableros')->onDelete('cascade');
             $table->foreignId('sprint_id')->nullable()->constrained('sprints')->onDelete('set null');
             $table->timestamps();
             $table->unique(['nombre', 'tablero_id'], 'historias_nombre_tablero_unique');
+            $table->foreignId('proyecto_id')->constrained('nuevo_proyecto')->onDelete('cascade');
+            $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null');
+
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::dropIfExists('historias');
-    }
+  public function down(): void
+{
+    Schema::table('historias', function (Blueprint $table) {
+        $table->dropForeign(['usuario_id']);
+        $table->dropColumn('usuario_id');
+    });
+}
 };

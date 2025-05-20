@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Agile Desk') }}</title>
+    <title>{{ config('app.name', 'Agile-Desk') }}</title>
 
     <!-- Tabler Core CSS (Admin Template) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
@@ -13,11 +13,17 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
     <!-- Bootstrap Icons -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -58,7 +64,7 @@
         bottom: 0;
         overflow-y: auto;
     }
-
+    /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
         padding: 1.5rem 1rem;
         font-size: 1.5rem;
@@ -120,7 +126,7 @@
     }
 
     .content-wrapper {
-        padding: 1.5rem;
+        padding: 0rem;
         transition: all var(--transition-speed) ease;
     }
 
@@ -274,7 +280,7 @@
         }
 
         .content-wrapper {
-            padding: 1rem;
+            padding: 0.15rem;
         }
          body.sidebar-collapsed .sidebar-text {
             display: inline-block;
@@ -375,7 +381,7 @@
     /* iPads y tablets en modo retrato */
     @media (min-width: 768px) and (max-width: 991.98px) and (orientation: portrait) {
         .content-wrapper {
-            padding: 1.25rem;
+            padding: 0.25rem;
         }
     }
 
@@ -404,7 +410,7 @@
         }
 
         .content-wrapper {
-            padding: 2rem;
+            padding: 0.5rem;
         }
     }
 
@@ -426,13 +432,14 @@
         }
 
         .content-wrapper {
-            padding: 2.5rem;
+            padding: 1.25rem;
         }
     }
 </style>
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
+    
 </head>
 <body class="font-sans antialiased">
     <!-- Overlay for mobile -->
@@ -445,7 +452,7 @@
                 <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-code-slash me-2"></i>
-                        <span class="sidebar-text app-name">{{ config('app.name') }}</span>
+                        <span class="sidebar-text app-name">Agile-Desk</span>
                     </div>
                     <!-- Botón para colapsar el sidebar -->
                     <button class="btn btn-sm btn-dark" onclick="toggleSidebar()">
@@ -462,7 +469,13 @@
                     <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
+
                     </a>
+                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white">
+                        <i class="bi bi-speedometer2"></i>
+                        <span class="sidebar-text">Proyectos</span>
+
+                     </a>
                     <!-- otros botones comentados por ahora -->
                 </div>
 
@@ -512,7 +525,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     @endif
-
+                    <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
                     @yield('content')
                 </main>
             </div>

@@ -218,288 +218,203 @@
         }
     </style>
 @stop
-
 @section('content')
-    <!-- Encabezado de página con búsqueda -->
-    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
-        <h1 class="page-title">Panel de Administración</h1>
-        
-        <div class="action-buttons">
-            <div class="input-group" style="width: 250px;">
-                <input type="text" class="form-control" id="searchProjects" placeholder="Buscar proyectos...">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="btnSearchProjects">
-                        <i class="bi bi-search"></i>
-                    </button>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Usuarios -->
+        <div class="col-12 mb-4">
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Usuarios</span>
+                    <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-people"></i> Ver Todos
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Botones de acción rápida -->
-    <div class="button-container mb-4">
-        <a href="*" class="btn">
-            <i class="bi bi-people me-1"></i> Usuarios
-        </a>
-        <a href="{{ route('projects.create') }}" class="btn">
-            <i class="bi bi-plus-circle me-1"></i> Crear Proyecto
-        </a>
-    </div>
-
-    <!-- Estadísticas Rápidas -->
-    <div class="row mb-4">
-        <div class="col-6 col-md-3">
-            <div class="quick-stats">
-                <div class="stat-number">10</div>
-                <div class="stat-label">Proyectos</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="quick-stats">
-                <div class="stat-number">25</div>
-                <div class="stat-label">Usuarios</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="quick-stats">
-                <div class="stat-number">5</div>
-                <div class="stat-label">Sprints Activos</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="quick-stats">
-                <div class="stat-number">42</div>
-                <div class="stat-label">Historias</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Listado de Proyectos -->
-    <div class="card admin-card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Proyectos Activos</span>
-            <button class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-plus"></i> Nuevo Proyecto
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover admin-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Responsable</th>
-                            <th class="d-none d-md-table-cell">Miembros</th>
-                            <th class="d-none d-md-table-cell">Sprint Actual</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="projectsTableBody">
-                        <tr class="project-row">
-                            <td>Proyecto Alpha</td>
-                            <td>John Doe</td>
-                            <td class="d-none d-md-table-cell">5</td>
-                            <td class="d-none d-md-table-cell">Sprint 3</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="btn btn-warning">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="project-row">
-                            <td>Proyecto Beta</td>
-                            <td>Jane Smith</td>
-                            <td class="d-none d-md-table-cell">3</td>
-                            <td class="d-none d-md-table-cell">Sprint 1</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-info">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="btn btn-warning">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="pagination-container">
-                    <ul class="pagination" id="projectsPagination">
-                        <!-- La paginación se generará con JavaScript -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Actividad Reciente -->
-    <div class="card admin-card mt-4">
-        <div class="card-header">
-            <span>Actividad Reciente</span>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table admin-table" id="activityTable">
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Acción</th>
-                            <th class="d-none d-md-table-cell">Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activityTableBody">
-                        <tr class="activity-row">
-                            <td>Juan Pérez</td>
-                            <td>Creó una nueva historia de usuario</td>
-                            <td class="d-none d-md-table-cell">Hace 2 horas</td>
-                        </tr>
-                        <tr class="activity-row">
-                            <td>María López</td>
-                            <td>Actualizó el estado del Sprint 2</td>
-                            <td class="d-none d-md-table-cell">Hace 5 horas</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="pagination-container">
-                    <ul class="pagination" id="activityPagination">
-                        <!-- La paginación se generará con JavaScript -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Historias de Usuario Recientes -->
-    <div class="card admin-card mt-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Historias de Usuario Recientes</span>
-            <button class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-plus"></i> Nueva Historia
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table admin-table">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th class="d-none d-md-table-cell">Tablero</th>
-                            <th class="d-none d-sm-table-cell">Responsable</th>
-                            <th>Prioridad</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historiasTableBody">
-                        <tr class="historia-row">
-                            <td>Login de usuarios</td>
-                            <td class="d-none d-md-table-cell">Autenticación</td>
-                            <td class="d-none d-sm-table-cell">Carlos Rodríguez</td>
-                            <td>
-                                <span class="badge bg-danger">Alta</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-success">Completada</span>
-                            </td>
-                        </tr>
-                        <tr class="historia-row">
-                            <td>Panel de administrador</td>
-                            <td class="d-none d-md-table-cell">Admin</td>
-                            <td class="d-none d-sm-table-cell">Ana Gómez</td>
-                            <td>
-                                <span class="badge bg-warning">Media</span>
-                            </td>
-                            <td>
-                                <span class="badge bg-warning">Pendiente</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="pagination-container">
-                    <ul class="pagination" id="historiasPagination">
-                        <!-- La paginación se generará con JavaScript -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Resumen de Sprints -->
-    <div class="card admin-card mt-4">
-        <div class="card-header">
-            <span>Resumen de Sprints</span>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12 col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header" style="background-color: #6fb3f2">
-                            Sprint 1 - Arranque
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Proyecto:</strong> Proyecto Alpha</p>
-                            <p><strong>Estado:</strong> Completado</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <p><strong>Inicio:</strong> 01/03/2025</p>
-                                </div>
-                                <div class="col-6">
-                                    <p><strong>Fin:</strong> 15/03/2025</p>
-                                </div>
-                            </div>
-                            <p><strong>Historias:</strong> 8</p>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($usuarios as $usuario)
+                                <tr>
+                                    <td>{{ $usuario->name }}</td>
+                                    <td>{{ $usuario->email }}</td>
+                                    <td>{{ ucfirst($usuario->usertype) }}</td>
+                                    <td>
+                                        <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay usuarios registrados</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            {{ $usuarios->links() }}
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header" style="background-color: #4a90e2">
-                            Sprint 2 - Funcionalidades Core
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Proyecto:</strong> Proyecto Alpha</p>
-                            <p><strong>Estado:</strong> En progreso</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <p><strong>Inicio:</strong> 16/03/2025</p>
-                                </div>
-                                <div class="col-6">
-                                    <p><strong>Fin:</strong> 30/03/2025</p>
-                                </div>
-                            </div>
-                            <p><strong>Historias:</strong> 12</p>
+            </div>
+        </div>
+
+        <!-- Proyectos -->
+        <div class="col-12 mb-4">
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Proyectos</span>
+                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-folder"></i> Ver Todos
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Responsable</th>
+                                    <th>Miembros</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($proyectos as $proyecto)
+                                <tr>
+                                    <td>{{ $proyecto->name }}</td>
+                                    <td>{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
+                                    <td>{{ $proyecto->users->count() }}</td>
+                                    <td>
+                                        <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No hay proyectos registrados</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            {{ $proyectos->links() }}
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header" style="background-color: #357abd">
-                            Sprint 1 - Diseño
+            </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="col-12 mb-4">
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Historial de Cambios</span>
+                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-clock-history"></i> Ver Todo
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Acción</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($historial as $item)
+                                <tr>
+                                    <td>{{ $item->usuario }}</td>
+                                    <td>{{ $item->accion }}</td>
+                                    <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">No hay historial registrado</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            {{ $historial->links() }}
                         </div>
-                        <div class="card-body">
-                            <p><strong>Proyecto:</strong> Proyecto Beta</p>
-                            <p><strong>Estado:</strong> En progreso</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <p><strong>Inicio:</strong> 10/03/2025</p>
-                                </div>
-                                <div class="col-6">
-                                    <p><strong>Fin:</strong> 25/03/2025</p>
-                                </div>
-                            </div>
-                            <p><strong>Historias:</strong> 6</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sprints -->
+        <div class="col-12 mb-4">
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Sprints</span>
+                    <a href="#" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-flag"></i> Ver Todos
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Proyecto</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($sprints as $sprint)
+                                <tr>
+                                    <td>{{ $sprint->nombre }}</td>
+                                    <td>{{ $sprint->proyecto->nombre ?? 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
+                                            {{ ucfirst($sprint->estado) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No hay sprints registrados</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="pagination-container">
+                            {{ $sprints->links() }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-@stop
+</div>
+@endsection
 
 @section('scripts')
     <script>

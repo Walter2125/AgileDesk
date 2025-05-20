@@ -1,19 +1,23 @@
 @extends('layouts.app')
 
+ @section('mensaje-superior')
+            <div class="mt-4 text-lg font-semibold text-blue-600">
+
+            <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
+            </div>
+        @endsection
+
 @section('content')
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     @php
-        $colCount = $tablero->columnas->count();
+
+$colCount = $tablero->columnas->count();
         $widthStyle = ($colCount <= 4)
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
     @endphp
 
     <div class="container py-4">
-
-        <!-- Sección superior con nombre, select y botones -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 px-4 mb-4">
-            <!-- Nombre del proyecto -->
-            <h1 class="display-9 fw-bold mb-0">{{ $project->name }}</h1>
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -49,7 +53,7 @@
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
-        <div class="overflow-auto pb-3" style="width: 92%;">
+        <div class="overflow-auto pb-3" style="width: 100%;">
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
                     <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2"
@@ -76,20 +80,33 @@
                             @endif
                         </div>
 
-                        <div class="p-2 border-bottom">
-                            <button class="btn btn-sm btn-primary w-100"
-                                    onclick="alert('Aquí va la lógica para agregar historia a la columna {{ $columna->nombre }}')">
-                                Agregar historia
-                            </button>
-                        </div>
-
-                        <div class="overflow-auto p-2" style="flex: 1;">
-                            <!-- Aquí van las historias -->
-                        </div>
+                    <div class="p-2 border-bottom">
+                        <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                        class="btn btn-sm btn-primary w-100">
+                            Agregar historias
+                        </a>
                     </div>
-                @endforeach
-            </div>
+
+
+                   <div class="overflow-auto p-2" style="flex: 1;">
+                        @foreach ($columna->historias as $historia)
+                            <a href="{{ route('historias.show', $historia->id) }}"
+                            class="card mb-2 p-2 text-decoration-none text-dark d-block"
+                            style="max-width: 250px; /* ancho máximo de la tarjeta */
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;">
+                                <strong class="d-block" title="{{ $historia->nombre }}">
+                                    {{ $historia->nombre }}
+                                </strong>
+                            </a>
+                        @endforeach
+                    </div>
+
+                </div>
+            @endforeach
         </div>
+    </div>
 
 
         <!-- Modal Bootstrap para agregar columna -->
@@ -149,6 +166,20 @@
 
             <!-- AJAX para actualizar nombre -->
     <script>
+
+
+            //ocultar la alerta
+            setTimeout(function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500); // quitarlo del DOM
+                }
+            }, 3000); // 3000ms = 3 segundos
+
+
+
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".editable-title").forEach(input => {
                 input.addEventListener("blur", function () {
