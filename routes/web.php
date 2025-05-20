@@ -52,20 +52,35 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my');
+    // Crud de tableros
+        Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
+        Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
+          // Actualizar nombre de columna (PUT)
+        Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
+        Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
+
+        //Rutas para las historias
+        Route::get('/historias/create/columna/{columna}', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
+        Route::get('/columnas/{columna}/historias/create', [HistoriasController::class, 'createFromColumna'])
+            ->name('historias.create.fromColumna');
+        Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
+        Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
+        Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
+        Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
+        Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
+        Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
+        Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
+
+        //Rutas para las tareas
+        Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
+        Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->name('tareas.store');
+        Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
+        Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
+        Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+        Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
+
 });
-//Rutas para las historias
-
-Route::get('/historias/create/columna/{columna}', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
-
-Route::get('/columnas/{columna}/historias/create', [HistoriasController::class, 'createFromColumna'])
-    ->name('historias.create.fromColumna');
-Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
-Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
-Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
-Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
-Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
-Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
-Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
 
 
 
@@ -93,21 +108,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
         Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
         Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-        Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my')->middleware('auth');
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
-
-        // Crud de tableros
-
-        Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
-        Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
-
-          // Actualizar nombre de columna (PUT)
-        Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
-
-        Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
-
 
         //--------------------------------------------------
 
@@ -121,15 +124,5 @@ Route::middleware(['auth', 'role:admin'])
 
     });
 
-// Rutas para Tareas protegidas por autenticación y aprobación
-Route::middleware(['auth', IsApproved::class])->group(function () {
-Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
-Route::post('/historias/{historia}/tareas', [TareaController::class, 'store'])->name('tareas.store');
-Route::get('historias/{historia}/tareas/{tarea}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
-Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'update'])->name('tareas.update');
-Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
-Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
-
-});
 
 require __DIR__.'/auth.php';
