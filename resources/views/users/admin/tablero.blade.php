@@ -33,15 +33,11 @@ $colCount = $tablero->columnas->count();
                 <button class="btn btn-outline-primary">Crear sprint</button>
             </div>
         </div>
-        
-         <!-- Filtro de Búsqueda de Historias (Modificado) -->
-           <<div class="input-group mb-3" style="width: 300px;">
-                <input type="text" id="filtroHistorias" class="form-control" placeholder="Buscar historias..." style="border-radius: 20px; padding-right: 20px; background-color: rgba(173, 216, 230, 0.6); color: #000; border: none;" aria-label="Buscar historias">
-            </div>
+    
 
         <div id="kanban-board" class="d-flex overflow-auto pb-3" style="min-height: 500px;">
             @foreach($tablero->columnas as $columna)
-                <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2" min-height: 500px;">
+                <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2">
                     <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                         @if($columna->es_backlog)
                             <strong>{{ $columna->nombre }}</strong>
@@ -66,14 +62,28 @@ $colCount = $tablero->columnas->count();
                     </div>
 
                     <div class="p-2 border-bottom">
-                        <button class="btn btn-sm btn-primary w-100"
-                                onclick="alert('Aquí va la lógica para agregar historia a la columna {{ $columna->nombre }}')"
-                        >Agregar historia</button>
+                        <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                        class="btn btn-sm btn-primary w-100">
+                            Agregar historias
+                        </a>
                     </div>
 
-                    <div class="overflow-auto p-2" style="flex: 1;">
-                        <!-- Aquí irían las historias -->
+
+                   <div class="overflow-auto p-2" style="flex: 1;">
+                        @foreach ($columna->historias as $historia)
+                            <a href="{{ route('historias.show', $historia->id) }}" 
+                            class="card mb-2 p-2 text-decoration-none text-dark d-block" 
+                            style="max-width: 250px; /* ancho máximo de la tarjeta */
+                                    white-space: nowrap; 
+                                    overflow: hidden; 
+                                    text-overflow: ellipsis;">
+                                <strong class="d-block" title="{{ $historia->nombre }}">
+                                    {{ $historia->nombre }}
+                                </strong>
+                            </a>
+                        @endforeach
                     </div>
+
                 </div>
             @endforeach
         </div>
@@ -137,26 +147,6 @@ $colCount = $tablero->columnas->count();
                             console.error(error);
                         });
                 });
-            });
-        });
-    </script>
-
-     <!-- AJAX para actualizar nombre y limpiar filtro con ENTER -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const filtroHistorias = document.getElementById("filtroHistorias");
-            
-            filtroHistorias.addEventListener("input", function () {
-                const filtro = this.value.toLowerCase();
-                // Aquí puedes agregar la lógica para filtrar historias
-            });
-
-            // Limpiar con ENTER
-            filtroHistorias.addEventListener("keydown", function (event) {
-                if (event.key === "Enter") {
-                    this.value = "";
-                    this.dispatchEvent(new Event("input"));
-                }
             });
         });
     </script>
