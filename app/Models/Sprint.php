@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Sprint extends Model {
-    protected $fillable = ['tablero_id', 'nombre', 'fecha_inicio', 'fecha_fin'];
+    protected $fillable = ['nombre', 'numero_sprint', 'fecha_inicio', 'fecha_fin', 'tablero_id', 'proyecto_id'];
+
 
     public function tablero() {
         return $this->belongsTo(Tablero::class);
     }
-    public function historia() {
+    public function historias() {
         return $this->hasMany(Historia::class);
+    }
+
+    public function proyectos() {
+        return $this->belongsTo(Project::class);
     }
 
 

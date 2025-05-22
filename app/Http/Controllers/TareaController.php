@@ -6,11 +6,21 @@ use App\Models\Tarea;
 use App\Models\User;
 use App\Models\Historia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class TareaController extends Controller
 {
+
+    private function cargarTablero(Historia $historia)
+    {
+        $historia->load('columna.tablero.project');
+        $tablero = $historia->columna?->tablero;
+        View::share('tablero', $tablero);
+        return $tablero;
+    }
   public function index(Historia $historia)
     {
+        $tablero = $this->cargarTablero($historia);
         $tareas = $historia->tareas()->with('user')->get();
         $users = User::all();
 
@@ -33,6 +43,7 @@ class TareaController extends Controller
 
     public function edit(Historia $historia, Tarea $tarea)
     {
+        $tablero = $this->cargarTablero($historia);
         $users = User::all();
         return view('tareas.edit', compact('historia', 'tarea', 'users'));
     }
@@ -59,7 +70,8 @@ class TareaController extends Controller
 
     public function lista(Historia $historia)
     {
-    $tareas = $historia->tareas()->with('user')->paginate(5);
+        $tablero = $this->cargarTablero($historia);
+        $tareas = $historia->tareas()->with('user')->paginate(5);
 
         return view('tareas.show', compact('tareas', 'historia'));
     }

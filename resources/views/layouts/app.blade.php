@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
     <!-- Bootstrap Icons -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Fonts -->
@@ -437,6 +439,7 @@
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
+
 </head>
 <body class="font-sans antialiased">
     <!-- Overlay for mobile -->
@@ -462,11 +465,11 @@
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
                     </a>
-
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white">
                         <i class="bi bi-speedometer2"></i>
-                        <span class="sidebar-text">Inicio</span>
-                    </a>
+                        <span class="sidebar-text">Proyectos</span>
+
+                     </a>
                     <!-- otros botones comentados por ahora -->
                 </div>
 
@@ -516,7 +519,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     @endif
-
+                    <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
                     @yield('content')
                 </main>
             </div>

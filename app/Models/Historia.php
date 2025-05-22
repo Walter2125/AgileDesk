@@ -17,7 +17,7 @@ protected $fillable = [
     'usuario_id',
 ];
 
-    public function columnas() {
+    public function columna() {
         return $this->belongsTo(Columna::class);
     }
     public function sprints() {
@@ -25,18 +25,22 @@ protected $fillable = [
     }
     //relacion necesaria con proyecto 
     public function proyecto()
-{
-    return $this->belongsTo(Project::class, 'proyecto_id');
-}
-public function usuario()
-{
-    return $this->belongsTo(User::class, 'usuario_id');
-}
+    {
+        return $this->belongsTo(Project::class, 'proyecto_id');
+    }
 
-// Relación uno a muchos: una historia tiene muchas tareas
-public function tareas(): HasMany
-{
-    return $this->hasMany(Tarea::class, 'historia_id');
-}
+
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'usuario_id');
+    }
+
+    // Relación uno a muchos: una historia tiene muchas tareas
+    public function tareas(): HasMany
+    {
+        return $this->hasMany(Tarea::class, 'historia_id');
+    }
+   
 
 }
