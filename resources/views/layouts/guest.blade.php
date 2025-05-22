@@ -10,6 +10,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- logo -->
+        <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -50,6 +53,7 @@
             }
             
              .auth-card {
+                background: #fff; 
                 display: flex;
                 width: 100%;
                 height: 100%;
@@ -138,7 +142,18 @@
                 outline: none;
                 transition: border-color 0.3s ease;
             }
-            
+            #email {
+                padding: 0.5rem;
+            }
+            #password {
+                padding: 0.5rem;
+            }
+            #name {
+                padding: 0.5rem;
+            }
+            #password_confirmation {
+                padding: 0.5rem;
+            }
             .auth-form input[type="text"]:focus,
             .auth-form input[type="email"]:focus,
             .auth-form input[type="password"]:focus {
@@ -220,11 +235,10 @@
             /* Large devices (desktops, 992px and up) */
             @media (min-width: 992px) {
                 .auth-card {
-                    height: auto;
-                    min-height: 550px;
+                    height: 520px;
                     max-width: 900px;
-                    border-radius: 8px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
                 }
                 
                 .auth-container {
@@ -258,7 +272,6 @@
                     height: auto;
                     min-height: 500px;
                     max-width: 700px;
-                    border-radius: 8px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                 }
                 .auth-content {
@@ -436,13 +449,6 @@
                     <h2>Organiza tus proyectos de una manera facil y rapida</h2>
                     <div class="rocket-illustration">
                         <img src="{{ asset('img/agiledesk.png') }}" alt="Fondo decorativo" class="img-fluid">
-                    </div>
-                    <div class="pagination-dots">
-                        <div class="dot active"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
                     </div>
                 </div>
                 <div class="auth-content">
