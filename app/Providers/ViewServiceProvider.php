@@ -88,9 +88,7 @@ public function boot(): void
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                         ['label' => 'Historia'],
                     ];
-                },
-
-                'historias.create.fromColumna' => function () {
+                },                'historias.create.fromColumna' => function () {
                     $columnaParam = \Illuminate\Support\Facades\Route::current()->parameter('columna');
                     $columna = null;
 
@@ -102,23 +100,43 @@ public function boot(): void
 
                     $tablero = $columna?->tablero;
 
+                    if (!$tablero) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Nueva historia'],
+                        ];
+                    }
+
                     return [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
                         ['label' => 'Nueva historia'],
                     ];
                 },
-                'historias.store' => 'historias.index',
-                'historias.show' => function() use ($tablero, $historia) {
+                'historias.store' => 'historias.index',                'historias.show' => function() use ($tablero, $historia) {
+                        if (!$tablero || !$historia) {
+                            return [
+                                ['label' => 'Inicio', 'url' => route('dashboard')],
+                                ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                                ['label' => 'Ver historia'],
+                            ];
+                        }
                         return [
                             ['label' => 'Inicio', 'url' => route('dashboard')],
                             ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                             ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
                             ['label' => 'Ver historia'],
                         ];
-                    },
-                'historias.edit' => function() use ($tablero, $historia) {
+                    },                'historias.edit' => function() use ($tablero, $historia) {
+                       if (!$tablero || !$historia) {
+                            return [
+                                ['label' => 'Inicio', 'url' => route('dashboard')],
+                                ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                                ['label' => 'Editar historia'],
+                            ];
+                       }
                        return [
                             ['label' => 'Inicio', 'url' => route('dashboard')],
                             ['label' => 'Mis proyectos', 'url' => route('projects.my')],
@@ -186,6 +204,14 @@ public function boot(): void
 
                 // Tareas
                   'tareas.index' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Crear tarea'],
+                        ];
+                    }
+                    
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
@@ -195,8 +221,14 @@ public function boot(): void
                         ['label'=>'Crear tarea'],
                     ];
                 },
-                'tareas.store'   => 'tareas.index',
-                'tareas.edit' => function() use ($tablero, $historia) {
+                'tareas.store'   => 'tareas.index',                'tareas.edit' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Editar tarea'],
+                        ];
+                    }
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
@@ -207,8 +239,14 @@ public function boot(): void
                     ];
                 },
                 'tareas.update'  => 'tareas.edit',
-                'tareas.destroy' => 'tareas.index',
-                'tareas.show' => function() use ($tablero, $historia) {
+                'tareas.destroy' => 'tareas.index',                'tareas.show' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Lista de tareas'],
+                        ];
+                    }
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
