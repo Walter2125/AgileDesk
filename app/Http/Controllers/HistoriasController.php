@@ -122,8 +122,9 @@ public function createFromColumna($columnaId)
     $this->cargarTableroDesdeHistoria($historia);
     $proyecto = $historia->proyecto;
     $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+    $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
 
-    return view('historias.edit', compact('historia', 'usuarios'));
+    return view('historias.edit', compact('historia', 'usuarios','sprints'));
 }
 
 
@@ -138,6 +139,8 @@ public function createFromColumna($columnaId)
         'prioridad' => 'required|in:Alta,Media,Baja',
         'descripcion' => 'nullable|string|max:1000',
         'usuario_id' => 'nullable|exists:users,id',  // si para asignar usuario
+        'sprint_id' => 'nullable|exists:sprints,id',
+
     ], [
         'nombre.required' => 'El nombre es obligatorio.',
         'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
@@ -147,6 +150,7 @@ public function createFromColumna($columnaId)
         'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
         'prioridad.required' => 'Debe seleccionar una prioridad.',
         'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+
     ]);
 
     // Actualizar con un solo update
@@ -156,6 +160,8 @@ public function createFromColumna($columnaId)
         'prioridad' => $request->prioridad,
         'descripcion' => $request->descripcion,
         'usuario_id' => $request->usuario_id, // si tienes este campo en historias
+        'sprint_id' => $request->sprint_id,
+
     ]);
 
     // Redirigir a la vista show pasando el ID

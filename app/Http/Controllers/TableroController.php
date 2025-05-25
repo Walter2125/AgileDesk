@@ -36,37 +36,29 @@ class TableroController extends Controller
     /**
      * Display the specified resource.
      */
-  public function show(string $id)
+    public function show($projectId)
     {
-        $project = Project::findOrFail($id);
-        $tablero = $project->tablero()->with('columnas')->firstOrFail();
+        $project = Project::findOrFail($projectId);
+        $tablero = $project->tablero()->with(['columnas.historias', 'sprints'])->first();
 
-        return view('users.admin.tablero', compact('project', 'tablero'));
+        // Obtener el sprint_id de la URL (si existe)
+        $sprintId = request('sprint_id');
 
-        if ($tablero->columnas->isEmpty()) {
-            $tablero->columnas()->create([
-                'nombre' => 'Backlog',
-                'posicion' => 1,
-            ]);
-
-            // Recargar para reflejar la nueva columna
-            return redirect()->route('tableros.show', $project->id);
+        if ($sprintId) {
+            // Filtra las historias de cada columna según el sprint_id
+            foreach ($tablero->columnas as $columna) {
+                $columna->historias = $columna->historias()->where('sprint_id', $sprintId)->get();
+            }
+        } else {
+            // Si no hay sprint_id, muestra todas las historias como ahora
+            foreach ($tablero->columnas as $columna) {
+                $columna->historias = $columna->historias;
+            }
         }
 
-        if ($tablero->columnas->where('es_backlog', true)->isEmpty()) {
-            $tablero->columnas()->create([
-                'nombre' => 'Backlog',
-                'posicion' => 1,
-                'es_backlog' => true,
-            ]);
-            return redirect()->route('tableros.show', $project->id);
-        }
-
-        return view('users.admin.tablero', compact('project', 'tablero'));
-
-        return view('users.admin.tablero', compact('project', 'tablero'));
-
+        return view('users.admin.tablero', compact('tablero', 'project'));
     }
+
 
 
 

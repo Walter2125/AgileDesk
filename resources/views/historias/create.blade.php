@@ -64,7 +64,6 @@
         </div>
 
 
-
         <div class="mb-3">
             <label for="prioridad" class="form-label" >Prioridad</label>
             <select name="prioridad" id="prioridad" class="form-control rounded">

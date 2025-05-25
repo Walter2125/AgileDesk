@@ -23,17 +23,19 @@ $colCount = $tablero->columnas->count();
             <div class="d-flex align-items-center gap-3 flex-wrap">
 
                 <!-- Select de sprints -->
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select"
-                            id="sprintSelect"
-                            aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
-                    </select>
-                @endif
+                <select class="form-select"
+                        id="sprintSelect"
+                        aria-label="Seleccionar sprint"
+                        style="min-width: 200px; max-width: 240px;">
+                    <option value="" {{ request('sprint_id') ? '' : 'selected' }}>Ningún Sprint</option>
+                    @foreach($tablero->sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+
+
 
                 <!-- Botón para agregar columna -->
                 <button class="btn btn-primary"
@@ -41,6 +43,7 @@ $colCount = $tablero->columnas->count();
                         data-bs-target="#modalAgregarColumna">
                     Agregar columna
                 </button>
+
 
                 <!-- Botón para crear sprint -->
                 <button class="btn btn-outline-primary"
@@ -56,7 +59,7 @@ $colCount = $tablero->columnas->count();
         <div class="overflow-auto pb-3" style="width: 100%;">
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
-                    <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2"
+                    <div class="bg-white border rounded shadow-sm d-flex flex-column "
                          style="{{ $widthStyle }} min-height: 500px;">
                         <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                             @if($columna->es_backlog)
@@ -252,5 +255,25 @@ $colCount = $tablero->columnas->count();
                     });
                 });
             </script>
+
+<script>
+    document.getElementById('sprintSelect').addEventListener('change', function () {
+        const sprintId = this.value;
+        const url = new URL(window.location.href);
+
+        if (sprintId) {
+            // Si selecciona un sprint específico, actualiza el parámetro
+            url.searchParams.set('sprint_id', sprintId);
+        } else {
+            // Si selecciona "Ningún Sprint", elimina el parámetro para mostrar todos
+            url.searchParams.delete('sprint_id');
+        }
+
+        // Redirige a la nueva URL
+        window.location.href = url.toString();
+    });
+</script>
+
+
 
 @endsection

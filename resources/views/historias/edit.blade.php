@@ -3,7 +3,7 @@
 @section('title')
          @section('mensaje-superior')
             <div class="mt-4 text-lg font-semibold text-blue-600">
-                
+
             <h1 class="titulo-historia">📝Editar Historia</h1>
             </div>
         @endsection
@@ -21,20 +21,20 @@
                 @endforeach
             </ul>
         </div>
-            
+
         @endif
 
 
     <form action="{{ route('historias.update',$historia->id) }}" method="POST">
         @csrf
         @method('PATCH')
-       
+
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
             <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ $historia->nombre }}" >
         </div>
 
-     
+
         <div class="mb-3">
             <label for="trabajo_estimado" class="form-label">Horas de trabajo estimado*</label>
             <input type="number" name="trabajo_estimado" id="trabajo_estimado" class="form-control rounded " min="0" value="{{ $historia->trabajo_estimado }}" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
@@ -51,9 +51,9 @@
                     </option>
                 @endforeach
             </select>
-        </div> 
+        </div>
 
-     
+
         <div class="mb-3">
             <label for="prioridad" class="form-label" >Prioridad</label>
              <select name="prioridad" id="prioridad" class="form-control rounded">
@@ -63,19 +63,29 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="sprint_id" class="form-label">Sprint</label>
+            <select name="sprint_id" id="sprint_id" class="form-control rounded">
+                <option value="">Ningún Sprint</option>
+                @foreach ($sprints as $sprint)
+                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
             <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ $historia->descripcion }}</textarea>
         </div>
 
-    
 
-     
+
+
 
          <div class="mb-3 d-flex justify-content-end">
             <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-secondary me-2">Atras</a>
-  
+
             <button type="submit" class="btn btn-primary">Actualizar</button>
         </div>
     </form>
