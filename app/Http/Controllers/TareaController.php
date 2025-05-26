@@ -32,7 +32,7 @@ class TareaController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string', // ← ahora obligatorio
-            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
+            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
         ]);
 
         // Asociar tarea con la historia
@@ -53,7 +53,7 @@ class TareaController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string', 
-            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño',
+            'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
         ]);
 
         $tarea->update($validatedData);

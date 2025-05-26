@@ -1,9 +1,8 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-        
+        <div class="mt-4 text-lg font-semibold text-blue-600">       
          <h1 class="titulo-historia">
-            📋 Lista de Tareas para la Historia: {{ $historia->nombre }}
+            Lista de Tareas para la Historia: {{ $historia->nombre }}
         </h1>
             </div>
         @endsection
@@ -36,7 +35,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
-                    <th>Actividad</th>
+                    <th>Tipo de Actividad</th>
                     <th>Fecha de Creación</th>
                     <th>Acciones</th>
                 </tr>
