@@ -66,7 +66,7 @@
             .auth-sidebar {
                 background-color: #62b0f0; 
                 padding: 2rem 1.5rem;
-                flex: 1;
+                flex: 0 0 45%; /* Ancho fijo del 45% para consistencia entre login y registro */
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -74,12 +74,57 @@
                 text-align: center;
                 color: white;
                 transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            /* Estilos globales para elementos parallax */
+            .parallax-elements {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: 0;
+                pointer-events: none;
+            }
+            
+            .parallax-circle {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.15);
+                will-change: transform;
+                transition: transform 0.2s ease-out;
+            }
+            
+            .circle-1 {
+                width: 150px;
+                height: 150px;
+                top: -50px;
+                right: -50px;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .circle-2 {
+                width: 100px;
+                height: 100px;
+                bottom: -30px;
+                left: 20%;
+                background: rgba(255, 255, 255, 0.08);
             }
             
             .auth-sidebar h2 {
                 font-size: 1.5rem;
                 font-weight: 500;
                 margin-bottom: 1.5rem;
+                position: relative;
+                z-index: 2;
+            }
+            
+            .auth-sidebar h1 {
+                position: relative;
+                z-index: 2;
             }
             
             .auth-sidebar .rocket-illustration {
@@ -87,13 +132,15 @@
                 max-width: 180px;
                 margin: 1.5rem 0;
                 transition: all 0.3s ease;
+                position: relative;
+                z-index: 2;
             }
             
             .auth-content {
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
                 background-color: #2d3a4d; /* Azul oscuro */
-                flex: 1;
+                flex: 0 0 55%; /* Ancho fijo del 55% para complementar el sidebar (login/registro) */
                 display: flex;
                 flex-direction: column;
             }
@@ -247,10 +294,12 @@
                 
                 .auth-sidebar {
                     padding: 3rem 2rem;
+                    flex: 0 0 45%; /* Mantener ancho fijo en desktop */
                 }
                 
                 .auth-content {
                     padding: 3rem 2rem;
+                    flex: 0 0 55%; /* Mantener ancho fijo en desktop */
                 }
                 
                 .auth-sidebar .rocket-illustration {
@@ -266,41 +315,150 @@
                 }
             }
             
-            /* Medium devices (tablets, 768px and up) */
-            @media (min-width: 768px) and (max-width: 991.98px) {
-                .auth-card {
-                    height: auto;
-                    min-height: 500px;
-                    max-width: 700px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                }
-                .auth-content {
-                    padding: 2rem 1.5rem;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    width: 100%;
-                }
+           /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    html, body {
+        height: auto !important; /* Sobrescribir */
+        overflow: visible !important; /* Sobrescribir */
+        position: static !important; /* Sobrescribir */
+    }
+    
+    .auth-container {
+        position: relative !important; /* Sobrescribir */
+        min-height: 200vh; /* Altura mayor para permitir scroll */
+        height: auto;
+        overflow: visible !important;
+    }
+    
+    /* Agregar más altura para garantizar scroll */
+    .auth-content {
+        min-height: 120vh; /* Aumentar altura para forzar scroll */
+    }
+    .auth-card {
+        height: auto;
+        min-height: 200vh; /* Altura mayor para scroll */
+        max-width: none; /* Sin límite de ancho en tablets */
+        width: 100%; /* Ancho completo */
+        box-shadow: none; /* Sin sombra */
+        flex-direction: column; /* En tablets, sidebar arriba y contenido abajo */
+        overflow: visible;
+        position: relative;
+    }
+    
+    .auth-sidebar {
+        position: fixed; /* Fijo para que se mueva con el scroll */
+        top: 0;
+        left: 0;
+        width: 100%; /* Ancho completo */
+        height: 60vh; /* Altura fija */
+        overflow: hidden; /* Contener elementos parallax */
+        background-attachment: scroll; /* Permitir que el fondo se mueva */
+        z-index: 10; /* Z-index alto para estar encima */
+        will-change: transform, background-position, background-image; /* Optimización de rendimiento */
+        transition: transform 0.1s ease-out, background-image 0.3s ease;
+        background-image: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%); /* Gradiente por defecto */
+        background-size: 200% 200%; /* Fondo más grande para movimiento */
+        background-position: center center;
+        transform: translateY(0); /* Inicial */
+    }
+    
+    /* Elementos para el efecto parallax */
+    .auth-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ asset('img/agiledesk.png') }}") center no-repeat;
+        background-size: 50%;
+        opacity: 0.05;
+        z-index: 0;
+        transform: translateY(0);
+        will-change: transform;
+        pointer-events: none;
+    }
+    
+    .auth-sidebar .parallax-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+    
+    .auth-sidebar .parallax-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        will-change: transform;
+    }
+    
+    .auth-sidebar .circle-1 {
+        width: 150px;
+        height: 150px;
+        top: -50px;
+        right: -50px;
+    }
+    
+    .auth-sidebar .circle-2 {
+        width: 100px;
+        height: 100px;
+        bottom: -30px;
+        left: 20%;
+    }
+    
+    .auth-sidebar h1, 
+    .auth-sidebar h2 {
+        will-change: transform; /* Optimización para animaciones */
+        backface-visibility: hidden; /* Reduce parpadeos */
+    }
+    
+    .parallax-elements {
+        pointer-events: none; /* Para que no interfiera con clics */
+    }
+    .auth-content {
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 60vh; /* Margen para compensar el sidebar fijo */
+        position: relative;
+        z-index: 5; /* Z-index menor que el sidebar */
+    }
 
-                .auth-form {
-                    width: 100%;
-                    max-width: 400px;
-                    margin: 0 auto;
-                }
-                .auth-container {
-                    padding: 1.5rem;
-                }
-                
-                .auth-submit-btn {
-                    width: auto;
-                }
+    .auth-form {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    .auth-container {
+        padding: 1.5rem;
+    }
+    
+    .auth-submit-btn {
+        width: auto;
+    }
 
-                .rocket-illustration img {
-                    max-width: 80%;
-                    transform: scale(1.15); /* Aumenta el tamaño del logo en 15% */
-                }
-            }
+    .rocket-illustration img {
+        max-width: 80%;
+        transform: scale(1.15); /* Aumenta el tamaño del logo en 15% */
+        position: relative;
+        z-index: 1;
+        will-change: transform;
+    }
+    
+    /* Mostrar scroll spacer solo en tablets */
+    .scroll-spacer {
+        display: block !important;
+        visibility: visible !important;
+    }
+}
             
             /* Small devices (landscape phones, 576px and up) */
             @media (min-width: 576px) and (max-width: 767.98px) {
@@ -348,16 +506,61 @@
                     display: none; /* Oculta el sidebar en dispositivos móviles */
                 }
                 
-                .auth-content {
-                    padding: 1.5rem 1rem;
+                /* Header móvil con logo y nombre */
+                .mobile-header {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem 1rem 1rem 1rem;
+                    color: white;
+                    text-align: center;
+                    margin-bottom: 1rem;
+                }
+                
+                .mobile-header .mobile-logo {
+                    width: 80px;
+                    height: 80px;
+                    margin-bottom: 1rem;
+                    border-radius: 12px;
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .mobile-header .mobile-logo img {
                     width: 100%;
-                    justify-content: center; /* Centrar verticalmente */
+                    height: 100%;
+                    object-fit: contain;
+                }
+                
+                .mobile-header h1 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    margin: 0;
+                    letter-spacing: 0.5px;
+                }
+                
+                .mobile-header p {
+                    font-size: 0.875rem;
+                    margin: 0.5rem 0 0 0;
+                    opacity: 0.9;
+                    font-weight: 400;
+                }
+                
+                .auth-content {
+                    padding: 0 1rem 1.5rem 1rem;
+                    width: 100%;
+                    justify-content: flex-start; /* Cambiar de center a flex-start para permitir header móvil */
                 }
                 
                 .auth-header {
                     flex-direction: column;
                     align-items: flex-start;
                     gap: 1rem;
+                    margin-top: 0; /* Eliminar margen superior ya que tenemos el header móvil */
                 }
                 
                 .auth-header-links {
@@ -432,12 +635,15 @@
 
         .toggle-password:hover {
             color: #62b0f0;
-        }
-
-        .auth-form input[type="password"] {
-            padding-right: 40px;
-            width: 100%;
-        }
+        }            .auth-form input[type="password"] {
+                padding-right: 40px;
+                width: 100%;
+            }
+            
+            /* Ocultar scroll spacer por defecto */
+            .scroll-spacer {
+                display: none !important;
+            }
         </style>
     </head>
 
@@ -452,7 +658,18 @@
                     </div>
                 </div>
                 <div class="auth-content">
+                    <!-- Header móvil solo para dispositivos pequeños -->
+                    <div class="mobile-header">
+                        <div class="mobile-logo">
+                            <img src="{{ asset('img/agiledesk.png') }}" alt="AgileDesk Logo" />
+                        </div>
+                        <h1>AgileDesk</h1>
+                        <p>Gestión Ágil de Proyectos</p>
+                    </div>
+                    
                     {{ $slot }}
+                    <!-- Div invisible para forzar scroll en tablets -->
+                    <div class="scroll-spacer" style="height: 150vh; width: 1px; visibility: hidden; pointer-events: none;"></div>
                 </div>
             </div>
         </div>
@@ -480,6 +697,146 @@
                     });
                 });
             });
+        </script>
+        <!-- Script para el efecto parallax con scroll y mouse -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando parallax con scroll...');
+            console.log('Window width:', window.innerWidth);
+            
+            // Verificar si estamos en tablet (temporalmente deshabilitado para debug)
+            const isTablet = true; // window.innerWidth >= 768 && window.innerWidth <= 991.98;
+            
+            if (!isTablet) {
+                console.log('No es tablet, efecto parallax deshabilitado');
+                return;
+            }
+            
+            console.log('Tablet detectado, iniciando parallax');
+            
+            const sidebar = document.querySelector('.auth-sidebar');
+            if (!sidebar) {
+                console.log('No se encontró sidebar');
+                return;
+            }
+            
+            console.log('Sidebar encontrado:', sidebar);
+            
+            // Crear elementos parallax directamente en el HTML
+            const parallaxHTML = `
+                <div class="parallax-elements" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none;">
+                    <div class="parallax-circle circle-1" style="position: absolute; width: 150px; height: 150px; top: -50px; right: -50px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                    <div class="parallax-circle circle-2" style="position: absolute; width: 100px; height: 100px; bottom: -30px; left: 20%; border-radius: 50%; background: rgba(255, 255, 255, 0.15); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                    <div class="parallax-circle circle-3" style="position: absolute; width: 80px; height: 80px; top: 50%; left: 30%; border-radius: 50%; background: rgba(255, 255, 255, 0.25); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                </div>
+            `;
+            
+            sidebar.insertAdjacentHTML('afterbegin', parallaxHTML);
+            console.log('Elementos parallax insertados');
+            
+            // Referencias a elementos
+            const circle1 = sidebar.querySelector('.circle-1');
+            const circle2 = sidebar.querySelector('.circle-2');
+            const circle3 = sidebar.querySelector('.circle-3');
+            const logo = sidebar.querySelector('.rocket-illustration img');
+            const h1 = sidebar.querySelector('h1');
+            const h2 = sidebar.querySelector('h2');
+            
+            if (!circle1 || !circle2 || !circle3) {
+                console.log('Error: no se encontraron todos los círculos');
+                return;
+            }
+            
+            console.log('Círculos encontrados, iniciando listeners');
+            
+            // Variables para el efecto combinado
+            let scrollProgress = 0;
+            let mouseX = 0;
+            let mouseY = 0;
+            
+            function updateParallax() {
+                // Combinar efectos de scroll y mouse
+                const totalX = mouseX + (scrollProgress * 0.3);
+                const totalY = mouseY + (scrollProgress * 0.5);
+                
+                // Movimiento de círculos con efecto combinado
+                circle1.style.transform = `translate(${totalX * 40}px, ${totalY * 40 - scrollProgress * 30}px) rotate(${scrollProgress * 45}deg)`;
+                circle2.style.transform = `translate(${totalX * -30}px, ${totalY * -30 + scrollProgress * 20}px) rotate(${-scrollProgress * 30}deg)`;
+                circle3.style.transform = `translate(${totalX * 20}px, ${totalY * 20 - scrollProgress * 15}px) scale(${1 + scrollProgress * 0.2})`;
+                
+                // Movimiento sutil del logo y textos
+                if (logo) {
+                    logo.style.transform = `scale(${1.15 + scrollProgress * 0.1}) translate(${totalX * -10}px, ${totalY * -10 + scrollProgress * 20}px) rotate(${scrollProgress * 5}deg)`;
+                }
+                
+                if (h1) {
+                    h1.style.transform = `translate(${totalX * 5}px, ${totalY * 5 - scrollProgress * 10}px)`;
+                }
+                
+                if (h2) {
+                    h2.style.transform = `translate(${totalX * 3}px, ${totalY * 3 - scrollProgress * 8}px)`;
+                }
+                
+                // Cambio dinámico del gradiente de fondo
+                const hue1 = 210 + totalX * 15 + scrollProgress * 30;
+                const hue2 = 220 + totalX * 20 + scrollProgress * 45;
+                const sat1 = 70 + totalY * 15 + scrollProgress * 20;
+                const sat2 = 80 + totalY * 10 + scrollProgress * 15;
+                const light1 = 65 + totalY * 8 - scrollProgress * 10;
+                const light2 = 55 + totalY * 5 - scrollProgress * 8;
+                
+                sidebar.style.background = `linear-gradient(${135 + totalX * 60 + scrollProgress * 90}deg, 
+                    hsl(${hue1}, ${sat1}%, ${light1}%) 0%, 
+                    hsl(${hue2}, ${sat2}%, ${light2}%) 100%)`;
+                
+                // Cambiar posición del fondo
+                sidebar.style.backgroundPosition = `${50 + totalX * 20}% ${50 + totalY * 20 - scrollProgress * 30}%`;
+            }
+            
+            // Parallax basado en scroll
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const maxScroll = document.body.scrollHeight - window.innerHeight;
+                scrollProgress = Math.min(scrollTop / Math.max(maxScroll, 1), 1); // Normalizar entre 0 y 1
+                
+                console.log('Scroll progress:', scrollProgress, 'ScrollTop:', scrollTop); // Debug
+                
+                // Mover el sidebar junto con el scroll (parallax)
+                const sidebarMove = scrollTop * 0.5; // Velocidad de movimiento del sidebar (0.5 = mitad de velocidad)
+                sidebar.style.transform = `translateY(${sidebarMove}px)`;
+                
+                // Agregar efecto de transparencia gradual
+                const opacity = Math.max(0.3, 1 - scrollProgress * 0.7); // De 1 a 0.3 de opacidad
+                sidebar.style.opacity = opacity;
+                
+                // Escalar ligeramente el sidebar
+                const scale = 1 - scrollProgress * 0.1; // De 1 a 0.9
+                sidebar.style.transform = `translateY(${sidebarMove}px) scale(${scale})`;
+                
+                updateParallax();
+            }
+            
+            // Parallax basado en movimiento del mouse
+            function handleMouseMove(e) {
+                mouseX = (e.clientX / window.innerWidth) - 0.5; // -0.5 a 0.5
+                mouseY = (e.clientY / window.innerHeight) - 0.5; // -0.5 a 0.5
+                updateParallax();
+            }
+            
+            // Event listeners
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            document.addEventListener('mousemove', handleMouseMove);
+            
+            // Resetear al salir del mouse
+            sidebar.addEventListener('mouseleave', function() {
+                mouseX = 0;
+                mouseY = 0;
+                updateParallax();
+            });
+            
+            // Inicializar
+            handleScroll();
+        });
         </script>
         </body>
 </html>
