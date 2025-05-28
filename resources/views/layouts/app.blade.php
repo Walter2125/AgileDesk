@@ -29,6 +29,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+
+
     :root {
         --sidebar-width: 280px;
         --sidebar-collapsed-width: 70px;

@@ -68,10 +68,14 @@
             <select name="sprint_id" id="sprint_id" class="form-control rounded">
                 <option value="">Ningún Sprint</option>
                 @foreach ($sprints as $sprint)
-                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                    <option value="{{ $sprint->id }}"
+                        {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                        {{ $sprint->nombre }}
+                    </option>
                 @endforeach
             </select>
         </div>
+
 
 
         <div class="mb-3">

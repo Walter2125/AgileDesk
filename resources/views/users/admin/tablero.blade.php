@@ -255,7 +255,6 @@ $colCount = $tablero->columnas->count();
                     });
                 });
             </script>
-
 <script>
     document.getElementById('sprintSelect').addEventListener('change', function () {
         const sprintId = this.value;
@@ -273,6 +272,8 @@ $colCount = $tablero->columnas->count();
         window.location.href = url.toString();
     });
 </script>
+
+
 
 
 
