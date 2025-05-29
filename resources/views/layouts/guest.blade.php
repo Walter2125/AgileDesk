@@ -527,7 +527,6 @@
                     padding: 12px;
                     display: flex;
                     align-items: center;
-                    justify-content: center;
                 }
                 
                 .mobile-header .mobile-logo img {
@@ -539,16 +538,10 @@
                 .mobile-header h1 {
                     font-size: 1.5rem;
                     font-weight: 600;
-                    margin: 0;
+                    margin: 2rem;
                     letter-spacing: 0.5px;
                 }
                 
-                .mobile-header p {
-                    font-size: 0.875rem;
-                    margin: 0.5rem 0 0 0;
-                    opacity: 0.9;
-                    font-weight: 400;
-                }
                 
                 .auth-content {
                     padding: 0 1rem 1.5rem 1rem;
@@ -659,12 +652,11 @@
                 </div>
                 <div class="auth-content">
                     <!-- Header móvil solo para dispositivos pequeños -->
-                    <div class="mobile-header">
+                    <div class="mobile-header d-block d-sm-none">
                         <div class="mobile-logo">
                             <img src="{{ asset('img/agiledesk.png') }}" alt="AgileDesk Logo" />
+                            <h1>AgileDesk</h1>
                         </div>
-                        <h1>AgileDesk</h1>
-                        <p>Gestión Ágil de Proyectos</p>
                     </div>
                     
                     {{ $slot }}
