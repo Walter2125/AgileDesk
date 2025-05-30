@@ -282,8 +282,8 @@
             /* Large devices (desktops, 992px and up) */
             @media (min-width: 992px) {
                 .auth-card {
-                    height: 520px;
-                    max-width: 900px;
+                    max-height: 520px;
+                    max-width: 1000px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                     border-radius: 8px;
                 }
@@ -315,150 +315,499 @@
                 }
             }
             
-           /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-    html, body {
-        height: auto !important; /* Sobrescribir */
-        overflow: visible !important; /* Sobrescribir */
-        position: static !important; /* Sobrescribir */
-    }
-    
-    .auth-container {
-        position: relative !important; /* Sobrescribir */
-        min-height: 200vh; /* Altura mayor para permitir scroll */
-        height: auto;
-        overflow: visible !important;
-    }
-    
-    /* Agregar más altura para garantizar scroll */
-    .auth-content {
-        min-height: 120vh; /* Aumentar altura para forzar scroll */
-    }
-    .auth-card {
-        height: auto;
-        min-height: 200vh; /* Altura mayor para scroll */
-        max-width: none; /* Sin límite de ancho en tablets */
-        width: 100%; /* Ancho completo */
-        box-shadow: none; /* Sin sombra */
-        flex-direction: column; /* En tablets, sidebar arriba y contenido abajo */
-        overflow: visible;
-        position: relative;
-    }
-    
-    .auth-sidebar {
-        position: fixed; /* Fijo para que se mueva con el scroll */
-        top: 0;
-        left: 0;
-        width: 100%; /* Ancho completo */
-        height: 60vh; /* Altura fija */
-        overflow: hidden; /* Contener elementos parallax */
-        background-attachment: scroll; /* Permitir que el fondo se mueva */
-        z-index: 10; /* Z-index alto para estar encima */
-        will-change: transform, background-position, background-image; /* Optimización de rendimiento */
-        transition: transform 0.1s ease-out, background-image 0.3s ease;
-        background-image: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%); /* Gradiente por defecto */
-        background-size: 200% 200%; /* Fondo más grande para movimiento */
-        background-position: center center;
-        transform: translateY(0); /* Inicial */
-    }
-    
-    /* Elementos para el efecto parallax */
-    .auth-sidebar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("{{ asset('img/agiledesk.png') }}") center no-repeat;
-        background-size: 50%;
-        opacity: 0.05;
-        z-index: 0;
-        transform: translateY(0);
-        will-change: transform;
-        pointer-events: none;
-    }
-    
-    .auth-sidebar .parallax-elements {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: 0;
-    }
-    
-    .auth-sidebar .parallax-circle {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        will-change: transform;
-    }
-    
-    .auth-sidebar .circle-1 {
-        width: 150px;
-        height: 150px;
-        top: -50px;
-        right: -50px;
-    }
-    
-    .auth-sidebar .circle-2 {
-        width: 100px;
-        height: 100px;
-        bottom: -30px;
-        left: 20%;
-    }
-    
-    .auth-sidebar h1, 
-    .auth-sidebar h2 {
-        will-change: transform; /* Optimización para animaciones */
-        backface-visibility: hidden; /* Reduce parpadeos */
-    }
-    
-    .parallax-elements {
-        pointer-events: none; /* Para que no interfiera con clics */
-    }
-    .auth-content {
-        padding: 2rem 1.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        margin-top: 60vh; /* Margen para compensar el sidebar fijo */
-        position: relative;
-        z-index: 5; /* Z-index menor que el sidebar */
-    }
-
-    .auth-form {
-        width: 100%;
-        max-width: 400px;
-        margin: 0 auto;
-    }
-    
-    .auth-container {
-        padding: 1.5rem;
-    }
-    
-    .auth-submit-btn {
-        width: auto;
-    }
-
-    .rocket-illustration img {
-        max-width: 80%;
-        transform: scale(1.15); /* Aumenta el tamaño del logo en 15% */
-        position: relative;
-        z-index: 1;
-        will-change: transform;
-    }
-    
-    /* Mostrar scroll spacer solo en tablets */
-    .scroll-spacer {
-        display: block !important;
-        visibility: visible !important;
-    }
-}
+            /* Medium-Large devices (tablets grandes/laptops pequeños, 921px-991.98px) */
+            @media (min-width: 921px) and (max-width: 991.98px) {
+                .auth-container {
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                
+                .auth-card {
+                    height: 100vh;
+                    flex-direction: row;
+                    overflow: hidden;
+                }
+                
+                .auth-sidebar {
+                    position: relative;
+                    transform: none;
+                    background: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%);
+                    background-position: center center;
+                    width: 45%;
+                    height: 100vh;
+                    flex: 0 0 45%;
+                    padding: 3rem 2rem;
+                    overflow: hidden;
+                }
+                
+                .auth-content {
+                    margin-top: 0;
+                    width: 55%;
+                    flex: 0 0 55%;
+                    height: 100vh;
+                    overflow-y: auto;
+                    padding: 3rem 2rem;
+                }
+                
+                .parallax-elements {
+                    display: none;
+                }
+                
+                .rocket-illustration img {
+                    transform: scale(1.1);
+                }
+                
+                .scroll-spacer {
+                    display: none;
+                }
+            }
+            
+            /* Fix para tamaño problemático (888px x 553px aprox) */
+            @media (min-width: 850px) and (max-width: 920px) and (min-height: 520px) and (max-height: 580px) {
+                html, body {
+                    height: 100vh !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-container {
+                    min-height: 100vh !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-card {
+                    min-height: 100vh !important;
+                    flex-direction: row !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-sidebar {
+                    position: relative !important;
+                    transform: none !important;
+                    background: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%) !important;
+                    background-position: center center !important;
+                    width: 45% !important;
+                    height: 100vh !important;
+                    flex: 0 0 45% !important;
+                    padding: 3rem 2rem !important;
+                }
+                
+                .auth-content {
+                    margin-top: 0 !important;
+                    width: 55% !important;
+                    flex: 0 0 55% !important;
+                    height: 100vh !important;
+                    overflow-y: auto !important;
+                    padding: 3rem 2rem !important;
+                }
+                
+                .parallax-elements {
+                    display: none !important;
+                }
+                
+                .rocket-illustration img {
+                    transform: scale(1.0) !important;
+                }
+                
+                .auth-sidebar h1,
+                .auth-sidebar h2 {
+                    transform: none !important;
+                }
+                
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Medium devices específicos (tablets medianos, 768px-849px) */
+            @media (min-width: 768px) and (max-width: 849px) {
+                html, body {
+                    height: auto !important;
+                    overflow: visible !important;
+                    position: static !important;
+                }
+                
+                .auth-container {
+                    position: relative !important;
+                    min-height: 180vh;
+                    height: auto;
+                    overflow: visible !important;
+                }
+                
+                .auth-card {
+                    height: auto;
+                    min-height: 180vh;
+                    max-width: none;
+                    width: 100%;
+                    box-shadow: none;
+                    flex-direction: column;
+                    overflow: visible;
+                    position: relative;
+                }
+                
+                .auth-sidebar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 55vh; /* Ligeramente menor que el rango tablet general */
+                    overflow: hidden;
+                    background-attachment: scroll;
+                    z-index: 10;
+                    will-change: transform, background-position, background-image;
+                    transition: transform 0.1s ease-out, background-image 0.3s ease;
+                    background-image: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%);
+                    background-size: 180% 180%; /* Menor que el general */
+                    background-position: center center;
+                    transform: translateY(0);
+                }
+                
+                .auth-content {
+                    padding: 2rem 1.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 55vh;
+                    position: relative;
+                    z-index: 5;
+                    min-height: 120vh;
+                }
+                
+                .rocket-illustration img {
+                    max-width: 75%;
+                    transform: scale(1.1);
+                    position: relative;
+                    z-index: 1;
+                    will-change: transform;
+                }
+                
+                .scroll-spacer {
+                    display: block !important;
+                    visibility: visible !important;
+                }
+            }
+            
+            /* Gap filler para 849px-850px */
+            @media (min-width: 849px) and (max-width: 850px) {
+                /* Usar el mismo estilo que 768px-849px */
+                html, body {
+                    height: auto !important;
+                    overflow: visible !important;
+                    position: static !important;
+                }
+                
+                .auth-container {
+                    position: relative !important;
+                    min-height: 180vh;
+                    height: auto;
+                    overflow: visible !important;
+                }
+                
+                .auth-card {
+                    height: auto;
+                    min-height: 180vh;
+                    max-width: none;
+                    width: 100%;
+                    box-shadow: none;
+                    flex-direction: column;
+                    overflow: visible;
+                    position: relative;
+                }
+                
+                .auth-sidebar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 55vh;
+                    overflow: hidden;
+                    background-attachment: scroll;
+                    z-index: 10;
+                    will-change: transform, background-position, background-image;
+                    transition: transform 0.1s ease-out, background-image 0.3s ease;
+                    background-image: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%);
+                    background-size: 180% 180%;
+                    background-position: center center;
+                    transform: translateY(0);
+                }
+                
+                .auth-content {
+                    padding: 2rem 1.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 55vh;
+                    position: relative;
+                    z-index: 5;
+                    min-height: 120vh;
+                }
+                
+                .rocket-illustration img {
+                    max-width: 75%;
+                    transform: scale(1.1);
+                    position: relative;
+                    z-index: 1;
+                    will-change: transform;
+                }
+                
+                .scroll-spacer {
+                    display: block !important;
+                    visibility: visible !important;
+                }
+            }
+            
+            /* Media query removida para evitar conflictos - ahora cubierto por media queries específicas arriba */
+            
+            /* Landscape tablets con altura limitada */
+            @media (min-width: 768px) and (max-width: 1024px) and (max-height: 600px) and (orientation: landscape) {
+                html, body {
+                    height: 100vh !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-container {
+                    height: 100vh !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-card {
+                    height: 100vh !important;
+                    flex-direction: row !important;
+                    overflow: hidden !important;
+                }
+                
+                .auth-sidebar {
+                    position: relative !important;
+                    transform: none !important;
+                    background: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%) !important;
+                    background-position: center center !important;
+                    width: 40% !important;
+                    height: 100vh !important;
+                    flex: 0 0 40% !important;
+                    padding: 2rem 1.5rem !important;
+                }
+                
+                .auth-content {
+                    margin-top: 0 !important;
+                    width: 60% !important;
+                    flex: 0 0 60% !important;
+                    height: 100vh !important;
+                    overflow-y: auto !important;
+                    padding: 2rem 1.5rem !important;
+                }
+                
+                .parallax-elements {
+                    display: none !important;
+                }
+                
+                .rocket-illustration img {
+                    transform: scale(0.9) !important;
+                }
+                
+                .auth-sidebar h1 {
+                    font-size: 1.3rem !important;
+                }
+                
+                .auth-sidebar h2 {
+                    font-size: 1.1rem !important;
+                }
+                
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Tablets portrait con altura muy alta */
+            @media (min-width: 768px) and (max-width: 991.98px) and (min-height: 900px) and (orientation: portrait) {
+                .auth-sidebar {
+                    height: 50vh !important;
+                }
+                
+                .auth-content {
+                    margin-top: 50vh !important;
+                }
+                
+                .rocket-illustration img {
+                    transform: scale(1.3) !important;
+                }
+            }
+            
+            /* Media query adicional para tamaños intermedios 992px-1023px */
+            @media (min-width: 992px) and (max-width: 1023px) {
+                .auth-card {
+                    max-height: 520px;
+                    max-width: 900px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                }
+                
+                .auth-container {
+                    padding: 2rem;
+                }
+                
+                .auth-sidebar {
+                    padding: 3rem 2rem;
+                    flex: 0 0 45%;
+                }
+                
+                .auth-content {
+                    padding: 3rem 2rem;
+                    flex: 0 0 55%;
+                }
+                
+                .parallax-elements {
+                    display: none;
+                }
+                
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Media query para laptops pequeños 1024px-1199px */
+            @media (min-width: 1024px) and (max-width: 1199px) {
+                .auth-card {
+                    max-height: 540px;
+                    max-width: 950px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                }
+                
+                .auth-container {
+                    padding: 2.5rem;
+                }
+                
+                .auth-sidebar {
+                    padding: 3rem 2.5rem;
+                    flex: 0 0 45%;
+                }
+                
+                .auth-content {
+                    padding: 3rem 2.5rem;
+                    flex: 0 0 55%;
+                }
+                
+                .parallax-elements {
+                    display: none;
+                }
+                
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Optimización específica para 768px x 557.33px - Parallax restaurado */
+            @media (min-width: 768px) and (max-width: 768px) and (min-height: 557px) and (max-height: 558px) {
+                html, body {
+                    height: auto !important;
+                    overflow-x: hidden !important;
+                    overflow-y: auto !important;
+                    position: static !important;
+                }
+                
+                .auth-container {
+                    position: relative !important;
+                    min-height: 200vh; /* Aumentado para mejor efecto parallax */
+                    height: auto;
+                    overflow: visible !important;
+                }
+                
+                .auth-card {
+                    height: auto;
+                    min-height: 200vh;
+                    max-width: none;
+                    width: 100%;
+                    box-shadow: none;
+                    flex-direction: column;
+                    overflow: visible;
+                    position: relative;
+                }
+                
+                .auth-sidebar {
+                    position: fixed !important;
+                    top: 0;
+                    left: 0;
+                    width: 100% !important;
+                    height: 65vh !important; /* Aumentado para mejor efecto */
+                    overflow: hidden;
+                    background-attachment: scroll;
+                    z-index: 10;
+                    will-change: transform, background-position, background-image, opacity;
+                    transition: none; /* Removido para mejor fluidez */
+                    background-image: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%);
+                    background-size: 300% 300%; /* Aumentado para más dinamismo */
+                    background-position: center center;
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+                
+                .auth-content {
+                    padding: 2rem 1.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 65vh !important;
+                    position: relative;
+                    z-index: 15;
+                    min-height: 135vh;
+                    background: #2d3a4d;
+                }
+                
+                .rocket-illustration img {
+                    max-width: 85%;
+                    transform: scale(1.2); /* Ligeramente más grande */
+                    position: relative;
+                    z-index: 1;
+                    will-change: transform;
+                    transition: transform 0.1s ease-out;
+                }
+                
+                .scroll-spacer {
+                    display: block !important;
+                    visibility: visible !important;
+                    height: 200vh !important; /* Aumentado para más scroll */
+                }
+                
+                .parallax-elements {
+                    display: block !important;
+                    opacity: 1 !important;
+                }
+                
+                /* Elementos de texto con mejores transiciones */
+                .auth-sidebar h1, .auth-sidebar h2 {
+                    will-change: transform;
+                    transition: transform 0.1s ease-out;
+                }
+            }
+            
+            /* Fix adicional para heights muy pequeños en tablets */
+            @media (min-width: 768px) and (max-width: 991.98px) and (max-height: 500px) {
+                .auth-sidebar {
+                    height: 45vh !important;
+                }
+                
+                .auth-content {
+                    margin-top: 45vh !important;
+                    padding: 1.5rem !important;
+                }
+                
+                .rocket-illustration img {
+                    transform: scale(0.9) !important;
+                }
+                
+                .auth-sidebar h1 {
+                    font-size: 1.3rem !important;
+                }
+                
+                .auth-sidebar h2 {
+                    font-size: 1rem !important;
+                }
+            }
             
             /* Small devices (landscape phones, 576px and up) */
             @media (min-width: 576px) and (max-width: 767.98px) {
@@ -485,6 +834,49 @@
                 .auth-sidebar h2 {
                     font-size: 1.2rem;
                 }
+                
+                .parallax-elements {
+                    display: none !important;
+                }
+                
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Media query de fallback para cualquier gap restante */
+            @media (min-width: 768px) and (max-width: 991.98px) {
+                /* Fallback básico para cualquier tamaño no cubierto */
+                .auth-container {
+                    min-height: 100vh;
+                }
+                
+                .auth-card {
+                    min-height: 100vh;
+                    flex-direction: column;
+                }
+                
+                .auth-sidebar {
+                    position: relative;
+                    width: 100%;
+                    height: 60vh;
+                    background: linear-gradient(135deg, #62b0f0 0%, #3d8cd6 100%);
+                }
+                
+                .auth-content {
+                    width: 100%;
+                    min-height: 40vh;
+                    padding: 2rem;
+                }
+                
+                .parallax-elements {
+                    display: none;
+                }
+                
+                .scroll-spacer {
+                    display: block;
+                    visibility: visible;
+                }
             }
             
             /* Extra small devices (portrait phones, less than 576px) */
@@ -508,38 +900,36 @@
                 
                 /* Header móvil con logo y nombre */
                 .mobile-header {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 2rem 1rem 1rem 1rem;
-                    color: white;
-                    text-align: center;
-                    margin-bottom: 1rem;
-                }
-                
+                display: flex;
+                flex-direction: row; /* Cambio importante */
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1rem 1rem 1rem;
+                color: white;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
                 .mobile-header .mobile-logo {
-                    width: 80px;
-                    height: 80px;
-                    margin-bottom: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .mobile-header .mobile-logo img {
+                    width: 60px;
+                    height: 60px;
                     border-radius: 12px;
                     background: rgba(255, 255, 255, 0.1);
                     padding: 12px;
-                    display: flex;
-                    align-items: center;
-                }
-                
-                .mobile-header .mobile-logo img {
-                    width: 100%;
-                    height: 100%;
                     object-fit: contain;
                 }
+               
                 
                 .mobile-header h1 {
                     font-size: 1.5rem;
                     font-weight: 600;
-                    margin: 2rem;
                     letter-spacing: 0.5px;
+                    margin: 0; /* Eliminar margen */
                 }
                 
                 
@@ -633,9 +1023,20 @@
                 width: 100%;
             }
             
-            /* Ocultar scroll spacer por defecto */
-            .scroll-spacer {
-                display: none !important;
+            /* Ocultar scroll spacer por defecto solo en desktop */
+            @media (min-width: 1025px) {
+                .scroll-spacer {
+                    display: none !important;
+                }
+            }
+            
+            /* Mostrar scroll spacer en tablets para el efecto parallax */
+            @media (min-width: 768px) and (max-width: 1024px) {
+                .scroll-spacer {
+                    display: block !important;
+                    visibility: visible !important;
+                    height: 150vh !important;
+                }
             }
         </style>
     </head>
@@ -690,145 +1091,497 @@
                 });
             });
         </script>
-        <!-- Script para el efecto parallax con scroll y mouse -->
+        <!-- Script para el efecto parallax PERSISTENTE Y ROBUSTO -->
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Inicializando parallax con scroll...');
-            console.log('Window width:', window.innerWidth);
+        // ====== SISTEMA PARALLAX PERSISTENTE ======
+        // Este sistema mantiene el parallax funcionando incluso durante navegación entre páginas
+        
+        window.AgileParallax = window.AgileParallax || {};
+        
+        // Variables globales para persistir estado
+        window.AgileParallax.mouseX = 0;
+        window.AgileParallax.mouseY = 0;
+        window.AgileParallax.scrollProgress = 0;
+        window.AgileParallax.isInitialized = false;
+        window.AgileParallax.animationFrame = null;
+        window.AgileParallax.eventListeners = [];
+        
+        // Función para limpiar listeners previos
+        window.AgileParallax.cleanup = function() {
+            console.log('🧹 Limpiando parallax anterior...');
             
-            // Verificar si estamos en tablet (temporalmente deshabilitado para debug)
-            const isTablet = true; // window.innerWidth >= 768 && window.innerWidth <= 991.98;
-            
-            if (!isTablet) {
-                console.log('No es tablet, efecto parallax deshabilitado');
-                return;
+            if (this.animationFrame) {
+                cancelAnimationFrame(this.animationFrame);
+                this.animationFrame = null;
             }
             
-            console.log('Tablet detectado, iniciando parallax');
+            this.eventListeners.forEach(({ element, event, handler }) => {
+                element.removeEventListener(event, handler);
+            });
+            this.eventListeners = [];
+            
+            this.isInitialized = false;
+        };
+        
+        // Función principal de inicialización
+        window.AgileParallax.init = function() {
+            console.log('🚀 Inicializando parallax PERSISTENTE...');
+            console.log('📱 Tamaño de ventana:', window.innerWidth + 'x' + window.innerHeight);
+            
+            // Limpiar estado anterior
+            this.cleanup();
+            
+            // Detectar tablets - RANGO ULTRA AMPLIO para asegurar funcionamiento
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const isTablet = width >= 750 && width <= 1400; // Rango ULTRA amplio para incluir 1280px
+            
+            console.log('✅ Es tablet (750px-1400px):', isTablet);
+            console.log('📏 Tamaño actual:', width + 'x' + height);
+            
+            // Si NO es tablet, salir inmediatamente
+            if (!isTablet) {
+                console.log('❌ No es tablet, parallax deshabilitado');
+                return false;
+            }
+            
+            console.log('🎉 PARALLAX HABILITADO para este tamaño');
             
             const sidebar = document.querySelector('.auth-sidebar');
             if (!sidebar) {
-                console.log('No se encontró sidebar');
-                return;
+                console.log('❌ No se encontró sidebar');
+                return false;
             }
             
-            console.log('Sidebar encontrado:', sidebar);
+            console.log('✅ Sidebar encontrado, creando elementos parallax...');
             
-            // Crear elementos parallax directamente en el HTML
+            // Limpiar elementos parallax existentes (por si los hay)
+            const existingParallax = sidebar.querySelector('.parallax-elements');
+            if (existingParallax) {
+                existingParallax.remove();
+                console.log('🧹 Elementos parallax anteriores removidos');
+            }
+            
+            // Crear elementos parallax SUTILES como en el ejemplo original
             const parallaxHTML = `
                 <div class="parallax-elements" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none;">
-                    <div class="parallax-circle circle-1" style="position: absolute; width: 150px; height: 150px; top: -50px; right: -50px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); will-change: transform; transition: transform 0.1s ease-out;"></div>
-                    <div class="parallax-circle circle-2" style="position: absolute; width: 100px; height: 100px; bottom: -30px; left: 20%; border-radius: 50%; background: rgba(255, 255, 255, 0.15); will-change: transform; transition: transform 0.1s ease-out;"></div>
-                    <div class="parallax-circle circle-3" style="position: absolute; width: 80px; height: 80px; top: 50%; left: 30%; border-radius: 50%; background: rgba(255, 255, 255, 0.25); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                    <div class="parallax-circle" style="position: absolute; width: 80px; height: 80px; top: -30px; right: -30px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                    <div class="parallax-circle" style="position: absolute; width: 60px; height: 60px; bottom: -20px; left: 20%; border-radius: 50%; background: rgba(255, 255, 255, 0.12); will-change: transform; transition: transform 0.1s ease-out;"></div>
+                    <div class="parallax-circle" style="position: absolute; width: 50px; height: 50px; top: 50%; left: 30%; border-radius: 50%; background: rgba(255, 255, 255, 0.18); will-change: transform; transition: transform 0.1s ease-out;"></div>
                 </div>
             `;
             
             sidebar.insertAdjacentHTML('afterbegin', parallaxHTML);
-            console.log('Elementos parallax insertados');
+            console.log('✅ 3 círculos parallax SUTILES insertados');
             
-            // Referencias a elementos
-            const circle1 = sidebar.querySelector('.circle-1');
-            const circle2 = sidebar.querySelector('.circle-2');
-            const circle3 = sidebar.querySelector('.circle-3');
-            const logo = sidebar.querySelector('.rocket-illustration img');
-            const h1 = sidebar.querySelector('h1');
-            const h2 = sidebar.querySelector('h2');
+            // Referencias a elementos (re-buscar cada vez)
+            this.elements = {
+                sidebar: sidebar,
+                circles: sidebar.querySelectorAll('.parallax-circle'),
+                logo: sidebar.querySelector('.rocket-illustration img'),
+                h1: sidebar.querySelector('h1'),
+                h2: sidebar.querySelector('h2')
+            };
             
-            if (!circle1 || !circle2 || !circle3) {
-                console.log('Error: no se encontraron todos los círculos');
-                return;
+            console.log('🔍 Elementos encontrados:', {
+                circles: this.elements.circles.length,
+                logo: !!this.elements.logo,
+                h1: !!this.elements.h1,
+                h2: !!this.elements.h2
+            });
+            
+            // Configurar event listeners con referencias guardadas
+            this.setupEventListeners();
+            
+            // Marcar como inicializado
+            this.isInitialized = true;
+            
+            // Ejecutar primera actualización
+            this.updateParallax();
+            
+            // Test sutil inicial
+            this.runInitialTest();
+            
+            console.log('🎉 Parallax PERSISTENTE inicializado correctamente');
+            return true;
+        };
+        
+        // Configurar event listeners
+        window.AgileParallax.setupEventListeners = function() {
+            const mouseMoveHandler = (e) => {
+                this.mouseX = (e.clientX / window.innerWidth) - 0.5; // -0.5 a 0.5
+                this.mouseY = (e.clientY / window.innerHeight) - 0.5; // -0.5 a 0.5
+                this.requestParallaxUpdate();
+            };
+            
+            const scrollHandler = () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const maxScroll = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+                this.scrollProgress = Math.min(scrollTop / maxScroll, 1);
+                this.requestParallaxUpdate();
+            };
+            
+            // Añadir listeners y guardar referencias para limpieza
+            document.addEventListener('mousemove', mouseMoveHandler, { passive: true });
+            window.addEventListener('scroll', scrollHandler, { passive: true });
+            
+            this.eventListeners.push(
+                { element: document, event: 'mousemove', handler: mouseMoveHandler },
+                { element: window, event: 'scroll', handler: scrollHandler }
+            );
+        };
+        
+        // Solicitar actualización con throttling
+        window.AgileParallax.requestParallaxUpdate = function() {
+            if (!this.animationFrame) {
+                this.animationFrame = requestAnimationFrame(() => {
+                    this.updateParallax();
+                    this.animationFrame = null;
+                });
             }
+        };
+        
+        // Función de actualización principal
+        window.AgileParallax.updateParallax = function() {
+            if (!this.isInitialized || !this.elements) return;
             
-            console.log('Círculos encontrados, iniciando listeners');
-            
-            // Variables para el efecto combinado
-            let scrollProgress = 0;
-            let mouseX = 0;
-            let mouseY = 0;
-            
-            function updateParallax() {
-                // Combinar efectos de scroll y mouse
-                const totalX = mouseX + (scrollProgress * 0.3);
-                const totalY = mouseY + (scrollProgress * 0.5);
+            try {
+                const { sidebar, circles, logo, h1, h2 } = this.elements;
+                const { mouseX, mouseY, scrollProgress } = this;
                 
-                // Movimiento de círculos con efecto combinado
-                circle1.style.transform = `translate(${totalX * 40}px, ${totalY * 40 - scrollProgress * 30}px) rotate(${scrollProgress * 45}deg)`;
-                circle2.style.transform = `translate(${totalX * -30}px, ${totalY * -30 + scrollProgress * 20}px) rotate(${-scrollProgress * 30}deg)`;
-                circle3.style.transform = `translate(${totalX * 20}px, ${totalY * 20 - scrollProgress * 15}px) scale(${1 + scrollProgress * 0.2})`;
+                // Movimiento de círculos SUTIL como en el ejemplo original
+                circles.forEach((circle, index) => {
+                    // Movimientos más suaves y pequeños
+                    const moveX = mouseX * 40 + (index % 2 === 0 ? scrollProgress * 20 : -scrollProgress * 15);
+                    const moveY = mouseY * 40 + scrollProgress * (index * 10 + 10);
+                    const rotation = scrollProgress * 30 + mouseX * 60;
+                    const scale = 1 + Math.abs(mouseX) * 0.1 + scrollProgress * 0.1;
+                    
+                    circle.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${rotation}deg) scale(${scale})`;
+                });
                 
-                // Movimiento sutil del logo y textos
+                // Movimiento del logo MÁS SUTIL
                 if (logo) {
-                    logo.style.transform = `scale(${1.15 + scrollProgress * 0.1}) translate(${totalX * -10}px, ${totalY * -10 + scrollProgress * 20}px) rotate(${scrollProgress * 5}deg)`;
+                    const logoX = mouseX * -15;
+                    const logoY = mouseY * -15 + scrollProgress * 20;
+                    const logoRotation = scrollProgress * 5 + mouseX * 8;
+                    const logoScale = 1.15 + scrollProgress * 0.1;
+                    
+                    logo.style.transform = `scale(${logoScale}) translate(${logoX}px, ${logoY}px) rotate(${logoRotation}deg)`;
                 }
                 
+                // Movimiento de textos MÁS SUTIL
                 if (h1) {
-                    h1.style.transform = `translate(${totalX * 5}px, ${totalY * 5 - scrollProgress * 10}px)`;
+                    const h1X = mouseX * 8;
+                    const h1Y = mouseY * 8 - scrollProgress * 10;
+                    h1.style.transform = `translate(${h1X}px, ${h1Y}px)`;
                 }
                 
                 if (h2) {
-                    h2.style.transform = `translate(${totalX * 3}px, ${totalY * 3 - scrollProgress * 8}px)`;
+                    const h2X = mouseX * 5;
+                    const h2Y = mouseY * 5 - scrollProgress * 8;
+                    h2.style.transform = `translate(${h2X}px, ${h2Y}px)`;
                 }
                 
-                // Cambio dinámico del gradiente de fondo
-                const hue1 = 210 + totalX * 15 + scrollProgress * 30;
-                const hue2 = 220 + totalX * 20 + scrollProgress * 45;
-                const sat1 = 70 + totalY * 15 + scrollProgress * 20;
-                const sat2 = 80 + totalY * 10 + scrollProgress * 15;
-                const light1 = 65 + totalY * 8 - scrollProgress * 10;
-                const light2 = 55 + totalY * 5 - scrollProgress * 8;
+                // MANTENER gradiente azul original - SIN cambios de color dramáticos
+                const baseHue1 = 210; // Azul base
+                const baseHue2 = 220; // Azul base
+                const hue1 = baseHue1 + mouseX * 8 + scrollProgress * 15; // Cambios muy sutiles
+                const hue2 = baseHue2 + mouseX * 10 + scrollProgress * 20; // Cambios muy sutiles
+                const saturation = 70 + mouseY * 5; // Saturación base estable
                 
-                sidebar.style.background = `linear-gradient(${135 + totalX * 60 + scrollProgress * 90}deg, 
-                    hsl(${hue1}, ${sat1}%, ${light1}%) 0%, 
-                    hsl(${hue2}, ${sat2}%, ${light2}%) 100%)`;
+                sidebar.style.background = `linear-gradient(135deg, hsl(${hue1}, ${saturation}%, 65%) 0%, hsl(${hue2}, ${saturation}%, 55%) 100%)`;
                 
-                // Cambiar posición del fondo
-                sidebar.style.backgroundPosition = `${50 + totalX * 20}% ${50 + totalY * 20 - scrollProgress * 30}%`;
-            }
-            
-            // Parallax basado en scroll
-            function handleScroll() {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const maxScroll = document.body.scrollHeight - window.innerHeight;
-                scrollProgress = Math.min(scrollTop / Math.max(maxScroll, 1), 1); // Normalizar entre 0 y 1
+                // Parallax del sidebar MÁS SUTIL
+                const sidebarMove = scrollProgress * 50; // Reducido de 80 a 50
+                const opacity = Math.max(0.3, 1 - scrollProgress * 0.5); // Menos transparencia
+                const sidebarScale = Math.max(0.9, 1 - scrollProgress * 0.1); // Menos escalado
                 
-                console.log('Scroll progress:', scrollProgress, 'ScrollTop:', scrollTop); // Debug
-                
-                // Mover el sidebar junto con el scroll (parallax)
-                const sidebarMove = scrollTop * 0.5; // Velocidad de movimiento del sidebar (0.5 = mitad de velocidad)
-                sidebar.style.transform = `translateY(${sidebarMove}px)`;
-                
-                // Agregar efecto de transparencia gradual
-                const opacity = Math.max(0.3, 1 - scrollProgress * 0.7); // De 1 a 0.3 de opacidad
+                sidebar.style.transform = `translateY(${sidebarMove}px) scale(${sidebarScale})`;
                 sidebar.style.opacity = opacity;
                 
-                // Escalar ligeramente el sidebar
-                const scale = 1 - scrollProgress * 0.1; // De 1 a 0.9
-                sidebar.style.transform = `translateY(${sidebarMove}px) scale(${scale})`;
+            } catch (error) {
+                console.error('❌ Error en parallax:', error);
+            }
+        };
+        
+        // Test inicial sutil
+        window.AgileParallax.runInitialTest = function() {
+            setTimeout(() => {
+                console.log('🧪 TEST SUTIL INICIADO');
+                this.mouseX = 0.1;
+                this.mouseY = 0.1;
+                this.updateParallax();
                 
-                updateParallax();
-            }
+                setTimeout(() => {
+                    this.mouseX = -0.1;
+                    this.mouseY = -0.1;
+                    this.updateParallax();
+                    
+                    setTimeout(() => {
+                        this.mouseX = 0;
+                        this.mouseY = 0;
+                        this.updateParallax();
+                        console.log('✅ TEST SUTIL COMPLETADO');
+                    }, 800);
+                }, 800);
+            }, 500);
+        };
+        
+        // Función para manejar cambios de página
+        window.AgileParallax.handlePageTransition = function() {
+            console.log('🔄 Manajando transición de página...');
             
-            // Parallax basado en movimiento del mouse
-            function handleMouseMove(e) {
-                mouseX = (e.clientX / window.innerWidth) - 0.5; // -0.5 a 0.5
-                mouseY = (e.clientY / window.innerHeight) - 0.5; // -0.5 a 0.5
-                updateParallax();
-            }
-            
-            // Event listeners
-            window.addEventListener('scroll', handleScroll, { passive: true });
-            document.addEventListener('mousemove', handleMouseMove);
-            
-            // Resetear al salir del mouse
-            sidebar.addEventListener('mouseleave', function() {
-                mouseX = 0;
-                mouseY = 0;
-                updateParallax();
+            // Pequeño delay para asegurar que el DOM esté listo
+            setTimeout(() => {
+                if (document.readyState === 'complete') {
+                    this.init();
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => this.init());
+                }
+            }, 100);
+        };
+        
+        // ====== INICIALIZACIÓN AUTOMÁTICA ======
+        // Inicializar inmediatamente si el DOM está listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                window.AgileParallax.init();
             });
-            
-            // Inicializar
-            handleScroll();
+        } else {
+            // DOM ya está listo, inicializar inmediatamente
+            window.AgileParallax.init();
+        }
+        
+        // ====== MANEJO DE NAVEGACIÓN ======
+        // Escuchar cambios de página para re-inicializar
+        let currentUrl = window.location.href;
+        
+        // Observar cambios en el DOM para detectar navegación
+        const observer = new MutationObserver(() => {
+            if (window.location.href !== currentUrl) {
+                currentUrl = window.location.href;
+                console.log('🔄 Navegación detectada a:', currentUrl);
+                window.AgileParallax.handlePageTransition();
+            }
+        });
+        
+        // Observar cambios en el body
+        if (document.body) {
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true 
+            });
+        }
+        
+        // Escuchar eventos de navegación del navegador
+        window.addEventListener('popstate', () => {
+            console.log('🔄 Popstate detectado');
+            window.AgileParallax.handlePageTransition();
+        });
+        
+        // Re-inicializar cuando la página se vuelve visible
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !window.AgileParallax.isInitialized) {
+                console.log('🔄 Página visible, re-inicializando parallax');
+                window.AgileParallax.handlePageTransition();
+            }
         });
         </script>
-        </body>
+        
+        <!-- Script para navegación suave y mantenimiento del parallax -->
+        <script>
+        // ====== NAVEGACIÓN MEJORADA CON PARALLAX PERSISTENTE ======
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔗 Configurando navegación mejorada...');
+            
+            // Encontrar todos los enlaces de navegación auth
+            const authLinks = document.querySelectorAll('.auth-header-links a');
+            
+            if (authLinks.length > 0) {
+                console.log('✅ Encontrados', authLinks.length, 'enlaces de navegación');
+                
+                authLinks.forEach((link, index) => {
+                    link.addEventListener('click', function(e) {
+                        console.log('🔗 Clic en enlace de navegación:', this.textContent.trim());
+                        
+                        // No prevenir la navegación, pero preparar el parallax para la transición
+                        if (window.AgileParallax) {
+                            console.log('🎬 Preparando parallax para transición...');
+                            
+                            // Guardar estado actual
+                            window.AgileParallax.transitionState = {
+                                mouseX: window.AgileParallax.mouseX,
+                                mouseY: window.AgileParallax.mouseY,
+                                scrollProgress: window.AgileParallax.scrollProgress,
+                                timestamp: Date.now()
+                            };
+                            
+                            // Marcar que habrá una transición
+                            window.AgileParallax.isTransitioning = true;
+                            
+                            console.log('💾 Estado guardado para transición:', window.AgileParallax.transitionState);
+                        }
+                    });
+                });
+            }
+            
+            // Función para restaurar estado después de navegación
+            function restoreParallaxState() {
+                if (window.AgileParallax && window.AgileParallax.transitionState) {
+                    const timeDiff = Date.now() - window.AgileParallax.transitionState.timestamp;
+                    
+                    // Solo restaurar si la transición fue reciente (menos de 3 segundos)
+                    if (timeDiff < 3000) {
+                        console.log('🔄 Restaurando estado del parallax después de transición...');
+                        
+                        window.AgileParallax.mouseX = window.AgileParallax.transitionState.mouseX || 0;
+                        window.AgileParallax.mouseY = window.AgileParallax.transitionState.mouseY || 0;
+                        window.AgileParallax.scrollProgress = window.AgileParallax.transitionState.scrollProgress || 0;
+                        
+                        // Aplicar el estado restaurado
+                        if (window.AgileParallax.isInitialized) {
+                            window.AgileParallax.updateParallax();
+                        }
+                        
+                        console.log('✅ Estado restaurado');
+                    }
+                    
+                    // Limpiar estado de transición
+                    delete window.AgileParallax.transitionState;
+                    window.AgileParallax.isTransitioning = false;
+                }
+            }
+            
+            // Intentar restaurar estado cuando el parallax se inicializa
+            const originalInit = window.AgileParallax.init;
+            window.AgileParallax.init = function() {
+                const result = originalInit.call(this);
+                
+                // Restaurar estado después de inicialización exitosa
+                if (result) {
+                    setTimeout(restoreParallaxState, 100);
+                }
+                
+                return result;
+            };
+            
+            // También intentar restaurar cuando la página se carga completamente
+            window.addEventListener('load', restoreParallaxState);
+            
+            console.log('✅ Navegación mejorada configurada');
+        });
+        
+        // ====== DETECCIÓN DE CAMBIOS DE RUTA ======
+        // Mejorar la detección de navegación para páginas SPA-like
+        (function() {
+            let lastUrl = location.href;
+            
+            // Función para manejar cambios de URL
+            function handleUrlChange() {
+                if (location.href !== lastUrl) {
+                    console.log('🔄 URL cambió de', lastUrl, 'a', location.href);
+                    lastUrl = location.href;
+                    
+                    // Re-inicializar parallax después de cambio de URL
+                    if (window.AgileParallax) {
+                        setTimeout(() => {
+                            window.AgileParallax.handlePageTransition();
+                        }, 50);
+                    }
+                }
+            }
+            
+            // Escuchar cambios en el historial
+            window.addEventListener('popstate', handleUrlChange);
+            
+            // Monitorear cambios en el DOM que podrían indicar navegación
+            const observer = new MutationObserver(() => {
+                handleUrlChange();
+            });
+            
+            if (document.body) {
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: false // Solo cambios directos en body
+                });
+            }
+        })();
+        
+        // ====== PERSISTENCIA EN SESSIONSTORAGE ======
+        // Guardar y restaurar estado del parallax usando sessionStorage
+        window.AgileParallax.saveState = function() {
+            try {
+                const state = {
+                    mouseX: this.mouseX,
+                    mouseY: this.mouseY,
+                    scrollProgress: this.scrollProgress,
+                    timestamp: Date.now(),
+                    url: location.href
+                };
+                
+                sessionStorage.setItem('agileParallaxState', JSON.stringify(state));
+                console.log('💾 Estado guardado en sessionStorage');
+            } catch (e) {
+                console.warn('⚠️ No se pudo guardar estado en sessionStorage:', e);
+            }
+        };
+        
+        window.AgileParallax.loadState = function() {
+            try {
+                const saved = sessionStorage.getItem('agileParallaxState');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    const timeDiff = Date.now() - state.timestamp;
+                    
+                    // Solo cargar si es reciente (menos de 10 segundos) y de una página auth
+                    if (timeDiff < 10000 && (state.url.includes('/login') || state.url.includes('/register'))) {
+                        console.log('📂 Cargando estado desde sessionStorage');
+                        
+                        this.mouseX = state.mouseX || 0;
+                        this.mouseY = state.mouseY || 0;
+                        this.scrollProgress = state.scrollProgress || 0;
+                        
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ No se pudo cargar estado desde sessionStorage:', e);
+            }
+            
+            return false;
+        };
+        
+        // Modificar updateParallax para guardar estado periódicamente
+        const originalUpdate = window.AgileParallax.updateParallax;
+        window.AgileParallax.updateParallax = function() {
+            originalUpdate.call(this);
+            
+            // Guardar estado cada pocas actualizaciones
+            if (!this._saveCounter) this._saveCounter = 0;
+            this._saveCounter++;
+            
+            if (this._saveCounter % 30 === 0) { // Cada 30 actualizaciones
+                this.saveState();
+            }
+        };
+        
+        // Cargar estado al inicializar
+        const originalParallaxInit = window.AgileParallax.init;
+        window.AgileParallax.init = function() {
+            const result = originalParallaxInit.call(this);
+            
+            if (result) {
+                // Intentar cargar estado guardado
+                const stateLoaded = this.loadState();
+                if (stateLoaded) {
+                    console.log('✅ Estado cargado, aplicando...');
+                    setTimeout(() => this.updateParallax(), 100);
+                }
+            }
+            
+            return result;
+        };
+        </script>
+    </body>
 </html>
