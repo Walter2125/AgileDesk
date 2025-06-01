@@ -62,15 +62,11 @@ class TableroController extends Controller
             return redirect()->route('tableros.show', $project->id);
         }
 
-        return view('users.admin.tablero', compact('project', 'tablero'));
 
-        return view('users.admin.tablero', compact('project', 'tablero'));
+    return view('users.admin.tablero', compact('project', 'tablero', 'historiaEncontrada'));
+
 
     }
-
-
-
-
 
     /**
      * Show the form for editing the specified resource.

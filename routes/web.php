@@ -56,6 +56,9 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     // Crud de tableros
         Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
         Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
+        Route::post('/historias/{id}/mover', [HistoriasController::class, 'mover'])->name('historias.mover');
+
+        
           // Actualizar nombre de columna (PUT)
         Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
         Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
@@ -81,8 +84,6 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
 
 });
-
-
 
 Route::middleware(['auth'])->group(function() {
     // Ruta para el listado AJAX de usuarios

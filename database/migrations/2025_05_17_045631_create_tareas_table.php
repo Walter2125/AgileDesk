@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->text('descripcion')->nullable();
             $table->text('historial')->nullable();
-            $table->enum('actividad', ['Configuracion', 'Desarrollo', 'Prueba', 'Diseño']);
+            $table->enum('actividad', ['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo']);
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('historia_id')->constrained('historias')->onDelete('cascade');
             $table->timestamps();

@@ -1,11 +1,8 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-        
-         <h1 class="titulo-historia">
-            📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
-        </h1>
-            </div>
+        <div class="mt-4 text-lg font-semibold text-blue-600">       
+         <h5 class="titulo-historia"> Crear Nueva Tarea para la Historia: {{ $historia->nombre }}</h5>
+        </div>
         @endsection
 
 @section('content')
@@ -68,14 +65,14 @@
 
             <!-- Actividad -->
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad" class="form-control @error('actividad') is-invalid @enderror" required>
                     <option value=""> Seleccione una actividad </option>
-                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño'] as $opcion)
-                        <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
-                            {{ $opcion }}
-                        </option>
-                    @endforeach
+                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo'] as $opcion)
+    <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
+        {{ $opcion == 'OtroTipo' ? 'Otro Tipo' : $opcion }}
+    </option>
+@endforeach
                 </select>
                 @error('actividad')
                     <div class="invalid-feedback">{{ $message }}</div>
