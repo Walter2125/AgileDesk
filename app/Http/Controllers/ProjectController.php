@@ -6,7 +6,7 @@ use App\Models\Columna;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Notificaciones;
-use App\Models\tablero;
+use App\Models\Tablero;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
