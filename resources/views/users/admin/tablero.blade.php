@@ -57,6 +57,13 @@
             </div>
         </div>
 
+       <div class="input-group mb-3" style="width: 55%;">
+    <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
+    <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
+        ✖️
+    </button>
+</div>
+
         <div class="overflow-auto pb-3" style="width: 100%;">
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
@@ -110,8 +117,6 @@
             </div>
         </div>
     </div>
-
-    {{-- Modales omitidos porque ya estaban en tu código y no se modifican --}}
 
     {{-- Scripts existentes --}}
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -331,5 +336,45 @@
             });
         });
     </script>
+
+   <script>
+ document.addEventListener("DOMContentLoaded", function () {
+    const buscador = document.getElementById("buscadorHistorias");
+    const limpiarBtn = document.getElementById("limpiarBusqueda");
+    const columnas = document.querySelectorAll(".historia-lista");
+
+    function realizarBusqueda() {
+        const textoBusqueda = buscador.value.toLowerCase().trim();
+        
+        columnas.forEach(columna => {
+            const historias = columna.querySelectorAll(".historia-item");
+            let historiasVisibles = 0;
+            
+            historias.forEach(historia => {
+                const nombre = historia.textContent.toLowerCase();
+                if (nombre.includes(textoBusqueda)) {
+                    historia.style.display = "block";
+                    historiasVisibles++;
+                } else {
+                    historia.style.display = "none";
+                }
+            });
+            
+            // Opcional: ocultar columnas vacías
+            columna.style.display = historiasVisibles > 0 ? "block" : "none";
+        });
+    }
+
+    buscador.addEventListener("input", realizarBusqueda);
+    limpiarBtn.addEventListener("click", function () {
+        buscador.value = "";
+        columnas.forEach(columna => {
+            columna.style.display = "block";
+            columna.querySelectorAll(".historia-item").forEach(h => h.style.display = "block");
+        });
+    });
+});
+
+</script>
 </div>
 @endsection
