@@ -20,6 +20,7 @@ protected $fillable = [
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
+    
     public function sprints() {
         return $this->belongsTo(Sprint::class);
     }

@@ -180,5 +180,12 @@ public function createFromColumna($columnaId)
                             ->with('success', 'Historia borrada con éxito');
         }
     
+        public function mover(Request $request, $id)
+{
+    $historia = Historia::findOrFail($id);
+    $historia->columna_id = $request->columna_id;
+    $historia->save();
 
+    return response()->json(['success' => true]);
+}
 }

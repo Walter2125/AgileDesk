@@ -1,6 +1,7 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">       
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+                   
          <h1 class="titulo-historia">
             Lista de Tareas para la Historia: {{ $historia->nombre }}
         </h1>
@@ -124,7 +125,7 @@
     <a href="{{ route('tareas.index', $historia->id) }}" 
    class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm" 
    style="background-color: #e6f2ff;">
-    ➕ Crear Nueva Tarea
+     Crear Nueva Tarea
 </a>
 
 @endsection

@@ -62,10 +62,12 @@
 
 
         <div class="historia-details">
-            <div class="detail-item">
-                <span class="detail-label">Estado:</span>
-                <span class="detail-value">{{ $historia->estado ?? 'No especificado' }}</span>
-            </div>
+           <div class="detail-item">
+    <span class="detail-label">Estado:</span>
+    <span class="detail-value">
+        {{ $historia->columna ? $historia->columna->nombre : 'No asignado' }}
+    </span>
+</div>
             <div class="detail-item">
                 <span class="detail-label">Sprint:</span>
                 <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>

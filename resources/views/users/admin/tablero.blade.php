@@ -16,11 +16,7 @@
 @endphp
 
 <div class="container py-4">
-
-    <!-- Contenedor para select y botones -->
     <div class="d-flex align-items-center gap-3 flex-wrap">
-
-        <!-- Select de sprints -->
         @if($tablero->sprints && $tablero->sprints->count())
             <select class="form-select"
                     id="sprintSelect"
@@ -46,14 +42,12 @@
                     </select>
                 @endif
 
-                <!-- Botón para agregar columna -->
                 <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#modalAgregarColumna">
                     Agregar columna
                 </button>
 
-                <!-- Botón para crear sprint -->
                 <button class="btn btn-outline-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#modalCrearSprint"
@@ -63,7 +57,6 @@
             </div>
         </div>
 
-        <!-- Contenedor de columnas scrollable horizontal -->
         <div class="overflow-auto pb-3" style="width: 100%;">
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
@@ -98,10 +91,13 @@
                             </a>
                         </div>
 
-                        <div class="overflow-auto p-2" style="flex: 1;">
+                        <div class="overflow-auto p-2 historia-lista"
+                             data-columna-id="{{ $columna->id }}"
+                             style="flex: 1; min-height: 100px;">
                             @foreach ($columna->historias as $historia)
                                <a href="{{ route('historias.show', $historia->id) }}"
-                                  class="card mb-2 p-2 text-decoration-none text-dark d-block"
+                                  class="card mb-2 p-2 text-decoration-none text-dark d-block historia-item"
+                                  data-historia-id="{{ $historia->id }}"
                                   style="width: 100%; word-break: break-word; overflow: hidden;">
                                    <strong class="d-block" title="{{ $historia->nombre }}">
                                        {{ $historia->nombre }}
@@ -109,14 +105,101 @@
                                </a>
                            @endforeach
                         </div>
-
                     </div>
                 @endforeach
             </div>
         </div>
     </div>
 
-    <!-- Modal Bootstrap para agregar columna -->
+    {{-- Modales omitidos porque ya estaban en tu código y no se modifican --}}
+
+    {{-- Scripts existentes --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll(".historia-lista").forEach(function (el) {
+                new Sortable(el, {
+                    group: 'historias',
+                    animation: 150,
+                    onEnd: function (evt) {
+                        const historiaId = evt.item.dataset.historiaId;
+                        const nuevaColumnaId = evt.to.dataset.columnaId;
+
+                        fetch(`/historias/${historiaId}/mover`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                columna_id: nuevaColumnaId
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Error al mover la historia.");
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log("Historia movida correctamente", data);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert("No se pudo mover la historia.");
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        setTimeout(function() {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".editable-title").forEach(input => {
+                input.addEventListener("blur", function () {
+                    const columnId = this.dataset.columnId;
+                    const newName = this.value.trim();
+
+                    if (!newName) {
+                        alert("El nombre no puede estar vacío.");
+                        return;
+                    }
+
+                    fetch(/columnas/${columnId}, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ nombre: newName })
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Error HTTP " + response.status);
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Columna actualizada:', data);
+                        })
+                        .catch(error => {
+                            alert("No se pudo actualizar el nombre de la columna.");
+                            console.error(error);
+                        });
+                });
+            });
+        });
+    </script>
+
+ <!-- Modal Bootstrap para agregar columna -->
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
@@ -138,8 +221,8 @@
             </form>
         </div>
     </div>
-
-    <!-- Modal para crear sprint -->
+    
+ <!-- Modal para crear sprint -->
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
