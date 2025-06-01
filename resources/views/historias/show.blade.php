@@ -89,7 +89,7 @@
 <a href="{{ route('tareas.show', $historia->id) }}"
    class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
    style="background-color: #e6f2ff;">
-   📋 Agregar Tareas
+    Agregar Tareas
 </a>
 
         <div class="mb-3 d-flex justify-content-end">
