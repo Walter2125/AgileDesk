@@ -1,4 +1,4 @@
-@extends('errors::minimal')
+@extends('errors.minimal')
 
 @section('title', __('Servicio no disponible'))
 @section('code', 'Ops! 503')

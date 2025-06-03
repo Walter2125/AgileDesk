@@ -1,13 +1,7 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-                   
-         <h1 class="titulo-historia">
-            Lista de Tareas para la Historia: {{ $historia->nombre }}
-        </h1>
-            </div>
+            Lista de Tareas: {{ $historia->nombre }}
         @endsection
-
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">

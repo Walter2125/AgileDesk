@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
 {
     User::create([
         'name' => 'Admin',
-        'email' => 'admin@admin.com',
+        'email' => 'admin@unah.hn',
         'password' => 'Rsbarm25',
         'usertype' => 'admin',
         'is_approved' => true,

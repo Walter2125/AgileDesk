@@ -4,14 +4,14 @@
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <h2 class="mb-4">{{ __('Crear Nuevo Proyecto') }}</h2>
+            <h2 class="mb-4">Create New Project</h2>
 
             <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
                 @csrf
 
                 <!-- Nombre -->
                 <div class="form-group mb-3">
-                    <label for="name">{{ __('Nombre del Proyecto') }}</label>
+                    <label for="name">Project Name</label>
                     <input id="name" type="text"
                         class="form-control @error('name') is-invalid @enderror"
                         name="name"
@@ -34,7 +34,7 @@
                 </div>
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
-                    <label for="fecha_inicio">{{ __('Fecha de Inicio') }}</label>
+                    <label for="fecha_inicio">Start Date</label>
                     <input id="fecha_inicio" type="date"
                         class="form-control @error('fecha_inicio') is-invalid @enderror"
                         name="fecha_inicio"
@@ -47,7 +47,7 @@
 
                 <!-- Fecha Fin -->
                 <div class="form-group mb-3">
-                    <label for="fecha_fin">{{ __('Fecha de Fin') }}</label>
+                    <label for="fecha_fin">End Date</label>
                     <input id="fecha_fin" type="date"
                         class="form-control @error('fecha_fin') is-invalid @enderror"
                         name="fecha_fin"
@@ -60,7 +60,7 @@
 
                 <!-- Buscador y tabla -->
                 <div class="form-group mb-3">
-                    <label>{{ __('Buscar Usuarios') }}</label>
+                    <label>Search Users</label>
                     <div class="search-container mb-3">
                         <input type="text" class="form-control" id="userSearch" placeholder="Escribe el nombre de un usuario...">
                         <div id="searchResults" class="mt-2"></div>
@@ -85,8 +85,8 @@
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary">{{ __('Guardar Proyecto') }}</button>
-                    <a href="{{ route('projects.my') }}" class="btn btn-secondary">{{ __('Cancelar') }}</a>
+                    <button type="submit" class="btn btn-primary">Save Project</button>
+                    <a href="{{ route('projects.my') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
