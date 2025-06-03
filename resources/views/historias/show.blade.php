@@ -2,9 +2,9 @@
 
 @section('title')
         @section('mensaje-superior')
-            <div class="mt-4 text-lg font-semibold text-blue-600">
+            <div class="mt-4 text-lg font-semibold text-blue-600 ">
 
-            <h1 class="titulo-historia">📖Detalle de la Historia</h1>
+            <h1 class="titulo-historia" >📖Detalle de la Historia</h1>
             </div>
         @endsection
 
@@ -13,7 +13,7 @@
 
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
-<div class="container-fluid mi-container ">
+<div class="container-fluid-m-2 mi-container m-2">
 
              @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
@@ -41,8 +41,9 @@
         <h2 class="historia-title"
             style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
             title="{{ $historia->nombre }}">
-            {{ $historia->nombre }}
+            H{{ $historia->numero }} {{  $historia->nombre }}
         </h2>
+      
 
         <div class="historia-meta">
             <span class="badge bg-primary">{{ $historia->prioridad }}</span>
@@ -53,12 +54,12 @@
 
     <div class="historia-content">
 
-        <div class="historia-section">
-            <h3 class="section-title">Descripción</h3>
-            <div class="section-content">
-                {{ $historia->descripcion }}
-            </div>
-        </div>
+                <div class="historia-section ">
+                    <h3 class="section-title">Descripción</h3>
+                    <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
+                        {{ $historia->descripcion }}
+                    </div>
+                </div>
 
 
         <div class="historia-details">

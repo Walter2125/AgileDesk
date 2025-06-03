@@ -136,7 +136,8 @@ public function createFromColumna($columnaId)
     public function update(Request $request, Historia $historia)
 {
     $request->validate([
-         'nombre'=> 'required|string|min:3|max:255|unique:historias,nombre',
+       'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id . ',id',
+
         'trabajo_estimado' => 'nullable|integer|min:0',
         'prioridad' => 'required|in:Alta,Media,Baja',
         'descripcion' => 'nullable|string|max:1000',
