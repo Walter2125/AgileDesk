@@ -65,18 +65,20 @@
     
     .project-code {
         font-size: 0.82rem;
-        color: #6c757d;
+        color:rgb(27, 27, 27);
         text-align: left;
     }
     
     /* Project Dates */
     .date-info {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.2rem;
-        color: #5d6778;
-        font-size: 0.82rem;
+    display: flex;
+    justify-content: space-between; 
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    color: #5d6778;
+    font-size: 0.82rem;
     }
+
     
     .date-block {
         background-color: #f8f9fa;
@@ -103,7 +105,7 @@
         line-height: 1.5;
     }
     
-    /* Action Buttons - Tamaño exactamente igual */
+    /* Action Buttons */
     .action-buttons {
         display: flex;
         gap: 0.6rem;
