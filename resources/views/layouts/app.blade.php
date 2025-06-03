@@ -473,30 +473,33 @@
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Proyectos</span>
 
-                         @php
-                             $currentProject = App\Models\Project::find(request()->route('project'));
-                         @endphp
 
 
                      </a>
-                    @if(request()->is('admin/projects/*') || request()->is('projects/*'))
-                        <!-- Botón para Backlog -->
+
+                    {{-- Debug temporal
+                     @isset($currentProject)
+                        <div style="color: white; padding: 1rem; background: red;">
+                            currentProject está definido: {{ $currentProject->id }}
+                        </div>
+                    @else
+                        <div style="color: white; padding: 1rem; background: red;">
+                            currentProject NO está definido
+                        </div>
+                    @endisset--}}
+
+
+                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
                             <span class="sidebar-text">Backlog</span>
                         </a>
 
-                        <!-- Botón para Tablero -->
                         <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
                     @endif
-
-
-
-
-
 
 
                     <!-- -->

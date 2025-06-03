@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\Sprint;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
+use App\Models\Project;
+use App\Models\User;
+use App\Models\Tablero;
+
+
 
 class HistoriasController extends Controller
 {
@@ -38,22 +43,52 @@ private function compartirContextoDesdeColumna(Columna $columna)
     /**
      * Show the form for creating a new resource.
      */
-public function createFromColumna($columnaId)
-{
-    $columna = Columna::with('tablero.proyecto')->findOrFail($columnaId);
-    $this->compartirContextoDesdeColumna($columna);
-    $tablero = $columna->tablero;
-    $proyecto = $tablero->proyecto;
-    $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
-    $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
-
-    return view('historias.create', compact('columna', 'tablero', 'proyecto','usuarios','sprints'));
-}
-
-    public function create()
+    public function createFromColumna($columnaId)
     {
-        return view('historias.create');
+        $columna = Columna::with('tablero.proyecto')->findOrFail($columnaId);
+        $this->compartirContextoDesdeColumna($columna);
+
+        $tablero = $columna->tablero;
+        $proyecto = $tablero->proyecto;
+
+        $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+        $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
+        $columnas = $tablero->columnas; // todas las columnas del tablero
+
+        return view('historias.create', compact('columna', 'tablero', 'proyecto', 'usuarios', 'sprints', 'columnas'));
     }
+
+
+    public function create(Request $request)
+    {
+        $proyecto = null;
+        $columna = null;
+        $usuarios = collect(); // por defecto vacío
+        $sprints = collect();  // por defecto vacío
+        $columnas = collect(); // columnas también
+
+        if ($request->has('proyecto')) {
+            $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
+
+            if ($proyecto) {
+                $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+                $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
+
+                // Obtener columnas del primer tablero del proyecto, si existe
+                if ($proyecto->tablero) {
+                    $columnas = $proyecto->tablero->columnas;
+                }
+
+            }
+        }
+
+        return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas'));
+    }
+
+
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -66,7 +101,8 @@ public function createFromColumna($columnaId)
             'prioridad' => 'required|in:Alta,Media,Baja',
             'descripcion' => 'nullable|string|max:1000',
              'proyecto_id' => 'required|exists:nuevo_proyecto,id',
-            'columna_id' => 'exists:columnas,id',
+            'columna_id' => 'nullable|exists:columnas,id',
+
             'tablero_id' => 'exists:tableros,id',
                'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',

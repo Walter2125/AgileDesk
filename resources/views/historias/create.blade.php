@@ -37,11 +37,13 @@
         @csrf
        <!-- <h1 class="titulo-historia">Crea una nueva Historia</h1>-->
 
-        <input type="hidden" name="proyecto_id" value="{{ $proyecto->id }}">
-        <input type="hidden" name="columna_id" value="{{ $columna->id }}">
+        <input type="hidden" name="proyecto_id" value="{{ $proyecto ? $proyecto->id : '' }}">
+        <input type="hidden" name="columna_id" value="{{ $columna ? $columna->id : '' }}">
 
 
-       <div class="mb-3 ">
+
+
+        <div class="mb-3 ">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
             <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ old('nombre') }}" >
         </div>
@@ -53,13 +55,17 @@
             <input type="number" name="trabajo_estimado" id="trabajo_estimado" class="form-control rounded" min="0" value="{{ old('trabajo_estimado') }}" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
         </div>
 
-       <div class="mb-3">
+        <div class="mb-3">
             <label for="usuario_id" class="form-label">Asignado a:</label>
             <select name="usuario_id" id="usuario_id" class="form-control">
                 <option value="">Selecciona un usuario</option>
-                @foreach ($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
-                @endforeach
+                @if($usuarios->isNotEmpty())
+                    @foreach ($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                    @endforeach
+                @else
+                    <option value="">No hay usuarios disponibles</option>
+                @endif
             </select>
         </div>
 
@@ -73,15 +79,36 @@
             </select>
         </div>
 
+        @if ($columnas && $columnas->isNotEmpty())
+            <div class="mb-3">
+                <label for="columna_id" class="form-label">Estado</label>
+                <select name="columna_id" id="columna_id" class="form-control">
+                    <option value="">Sin Estado</option>
+                    @foreach ($columnas as $columna)
+                        <option value="{{ $columna->id }}" {{ old('columna_id') == $columna->id ? 'selected' : '' }}>
+                            {{ $columna->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        @endif
+
+
+
         <div class="mb-3">
-            <label for="sprint_id" class="form-label">Sprint</label>
-            <select name="sprint_id" id="sprint_id" class="form-control rounded">
-                <option value="">Ningún Sprint</option>
-                @foreach ($sprints as $sprint)
-                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                @endforeach
+            <label for="sprint_id" class="form-label">Seleccionar Sprint:</label>
+            <select name="sprint_id" id="sprint_id" class="form-control">
+                <option value="">Selecciona un sprint</option>
+                @if($sprints->isNotEmpty())
+                    @foreach ($sprints as $sprint)
+                        <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                    @endforeach
+                @else
+                    <option value="">No hay sprints disponibles</option>
+                @endif
             </select>
         </div>
+
 
 
         <div class="mb-3">

@@ -1,11 +1,13 @@
 @extends('layouts.app')
 
- @section('mensaje-superior')
-            <div class="mt-4 text-lg font-semibold text-blue-600">
+@section('mensaje-superior')
+    <div class="mt-4 text-lg font-semibold">
+        <h1 style="color: black; font-size: 24px; font-weight: bold;">
+            🗂️ Tablero de {{ $project->name }}
+        </h1>
+    </div>
+@endsection
 
-            <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
-            </div>
-        @endsection
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
