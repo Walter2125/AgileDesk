@@ -20,37 +20,44 @@ $colCount = $tablero->columnas->count();
     <div class="container py-4">
 
             <!-- Contenedor para select y botones -->
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-                <!-- Select de sprints -->
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select"
-                            id="sprintSelect"
-                            aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
-                    </select>
-                @endif
+    <!-- Lado izquierdo: select y botones -->
+    <div class="d-flex align-items-center gap-2">
+        <!-- Select de sprints -->
+        @if($tablero->sprints && $tablero->sprints->count())
+            <select class="form-select"
+                    id="sprintSelect"
+                    aria-label="Seleccionar sprint"
+                    style="min-width: 200px; max-width: 240px;">
+                <option selected disabled>Selecciona un sprint</option>
+                @foreach($tablero->sprints as $sprint)
+                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                @endforeach
+            </select>
+        @endif
 
-                <!-- Botón para agregar columna -->
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
+        <!-- Botón para agregar columna -->
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalAgregarColumna">
+            Agregar columna
+        </button>
 
-                <!-- Botón para crear sprint -->
-                <button class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCrearSprint"
-                        id="btnAbrirCrearSprint">
-                    Crear sprint
-                </button>
-            </div>
-        </div>
+        <!-- Botón para crear sprint -->
+        <button class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCrearSprint"
+                id="btnAbrirCrearSprint">
+            Crear sprint
+        </button>
+    </div>
+
+    <!-- Lado derecho: código del proyecto -->
+    <div class="text-muted fw-bold">
+        Código: {{ $tablero->project->codigo }}
+    </div>
+</div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
         <div class="overflow-auto pb-3" style="width: 100%;">
