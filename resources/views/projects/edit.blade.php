@@ -20,6 +20,17 @@
                         <input id="name" type="text" class="form-control" name="name"
                                value="{{ old('name', $project->name) }}" required autocomplete="off">
                     </div>
+                    <!-- Descripción -->
+                    <div class="form-group mb-3">
+                        <label for="descripcion">{{ __('Descripción') }}</label>
+                        <textarea id="descripcion" 
+                            class="form-control @error('descripcion') is-invalid @enderror" 
+                            name="descripcion" 
+                            rows="4">{{ old('descripcion', $project->descripcion) }}</textarea>
+                        @error('descripcion')
+                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
 
                     <!-- Fechas -->
                     <div class="form-group mb-3">
