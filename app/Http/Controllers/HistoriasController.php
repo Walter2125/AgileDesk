@@ -41,7 +41,7 @@ class HistoriasController extends Controller
 public function createFromColumna($columnaId)
 {
     $columna = Columna::with('tablero.proyecto')->findOrFail($columnaId);
-    $this->compartirContextoDesdeColumna($columna);
+    $this->compartirContextoDesdeColumna($columnaId);
     $tablero = $columna->tablero;
     $proyecto = $tablero->proyecto;
     $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
@@ -125,7 +125,7 @@ public function createFromColumna($columnaId)
     public function edit($id)
 {
     $historia = Historia::with(['proyecto', 'usuario'])->findOrFail($id);
-    $this->cargarTableroDesdeHistoria($historia);
+    $this->cargarTableroDesdeHistoria($historia->id);
     $proyecto = $historia->proyecto;
     $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
 

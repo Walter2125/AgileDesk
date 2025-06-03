@@ -217,10 +217,6 @@ public function boot(): void
 
                 'tareas.index' => function() use ($tablero, $historia) {
 
-                  'tareas.index'=> function() use ($tablero, $historia) {
-
-                  'tareas.index' => function() use ($tablero, $historia) {
-
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],
@@ -239,7 +235,8 @@ public function boot(): void
                         ['label'=>'Crear tarea'],
                     ];
                 },
-                'tareas.store'   => 'tareas.index',                'tareas.edit' => function() use ($tablero, $historia) {
+                'tareas.store'=> 'tareas.index',
+                'tareas.edit' => function() use ($tablero, $historia) {
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],
@@ -257,7 +254,7 @@ public function boot(): void
                     ];
                 },
                 'tareas.update'  => 'tareas.edit',
-                'tareas.destroy' => 'tareas.index',                'tareas.show' => function() use ($tablero, $historia) {
+                'tareas.destroy' => 'tareas.index','tareas.show' => function() use ($tablero, $historia) {
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],

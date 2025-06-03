@@ -83,3 +83,4 @@ class TableroController extends Controller
     {
         //
     }
+}
