@@ -26,14 +26,14 @@ $colCount = $tablero->columnas->count();
 
     <div class="container py-4">
 
-            <!-- Contenedor para select y botones -->
-            <div class="d-flex align-items-center gap-3 flex-wrap">
-
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <!-- Grupo izquierdo: Select + Crear Sprint -->
+            <div class="d-inline-flex align-items-center gap-2 flex-nowrap">
                 <!-- Select de sprints -->
                 <select class="form-select"
                         id="sprintSelect"
                         aria-label="Seleccionar sprint"
-                        style="min-width: 200px; max-width: 240px;">
+                        style="width: auto; min-width: 200px;">
                     <option value="" {{ request('sprint_id') ? '' : 'selected' }}>Ningún Sprint</option>
                     @foreach($tablero->sprints as $sprint)
                         <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
@@ -41,16 +41,6 @@ $colCount = $tablero->columnas->count();
                         </option>
                     @endforeach
                 </select>
-
-
-
-                <!-- Botón para agregar columna -->
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
-
 
                 <!-- Botón para crear sprint -->
                 <button class="btn btn-outline-primary"
@@ -60,10 +50,19 @@ $colCount = $tablero->columnas->count();
                     Crear sprint
                 </button>
             </div>
+
+            <!-- Botón derecho: Agregar columna -->
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgregarColumna">
+                Agregar columna
+            </button>
         </div>
 
+
+
         <!-- Contenedor de columnas scrollable horizontal -->
-        <div class="overflow-auto pb-3" style="width: 100%;">
+        <div class="overflow-auto pb-3 mt-3" style="width: 100%;">
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
                     <div class="bg-white border rounded shadow-sm d-flex flex-column "
