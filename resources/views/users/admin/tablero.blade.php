@@ -29,7 +29,6 @@
             </select>
         @endif
 
-<<<<<<< HEAD
     <div class="container py-4">
 
             <!-- Contenedor para select y botones -->
@@ -71,35 +70,7 @@
         Código: {{ $tablero->project->codigo }}
     </div>
 </div>
-=======
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h4">{{ $project->name }}</h1>
-            
-            <div class="btn-group">
-                @if($project->sprints && $project->sprints->count())
-                    <select class="form-select mt-2" id="sprintSelect" aria-label="Seleccionar sprint">
-                        <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
-                    </select>
-                @endif
 
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
-
-                <button class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCrearSprint"
-                        id="btnAbrirCrearSprint">
-                    Crear sprint
-                </button>
-            </div>
-        </div>
->>>>>>> 4513421c3958db7f987e067f579ba9c7fe2efe76
 
        <div class="input-group mb-3" style="width: 55%;">
     <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
