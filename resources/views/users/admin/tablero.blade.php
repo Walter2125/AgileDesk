@@ -187,8 +187,7 @@ $colCount = $tablero->columnas->count();
                 </div>
             </div>
 
-<!-- Modal de confirmación para eliminar columna -->
-<!-- Modal de confirmación para eliminar columna -->
+
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
