@@ -271,8 +271,9 @@ $colCount = $tablero->columnas->count();
         });
     </script>
 
-// que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
+
             <script>
+                // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                 document.addEventListener('DOMContentLoaded', function () {
                     const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
                     const numeroSprintSpan = document.getElementById('numeroSprint');
