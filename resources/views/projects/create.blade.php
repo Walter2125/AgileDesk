@@ -21,7 +21,17 @@
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
                 </div>
-
+                <!-- Descripción -->
+                <div class="form-group mb-3">
+                    <label for="descripcion">{{ __('Descripción') }}</label>
+                    <textarea id="descripcion" 
+                        class="form-control @error('descripcion') is-invalid @enderror" 
+                        name="descripcion" 
+                        rows="4">{{ old('descripcion') }}</textarea>
+                    @error('descripcion')
+                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                    @enderror
+                </div>
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
                     <label for="fecha_inicio">Start Date</label>
@@ -103,12 +113,14 @@ $(function () {
     let selectedUsers = @json(old('selected_users', []));
     let formData = JSON.parse(sessionStorage.getItem('projectFormData')) || {
         name: $('#name').val(),
+        descripcion: $('#descripcion').val(),
         fecha_inicio: $('#fecha_inicio').val(),
         fecha_fin: $('#fecha_fin').val()
     };
 
     // Restaurar valores del formulario
     $('#name').val(formData.name);
+    $('#descripcion').val(formData.descripcion);
     $('#fecha_inicio').val(formData.fecha_inicio);
     $('#fecha_fin').val(formData.fecha_fin);
 
@@ -116,6 +128,7 @@ $(function () {
     function saveFormState() {
         sessionStorage.setItem('projectFormData', JSON.stringify({
             name: $('#name').val(),
+            descripcion: $('#descripcion').val(),
             fecha_inicio: $('#fecha_inicio').val(),
             fecha_fin: $('#fecha_fin').val(),
             selectedUsers: selectedUsers
@@ -123,7 +136,7 @@ $(function () {
     }
 
     // Guardar estado cuando cambien los campos
-    $('#name, #fecha_inicio, #fecha_fin').on('change input', saveFormState);
+    $('#name, #descripcion, #fecha_inicio, #fecha_fin').on('change input', saveFormState);
 
     function applySelections() {
         $('input.user-checkbox, input.user-checkbox-search').each(function() {

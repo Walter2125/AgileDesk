@@ -894,6 +894,41 @@
                      <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
+
+
+
+
+                     </a>
+
+                    {{-- Debug temporal
+                     @isset($currentProject)
+                        <div style="color: white; padding: 1rem; background: red;">
+                            currentProject está definido: {{ $currentProject->id }}
+                        </div>
+                    @else
+                        <div style="color: white; padding: 1rem; background: red;">
+                            currentProject NO está definido
+                        </div>
+                    @endisset--}}
+
+
+                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
+                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-list-task"></i>
+                            <span class="sidebar-text">Backlog</span>
+                        </a>
+
+                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-columns-gap"></i>
+                            <span class="sidebar-text">Tablero</span>
+                        </a>
+                    @endif
+
+
+                    <!-- -->
+
+                    <!-- otros botones comentados por ahora -->
+
                      </a>
                      <!-- Ejemplo de submenú -->
                      <div class="list-group-item list-group-item-action text-white sidebar-has-tree" onclick="toggleSubmenu(event, 'submenu1')" title="Gestión">
@@ -905,6 +940,7 @@
                         <a href="#" class="list-group-item list-group-item-action text-white ps-5">Opción 1</a>
                         <a href="#" class="list-group-item list-group-item-action text-white ps-5">Opción 2</a>
                     </div>
+
                 </div>
 
                 <!-- User dropdown in sidebar -->

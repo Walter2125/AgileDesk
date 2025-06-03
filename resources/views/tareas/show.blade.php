@@ -1,8 +1,13 @@
 @extends('layouts.app')
         @section('mensaje-superior')
         Lista de Tareas: {{ $historia->nombre }}
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+                   
+         <h1 class="titulo-historia">
+            Lista de Tareas para la Historia: {{ $historia->nombre }}
+        </h1>
+            </div>
         @endsection
-
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
@@ -31,7 +36,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
-                    <th>Actividad</th>
+                    <th>Tipo de Actividad</th>
                     <th>Fecha de Creación</th>
                     <th>Acciones</th>
                 </tr>
@@ -120,7 +125,7 @@
     <a href="{{ route('tareas.index', $historia->id) }}" 
    class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm" 
    style="background-color: #e6f2ff;">
-    ➕ Crear Nueva Tarea
+     Crear Nueva Tarea
 </a>
 
 @endsection

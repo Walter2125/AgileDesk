@@ -10,6 +10,7 @@ use App\Models\Tablero;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -31,7 +32,8 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name',
+            'name' => 'required|unique:nuevo_proyecto,name|max:30',
+            'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
             'selected_users' => 'required|array|min:1',
@@ -40,13 +42,19 @@ class ProjectController extends Controller
         try {
             DB::beginTransaction();
 
+            // Generar código único de 5 caracteres
+            $codigo = Project::generarCodigo(5);
+
             // Crear proyecto
             $project = Project::create([
-                'name'         => $request->name,
+                'name' => $request->name,
+                'codigo' => $codigo,
+                'descripcion'  => $request->descripcion,
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin'    => $request->fecha_fin,
                 'user_id'      => Auth::id(),
             ]);
+
 
             $project->users()->sync(array_unique(array_merge(
                 [Auth::id()],
@@ -65,6 +73,16 @@ class ProjectController extends Controller
                 'es_backlog' => true,
             ]);
 
+            $tablero = Tablero::create([
+            'proyecto_id' => $project->id,
+           ]);
+
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ]);
+          
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
@@ -134,7 +152,8 @@ class ProjectController extends Controller
     {
         // Validación de datos
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name,' . $id,
+            'name' => 'required|unique:nuevo_proyecto,name|max:30,' . $id,
+            'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'users' => 'required|array|min:1', // Aseguramos que al menos un usuario se seleccione
@@ -152,6 +171,7 @@ class ProjectController extends Controller
         // Actualizar el proyecto
         $project->update([
             'name' => $request->name,
+            'descripcion' => $request->descripcion,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
