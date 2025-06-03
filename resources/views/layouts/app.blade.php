@@ -31,6 +31,8 @@
     <style>
 
 
+
+
     :root {
         --sidebar-width: 280px;
         --sidebar-collapsed-width: 70px;
@@ -471,7 +473,34 @@
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Proyectos</span>
 
+                         @php
+                             $currentProject = App\Models\Project::find(request()->route('project'));
+                         @endphp
+
+
                      </a>
+                    @if(request()->is('admin/projects/*') || request()->is('projects/*'))
+                        <!-- Botón para Backlog -->
+                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-list-task"></i>
+                            <span class="sidebar-text">Backlog</span>
+                        </a>
+
+                        <!-- Botón para Tablero -->
+                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-columns-gap"></i>
+                            <span class="sidebar-text">Tablero</span>
+                        </a>
+                    @endif
+
+
+
+
+
+
+
+                    <!-- -->
+
                     <!-- otros botones comentados por ahora -->
                 </div>
 

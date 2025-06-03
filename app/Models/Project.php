@@ -15,22 +15,35 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
     }
-    
+
      public function creator()
     {
-        return $this->belongsTo(User::class, 'user_id'); 
+        return $this->belongsTo(User::class, 'user_id');
     }
-    
+
     //relacion nesesaria con historias
     public function historias()
     {
         return $this->hasMany(Historia::class, 'proyecto_id');
     }
-    
+
     //relacion de tablero
     public function tablero()
     {
         return $this->hasOne(Tablero::class, 'proyecto_id');
     }
+
+    public function sprints()
+    {
+        return $this->hasManyThrough(
+            \App\Models\Sprint::class,
+            \App\Models\Tablero::class,
+            'proyecto_id',
+            'tablero_id',
+            'id',
+            'id'
+        );
+    }
+
 }
 

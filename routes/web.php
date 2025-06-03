@@ -17,6 +17,7 @@ use App\Http\Controllers\TableroController;
 use App\Http\Controllers\ColumnaController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\HistorialCambioController;
+use App\Http\Controllers\BacklogController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
@@ -121,6 +122,13 @@ Route::middleware(['auth', 'role:admin'])
 
         // Eliminar un sprint (sin necesidad de pasar por tablero)
         Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
+
+        //------------
+        Route::get('/projects/{project}/backlog', [BacklogController::class, 'index'])->name('backlog.index');
+
+
+
+
 
         //------------------------------------------------------
 
