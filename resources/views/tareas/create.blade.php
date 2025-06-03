@@ -1,6 +1,14 @@
 @extends('layouts.app')
         @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+        
+         <h1 class="titulo-historia">
+            📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
+        </h1>
+            </div>
+
             Crear Tarea: {{ Str::limit($historia->nombre, 20) }}
+
         @endsection
 
 @section('content')
@@ -52,7 +60,7 @@
                 @enderror
             </div>
 
-            <!-- Descripción -->
+            <!-- descripción -->
             <div class="mb-4">
                 <label for="descripcion" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
                 <textarea name="descripcion" id="descripcion" class="form-control @error('descripcion') is-invalid @enderror" required>{{ old('descripcion') }}</textarea>
@@ -61,16 +69,16 @@
                 @enderror
             </div>
 
-            <!-- Actividad -->
+            <!-- actividad -->
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad" class="form-control @error('actividad') is-invalid @enderror" required>
                     <option value=""> Seleccione una actividad </option>
-                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo'] as $opcion)
-    <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
-        {{ $opcion == 'OtroTipo' ? 'Otro Tipo' : $opcion }}
-    </option>
-@endforeach
+                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño'] as $opcion)
+                        <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
+                            {{ $opcion }}
+                        </option>
+                    @endforeach
                 </select>
                 @error('actividad')
                     <div class="invalid-feedback">{{ $message }}</div>

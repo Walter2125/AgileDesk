@@ -180,6 +180,26 @@ private function compartirContextoDesdeColumna(Columna $columna)
      * Update the specified resource in storage.
      */
     public function update(Request $request, Historia $historia)
+<<<<<<< HEAD
+{
+    $request->validate([
+       'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id . ',id',
+
+        'trabajo_estimado' => 'nullable|integer|min:0',
+        'prioridad' => 'required|in:Alta,Media,Baja',
+        'descripcion' => 'nullable|string|max:1000',
+        'usuario_id' => 'nullable|exists:users,id',  // si para asignar usuario
+    ], [
+        'nombre.required' => 'El nombre es obligatorio.',
+        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+        'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+        'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+        'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+        'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+        'prioridad.required' => 'Debe seleccionar una prioridad.',
+        'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+    ]);
+=======
     {
         $request->validate([
             'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id,
@@ -200,6 +220,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
             'columna_id.exists' => 'La columna seleccionada no existe.',
         ]);
+>>>>>>> 8a0593ceb38b4d9937419ba8cf22264d076470a2
 
         $historia->update([
             'nombre' => $request->nombre,

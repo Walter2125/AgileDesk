@@ -2,16 +2,29 @@
 
 @section('title')
         @section('mensaje-superior')
+
+            <div class="mt-4 text-lg font-semibold text-blue-600 ">
+
+            <h1 class="titulo-historia" >📖Detalle de la Historia</h1>
+            </div>
+        @endsection
+    @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+            <h1 class="titulo-historia">📖 Detalle de la Historia</h1>
+        </div>
+    @endsection
+
             Detalle de la Historia
         @endsection
 
-    @section('content')
+@section('content')
 
-        <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
-        <div class="container-fluid mi-container ">
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
-            @if (session('success'))
+<div class="container-fluid-m-2 mi-container m-2">
+
+             @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
                 </div>
@@ -36,6 +49,13 @@
                         title="{{ $historia->nombre }}">
                         {{ $historia->nombre }}
                     </h2>
+    <div class="historia-header">
+        <h2 class="historia-title"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
+            title="{{ $historia->nombre }}">
+            H{{ $historia->numero }} {{  $historia->nombre }}
+        </h2>
+      
 
                     <div class="historia-meta">
                         <span class="badge bg-primary">{{ $historia->prioridad }}</span>
@@ -51,39 +71,36 @@
                             {{ $historia->descripcion }}
                         </div>
                     </div>
-
-
-                    <div class="historia-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Estado:</span>
-                            <span class="detail-value">
-                        {{ $historia->columna ? $historia->columna->nombre : 'No especificado' }}
-                    </span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Sprint:</span>
-                            <span class="detail-value">
-                        @php
-                            $sprint = \App\Models\Sprint::find($historia->sprint_id);
-                        @endphp
-                                {{ $sprint ? $sprint->nombre : 'No asignado' }}
-                    </span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Fecha creación:</span>
-                            <span class="detail-value">{{ $historia->created_at->format('d/m/Y') }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Asignado a:</span>
-                            <span class="detail-value">
-                        {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
-                    </span>
-                        </div>
+                <div class="historia-section ">
+                    <h3 class="section-title">Descripción</h3>
+                    <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
+                        {{ $historia->descripcion }}
                     </div>
                 </div>
 
-            </div>
 
+        <div class="historia-details">
+            <div class="detail-item">
+                <span class="detail-label">Estado:</span>
+                <span class="detail-value">{{ $historia->estado ?? 'No especificado' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Sprint:</span>
+                <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha creación:</span>
+                <span class="detail-value">{{ $historia->created_at->format('d/m/Y') }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Asignado a:</span>
+                <span class="detail-value">
+                    {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
 
             <a href="{{ route('tareas.show', $historia->id) }}"
                class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"

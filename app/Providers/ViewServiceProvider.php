@@ -213,7 +213,14 @@ public function boot(): void
                 'users.search'    => 'admin.users.index',
 
                 // Tareas
+
+
+                'tareas.index' => function() use ($tablero, $historia) {
+
+                  'tareas.index'=> function() use ($tablero, $historia) {
+
                   'tareas.index' => function() use ($tablero, $historia) {
+
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],

@@ -21,7 +21,21 @@ protected $fillable = [
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
+<<<<<<< HEAD
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($historia) {
+            if ($historia->numero === null && $historia->proyecto_id !== null) {
+                $ultimoNumero = self::where('proyecto_id', $historia->proyecto_id)->max('numero') ?? 0;
+                $historia->numero = $ultimoNumero + 1;
+            }
+        });
+    }
+=======
     
+>>>>>>> 8a0593ceb38b4d9937419ba8cf22264d076470a2
     public function sprints() {
         return $this->belongsTo(Sprint::class);
     }

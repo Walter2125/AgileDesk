@@ -7,6 +7,9 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     @php
 
 $colCount = $tablero->columnas->count();
@@ -16,6 +19,25 @@ $colCount = $tablero->columnas->count();
     @endphp
 
     <div class="container py-4">
+
+                
+            <!-- No borren esta nofificacion -->
+                @if (session('success'))
+                            <div class="alert alert-success mt-2" id="success-alert">
+                                {{ session('success') }}
+                            </div>
+
+                            <script>
+                                setTimeout(function() {
+                                    const alert = document.getElementById('success-alert');
+                                    if (alert) {
+                                        alert.style.transition = "opacity 0.5s ease";
+                                        alert.style.opacity = 0;
+                                        setTimeout(() => alert.remove(), 500);
+                                    }
+                                }, 3000);
+                            </script>
+                        @endif
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -109,23 +131,85 @@ $colCount = $tablero->columnas->count();
                             </a>
                         </div>
 
-                        <div class="overflow-auto p-2 historia-lista"
-                             data-columna-id="{{ $columna->id }}"
-                             style="flex: 1; min-height: 100px;">
+                     <!--inicio-->
+
+                        <div class="overflow-auto p-2" style="flex: 4;">
                             @foreach ($columna->historias as $historia)
-                               <a href="{{ route('historias.show', $historia->id) }}"
-                                  class="card mb-2 p-2 text-decoration-none text-dark d-block historia-item"
-                                  data-historia-id="{{ $historia->id }}"
-                                  style="width: 100%; word-break: break-word; overflow: hidden;">
-                                   <strong class="d-block" title="{{ $historia->nombre }}">
-                                       {{ $historia->nombre }}
-                                   </strong>
-                               </a>
-                           @endforeach
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        {{-- Columna 1: Contenido --}}
+                                        <div style="flex: 1;">
+                                            <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
+                                                <strong class="d-block text-truncate"
+                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                                        title="{{ $historia->nombre }}">
+                                                     H{{ $historia->numero }} {{ $historia->nombre }}
+                                                </strong>
+                                                @if ($historia->descripcion)
+                                                    <div style="max-height: 4.5em; overflow: hidden; line-height: 1.5em; word-wrap: break-word; overflow-wrap: break-word;">
+                                                        Descripcion: {{ $historia->descripcion }}
+                                                    </div>
+                                                @endif
+                                            </a>
+                                        </div>
+
+                                        {{-- Columna 2: Menú --}}
+                                        <div class="ms-2">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    &#x22EE; {{-- ⋮ --}}
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                            Eliminar
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Modal de confirmación --}}
+                                    <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Se eliminará la historia:
+                                                    <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;"
+                                                        title="{{ $historia->nombre }}">
+                                                        {{ $historia->nombre }}
+                                                    </strong><br>
+                                                    Esta acción no se puede deshacer.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    </div>
-                @endforeach
-            </div>
+
+                        <!-- fin-->
+
+                </div>
+            @endforeach
         </div>
     </div>
 
