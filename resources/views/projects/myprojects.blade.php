@@ -31,6 +31,7 @@
         flex-direction: column;
     }
     
+    /* Project Header  */
     .project-header {
         display: flex;
         justify-content: space-between;
@@ -53,19 +54,18 @@
         align-items: center;
         gap: 0.5rem;
         justify-content: flex-start;
-        text-align: left;
+        width: 100%;
     }
     
     .project-title i {
         color: #3498db;
         font-size: 1.1rem;
         flex-shrink: 0;
-        text-align: left;
     }
     
     .project-code {
         font-size: 0.82rem;
-        color:rgb(27, 27, 27);
+        color: #6c757d;
         text-align: left;
     }
     
@@ -79,7 +79,6 @@
     font-size: 0.82rem;
     }
 
-    
     .date-block {
         background-color: #f8f9fa;
         padding: 0.4rem 0.7rem;
@@ -291,9 +290,8 @@
                                 {{ Str::limit($project->descripcion, 100) }}
                             </div>
 
-                            <!-- Botones -->
-                            <div class="mt-3 d-flex flex-wrap gap-2">
-                                <a href="{{ route('tableros.show', $project->id) }}"  class="btn btn-info btn-sm rounded-pill">
+                            <div class="action-buttons">
+                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
 
