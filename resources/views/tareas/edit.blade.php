@@ -1,11 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-        
-         <h1 class="titulo-historia">
-            ✏️ Editar Tarea: {{ $tarea->nombre }}
-        </h1>
-            </div>
+        Editar Tarea: {{ $tarea->nombre }}
         @endsection
             
 

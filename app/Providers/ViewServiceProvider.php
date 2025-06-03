@@ -23,8 +23,15 @@ class ViewServiceProvider extends ServiceProvider
 public function boot(): void 
 {
     View::composer('*', function ($view) {
+        $currentRoute = \Illuminate\Support\Facades\Route::current();
         $route = \Illuminate\Support\Facades\Route::currentRouteName();
-        $historiaParam = \Illuminate\Support\Facades\Route::current()->parameter('historia');
+        
+        // Verificar que existe una ruta actual antes de acceder a sus parámetros
+        if (!$currentRoute) {
+            return;
+        }
+        
+        $historiaParam = $currentRoute->parameter('historia');
         $tablero = null;
         $historia = null;
 
@@ -40,11 +47,9 @@ public function boot(): void
             $tablero = $historia->columna->tablero;
             View::share('historia', $historia);
             View::share('tablero', $tablero);
-        }
-
-        // Si estamos en la ruta del tablero directamente
+        }        // Si estamos en la ruta del tablero directamente
         if ($route === 'tableros.show') {
-            $tableroParam = \Illuminate\Support\Facades\Route::current()->parameter('tablero');
+            $tableroParam = $currentRoute->parameter('tablero');
             if ($tableroParam instanceof \App\Models\Tablero) {
                 $tablero = $tableroParam;
             } elseif (is_numeric($tableroParam)) {
@@ -89,7 +94,17 @@ public function boot(): void
                         ['label' => 'Historia'],
                     ];
                 },                'historias.create.fromColumna' => function () {
-                    $columnaParam = \Illuminate\Support\Facades\Route::current()->parameter('columna');
+                    $currentRoute = \Illuminate\Support\Facades\Route::current();
+                    
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Nueva historia'],
+                        ];
+                    }
+                    
+                    $columnaParam = $currentRoute->parameter('columna');
                     $columna = null;
 
                     if (is_numeric($columnaParam)) {

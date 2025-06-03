@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+     @section('mensaje-superior')
+            Proyectos
+        @endsection
 @section('styles')
 <style>
     /* Project Card Styling */

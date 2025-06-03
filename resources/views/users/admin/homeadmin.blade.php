@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Panel de Administración - Agile Desk')
+@section('title', 'Administration - Agile Desk')
 
 @section('styles')
     <style>
@@ -229,43 +229,81 @@
         <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Usuarios</span>
-                    <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-people"></i> Ver Todos
-                    </a>
+                    <span>Users</span>
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-people"></i> View All
+                        </a>
+                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Deleted Users
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
+                                    <th>Name</th>
                                     <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($usuarios as $usuario)
-                                <tr>
-                                    <td>{{ $usuario->name }}</td>
+                                <tr class="{{ $usuario->trashed() ? 'table-secondary' : '' }}">
+                                    <td>
+                                        {{ $usuario->name }}
+                                        @if($usuario->trashed())
+                                            <span class="badge bg-secondary ms-1">Deleted</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $usuario->email }}</td>
                                     <td>{{ ucfirst($usuario->usertype) }}</td>
                                     <td>
-                                        <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
-                                        </span>
+                                        @if($usuario->trashed())
+                                            <span class="badge bg-secondary">Deleted</span>
+                                        @else
+                                            <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
+                                                {{ $usuario->is_approved ? 'Approved' : 'Pending' }}
+                                            </span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            
+                                            @if($usuario->usertype !== 'admin')
+                                                @if($usuario->trashed())
+                                                    <!-- Botón para restaurar usuario -->
+                                                    <button type="button" class="btn btn-sm btn-success" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#restoreUserModal"
+                                                            data-user-id="{{ $usuario->id }}"
+                                                            data-user-name="{{ $usuario->name }}">
+                                                        <i class="bi bi-arrow-clockwise"></i>
+                                                    </button>
+                                                @else
+                                                    <!-- Botón para eliminar usuario -->
+                                                    <button type="button" class="btn btn-sm btn-danger" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#deleteUserModal"
+                                                            data-user-id="{{ $usuario->id }}"
+                                                            data-user-name="{{ $usuario->name }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                @endif
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No hay usuarios registrados</td>
+                                    <td colspan="5" class="text-center">No users registered</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -390,7 +428,7 @@
                                 @forelse($sprints as $sprint)
                                 <tr>
                                     <td>{{ $sprint->nombre }}</td>
-                                    <td>{{ $sprint->proyecto->nombre ?? 'N/A' }}</td>
+                                    <td>{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td>
                                         <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
                                             {{ ucfirst($sprint->estado) }}
@@ -418,12 +456,100 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para confirmar eliminación de usuario -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Delete Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
+                <p class="text-muted small">This user will be soft deleted and can be restored later.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteUserForm" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar restauración de usuario -->
+<div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restoreUserModalLabel">Restore Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to restore user <strong id="restoreUserName"></strong>?</p>
+                <p class="text-muted small">The user will be restored to active status.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="restoreUserForm" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Restore User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Referencias a los elementos DOM
+            // JavaScript para manejar modales de eliminación y restauración de usuarios
+            
+            // Modal de eliminación de usuario
+            const deleteUserModal = document.getElementById('deleteUserModal');
+            if (deleteUserModal) {
+                deleteUserModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const userId = button.getAttribute('data-user-id');
+                    const userName = button.getAttribute('data-user-name');
+                    
+                    // Actualizar el contenido del modal
+                    document.getElementById('deleteUserName').textContent = userName;
+                    
+                    // Actualizar la acción del formulario
+                    const form = document.getElementById('deleteUserForm');
+                    form.action = `/admin/users/${userId}/delete`;
+                });
+            }
+            
+            // Modal de restauración de usuario  
+            const restoreUserModal = document.getElementById('restoreUserModal');
+            if (restoreUserModal) {
+                restoreUserModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const userId = button.getAttribute('data-user-id');
+                    const userName = button.getAttribute('data-user-name');
+                    
+                    // Actualizar el contenido del modal
+                    document.getElementById('restoreUserName').textContent = userName;
+                    
+                    // Actualizar la acción del formulario
+                    const form = document.getElementById('restoreUserForm');
+                    form.action = `/admin/users/${userId}/restore`;
+                });
+            }
+            
+            // Referencias a los elementos DOM existentes
             const searchInput = document.getElementById('searchProjects');
             const searchButton = document.getElementById('btnSearchProjects');
             const projectRows = document.querySelectorAll('.project-row');

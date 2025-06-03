@@ -3,10 +3,7 @@
 @section('title')
 
 @section('mensaje-superior')
-    <div class="mt-4 text-lg font-semibold text-blue-600">
-
-       <h1 class="titulo-historia">📝Crea una nueva Historia</h1>
-    </div>
+    Crea una nueva Historia
 @endsection
 
 

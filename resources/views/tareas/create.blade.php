@@ -1,11 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-        
-         <h1 class="titulo-historia">
-            📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
-        </h1>
-            </div>
+            Crear Tarea: {{ Str::limit($historia->nombre, 20) }}
         @endsection
 
 @section('content')

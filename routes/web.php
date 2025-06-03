@@ -99,6 +99,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+        
+        // Rutas para eliminar y restaurar usuarios
+        Route::delete('/users/{user}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+        Route::patch('/users/{id}/restore', [AdminController::class, 'restoreUser'])->name('admin.users.restore');
+        
+        // Rutas para historial de usuarios eliminados
+        Route::get('/deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
+        Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
+        
         //historial de cambios
         Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 

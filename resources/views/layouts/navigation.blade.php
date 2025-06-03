@@ -11,51 +11,27 @@
                 </button>
 
                 <!-- Mensaje personalizado -->
-                <div class="text-lg font-semibold text-gray-700">
-                    @yield('mensaje-superior')
+                <div class="d-none d-sm-block">
+                    <div class="text-dark text-truncate fw-bold" style="max-width: 250px; font-size: 1rem;">
+                        @yield('mensaje-superior')
+                    </div>
                 </div>
             </div>
 
             <!-- Derecha: Enlaces + Dropdown -->
             <div class="flex items-center space-x-6">
                 <!-- Enlaces -->
-                <div class="flex items-center space-x-6">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                <div class="flex items-center space-x-6">                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        Dashboard
                     </x-nav-link>
                     <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
-                        {{ __('Usuarios') }}
+                        Users
                     </x-nav-link>
-                </div>
-
-                <!-- Dropdown Usuario -->
+                </div>                <!-- Información del usuario (opciones en sidebar) -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
-                                        <path d="M5.516 7.548L10 12.032l4.484-4.484L16 8.064l-6 6-6-6z"/>
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-
-                            <!-- Logout -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
+                    <div class="text-sm text-gray-600">
+                        {{ Auth::user()->name }}
+                    </div>
                 </div>
 
                 <!-- Botón Hamburguesa (responsive) -->
@@ -75,9 +51,8 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+        <div class="pt-2 pb-3 space-y-1">            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                Dashboard
             </x-responsive-nav-link>
         </div>
 
