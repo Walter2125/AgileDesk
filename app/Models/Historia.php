@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Historia extends Model{   
+class Historia extends Model{
 protected $fillable = [
     'nombre',
     'trabajo_estimado',
@@ -15,16 +15,31 @@ protected $fillable = [
     'tablero_id',
     'proyecto_id',
     'usuario_id',
+    'sprint_id'
 ];
 
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
+<<<<<<< HEAD
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($historia) {
+            if ($historia->numero === null && $historia->proyecto_id !== null) {
+                $ultimoNumero = self::where('proyecto_id', $historia->proyecto_id)->max('numero') ?? 0;
+                $historia->numero = $ultimoNumero + 1;
+            }
+        });
+    }
+=======
     
+>>>>>>> 8a0593ceb38b4d9937419ba8cf22264d076470a2
     public function sprints() {
         return $this->belongsTo(Sprint::class);
     }
-    //relacion necesaria con proyecto 
+    //relacion necesaria con proyecto
     public function proyecto()
     {
         return $this->belongsTo(Project::class, 'proyecto_id');
@@ -42,6 +57,6 @@ protected $fillable = [
     {
         return $this->hasMany(Tarea::class, 'historia_id');
     }
-   
+
 
 }

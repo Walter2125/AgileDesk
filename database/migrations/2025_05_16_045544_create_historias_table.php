@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('historias', function (Blueprint $table) {
             $table->id();
+            $table->integer('numero');
             $table->string('nombre')->unique();
             $table->integer('trabajo_estimado')->nullable();
             $table->enum('prioridad', ['Alta', 'Media', 'Baja'])->default('Media');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->foreignId('tablero_id')->nullable()->constrained('tableros')->onDelete('cascade');
             $table->foreignId('sprint_id')->nullable()->constrained('sprints')->onDelete('set null');
             $table->timestamps();
+            $table->unique(['proyecto_id', 'numero']); 
             $table->unique(['nombre', 'tablero_id'], 'historias_nombre_tablero_unique');
             $table->foreignId('proyecto_id')->constrained('nuevo_proyecto')->onDelete('cascade');
             $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null');

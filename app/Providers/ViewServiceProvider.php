@@ -23,8 +23,15 @@ class ViewServiceProvider extends ServiceProvider
 public function boot(): void 
 {
     View::composer('*', function ($view) {
+        $currentRoute = \Illuminate\Support\Facades\Route::current();
         $route = \Illuminate\Support\Facades\Route::currentRouteName();
-        $historiaParam = \Illuminate\Support\Facades\Route::current()->parameter('historia');
+        
+        // Verificar que existe una ruta actual antes de acceder a sus parámetros
+        if (!$currentRoute) {
+            return;
+        }
+        
+        $historiaParam = $currentRoute->parameter('historia');
         $tablero = null;
         $historia = null;
 
@@ -40,24 +47,21 @@ public function boot(): void
             $tablero = $historia->columna->tablero;
             View::share('historia', $historia);
             View::share('tablero', $tablero);
-        }
-
-        // Si estamos en la ruta del tablero directamente
+        }        // Si estamos en la ruta del tablero directamente
         if ($route === 'tableros.show') {
-            $tableroParam = \Illuminate\Support\Facades\Route::current()->parameter('tablero');
+            $tableroParam = $currentRoute->parameter('tablero');
             if ($tableroParam instanceof \App\Models\Tablero) {
                 $tablero = $tableroParam;
             } elseif (is_numeric($tableroParam)) {
                 $tablero = \App\Models\Tablero::with('proyecto')->find($tableroParam);
             }
 
-            if ($tablero) {
-                View::share('tablero', $tablero);
+                if ($tablero) {
+                    View::share('tablero', $tablero);
+                }
             }
-        }
 
-        
-                    $breadcrumbsMap = [
+            $breadcrumbsMap = [
                 // Dashboard
                 'dashboard' => [
                     ['label' => 'Inicio', 'url' => route('dashboard')],
@@ -88,8 +92,24 @@ public function boot(): void
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                         ['label' => 'Historia'],
                     ];
+
+                },
+
+                'historias.create.fromColumna' => function () {
+                    $columnaParam = Route::current()->parameter('columna');
+
                 },                'historias.create.fromColumna' => function () {
-                    $columnaParam = \Illuminate\Support\Facades\Route::current()->parameter('columna');
+                    $currentRoute = \Illuminate\Support\Facades\Route::current();
+                    
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Nueva historia'],
+                        ];
+                    }
+                    
+                    $columnaParam = $currentRoute->parameter('columna');
                     $columna = null;
 
                     if (is_numeric($columnaParam)) {
@@ -115,36 +135,26 @@ public function boot(): void
                         ['label' => 'Nueva historia'],
                     ];
                 },
-                'historias.store' => 'historias.index',                'historias.show' => function() use ($tablero, $historia) {
-                        if (!$tablero || !$historia) {
-                            return [
-                                ['label' => 'Inicio', 'url' => route('dashboard')],
-                                ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                                ['label' => 'Ver historia'],
-                            ];
-                        }
-                        return [
-                            ['label' => 'Inicio', 'url' => route('dashboard')],
-                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                            ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
-                            ['label' => 'Ver historia'],
-                        ];
-                    },                'historias.edit' => function() use ($tablero, $historia) {
-                       if (!$tablero || !$historia) {
-                            return [
-                                ['label' => 'Inicio', 'url' => route('dashboard')],
-                                ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                                ['label' => 'Editar historia'],
-                            ];
-                       }
-                       return [
-                            ['label' => 'Inicio', 'url' => route('dashboard')],
-                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                             ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
-                            ['label'=>'Historias','url'=>route('historias.show',$historia->id)],
-                            ['label' => 'Editar historia'],
-                        ];
-                    },
+
+                'historias.store' => 'historias.index',
+                'historias.show' => function() use ($tablero, $historia) {
+                    return [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label' => 'Ver historia'],
+                    ];
+                },
+                'historias.edit' => function() use ($tablero, $historia) {
+                    return [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
+                        ['label' => 'Editar historia'],
+                    ];
+                },
+
                 'historias.update' => 'historias.edit',
                 'historias.destroy'=> 'historias.index',
 
@@ -163,7 +173,7 @@ public function boot(): void
                 // Projects CRUD
                 'projects.create'  => [
                     ['label' => 'Inicio',      'url' => route('dashboard')],
-                     ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                    ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                     ['label' => 'Crear proyecto'],
                 ],
                 'projects.store'   => 'projects.create',
@@ -203,7 +213,14 @@ public function boot(): void
                 'users.search'    => 'admin.users.index',
 
                 // Tareas
+
+
+                'tareas.index' => function() use ($tablero, $historia) {
+
+                  'tareas.index'=> function() use ($tablero, $historia) {
+
                   'tareas.index' => function() use ($tablero, $historia) {
+
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],
@@ -212,12 +229,13 @@ public function boot(): void
                         ];
                     }
                     
+
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
-                        ['label'=>'Historias','url'=>route('historias.show',$historia->id)],
-                        ['label'=>'Lista de tareas','url'=>route('tareas.show',$historia->id)],
+                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
+                        ['label'=>'Lista de tareas','url'=> $historia ? route('tareas.show',$historia->id) : '#'],
                         ['label'=>'Crear tarea'],
                     ];
                 },
@@ -232,9 +250,9 @@ public function boot(): void
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
-                        ['label'=>'Historias','url'=>route('historias.show',$historia->id)],
-                        ['label'=>'Lista de tareas','url'=>route('tareas.show',$historia->id)],
+                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
+                        ['label'=>'Lista de tareas','url'=> $historia ? route('tareas.show',$historia->id) : '#'],
                         ['label'=>'Editar tarea'],
                     ];
                 },
@@ -250,15 +268,14 @@ public function boot(): void
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
-                        ['label'=>'Historias','url'=>route('historias.show',$historia->id)],
+                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
                         ['label'=>'Lista de tareas'],
                     ];
                 },
-
             ];
 
-           // Normalizar atajos de rutas
+            // Normalizar atajos de rutas
             foreach ($breadcrumbsMap as $key => $val) {
                 if (is_string($val) && isset($breadcrumbsMap[$val])) {
                     $breadcrumbsMap[$key] = $breadcrumbsMap[$val];
@@ -267,13 +284,14 @@ public function boot(): void
 
             // Obtener las migas de pan para la ruta actual
             $breadcrumbs = $breadcrumbsMap[$route] ?? [];
-            
+
             // Si es una función, evaluarla para obtener las migas de pan
             if ($breadcrumbs instanceof \Closure) {
                 $breadcrumbs = $breadcrumbs();
             }
-            
-            $view->with('breadcrumbs', $breadcrumbs);
+
+            // Compartir migas con la vista
+            View::share('breadcrumbs', $breadcrumbs);
         });
     }
 }

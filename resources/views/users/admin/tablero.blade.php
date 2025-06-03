@@ -1,76 +1,86 @@
 @extends('layouts.app')
 
-@section('mensaje-superior')
-    <div class="mt-4 text-lg font-semibold text-blue-600">
-        <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
-    </div>
-@endsection
+        @section('mensaje-superior')
+            Tablero de {{ $project->name }}
+        @endsection
+
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-@php
-    $colCount = $tablero->columnas->count();
-    $widthStyle = ($colCount <= 4)
-        ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
-        : 'width: 300px; flex-shrink: 0;';
-@endphp
 
-<div class="container py-4">
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-        @if($tablero->sprints && $tablero->sprints->count())
-            <select class="form-select"
-                    id="sprintSelect"
-                    aria-label="Seleccionar sprint"
-                    style="min-width: 200px; max-width: 240px;">
-                <option selected disabled>Selecciona un sprint</option>
-                @foreach($tablero->sprints as $sprint)
-                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                @endforeach
-            </select>
-        @endif
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
+    @php
+
+$colCount = $tablero->columnas->count();
+        $widthStyle = ($colCount <= 4)
+            ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
+            : 'width: 300px; flex-shrink: 0;';
+    @endphp
+    
+    
     <div class="container py-4">
 
+                
+            <!-- No borren esta nofificacion -->
+                @if (session('success'))
+                            <div class="alert alert-success mt-2" id="success-alert">
+                                {{ session('success') }}
+                            </div>
+
+                            <script>
+                                setTimeout(function() {
+                                    const alert = document.getElementById('success-alert');
+                                    if (alert) {
+                                        alert.style.transition = "opacity 0.5s ease";
+                                        alert.style.opacity = 0;
+                                        setTimeout(() => alert.remove(), 500);
+                                    }
+                                }, 3000);
+                            </script>
+                        @endif
+
+
             <!-- Contenedor para select y botones -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
 
-    <!-- Lado izquierdo: select y botones -->
-    <div class="d-flex align-items-center gap-2">
-        <!-- Select de sprints -->
-        @if($tablero->sprints && $tablero->sprints->count())
-            <select class="form-select"
-                    id="sprintSelect"
-                    aria-label="Seleccionar sprint"
-                    style="min-width: 200px; max-width: 240px;">
-                <option selected disabled>Selecciona un sprint</option>
-                @foreach($tablero->sprints as $sprint)
-                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                @endforeach
-            </select>
-        @endif
+                <!-- Select de sprints -->
+                @if($tablero->sprints && $tablero->sprints->count())
+                    <select class="form-select"
+                            id="sprintSelect"
+                            aria-label="Seleccionar sprint"
+                            style="min-width: 200px; max-width: 240px;">
+                        <option selected disabled>Selecciona un sprint</option>
+                        @foreach($tablero->sprints as $sprint)
+                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                        @endforeach
+                    </select>
+                @endif
 
-        <!-- Botón para agregar columna -->
-        <button class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#modalAgregarColumna">
-            Agregar columna
-        </button>
+                <!-- Botón para agregar columna -->
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna">
+                    Agregar columna
+                </button>
 
-        <!-- Botón para crear sprint -->
-        <button class="btn btn-outline-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#modalCrearSprint"
-                id="btnAbrirCrearSprint">
-            Crear sprint
-        </button>
-    </div>
-
-    <!-- Lado derecho: código del proyecto -->
+                <!-- Botón para crear sprint -->
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint">
+                    Crear sprint
+                </button>
+            </div>
+            <!-- Lado derecho: código del proyecto -->
     <div class="text-muted fw-bold">
         Código: {{ $tablero->project->codigo }}
     </div>
-</div>
+        </div>
 
+        <!-- Contenedor de columnas scrollable horizontal -->
+        <div class="overflow-auto pb-3 mt-3" style="width: 100%;">
 
        <div class="input-group mb-3" style="width: 55%;">
     <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
@@ -80,9 +90,10 @@
 </div>
 
         <div class="overflow-auto pb-3" style="width: 100%;">
+
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
-                    <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2"
+                    <div class="bg-white border rounded shadow-sm d-flex flex-column "
                          style="{{ $widthStyle }} min-height: 500px;">
                         <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                             @if($columna->es_backlog)
@@ -94,16 +105,30 @@
                                        data-column-id="{{ $columna->id }}">
                             @endif
 
-                            @if(!$columna->es_backlog)
-                                <div class="dropdown">
+                                <div class="dropdown ms-2">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle"
                                             type="button"
-                                            data-bs-toggle="dropdown"></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
+                                            id="dropdownMenuButton{{ $columna->id }}"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        ⋮
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
+                                        <li>
+                                            <button class="dropdown-item" disabled>
+                                                <strong>Acciones</strong>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item"
+                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
+                                                Eliminar columna
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
-                            @endif
+
+
                         </div>
 
                         <div class="p-2 border-bottom">
@@ -113,23 +138,85 @@
                             </a>
                         </div>
 
-                        <div class="overflow-auto p-2 historia-lista"
-                             data-columna-id="{{ $columna->id }}"
-                             style="flex: 1; min-height: 100px;">
+                     <!--inicio-->
+
+                        <div class="overflow-auto p-2" style="flex: 4;">
                             @foreach ($columna->historias as $historia)
-                               <a href="{{ route('historias.show', $historia->id) }}"
-                                  class="card mb-2 p-2 text-decoration-none text-dark d-block historia-item"
-                                  data-historia-id="{{ $historia->id }}"
-                                  style="width: 100%; word-break: break-word; overflow: hidden;">
-                                   <strong class="d-block" title="{{ $historia->nombre }}">
-                                       {{ $historia->nombre }}
-                                   </strong>
-                               </a>
-                           @endforeach
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        {{-- Columna 1: Contenido --}}
+                                        <div style="flex: 1;">
+                                            <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
+                                                <strong class="d-block text-truncate"
+                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                                        title="{{ $historia->nombre }}">
+                                                     H{{ $historia->numero }} {{ $historia->nombre }}
+                                                </strong>
+                                                @if ($historia->descripcion)
+                                                    <div style="max-height: 4.5em; overflow: hidden; line-height: 1.5em; word-wrap: break-word; overflow-wrap: break-word;">
+                                                        Descripcion: {{ $historia->descripcion }}
+                                                    </div>
+                                                @endif
+                                            </a>
+                                        </div>
+
+                                        {{-- Columna 2: Menú --}}
+                                        <div class="ms-2">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    &#x22EE; {{-- ⋮ --}}
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                            Eliminar
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Modal de confirmación --}}
+                                    <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Se eliminará la historia:
+                                                    <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;"
+                                                        title="{{ $historia->nombre }}">
+                                                        {{ $historia->nombre }}
+                                                    </strong><br>
+                                                    Esta acción no se puede deshacer.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    </div>
-                @endforeach
-            </div>
+
+                        <!-- fin-->
+
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -265,6 +352,37 @@
                     </div>
                 </div>
 
+
+<!-- Modal de confirmación para eliminar columna -->
+<!-- Modal de confirmación para eliminar columna -->
+<div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarColumna" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="modo" id="modoEliminar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarColumnaLabel">Eliminar columna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
+                        Borrar columna y sus historias
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" onclick="enviarFormularioEliminar('solo_columna')">
+                        Borrar columna, conservar historias
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Crear sprint</button>
@@ -319,6 +437,91 @@
             });
         });
     </script>
+
+
+
+            <script>
+                // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
+                    const numeroSprintSpan = document.getElementById('numeroSprint');
+
+                    // Obtén el último número de sprint del backend, o 0 si no hay
+                    let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+
+                    btnAbrirCrearSprint.addEventListener('click', () => {
+                        const nuevoNumero = ultimoNumeroSprint + 1;
+                        numeroSprintSpan.textContent = nuevoNumero;
+
+                        // Limpiar inputs de fecha al abrir
+                        document.getElementById('fecha_inicio').value = '';
+                        document.getElementById('fecha_fin').value = '';
+                    });
+
+                    // Opcional: validar que fecha_fin sea mayor que fecha_inicio antes de enviar
+                    document.getElementById('formCrearSprint').addEventListener('submit', function(e) {
+                        const inicio = document.getElementById('fecha_inicio').value;
+                        const fin = document.getElementById('fecha_fin').value;
+
+                        if (inicio === '' || fin === '') {
+                            alert('Por favor selecciona ambas fechas.');
+                            e.preventDefault();
+                            return;
+                        }
+
+                        if (fin <= inicio) {
+                            alert('La fecha de fin debe ser mayor que la fecha de inicio.');
+                            e.preventDefault();
+                        }
+                    });
+                });
+            </script>
+<script>
+    document.getElementById('sprintSelect').addEventListener('change', function () {
+        const sprintId = this.value;
+        const url = new URL(window.location.href);
+
+        if (sprintId) {
+            // Si selecciona un sprint específico, actualiza el parámetro
+            url.searchParams.set('sprint_id', sprintId);
+        } else {
+            // Si selecciona "Ningún Sprint", elimina el parámetro para mostrar todos
+            url.searchParams.delete('sprint_id');
+        }
+
+        // Redirige a la nueva URL
+        window.location.href = url.toString();
+    });
+
+</script>
+<script>
+    let columnaIdParaEliminar = null;
+
+    // Función para abrir el modal y asignar el action del formulario
+    function abrirModalEliminarColumna(columnaId) {
+        columnaIdParaEliminar = columnaId;
+        const form = document.getElementById('formEliminarColumna');
+        form.action = `/columnas/${columnaId}`; // URL para eliminar columna (ajusta si usas prefijo)
+
+        // Resetea el input modo por si acaso
+        document.getElementById('modoEliminar').value = '';
+
+        // Mostrar modal con Bootstrap 5
+        var modal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminarColumna'));
+        modal.show();
+    }
+
+    // Función para enviar el formulario con el modo seleccionado
+    function enviarFormularioEliminar(modo) {
+        document.getElementById('modoEliminar').value = modo;
+        document.getElementById('formEliminarColumna').submit();
+    }
+</script>
+
+
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
