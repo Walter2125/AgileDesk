@@ -1,8 +1,6 @@
 <?php $__env->startSection('mensaje-superior'); ?>
-    <div class="mt-4 text-lg font-semibold text-blue-600">
+    Backlog del Proyecto: <?php echo e($proyecto->nombre); ?>
 
-        <h1 class="titulo-historia">🗂️ Backlog de <?php echo e($proyecto->name); ?></h1>
-    </div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>

@@ -216,11 +216,6 @@ public function boot(): void
 
 
                 'tareas.index' => function() use ($tablero, $historia) {
-
-                  'tareas.index'=> function() use ($tablero, $historia) {
-
-                  'tareas.index' => function() use ($tablero, $historia) {
-
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],

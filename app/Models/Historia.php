@@ -21,7 +21,7 @@ protected $fillable = [
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
-<<<<<<< HEAD
+    
     protected static function boot()
     {
         parent::boot();
@@ -33,9 +33,7 @@ protected $fillable = [
             }
         });
     }
-=======
-    
->>>>>>> 8a0593ceb38b4d9937419ba8cf22264d076470a2
+
     public function sprints() {
         return $this->belongsTo(Sprint::class);
     }
