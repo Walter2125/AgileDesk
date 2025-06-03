@@ -1,5 +1,48 @@
 @extends('layouts.app')
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
+@section('mensaje-superior')
+    <div class="mt-4 text-lg font-semibold">
+        <h1 style="color: black; font-size: 24px; font-weight: bold;">
+            🗂️ Tablero de {{ $project->name }}
+        </h1>
+    </div>
+@endsection
+
+
+@section('content')
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    @php
+
+$colCount = $tablero->columnas->count();
+        $widthStyle = ($colCount <= 4)
+            ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
+            : 'width: 300px; flex-shrink: 0;';
+    @endphp
+
+    <div class="container py-4">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <!-- Grupo izquierdo: Select + Crear Sprint -->
+            <div class="d-inline-flex align-items-center gap-2 flex-nowrap">
+                <!-- Select de sprints -->
+                <select class="form-select"
+                        id="sprintSelect"
+                        aria-label="Seleccionar sprint"
+                        style="width: auto; min-width: 200px;">
+                    <option value="" {{ request('sprint_id') ? '' : 'selected' }}>Ningún Sprint</option>
+                    @foreach($tablero->sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+=======
 @section('mensaje-superior')
     <div class="mt-4 text-lg font-semibold text-blue-600">
         <h1 class="titulo-historia">🗂️ Tablero de {{ $project->name }}</h1>
@@ -91,6 +134,7 @@
                     Agregar columna
                 </button>
 
+
                 <button class="btn btn-outline-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#modalCrearSprint"
@@ -98,8 +142,20 @@
                     Crear sprint
                 </button>
             </div>
+
+            <!-- Botón derecho: Agregar columna -->
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgregarColumna">
+                Agregar columna
+            </button>
         </div>
 >>>>>>> 4513421c3958db7f987e067f579ba9c7fe2efe76
+
+
+
+        <!-- Contenedor de columnas scrollable horizontal -->
+        <div class="overflow-auto pb-3 mt-3" style="width: 100%;">
 
        <div class="input-group mb-3" style="width: 55%;">
     <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
@@ -109,9 +165,10 @@
 </div>
 
         <div class="overflow-auto pb-3" style="width: 100%;">
+
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
-                    <div class="bg-white border rounded shadow-sm d-flex flex-column mx-2"
+                    <div class="bg-white border rounded shadow-sm d-flex flex-column "
                          style="{{ $widthStyle }} min-height: 500px;">
                         <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                             @if($columna->es_backlog)
@@ -123,16 +180,30 @@
                                        data-column-id="{{ $columna->id }}">
                             @endif
 
-                            @if(!$columna->es_backlog)
-                                <div class="dropdown">
+                                <div class="dropdown ms-2">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle"
                                             type="button"
-                                            data-bs-toggle="dropdown"></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
+                                            id="dropdownMenuButton{{ $columna->id }}"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        ⋮
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
+                                        <li>
+                                            <button class="dropdown-item" disabled>
+                                                <strong>Acciones</strong>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item"
+                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
+                                                Eliminar columna
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
-                            @endif
+
+
                         </div>
 
                         <div class="p-2 border-bottom">
@@ -294,6 +365,37 @@
                     </div>
                 </div>
 
+
+<!-- Modal de confirmación para eliminar columna -->
+<!-- Modal de confirmación para eliminar columna -->
+<div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarColumna" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="modo" id="modoEliminar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarColumnaLabel">Eliminar columna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
+                        Borrar columna y sus historias
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" onclick="enviarFormularioEliminar('solo_columna')">
+                        Borrar columna, conservar historias
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Crear sprint</button>
@@ -348,6 +450,91 @@
             });
         });
     </script>
+
+
+
+            <script>
+                // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
+                    const numeroSprintSpan = document.getElementById('numeroSprint');
+
+                    // Obtén el último número de sprint del backend, o 0 si no hay
+                    let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+
+                    btnAbrirCrearSprint.addEventListener('click', () => {
+                        const nuevoNumero = ultimoNumeroSprint + 1;
+                        numeroSprintSpan.textContent = nuevoNumero;
+
+                        // Limpiar inputs de fecha al abrir
+                        document.getElementById('fecha_inicio').value = '';
+                        document.getElementById('fecha_fin').value = '';
+                    });
+
+                    // Opcional: validar que fecha_fin sea mayor que fecha_inicio antes de enviar
+                    document.getElementById('formCrearSprint').addEventListener('submit', function(e) {
+                        const inicio = document.getElementById('fecha_inicio').value;
+                        const fin = document.getElementById('fecha_fin').value;
+
+                        if (inicio === '' || fin === '') {
+                            alert('Por favor selecciona ambas fechas.');
+                            e.preventDefault();
+                            return;
+                        }
+
+                        if (fin <= inicio) {
+                            alert('La fecha de fin debe ser mayor que la fecha de inicio.');
+                            e.preventDefault();
+                        }
+                    });
+                });
+            </script>
+<script>
+    document.getElementById('sprintSelect').addEventListener('change', function () {
+        const sprintId = this.value;
+        const url = new URL(window.location.href);
+
+        if (sprintId) {
+            // Si selecciona un sprint específico, actualiza el parámetro
+            url.searchParams.set('sprint_id', sprintId);
+        } else {
+            // Si selecciona "Ningún Sprint", elimina el parámetro para mostrar todos
+            url.searchParams.delete('sprint_id');
+        }
+
+        // Redirige a la nueva URL
+        window.location.href = url.toString();
+    });
+
+</script>
+<script>
+    let columnaIdParaEliminar = null;
+
+    // Función para abrir el modal y asignar el action del formulario
+    function abrirModalEliminarColumna(columnaId) {
+        columnaIdParaEliminar = columnaId;
+        const form = document.getElementById('formEliminarColumna');
+        form.action = `/columnas/${columnaId}`; // URL para eliminar columna (ajusta si usas prefijo)
+
+        // Resetea el input modo por si acaso
+        document.getElementById('modoEliminar').value = '';
+
+        // Mostrar modal con Bootstrap 5
+        var modal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminarColumna'));
+        modal.show();
+    }
+
+    // Función para enviar el formulario con el modo seleccionado
+    function enviarFormularioEliminar(modo) {
+        document.getElementById('modoEliminar').value = modo;
+        document.getElementById('formEliminarColumna').submit();
+    }
+</script>
+
+
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
