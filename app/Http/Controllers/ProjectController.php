@@ -73,6 +73,16 @@ class ProjectController extends Controller
                 'es_backlog' => true,
             ]);
 
+            $tablero = Tablero::create([
+            'proyecto_id' => $project->id,
+           ]);
+
+            $tablero->columnas()->create([
+                'nombre' => 'Backlog',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ]);
+          
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
@@ -80,6 +90,10 @@ class ProjectController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
         }
+
+
+
+
     }
 
     public function searchUsers(Request $request)

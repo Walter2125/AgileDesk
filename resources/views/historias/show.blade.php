@@ -62,10 +62,12 @@
 
 
         <div class="historia-details">
-            <div class="detail-item">
-                <span class="detail-label">Estado:</span>
-                <span class="detail-value">{{ $historia->estado ?? 'No especificado' }}</span>
-            </div>
+           <div class="detail-item">
+    <span class="detail-label">Estado:</span>
+    <span class="detail-value">
+        {{ $historia->columna ? $historia->columna->nombre : 'No asignado' }}
+    </span>
+</div>
             <div class="detail-item">
                 <span class="detail-label">Sprint:</span>
                 <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
@@ -87,7 +89,7 @@
 <a href="{{ route('tareas.show', $historia->id) }}"
    class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
    style="background-color: #e6f2ff;">
-   📋 Agregar Tareas
+    Agregar Tareas
 </a>
 
         <div class="mb-3 d-flex justify-content-end">
