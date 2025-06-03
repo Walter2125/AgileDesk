@@ -153,57 +153,65 @@ private function compartirContextoDesdeColumna(Columna $columna)
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-{
-    $historia = Historia::with(['proyecto', 'usuario'])->findOrFail($id);
-    $this->cargarTableroDesdeHistoria($historia);
-    $proyecto = $historia->proyecto;
-    $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
-    $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
+    {
+        $historia = Historia::with(['proyecto', 'usuario', 'columna.tablero'])->findOrFail($id);
+        $this->cargarTableroDesdeHistoria($historia);
+        $proyecto = $historia->proyecto;
+        $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+        $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
 
-    return view('historias.edit', compact('historia', 'usuarios','sprints'));
-}
+        // Obtener columnas desde el tablero si existe, sino vacío
+        if ($historia->columna && $historia->columna->tablero) {
+            $columnas = $historia->columna->tablero->columnas;
+        } else {
+            // Buscar tablero del proyecto
+            $tablero = $proyecto->tablero()->with('columnas')->first();
+            $columnas = $tablero ? $tablero->columnas : collect();
+        }
+
+        return view('historias.edit', compact('historia', 'usuarios', 'sprints', 'columnas'));
+    }
 
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Historia $historia)
-{
-    $request->validate([
-         'nombre'=> 'required|string|min:3|max:255|unique:historias,nombre',
-        'trabajo_estimado' => 'nullable|integer|min:0',
-        'prioridad' => 'required|in:Alta,Media,Baja',
-        'descripcion' => 'nullable|string|max:1000',
-        'usuario_id' => 'nullable|exists:users,id',  // si para asignar usuario
-        'sprint_id' => 'nullable|exists:sprints,id',
+    {
+        $request->validate([
+            'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id,
+            'trabajo_estimado' => 'nullable|integer|min:0',
+            'prioridad' => 'required|in:Alta,Media,Baja',
+            'descripcion' => 'nullable|string|max:1000',
+            'usuario_id' => 'nullable|exists:users,id',
+            'sprint_id' => 'nullable|exists:sprints,id',
+            'columna_id' => 'nullable|exists:columnas,id', // ← FALTA ESTO
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+            'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+            'prioridad.required' => 'Debe seleccionar una prioridad.',
+            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+            'columna_id.exists' => 'La columna seleccionada no existe.',
+        ]);
 
-    ], [
-        'nombre.required' => 'El nombre es obligatorio.',
-        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-        'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
-        'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
-        'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
-        'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
-        'prioridad.required' => 'Debe seleccionar una prioridad.',
-        'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+        $historia->update([
+            'nombre' => $request->nombre,
+            'trabajo_estimado' => $request->trabajo_estimado,
+            'prioridad' => $request->prioridad,
+            'descripcion' => $request->descripcion,
+            'usuario_id' => $request->usuario_id,
+            'sprint_id' => $request->sprint_id,
+            'columna_id' => $request->columna_id, // ← TAMBIÉN FALTABA ESTO
+        ]);
 
-    ]);
+        return redirect()->route('historias.show', $historia->id)
+            ->with('success', 'Historia editada con éxito');
+    }
 
-    // Actualizar con un solo update
-    $historia->update([
-        'nombre' => $request->nombre,
-        'trabajo_estimado' => $request->trabajo_estimado,
-        'prioridad' => $request->prioridad,
-        'descripcion' => $request->descripcion,
-        'usuario_id' => $request->usuario_id, // si tienes este campo en historias
-        'sprint_id' => $request->sprint_id,
-
-    ]);
-
-    // Redirigir a la vista show pasando el ID
-    return redirect()->route('historias.show', $historia->id)
-                     ->with('success', 'Historia editada con éxito');
-}
 
 
     /**
