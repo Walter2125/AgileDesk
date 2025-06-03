@@ -68,6 +68,8 @@ Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->na
 Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
 Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
 
+Route::delete('/columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
+
 
 
 Route::middleware(['auth'])->group(function() {
@@ -104,7 +106,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
         Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
 
-          // Actualizar nombre de columna (PUT)
+
+        // Actualizar nombre de columna (PUT)
         Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
 
         Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
@@ -125,6 +128,11 @@ Route::middleware(['auth', 'role:admin'])
 
         //------------
         Route::get('/projects/{project}/backlog', [BacklogController::class, 'index'])->name('backlog.index');
+
+        // Rutas para columnas
+
+     // <-- aquí
+
 
 
 

@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+
 @section('mensaje-superior')
     <div class="mt-4 text-lg font-semibold">
         <h1 style="color: black; font-size: 24px; font-weight: bold;">
@@ -73,16 +78,30 @@ $colCount = $tablero->columnas->count();
                                        data-column-id="{{ $columna->id }}">
                             @endif
 
-                            @if(!$columna->es_backlog)
-                                <div class="dropdown">
+                                <div class="dropdown ms-2">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle"
                                             type="button"
-                                            data-bs-toggle="dropdown"></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item delete-column" href="#">Eliminar</a></li>
+                                            id="dropdownMenuButton{{ $columna->id }}"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        ⋮
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
+                                        <li>
+                                            <button class="dropdown-item" disabled>
+                                                <strong>Acciones</strong>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item"
+                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
+                                                Eliminar columna
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
-                            @endif
+
+
                         </div>
 
                     <div class="p-2 border-bottom">
@@ -168,6 +187,35 @@ $colCount = $tablero->columnas->count();
                     </form>
                 </div>
             </div>
+
+<!-- Modal de confirmación para eliminar columna -->
+<!-- Modal de confirmación para eliminar columna -->
+<div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarColumna" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="modo" id="modoEliminar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarColumnaLabel">Eliminar columna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
+                        Borrar columna y sus historias
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" onclick="enviarFormularioEliminar('solo_columna')">
+                        Borrar columna, conservar historias
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 
             <!-- AJAX para actualizar nombre -->
@@ -277,6 +325,30 @@ $colCount = $tablero->columnas->count();
     });
 
 </script>
+<script>
+    let columnaIdParaEliminar = null;
+
+    // Función para abrir el modal y asignar el action del formulario
+    function abrirModalEliminarColumna(columnaId) {
+        columnaIdParaEliminar = columnaId;
+        const form = document.getElementById('formEliminarColumna');
+        form.action = `/columnas/${columnaId}`; // URL para eliminar columna (ajusta si usas prefijo)
+
+        // Resetea el input modo por si acaso
+        document.getElementById('modoEliminar').value = '';
+
+        // Mostrar modal con Bootstrap 5
+        var modal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminarColumna'));
+        modal.show();
+    }
+
+    // Función para enviar el formulario con el modo seleccionado
+    function enviarFormularioEliminar(modo) {
+        document.getElementById('modoEliminar').value = modo;
+        document.getElementById('formEliminarColumna').submit();
+    }
+</script>
+
 
 
 

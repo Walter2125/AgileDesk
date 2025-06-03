@@ -24,17 +24,17 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view) {
             $route = Route::currentRouteName();
-            $historiaParam = Route::current()->parameter('historia');
+
+            $routeCurrent = Route::current();  // Obtener la ruta actual solo una vez
+            $historiaParam = $routeCurrent ? $routeCurrent->parameter('historia') : null;
             $tablero = null;
             $historia = null;
 
-            // Si $historia es un ID, lo buscamos como modelo con sus relaciones
             if (is_numeric($historiaParam)) {
                 $historia = Historia::with('columna.tablero')->find($historiaParam);
             } elseif ($historiaParam instanceof Historia) {
                 $historia = $historiaParam->load('columna.tablero');
             }
-
             // Si tenemos historia cargada y su columna tiene tablero
             if ($historia && $historia->columna && $historia->columna->tablero) {
                 $tablero = $historia->columna->tablero;

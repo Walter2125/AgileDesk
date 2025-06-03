@@ -29,7 +29,11 @@ class ColumnaController extends Controller
             'tablero_id' => $tablero->id,
         ]);
 
-        return redirect()->route('tableros.show', $tablero->proyecto_id)->with('success', 'Columna creada exitosamente.');
+        return redirect()->route('tableros.show', [
+            'project' => $tablero->proyecto_id,
+            'tablero' => $tablero->id,
+        ])->with('success', 'Columna creada exitosamente.');
+
     }
 
     // Mostrar formulario de edición
@@ -60,16 +64,29 @@ class ColumnaController extends Controller
 
 
     // Eliminar columna
-    public function destroy(Columna $columna)
+    public function destroy(Request $request, Columna $columna)
     {
+        $modo = $request->input('modo');
+
+        // Obtener el tablero y proyecto antes de eliminar la columna
         $tablero = $columna->tablero;
+        $proyectoId = $tablero->proyecto_id;
 
-
-
-
+        if ($modo === 'eliminar_todo') {
+            // Eliminar historias asociadas primero
+            $columna->historias()->delete();
+        } elseif ($modo === 'solo_columna') {
+            // Desasociar historias
+            $columna->historias()->update(['columna_id' => null]);
+        }
 
         $columna->delete();
 
-        return redirect()->route('tableros.show', $tablero->proyecto_id)->with('success', 'Columna eliminada.');
+        // Redirigir explícitamente a la vista del tablero
+        return redirect()->route('tableros.show', [
+            'project' => $proyectoId,
+            'tablero' => $tablero->id,
+        ])->with('success', 'Columna eliminada correctamente');
     }
-}
+    }
+
