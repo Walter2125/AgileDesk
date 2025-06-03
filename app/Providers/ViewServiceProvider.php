@@ -135,17 +135,7 @@ class ViewServiceProvider extends ServiceProvider
                     ['label' => 'Proyectos AJAX'],
                 ],
 
-                // Admin routes
-                'homeadmin' => [
-                    ['label' => 'Inicio',      'url' => route('dashboard')],
-                    ['label' => 'Admin',       'url' => route('homeadmin')],
-                ],
-                'admin.users' => [
-                    ['label' => 'Inicio',      'url' => route('dashboard')],
-                    ['label' => 'Usuarios'],
-                ],
-                'admin.users.approve' => 'admin.users',
-                'admin.users.reject'  => 'admin.users',
+                // Historial de cambios
                 'historial.index' => [
                     ['label' => 'Inicio',      'url' => route('dashboard')],
                     ['label' => 'Historial cambios'],

@@ -45,11 +45,11 @@ class ProjectController extends Controller
                 'name'         => $request->name,
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin'    => $request->fecha_fin,
-                'user_id'      => auth()->id(),
+                'user_id'      => Auth::id(),
             ]);
 
             $project->users()->sync(array_unique(array_merge(
-                [auth()->id()],
+                [Auth::id()],
             $request->input('selected_users', [])
             )));
             
@@ -86,7 +86,7 @@ class ProjectController extends Controller
             ->where('usertype', '!=', 'admin')
             ->where('is_approved', true)
             ->where('is_rejected', false)
-            ->where('id', '!=', auth()->id())
+            ->where('id', '!=', Auth::id())
             ->get(['id', 'name', 'email']);
 
         return response()->json($users);
@@ -102,7 +102,7 @@ class ProjectController extends Controller
 
     public function myProjects()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $projects = $user->projects->sortByDesc('created_at');
         return view('projects.myprojects', compact('projects'));
     }
@@ -112,7 +112,7 @@ class ProjectController extends Controller
     {
         $project = Project::with('users')->findOrFail($id);
 
-        if (auth()->id() !== $project->user_id) {
+        if (Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
@@ -145,7 +145,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         // Verificar si el usuario logueado es el propietario del proyecto
-        if (auth()->id() !== $project->user_id) {
+        if (Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
