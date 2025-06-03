@@ -15,6 +15,8 @@
         overflow: hidden;
         height: 100%;
         background-color: #fff;
+        display: flex;
+        flex-direction: column;
     }
     
     .project-card:hover {
@@ -24,36 +26,62 @@
     
     .project-card .card-body {
         padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
     }
     
-    /* Project Card Header */
+    /* Project Header  */
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.8rem;
+        width: 100%;
+    }
+    
+    .project-title-wrapper {
+        flex: 1;
+        text-align: left;
+    }
+    
     .project-title {
         color: #2c3e50;
         font-weight: 700;
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        margin-bottom: 0.3rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        justify-content: flex-start;
+        width: 100%;
     }
     
     .project-title i {
         color: #3498db;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    
+    .project-code {
+        font-size: 0.82rem;
+        color: #6c757d;
+        text-align: left;
     }
     
     /* Project Dates */
     .date-info {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        color: #5d6778;
-        font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between; 
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    color: #5d6778;
+    font-size: 0.82rem;
     }
-    
+
     .date-block {
         background-color: #f8f9fa;
-        padding: 0.5rem 0.75rem;
+        padding: 0.4rem 0.7rem;
         border-radius: 8px;
         font-weight: 500;
         display: flex;
@@ -63,120 +91,88 @@
     
     .date-block i {
         color: #6c757d;
+        font-size: 0.75rem;
     }
     
-    /* Team Members Section */
-    .team-section {
-        margin: 1rem 0;
-        padding: 1rem;
-        background: linear-gradient(to right, #f1f6fe, #f5f7fa);
-        border-radius: 10px;
-    }
-    
-    .team-heading {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #3498db;
-        margin-bottom: 0.75rem;
-        font-weight: 700;
-        font-size: 1.1rem;
-    }
-    
-    .team-list {
-        list-style-type: none;
-        padding-left: 0.5rem;
-        margin-bottom: 0;
-    }
-    
-    .team-list li {
-        padding: 0.4rem 0;
-        color: #444;
-        font-size: 0.95rem;
-        border-bottom: 1px dashed rgba(0,0,0,0.05);
-        display: flex;
-        align-items: center;
-    }
-    
-    .team-list li:last-child {
-        border-bottom: none;
-    }
-    
-    .team-list li:before {
-        content: "👤";
-        margin-right: 0.5rem;
-        font-size: 0.9rem;
+    /* Project Description */
+    .project-description {
+        margin: 0.5rem 0;
+        font-size: 0.92rem;
+        color: #495057;
+        flex-grow: 1;
+        text-align: left;
+        line-height: 1.5;
     }
     
     /* Action Buttons */
     .action-buttons {
         display: flex;
-        flex-wrap: wrap;
         gap: 0.6rem;
-        margin-top: 1.5rem;
+        margin-top: 1.2rem;
+    }
+    
+    .action-buttons .btn {
+        flex: 1;
+        min-width: 0;
+        border-radius: 50px;
+        padding: 0.5rem;
+        font-size: 0.82rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        white-space: nowrap;
+        height: 38px; /* Altura fija */
     }
     
     .btn-view {
         background-color: #00bcd4;
         border-color: #00bcd4;
         color: white;
-        border-radius: 50px;
-        padding: 0.4rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-    
-    .btn-view:hover {
-        background-color: #0097a7;
-        border-color: #0097a7;
-        transform: translateY(-2px);
     }
     
     .btn-edit {
         background-color: #ffc107;
         border-color: #ffc107;
         color: #212529;
-        border-radius: 50px;
-        padding: 0.4rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-    
-    .btn-edit:hover {
-        background-color: #e0a800;
-        border-color: #e0a800;
-        transform: translateY(-2px);
     }
     
     .btn-delete {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
-        border-radius: 50px;
-        padding: 0.4rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        font-size: 0.9rem;
     }
     
-    .btn-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
+    /* Asegurar que el formulario no afecte el tamaño del botón */
+    .action-buttons form {
+        flex: 1;
+        display: flex;
+    }
+    
+    .action-buttons form .btn {
+        width: 100%;
+    }
+    
+    .btn-view:hover, .btn-edit:hover, .btn-delete:hover {
         transform: translateY(-2px);
     }
     
-    /* Create Project Card */
+    /* Dropdown Options */
+    .dropdown-card-options {
+        margin-left: auto;
+    }
+    
+    .dropdown-card-options .dropdown-toggle {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+        background: transparent;
+        border: none;
+    }
+    
+    /* Resto de estilos */
     .create-project-card {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         border-radius: 15px;
@@ -192,34 +188,6 @@
         align-items: center;
     }
     
-    .create-project-card:hover {
-        transform: translateY(-8px);
-        border-color: #3498db;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-    
-    .create-project-card .card-text {
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-        color: #495057;
-    }
-    
-    .create-project-card .btn-create {
-        background: linear-gradient(to right, #3498db, #2980b9);
-        border: none;
-        border-radius: 50px;
-        padding: 0.8rem 2rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        font-size: 1rem;
-    }
-    
-    .create-project-card .btn-create:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Page Title */
     .page-title {
         color: #2c3e50;
         font-weight: 800;
@@ -229,102 +197,7 @@
         padding-left: 1rem;
     }
     
-    /* Alert Styling */
-    .alert-success {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
-        border-radius: 10px;
-        padding: 1rem;
-        margin-bottom: 2rem;
-        position: relative;
-        animation: fadeInDown 0.5s;
-    }
-    
-    /* Empty State */
-    .empty-state {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
-        padding: 4rem 2rem;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .empty-state i {
-        font-size: 4rem;
-        color: #adb5bd;
-        margin-bottom: 1.5rem;
-    }
-    
-    .empty-state h3 {
-        color: #495057;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-    
-    .empty-state p {
-        color: #6c757d;
-        margin-bottom: 2rem;
-        font-size: 1.1rem;
-    }
-    
-    .empty-state .btn {
-        background: linear-gradient(to right, #3498db, #2980b9);
-        border: none;
-        border-radius: 50px;
-        padding: 0.8rem 2rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    
-    .empty-state .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Modal Styling */
-    .modal-content {
-        border-radius: 15px;
-        border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-    
-    .modal-header {
-        background: linear-gradient(to right, #f8f9fa, #eff1f3);
-        border-bottom: none;
-        padding: 1.5rem;
-    }
-    
-    .modal-title {
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .modal-body {
-        padding: 2rem 1.5rem;
-    }
-    
-    .modal-footer {
-        padding: 1.5rem;
-        border-top: none;
-    }
-    
-    /* Animations */
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* Responsive Adjustments */
+    /* Responsive */
     @media (max-width: 767.98px) {
         .date-info {
             flex-direction: column;
@@ -335,9 +208,12 @@
             flex-direction: column;
         }
         
-        .btn-view, .btn-edit, .btn-delete {
+        .action-buttons .btn {
             width: 100%;
-            justify-content: center;
+        }
+        
+        .project-code {
+            margin-left: 0;
         }
     }
 </style>
@@ -374,11 +250,31 @@
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="project-card card h-100">
                         <div class="card-body">
-                            <h3 class="project-title">
-                                <i class="fas fa-project-diagram"></i>
-                                {{ $project->name }}
-                            </h3>
-                            
+                            <div class="project-header">
+                                <div class="project-title-wrapper">
+                                    <h3 class="project-title">
+                                        <i class="fas fa-project-diagram"></i> 
+                                        <span>{{ $project->name }}</span>
+                                    </h3>
+                                    <div class="project-code">
+                                        <strong>Código:</strong> {{ $project->codigo }}
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-card-options dropdown">
+                                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton{{ $project->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
+                                        <li>
+                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntegrantes{{ $project->id }}">
+                                                Ver integrantes
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <div class="date-info">
                                 <div class="date-block">
                                     <i class="fas fa-calendar-alt"></i> 
@@ -390,60 +286,56 @@
                                 </div>
                             </div>
 
-                            <div class="team-section">
-                                <div class="team-heading">
-                                    <i class="fas fa-users"></i> Integrantes
-                                </div>
-                                <ul class="team-list">
-                                    @foreach($project->users as $user)
-                                        <li>{{ $user->name }}</li>
-                                    @endforeach
-                                </ul>
+                            <div class="project-description">
+                                {{ Str::limit($project->descripcion, 100) }}
                             </div>
 
-                            <!-- Botones -->
-                            <div class="mt-3 d-flex flex-wrap gap-2">
-                                <a href="{{ route('tableros.show', $project->id) }}"  class="btn btn-info btn-sm rounded-pill">
+                            <div class="action-buttons">
+                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
 
                                 @if(auth()->id() === $project->user_id)
                                     <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
-                                        <i class="fas fa-pencil-alt"></i> Editar
+                                        <i class="fas fa-edit"></i> Editar
                                     </a>
-
-                                    <button class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $project->id }}">
-                                        <i class="fas fa-trash"></i> Eliminar
-                                    </button>
+                                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal confirmación eliminar -->
-                <div class="modal fade" id="confirmDeleteModal{{ $project->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ $project->id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
+                <!-- Modal de Integrantes -->
+                <div class="modal fade" id="modalIntegrantes{{ $project->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $project->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title text-danger" id="confirmDeleteModalLabel{{ $project->id }}">
-                                    <i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title" id="modalLabel{{ $project->id }}">Integrantes del proyecto: {{ $project->name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                <p>¿Estás seguro de que deseas eliminar el proyecto <strong class="text-primary">{{ $project->name }}</strong>?</p>
-                                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                                @if($project->users && $project->users->count() > 0)
+                                    <ul class="list-group">
+                                        @foreach($project->users as $user)
+                                            <li class="list-group-item">
+                                                <strong>{{ $user->name }}</strong> <br>
+                                                <small>{{ $user->email }}</small>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p>No hay integrantes registrados en este proyecto.</p>
+                                @endif
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger rounded-pill px-4">
-                                        <i class="fas fa-trash me-1"></i> Eliminar
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </div>
                     </div>
@@ -453,12 +345,15 @@
     @else
         <div class="empty-state">
             <i class="fas fa-folder-open"></i>
-            <h3>No tienes proyectos aún</h3>
-            <p>Crea tu primer proyecto para comenzar a colaborar</p>
-            <a href="{{ route('projects.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i> Crear Primer Proyecto
-            </a>
+            <h3>No hay proyectos disponibles</h3>
+            <p>Cuando se creen nuevos proyectos, aparecerán aquí.</p>
+            @if (auth()->user()->usertype == 'admin')
+                <a href="{{ route('projects.create') }}" class="btn btn-primary">
+                    Crear Proyecto
+                </a>
+            @endif
         </div>
     @endif
 </div>
 @endsection
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
