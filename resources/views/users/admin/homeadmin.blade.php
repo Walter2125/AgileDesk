@@ -216,13 +216,17 @@
             display: flex;
             gap: 0.5rem;
         }
+
+        .row{
+            padding-block-start: 1rem;
+        }
     </style>
 @stop
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <!-- Usuarios -->
-        <div class="col-12 mb-4">
+        <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Usuarios</span>
@@ -275,7 +279,7 @@
         </div>
 
         <!-- Proyectos -->
-        <div class="col-12 mb-4">
+        <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Proyectos</span>
@@ -322,7 +326,7 @@
         </div>
 
         <!-- Historial -->
-        <div class="col-12 mb-4">
+        <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Historial de Cambios</span>
@@ -363,7 +367,7 @@
         </div>
 
         <!-- Sprints -->
-        <div class="col-12 mb-4">
+        <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Sprints</span>

@@ -87,10 +87,15 @@ class ViewServiceProvider extends ServiceProvider
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                         ['label' => 'Historia'],
                     ];
+
                 },
 
                 'historias.create.fromColumna' => function () {
                     $columnaParam = Route::current()->parameter('columna');
+
+                },                'historias.create.fromColumna' => function () {
+                    $columnaParam = \Illuminate\Support\Facades\Route::current()->parameter('columna');
+
                     $columna = null;
 
                     if (is_numeric($columnaParam)) {
@@ -101,13 +106,22 @@ class ViewServiceProvider extends ServiceProvider
 
                     $tablero = $columna?->tablero;
 
+                    if (!$tablero) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Nueva historia'],
+                        ];
+                    }
+
                     return [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
+                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
                         ['label' => 'Nueva historia'],
                     ];
                 },
+
                 'historias.store' => 'historias.index',
                 'historias.show' => function() use ($tablero, $historia) {
                     return [
@@ -126,6 +140,7 @@ class ViewServiceProvider extends ServiceProvider
                         ['label' => 'Editar historia'],
                     ];
                 },
+
                 'historias.update' => 'historias.edit',
                 'historias.destroy'=> 'historias.index',
 
@@ -184,7 +199,19 @@ class ViewServiceProvider extends ServiceProvider
                 'users.search'    => 'admin.users.index',
 
                 // Tareas
+
                 'tareas.index' => function() use ($tablero, $historia) {
+
+                  'tareas.index' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Crear tarea'],
+                        ];
+                    }
+                    
+
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
@@ -194,8 +221,14 @@ class ViewServiceProvider extends ServiceProvider
                         ['label'=>'Crear tarea'],
                     ];
                 },
-                'tareas.store'   => 'tareas.index',
-                'tareas.edit' => function() use ($tablero, $historia) {
+                'tareas.store'   => 'tareas.index',                'tareas.edit' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Editar tarea'],
+                        ];
+                    }
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
@@ -206,8 +239,14 @@ class ViewServiceProvider extends ServiceProvider
                     ];
                 },
                 'tareas.update'  => 'tareas.edit',
-                'tareas.destroy' => 'tareas.index',
-                'tareas.show' => function() use ($tablero, $historia) {
+                'tareas.destroy' => 'tareas.index',                'tareas.show' => function() use ($tablero, $historia) {
+                    if (!$tablero || !$historia) {
+                        return [
+                            ['label'=>'Inicio','url'=>route('dashboard')],
+                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
+                            ['label'=>'Lista de tareas'],
+                        ];
+                    }
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],

@@ -53,8 +53,21 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 //Rutas para las historias
+
+    Route::get('/projects', [ProjectController::class, 'myprojects'])->name('projects.my');
+    // Crud de tableros
+        Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
+        Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
+        Route::post('/historias/{id}/mover', [HistoriasController::class, 'mover'])->name('historias.mover');
+
+        
+          // Actualizar nombre de columna (PUT)
+        Route::put('/columnas/{columna}/update', [ColumnaController::class, 'update'])->name('columnas.update');
+        Route::put('/columnas/{columna}', [ColumnaController::class, 'update'])->name('columnas.update');
+
 
 Route::get('/historias/create/columna/{columna}', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
 
@@ -69,8 +82,6 @@ Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->na
 Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
 
 Route::delete('/columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
-
-
 
 Route::middleware(['auth'])->group(function() {
     // Ruta para el listado AJAX de usuarios
