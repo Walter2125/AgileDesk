@@ -60,14 +60,6 @@ class TableroController extends Controller
     return view('users.admin.tablero', compact('tablero', 'project'));
     }
 
-
-
-    return view('users.admin.tablero', compact('project', 'tablero', 'historiaEncontrada'));
-
-
-    }
-
-
     /**
      * Show the form for editing the specified resource.
      */

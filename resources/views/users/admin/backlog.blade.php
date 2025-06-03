@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('mensaje-superior')
-    <div class="mt-4 text-lg font-semibold text-blue-600">
-
-        <h1 class="titulo-historia">🗂️ Backlog de {{ $proyecto->name }}</h1>
-    </div>
+    Backlog del Proyecto: {{ $proyecto->nombre }}
 @endsection
 
 @section('content')

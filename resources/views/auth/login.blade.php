@@ -1,9 +1,9 @@
 <x-guest-layout>
     <div class="auth-header">
-        <h2>LOGIN</h2>
+        <h2>Log in</h2>
         <div class="auth-header-links">
-            <a href="{{ route('login') }}" class="active">Iniciar sesión</a>
-            <a href="{{ route('register') }}">Inscribirse</a>
+            <a href="{{ route('login') }}" class="active">Login</a>
+            <a href="{{ route('register') }}">Registro</a>
         </div>
     </div>
 
@@ -18,8 +18,8 @@
 
         <!-- Email Address -->
         <div class="form-group">
-            <label for="email">E-MAIL</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="Tu email va aqui" />
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="Sólo correos electrónicos @unah.hn" />
             @error('email')
                 <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
             @enderror
@@ -44,8 +44,8 @@
         </div>
 
         <div class="flex justify-center">
-            <button type="submit" class="auth-submit-btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
-                Iniciar sesión
+            <button type="submit" class="auth-submit-btn text-white font-semibold py-2">
+                Log in
             </button>
         </div>
 
@@ -53,7 +53,7 @@
         <div class="auth-links mt-4 text-center">
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                    Olvidaste tu contraseña?
                 </a>
             @endif
         </div>

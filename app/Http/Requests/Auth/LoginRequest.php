@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Rules\UnahEmailRule;
 
 class LoginRequest extends FormRequest
 {
@@ -27,8 +28,23 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => [
+                'required', 
+                'string', 
+                'email',
+                new UnahEmailRule()
+            ],
             'password' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Get custom error messages for validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            // Custom messages can be added here if needed
         ];
     }
 

@@ -12,18 +12,18 @@ use Illuminate\Support\Facades\View;
 class HistoriasController extends Controller
 {
 
-    private function cargarTableroDesdeHistoria(Historia $historia)
-{
-    $historia->load('columna.tablero.project');
-        $tablero = $historia->columna?->tablero;
+        private function cargarTableroDesdeHistoria(Historia $historia)
+    {
+        $historia->load('columna.tablero.project');
+            $tablero = $historia->columna?->tablero;
+            View::share('tablero', $tablero);
+            return $tablero;
+    }
+    private function compartirContextoDesdeColumna(Columna $columna)
+    {
+        $tablero = $columna->tablero;
         View::share('tablero', $tablero);
-        return $tablero;
-}
-private function compartirContextoDesdeColumna(Columna $columna)
-{
-    $tablero = $columna->tablero;
-    View::share('tablero', $tablero);
-}
+    }
 
     /**
      * Display a listing of the resource.

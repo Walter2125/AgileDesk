@@ -6,6 +6,9 @@
             📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
         </h1>
             </div>
+
+            Crear Tarea: {{ Str::limit($historia->nombre, 20) }}
+
         @endsection
 
 @section('content')

@@ -7,33 +7,40 @@
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
 
-    <!-- Tabler Core CSS (Admin Template) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-
-    <!-- Bootstrap Icons -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- logo -->
-    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    <!-- Bootstrap CSS (solo una versión) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Tabler Core CSS (Admin Template) - Comentado temporalmente para debugging -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
 
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
+    /* Reset CSS para eliminar espacios por defecto */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-
-
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
 
     :root {
         --sidebar-width: 280px;
@@ -45,7 +52,6 @@
     }
 
     body {
-        overflow-x: hidden;
         background-color: #f8f9fa;
         min-height: 100vh;
     }
@@ -56,10 +62,10 @@
         min-height: 100vh;
     }
 
-    /* Sidebar estático */
+    /* Sidebar estático con scroll optimizado */
     #sidebar-wrapper {
         width: var(--sidebar-width);
-        height: 100%;
+        height: 100vh;
         background-color: var(--sidebar-bg);
         transition: width var(--transition-speed) ease;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -69,6 +75,31 @@
         top: 0;
         bottom: 0;
         overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
+    }
+
+    /* Personalizar scrollbar del sidebar para Webkit */
+    #sidebar-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #sidebar-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #sidebar-wrapper::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+    }
+
+    #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.5);
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
@@ -114,15 +145,34 @@
         margin-left: var(--sidebar-width); /* Usa margin en lugar de padding */
         transition: margin-left var(--transition-speed) ease;
         flex: 1;
+        min-height: 100vh;
+        padding: 0; /* Sin padding para eliminar espacios */
+        overflow-x: hidden; /* Evitar scroll horizontal */
     }
 
     .navbar {
         padding: 0.75rem 1rem;
         background-color: #fff !important;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        position: sticky;
-        top: 0;
+        position: static; /* Permite que se desplace con el scroll */
         z-index: 900;
+        margin: 0; /* Sin margen para eliminar espacios */
+    }
+
+    .content-wrapper {
+        padding: 0rem;
+        transition: all var(--transition-speed) ease;
+        overflow-x: hidden; /* Evitar scroll horizontal */
+    }
+
+    /* Mejorar el comportamiento del scroll en contenedores internos */
+    .container-fluid {
+        overflow-x: hidden;
+    }
+
+    /* Scroll suave para toda la aplicación */
+    * {
+        scroll-behavior: smooth;
     }
 
     .navbar-brand {
@@ -246,6 +296,16 @@
         padding: 0.5rem;
         color: white;
         cursor: pointer;
+        background: transparent !important;
+        border: none !important;
+        text-decoration: none !important;
+    }
+
+    .user-info:hover,
+    .user-info:focus {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        text-decoration: none !important;
     }
 
     .user-avatar {
@@ -272,6 +332,50 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    /* Dropdown específico del sidebar */
+    .user-dropdown .dropdown-menu {
+        position: absolute !important;
+        transform: none !important;
+        margin-bottom: 0.5rem;
+        min-width: 200px;
+        z-index: 1050;
+    }
+
+    .user-dropdown .dropup .dropdown-menu {
+        bottom: 100% !important;
+        top: auto !important;
+    }
+
+    /* Dropdown cuando sidebar está colapsado */
+    body.sidebar-collapsed .user-dropdown .dropdown-menu {
+        left: 100% !important; /* Aparece a la derecha del sidebar colapsado */
+        bottom: 0 !important;
+        top: auto !important;
+        margin-left: 0.5rem;
+        margin-bottom: 0 !important;
+    }
+
+    body.sidebar-collapsed .user-dropdown .dropup .dropdown-menu {
+        left: 100% !important;
+        bottom: 0 !important;
+        top: auto !important;
+    }
+
+    /* Ocultar texto del usuario cuando sidebar está colapsado */
+    body.sidebar-collapsed .user-info .sidebar-text {
+        display: none;
+    }
+
+    /* Centrar avatar cuando sidebar está colapsado */
+    body.sidebar-collapsed .user-info {
+        justify-content: center;
+        padding: 0.75rem 0.5rem;
+    }
+
+    body.sidebar-collapsed .user-avatar {
+        margin-right: 0;
     }
 
     /* Overlay for mobile */
@@ -554,8 +658,54 @@
         }
     }
 
-    /* Soporte para pantallas 4K */
-    @media (min-width: 3840px) {
+    /* Pantallas ultrawide (21:9 y 32:9) */
+    @media (min-aspect-ratio: 21/9) and (min-width: 1680px) {
+        :root {
+            --sidebar-width: 350px;
+            --sidebar-collapsed-width: 70px;
+        }
+
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0.75rem;
+        }
+
+        .sidebar-heading {
+            font-size: 1.6rem;
+        }
+
+        .list-group-item {
+            font-size: 1.05rem;
+        }
+    }
+
+    /* Monitores gaming ultrawide (3440x1440) */
+    @media (min-width: 3440px) and (max-width: 3839px) {
+        :root {
+            --sidebar-width: 380px;
+            --sidebar-collapsed-width: 85px;
+        }
+
+        .sidebar-heading {
+            font-size: 1.8rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .list-group-item {
+            padding: 1rem 1.75rem;
+            font-size: 1.15rem;
+        }
+
+        .content-wrapper {
+            padding: 1rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+    }
+
+    /* Soporte para pantallas 4K (3840x2160) */
+    @media (min-width: 3840px) and (max-width: 5119px) {
         :root {
             --sidebar-width: 400px;
             --sidebar-collapsed-width: 100px;
@@ -573,6 +723,141 @@
 
         .content-wrapper {
             padding: 1.25rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+        }
+
+        .navbar {
+            padding: 1rem 1.5rem;
+        }
+    }
+
+    /* Pantallas 5K y superiores */
+    @media (min-width: 5120px) {
+        :root {
+            --sidebar-width: 480px;
+            --sidebar-collapsed-width: 120px;
+        }
+
+        .sidebar-heading {
+            font-size: 2.5rem;
+            padding: 3rem 2.5rem;
+        }
+
+        .list-group-item {
+            padding: 1.5rem 2.5rem;
+            font-size: 1.5rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            max-width: 2200px;
+            margin: 0 auto;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            font-size: 1.5rem;
+        }
+
+        .navbar {
+            padding: 1.25rem 2rem;
+        }
+    }
+
+    /* Pantallas muy anchas pero no tan altas (resoluciones específicas) */
+    @media (min-width: 1920px) and (max-height: 800px) {
+        .content-wrapper {
+            padding: 0.5rem;
+        }
+
+        .sidebar-heading {
+            padding: 1.25rem 1rem;
+        }
+
+        .list-group-item {
+            padding: 0.5rem 1rem;
+        }
+    }
+
+    /* Optimización para resoluciones comunes de laptops gaming */
+    @media (min-width: 1366px) and (max-width: 1599px) {
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 60px;
+        }
+
+        .content-wrapper {
+            padding: 0.5rem;
+        }
+    }
+
+    /* Optimización para monitores QHD (2560x1440) */
+    @media (min-width: 2560px) and (max-width: 3439px) {
+        :root {
+            --sidebar-width: 320px;
+            --sidebar-collapsed-width: 75px;
+        }
+
+        .sidebar-heading {
+            font-size: 1.6rem;
+            padding: 1.75rem 1.25rem;
+        }
+
+        .list-group-item {
+            padding: 0.875rem 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .content-wrapper {
+            padding: 0.75rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+        }
+    }
+
+    /* Pantallas con orientación vertical (monitores rotados) */
+    @media (orientation: portrait) and (min-height: 1080px) {
+        :root {
+            --sidebar-width: 280px;
+        }
+
+        .content-wrapper {
+            padding: 0.75rem;
+        }
+
+        .list-group {
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+    }
+
+    /* Dispositivos con densidad de píxeles alta (Retina y similares) */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .sidebar-heading {
+            font-weight: 500;
+        }
+
+        .list-group-item {
+            font-weight: 400;
+        }
+
+        .user-avatar {
+            font-weight: 600;
         }
     }
 </style>
@@ -660,8 +945,12 @@
 
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
-                    <div class="dropup">
-                        <div class="user-info" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="dropdown dropup">
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                                id="userDropdown">
                             <div class="user-avatar">
                                 {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
                             </div>
@@ -669,9 +958,9 @@
                                 <div>{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
                                 <small class="text-muted">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
                             </div>
-                        </div>
+                        </button>
                         <!-- Dropdown menu -->
-                        <ul class="dropdown-menu dropdown-menu-dark">
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
@@ -704,7 +993,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     @endif
-                    <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                    <div class="ps-3">
+                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                    </div>
                     @yield('content')
                 </main>
             </div>
@@ -712,7 +1003,7 @@
     </div>
 
     <!-- Core JS -->
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <!-- Base Layout Script -->
     <script>
@@ -816,6 +1107,57 @@
             // Inicializar el sidebar con el estado guardado
             initializeSidebar();
             
+            // Inicializar dropdowns de Bootstrap
+            if (typeof bootstrap !== 'undefined') {
+                console.log('Bootstrap está cargado correctamente');
+                
+                // Inicializar todos los dropdowns
+                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+                console.log('Elementos dropdown encontrados:', dropdownElements.length);
+                
+                dropdownElements.forEach(function(element, index) {
+                    try {
+                        var dropdown = new bootstrap.Dropdown(element);
+                        console.log('Dropdown inicializado:', index, element);
+                        
+                    } catch (error) {
+                        console.error('Error inicializando dropdown:', error, element);
+                    }
+                });
+                
+            } else {
+                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
+                
+                // Fallback manual completo si Bootstrap no está disponible
+                const userDropdown = document.querySelector('#userDropdown');
+                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
+                
+                if (userDropdown && dropdownMenu) {
+                    userDropdown.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const isOpen = dropdownMenu.classList.contains('show');
+                        
+                        if (isOpen) {
+                            dropdownMenu.classList.remove('show');
+                            this.setAttribute('aria-expanded', 'false');
+                        } else {
+                            dropdownMenu.classList.add('show');
+                            this.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+                    
+                    // Cerrar dropdown al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                            userDropdown.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            }
+            
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -870,6 +1212,61 @@
                 }
             });
         }
+    </script>
+
+    <!-- Debug Script para Dropdown -->
+    <script>
+        // Script de debugging específico para el dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DEBUGGING DROPDOWN ===');
+            
+            // Verificar elementos
+            const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
+            const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
+            const dropupContainer = document.querySelector('.user-dropdown .dropup');
+            
+            console.log('User dropdown element:', userDropdown);
+            console.log('Dropdown menu element:', dropdownMenu);
+            console.log('Dropup container:', dropupContainer);
+            
+            if (userDropdown && dropdownMenu) {
+                console.log('✅ Elementos encontrados correctamente');
+                
+                // Agregar click handler manual como fallback
+                userDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Click en dropdown detectado');
+                    
+                    // Toggle del dropdown menu
+                    const isOpen = dropdownMenu.classList.contains('show');
+                    
+                    if (isOpen) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                        console.log('Dropdown cerrado');
+                    } else {
+                        dropdownMenu.classList.add('show');
+                        userDropdown.setAttribute('aria-expanded', 'true');
+                        console.log('Dropdown abierto');
+                    }
+                });
+                
+                // Cerrar al hacer click fuera
+                document.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                        console.log('Dropdown cerrado por click externo');
+                    }
+                });
+                
+                console.log('✅ Event listeners agregados');
+            } else {
+                console.log('❌ No se encontraron los elementos del dropdown');
+            }
+        });
     </script>
 
     <!-- Scripts adicionales de las secciones -->
