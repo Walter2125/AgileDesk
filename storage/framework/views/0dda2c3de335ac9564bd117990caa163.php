@@ -589,37 +589,36 @@ document.addEventListener('DOMContentLoaded', function () {
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
-    const columnas = document.querySelectorAll(".historia-lista");
-
+    
     function realizarBusqueda() {
         const textoBusqueda = buscador.value.toLowerCase().trim();
         
-        columnas.forEach(columna => {
-            const historias = columna.querySelectorAll(".historia-item");
-            let historiasVisibles = 0;
-            
-            historias.forEach(historia => {
-                const nombre = historia.textContent.toLowerCase();
-                if (nombre.includes(textoBusqueda)) {
-                    historia.style.display = "block";
-                    historiasVisibles++;
-                } else {
-                    historia.style.display = "none";
-                }
-            });
-            
-            // Opcional: ocultar columnas vacías
-            columna.style.display = historiasVisibles > 0 ? "block" : "none";
+        // Seleccionar todas las tarjetas de historias
+        const historias = document.querySelectorAll(".card.mb-4.p-2");
+        
+        historias.forEach(historia => {
+            // Buscar en el texto de la historia (nombre + descripción)
+            const textoHistoria = historia.textContent.toLowerCase();
+            if (textoHistoria.includes(textoBusqueda)) {
+                historia.style.display = "block";
+            } else {
+                historia.style.display = "none";
+            }
         });
     }
 
-    buscador.addEventListener("input", realizarBusqueda);
+    // Buscar mientras se escribe (con retardo de 300ms para mejor performance)
+    let timeoutBusqueda;
+    buscador.addEventListener("input", () => {
+        clearTimeout(timeoutBusqueda);
+        timeoutBusqueda = setTimeout(realizarBusqueda, 300);
+    });
+    
+    // Botón para limpiar la búsqueda
     limpiarBtn.addEventListener("click", function () {
         buscador.value = "";
-        columnas.forEach(columna => {
-            columna.style.display = "block";
-            columna.querySelectorAll(".historia-item").forEach(h => h.style.display = "block");
-        });
+        const historias = document.querySelectorAll(".card.mb-4.p-2");
+        historias.forEach(h => h.style.display = "block");
     });
 });
 
