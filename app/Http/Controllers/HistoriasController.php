@@ -85,11 +85,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas'));
     }
 
-
-
-
-
-
     /**
      * Store a newly created resource in storage.
      */
@@ -229,4 +224,53 @@ private function compartirContextoDesdeColumna(Columna $columna)
             return redirect()->route('tableros.show', ['project' => $proyectoId])
                             ->with('success', 'Historia borrada con éxito');
         }
+
+   public function mover(Request $request, $id)
+{
+    try {
+        // Validar entrada
+        $validated = $request->validate([
+            'columna_id' => 'required|integer|exists:columnas,id'
+        ]);
+
+        // Obtener la historia
+        $historia = Historia::findOrFail($id);
+        
+        // Verificar que la columna destino pertenece al mismo tablero
+        $columnaDestino = Columna::findOrFail($validated['columna_id']);
+        if ($historia->columna->tablero_id !== $columnaDestino->tablero_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No puedes mover historias entre tableros diferentes'
+            ], 403);
+        }
+
+        // Actualizar y guardar
+        $historia->columna_id = $validated['columna_id'];
+        $historia->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Historia movida correctamente',
+            'data' => [
+                'historia_id' => $historia->id,
+                'nueva_columna_id' => $historia->columna_id,
+                'nueva_columna_nombre' => $columnaDestino->nombre
+            ]
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error de validación',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al mover la historia: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 }
