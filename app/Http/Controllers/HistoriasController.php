@@ -164,6 +164,36 @@ public function createFromColumna($columnaId)
         'descripcion' => $request->descripcion,
         'usuario_id' => $request->usuario_id, // si tienes este campo en historias
     ]);
+    {
+        $request->validate([
+            'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id,
+            'trabajo_estimado' => 'nullable|integer|min:0',
+            'prioridad' => 'required|in:Alta,Media,Baja',
+            'descripcion' => 'nullable|string|max:1000',
+            'usuario_id' => 'nullable|exists:users,id',
+            'sprint_id' => 'nullable|exists:sprints,id',
+            'columna_id' => 'nullable|exists:columnas,id', // ← FALTA ESTO
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+            'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+            'prioridad.required' => 'Debe seleccionar una prioridad.',
+            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+            'columna_id.exists' => 'La columna seleccionada no existe.',
+        ]);
+
+        $historia->update([
+            'nombre' => $request->nombre,
+            'trabajo_estimado' => $request->trabajo_estimado,
+            'prioridad' => $request->prioridad,
+            'descripcion' => $request->descripcion,
+            'usuario_id' => $request->usuario_id,
+            'sprint_id' => $request->sprint_id,
+            'columna_id' => $request->columna_id, // ← TAMBIÉN FALTABA ESTO
+        ]);
 
     // Redirigir a la vista show pasando el ID
     return redirect()->route('historias.show', $historia->id)
@@ -182,5 +212,6 @@ public function createFromColumna($columnaId)
 
             return redirect()->route('tableros.show', ['project' => $proyectoId])
                             ->with('success', 'Historia borrada con éxito');
+        }
         }
 }

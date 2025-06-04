@@ -216,7 +216,10 @@ public function boot(): void
 
 
                 'tareas.index' => function() use ($tablero, $historia) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],
