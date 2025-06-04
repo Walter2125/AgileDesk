@@ -241,7 +241,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log("Historia movida correctamente", data);
+                            // Historia movida correctamente
                         })
                         .catch(error => {
                             console.error(error);
@@ -288,7 +288,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -420,7 +420,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");

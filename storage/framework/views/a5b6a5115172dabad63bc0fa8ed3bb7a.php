@@ -1,6 +1,6 @@
      <?php $__env->startSection('mensaje-superior'); ?>
-            Proyectos
-        <?php $__env->stopSection(); ?>
+        Proyectos
+    <?php $__env->stopSection(); ?>
 <?php $__env->startSection('styles'); ?>
 <style>
     /* Project Card Styling */
