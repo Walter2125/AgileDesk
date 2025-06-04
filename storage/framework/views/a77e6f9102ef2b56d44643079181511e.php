@@ -5,19 +5,21 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">                    <h4 class="mb-0">
-                        <i class="fas fa-trash-restore me-2"></i>
-                        Deleted Users
-                    </h4>                    <a href="<?php echo e(route('homeadmin')); ?>" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left me-1"></i>
-                        Back to Users
+                <div class="card-header d-flex justify-content-between align-items-center">                    
+                    <h4 class="mb-0">
+                        <i class="bi bi-trash3 me-2"></i>
+                        Usuarios Eliminados
+                    </h4>                    
+                    <a href="<?php echo e(route('homeadmin')); ?>" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Volver a Usuarios
                     </a>
                 </div>
                 
                 <div class="card-body">
                     <?php if(session('success')): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>
+                            <i class="bi bi-check-circle me-2"></i>
                             <?php echo e(session('success')); ?>
 
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -26,7 +28,7 @@
                     
                     <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <i class="bi bi-exclamation-circle me-2"></i>
                             <?php echo e(session('error')); ?>
 
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -36,11 +38,13 @@
                     <?php if($deletedUsers->count() > 0): ?>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
-                                <thead class="table-dark">                                    <tr>                                        <th><i class="fas fa-user me-1"></i> User</th>
-                                        <th><i class="fas fa-envelope me-1"></i> Email</th>
-                                        <th><i class="fas fa-tag me-1"></i> Role</th>
-                                        <th><i class="fas fa-calendar me-1"></i> Deleted At</th>
-                                        <th><i class="fas fa-cogs me-1"></i> Actions</th>
+                                <thead class="table-dark">                                    
+                                    <tr>                                        
+                                        <th><i class="bi bi-person me-1"></i> Usuario</th>
+                                        <th><i class="bi bi-envelope me-1"></i> Email</th>
+                                        <th><i class="bi bi-tag me-1"></i> Rol</th>
+                                        <th><i class="bi bi-calendar me-1"></i> Eliminado En</th>
+                                        <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -68,7 +72,7 @@
                                             </td>
                                             <td class="text-muted">
                                                 <small>
-                                                    <i class="fas fa-clock me-1"></i>
+                                                    <i class="bi bi-clock me-1"></i>
                                                     <?php echo e($user->deleted_at->format('d/m/Y H:i')); ?>
 
                                                     <br>
@@ -78,24 +82,27 @@
                                                 </small>
                                             </td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="btn-group" role="group" aria-label="Acciones de usuario">
+                                                    <!-- Botón Restaurar -->
                                                     <button type="button" 
-                                                            class="btn btn-success btn-sm"
+                                                            class="btn btn-success btn-sm" 
+                                                            title="Restaurar Usuario"
                                                             data-bs-toggle="modal" 
-                                                            data-bs-target="#restoreUserModal"
+                                                            data-bs-target="#restoreModal"
                                                             data-user-id="<?php echo e($user->id); ?>"
-                                                            data-user-name="<?php echo e($user->name); ?>"                                                            title="Restore">>
-                                                        <i class="fas fa-undo"></i>
+                                                            data-user-name="<?php echo e($user->name); ?>">
+                                                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                                                     </button>
                                                     
+                                                    <!-- Botón Eliminar Permanentemente -->
                                                     <button type="button" 
-                                                            class="btn btn-danger btn-sm"
+                                                            class="btn btn-danger btn-sm" 
+                                                            title="Eliminar Permanentemente"
                                                             data-bs-toggle="modal" 
-                                                            data-bs-target="#permanentDeleteModal"
+                                                            data-bs-target="#deleteModal"
                                                             data-user-id="<?php echo e($user->id); ?>"
-                                                            data-user-name="<?php echo e($user->name); ?>"
-                                                            title="Permanently Delete">>
-                                                        <i class="fas fa-trash-alt"></i>
+                                                            data-user-name="<?php echo e($user->name); ?>">
+                                                        <i class="bi bi-trash3" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                             </td>
@@ -111,12 +118,14 @@
 
                         </div>
                     <?php else: ?>
-                        <div class="text-center py-5">                            <div class="empty-state">
-                                <i class="fas fa-user-check fa-4x text-success mb-3"></i>                                <h5 class="text-muted">No Data</h5>
-                                <p class="text-muted">All users are active</p>
+                        <div class="text-center py-5">                            
+                            <div class="empty-state">
+                                <i class="bi bi-person-check fa-4x text-success mb-3"></i>
+                                <h5 class="text-muted">Sin Datos</h5>
+                                <p class="text-muted">Todos los usuarios están activos</p>
                                 <a href="<?php echo e(route('homeadmin')); ?>" class="btn btn-primary">
-                                    <i class="fas fa-arrow-left me-1"></i>
-                                    Back to Users
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    Volver a Usuarios
                                 </a>
                             </div>
                         </div>
@@ -127,36 +136,36 @@
     </div>
 </div>
 
-<!-- Modal de Restaurar Usuario -->
-<div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
+<!-- Modal de Restauración -->
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">            <div class="modal-header bg-success text-white">                <h5 class="modal-title" id="restoreUserModalLabel">
-                    <i class="fas fa-undo me-2"></i>
-                    Restore User
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="restoreModalLabel">
+                    <i class="bi bi-arrow-clockwise me-2"></i>
+                    Restaurar Usuario
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
-                    <i class="fas fa-user-check fa-3x text-success"></i>
-                </div>                <p class="text-center">
-                    Are you sure you want to restore user <strong id="restoreUserName"></strong>?
-                </p>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    The user will be restored to active status.
+                    <i class="bi bi-question-circle fa-3x text-warning mb-3"></i>
+                    <h6>¿Estás seguro de que deseas restaurar este usuario?</h6>
+                    <p class="text-muted mb-0">Usuario: <strong id="restoreUserName"></strong></p>
+                    <small class="text-muted">El usuario volverá a estar activo en el sistema.</small>
                 </div>
             </div>
-            <div class="modal-footer">                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>
-                    Cancel
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x me-1"></i>
+                    Cancelar
                 </button>
-                <form id="restoreUserForm" method="POST" class="d-inline">
+                <form id="restoreForm" method="POST" class="d-inline">
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('PATCH'); ?>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-undo me-1"></i>
-                        Restore User
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Sí, Restaurar
                     </button>
                 </form>
             </div>
@@ -165,75 +174,46 @@
 </div>
 
 <!-- Modal de Eliminación Permanente -->
-<div class="modal fade" id="permanentDeleteModal" tabindex="-1" aria-labelledby="permanentDeleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">            <div class="modal-header bg-danger text-white">                <h5 class="modal-title" id="permanentDeleteModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Permanent Delete Confirmation
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Eliminar Permanentemente
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
-                    <i class="fas fa-trash-alt fa-3x text-danger"></i>
-                </div>                <p class="text-center">
-                    Are you sure you want to permanently delete user <strong id="permanentDeleteUserName"></strong>?
-                </p>
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Warning!</strong> This action cannot be undone.
+                    <i class="bi bi-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <h6 class="text-danger">¡Atención! Esta acción no se puede deshacer</h6>
+                    <p class="text-muted mb-0">Usuario: <strong id="deleteUserName"></strong></p>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <small>
+                            <i class="bi bi-info-circle me-1"></i>
+                            El usuario y todos sus datos asociados serán eliminados permanentemente del sistema.
+                        </small>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>
-                    Cancel
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x me-1"></i>
+                    Cancelar
                 </button>
-                <form id="permanentDeleteForm" method="POST" class="d-inline">
+                <form id="deleteForm" method="POST" class="d-inline">
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('DELETE'); ?>
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt me-1"></i>
-                        Delete Permanently
+                        <i class="bi bi-trash3 me-1"></i>
+                        Sí, Eliminar Permanentemente
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<?php $__env->startPush('scripts'); ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Modal de restaurar usuario
-    const restoreModal = document.getElementById('restoreUserModal');
-    const restoreForm = document.getElementById('restoreUserForm');
-    const restoreUserName = document.getElementById('restoreUserName');
-    
-    restoreModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const userId = button.getAttribute('data-user-id');
-        const userName = button.getAttribute('data-user-name');
-        
-        restoreUserName.textContent = userName;
-        restoreForm.action = `/admin/users/${userId}/restore`;
-    });
-    
-    // Modal de eliminación permanente
-    const permanentDeleteModal = document.getElementById('permanentDeleteModal');
-    const permanentDeleteForm = document.getElementById('permanentDeleteForm');
-    const permanentDeleteUserName = document.getElementById('permanentDeleteUserName');
-    
-    permanentDeleteModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const userId = button.getAttribute('data-user-id');
-        const userName = button.getAttribute('data-user-name');
-        
-        permanentDeleteUserName.textContent = userName;
-        permanentDeleteForm.action = `/admin/users/${userId}/permanent-delete`;
-    });
-});
-</script>
-<?php $__env->stopPush(); ?>
 
 <style>
 .avatar-sm {
@@ -268,7 +248,56 @@ document.addEventListener('DOMContentLoaded', function() {
 .btn-group .btn:last-child {
     margin-right: 0;
 }
-</style>
-<?php $__env->stopSection(); ?>
 
+.modal-header.bg-success .btn-close-white,
+.modal-header.bg-danger .btn-close-white {
+    filter: brightness(0) invert(1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal de Restauración
+    const restoreModal = document.getElementById('restoreModal');
+    const restoreForm = document.getElementById('restoreForm');
+    const restoreUserName = document.getElementById('restoreUserName');
+    
+    restoreModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+        const userName = button.getAttribute('data-user-name');
+        
+        // Actualizar el contenido del modal
+        restoreUserName.textContent = userName;
+        restoreForm.setAttribute('action', `<?php echo e(url('admin/users')); ?>/${userId}/restore`);
+    });
+    
+    // Modal de Eliminación
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteForm = document.getElementById('deleteForm');
+    const deleteUserName = document.getElementById('deleteUserName');
+    
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const userId = button.getAttribute('data-user-id');
+        const userName = button.getAttribute('data-user-name');
+        
+        // Actualizar el contenido del modal
+        deleteUserName.textContent = userName;
+        deleteForm.setAttribute('action', `<?php echo e(url('admin/users')); ?>/${userId}/permanent-delete`);
+    });
+    
+    // Opcional: Cerrar modal después del envío exitoso
+    restoreForm.addEventListener('submit', function() {
+        const modal = bootstrap.Modal.getInstance(restoreModal);
+        setTimeout(() => modal.hide(), 100);
+    });
+    
+    deleteForm.addEventListener('submit', function() {
+        const modal = bootstrap.Modal.getInstance(deleteModal);
+        setTimeout(() => modal.hide(), 100);
+    });
+});
+</script>
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/users/admin/deleted-users.blade.php ENDPATH**/ ?>

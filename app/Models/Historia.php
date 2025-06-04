@@ -21,10 +21,7 @@ protected $fillable = [
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/main
+
     protected static function boot()
     {
         parent::boot();

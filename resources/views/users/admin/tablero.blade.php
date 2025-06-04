@@ -10,6 +10,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
     @php
 
 $colCount = $tablero->columnas->count();
@@ -17,7 +18,8 @@ $colCount = $tablero->columnas->count();
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
     @endphp
-
+    
+    
     <div class="container py-4">
 
                 
@@ -38,6 +40,7 @@ $colCount = $tablero->columnas->count();
                                 }, 3000);
                             </script>
                         @endif
+
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -70,6 +73,10 @@ $colCount = $tablero->columnas->count();
                     Crear sprint
                 </button>
             </div>
+            <!-- Lado derecho: código del proyecto -->
+    <div class="text-muted fw-bold">
+        Código: {{ $tablero->project->codigo }}
+    </div>
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
@@ -133,9 +140,9 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                        <div class="overflow-auto p-2" style="flex: 4;">
-                            @foreach ($columna->historias as $historia)
-                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;">
+                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">                            
+                                @foreach ($columna->historias as $historia)
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">                                    
                                     <div class="d-flex justify-content-between align-items-start">
                                         {{-- Columna 1: Contenido --}}
                                         <div style="flex: 1;">
@@ -217,40 +224,82 @@ $colCount = $tablero->columnas->count();
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll(".historia-lista").forEach(function (el) {
-                new Sortable(el, {
-                    group: 'historias',
-                    animation: 150,
-                    onEnd: function (evt) {
-                        const historiaId = evt.item.dataset.historiaId;
-                        const nuevaColumnaId = evt.to.dataset.columnaId;
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.overflow-auto.p-2').forEach(function (el) {
+        new Sortable(el, {
+            group: 'historias',
+            animation: 150,
+            draggable: '.card',
+            onEnd: function (evt) {
+                const historiaElement = evt.item;
+                const historiaId = historiaElement.dataset.historiaId;
+                const columnaElement = evt.to.closest('[data-columna-id]');
+                const nuevaColumnaId = columnaElement.dataset.columnaId;
 
-                        fetch(`/historias/${historiaId}/mover`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                columna_id: nuevaColumnaId
-                            })
-                        })
-                        .then(response => {
-                            if (!response.ok) throw new Error("Error al mover la historia.");
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log("Historia movida correctamente", data);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                            alert("No se pudo mover la historia.");
-                        });
+                if (!historiaId || !nuevaColumnaId) {
+                    console.error('Faltan IDs requeridos');
+                    return;
+                }
+
+                fetch(`/historias/${historiaId}/mover`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        columna_id: nuevaColumnaId
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
                     }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Error al mover la historia');
+                    }
+                    console.log('Movimiento exitoso:', data);
+                    // Opcional: Mostrar notificación
+                    showNotification('success', data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('error', error.message);
+                    // Revertir visualmente el movimiento
+                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ? 
+                        null : evt.from.children[evt.oldIndex]);
                 });
-            });
+            }
         });
+    });
+
+    function showNotification(type, message) {
+        // Implementa tu sistema de notificaciones o usa alertas simples
+        const alertType = type === 'error' ? 'danger' : type;
+        const alertHtml = `
+            <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+        // Agrega la notificación donde sea apropiado en tu UI
+        const notificationContainer = document.getElementById('notification-container') || document.body;
+        notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
+        
+        // Elimina la notificación después de 5 segundos
+        setTimeout(() => {
+            const alert = notificationContainer.querySelector('.alert');
+            if (alert) alert.remove();
+        }, 5000);
+    }
+});
+
+
     </script>
 
     <script>
@@ -288,7 +337,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -347,7 +396,6 @@ $colCount = $tablero->columnas->count();
 
 
 <!-- Modal de confirmación para eliminar columna -->
-<!-- Modal de confirmación para eliminar columna -->
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
@@ -374,7 +422,6 @@ $colCount = $tablero->columnas->count();
         </form>
     </div>
 </div>
-
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -420,7 +467,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -430,8 +477,6 @@ $colCount = $tablero->columnas->count();
             });
         });
     </script>
-
-
 
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
@@ -487,6 +532,7 @@ $colCount = $tablero->columnas->count();
     });
 
 </script>
+
 <script>
     let columnaIdParaEliminar = null;
 
@@ -510,11 +556,6 @@ $colCount = $tablero->columnas->count();
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
-
-
-
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -552,37 +593,36 @@ $colCount = $tablero->columnas->count();
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
-    const columnas = document.querySelectorAll(".historia-lista");
-
+    
     function realizarBusqueda() {
         const textoBusqueda = buscador.value.toLowerCase().trim();
         
-        columnas.forEach(columna => {
-            const historias = columna.querySelectorAll(".historia-item");
-            let historiasVisibles = 0;
-            
-            historias.forEach(historia => {
-                const nombre = historia.textContent.toLowerCase();
-                if (nombre.includes(textoBusqueda)) {
-                    historia.style.display = "block";
-                    historiasVisibles++;
-                } else {
-                    historia.style.display = "none";
-                }
-            });
-            
-            // Opcional: ocultar columnas vacías
-            columna.style.display = historiasVisibles > 0 ? "block" : "none";
+        // Seleccionar todas las tarjetas de historias
+        const historias = document.querySelectorAll(".card.mb-4.p-2");
+        
+        historias.forEach(historia => {
+            // Buscar en el texto de la historia (nombre + descripción)
+            const textoHistoria = historia.textContent.toLowerCase();
+            if (textoHistoria.includes(textoBusqueda)) {
+                historia.style.display = "block";
+            } else {
+                historia.style.display = "none";
+            }
         });
     }
 
-    buscador.addEventListener("input", realizarBusqueda);
+    // Buscar mientras se escribe (con retardo de 300ms para mejor performance)
+    let timeoutBusqueda;
+    buscador.addEventListener("input", () => {
+        clearTimeout(timeoutBusqueda);
+        timeoutBusqueda = setTimeout(realizarBusqueda, 300);
+    });
+    
+    // Botón para limpiar la búsqueda
     limpiarBtn.addEventListener("click", function () {
         buscador.value = "";
-        columnas.forEach(columna => {
-            columna.style.display = "block";
-            columna.querySelectorAll(".historia-item").forEach(h => h.style.display = "block");
-        });
+        const historias = document.querySelectorAll(".card.mb-4.p-2");
+        historias.forEach(h => h.style.display = "block");
     });
 });
 

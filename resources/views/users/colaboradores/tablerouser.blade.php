@@ -115,7 +115,7 @@ $colCount = $tablero->columnas->count();
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                             // Aquí podrías mostrar un mensaje visual
                         })
                         .catch(error => {

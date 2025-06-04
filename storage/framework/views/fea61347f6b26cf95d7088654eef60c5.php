@@ -1,15 +1,28 @@
 <?php $__env->startSection('title'); ?>
         <?php $__env->startSection('mensaje-superior'); ?>
+
+            <div class="mt-4 text-lg font-semibold text-blue-600 ">
+
+            <h1 class="titulo-historia" >📖Detalle de la Historia</h1>
+            </div>
+        <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('mensaje-superior'); ?>
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+            <h1 class="titulo-historia">📖 Detalle de la Historia</h1>
+        </div>
+    <?php $__env->stopSection(); ?>
+
             Detalle de la Historia
         <?php $__env->stopSection(); ?>
 
-    <?php $__env->startSection('content'); ?>
+<?php $__env->startSection('content'); ?>
 
-        <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
 
-        <div class="container-fluid mi-container ">
+<link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
 
-            <?php if(session('success')): ?>
+<div class="container-fluid-m-2 mi-container m-2">
+
+             <?php if(session('success')): ?>
                 <div class="alert alert-success mt-2" id="success-alert">
                     <?php echo e(session('success')); ?>
 
@@ -36,6 +49,14 @@
                         <?php echo e($historia->nombre); ?>
 
                     </h2>
+    <div class="historia-header">
+        <h2 class="historia-title"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
+            title="<?php echo e($historia->nombre); ?>">
+            H<?php echo e($historia->numero); ?> <?php echo e($historia->nombre); ?>
+
+        </h2>
+      
 
                     <div class="historia-meta">
                         <span class="badge bg-primary"><?php echo e($historia->prioridad); ?></span>
@@ -52,42 +73,37 @@
 
                         </div>
                     </div>
+                <div class="historia-section ">
+                    <h3 class="section-title">Descripción</h3>
+                    <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
+                        <?php echo e($historia->descripcion); ?>
 
-
-                    <div class="historia-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Estado:</span>
-                            <span class="detail-value">
-                        <?php echo e($historia->columna ? $historia->columna->nombre : 'No especificado'); ?>
-
-                    </span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Sprint:</span>
-                            <span class="detail-value">
-                        <?php
-                            $sprint = \App\Models\Sprint::find($historia->sprint_id);
-                        ?>
-                                <?php echo e($sprint ? $sprint->nombre : 'No asignado'); ?>
-
-                    </span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Fecha creación:</span>
-                            <span class="detail-value"><?php echo e($historia->created_at->format('d/m/Y')); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Asignado a:</span>
-                            <span class="detail-value">
-                        <?php echo e($historia->usuario ? $historia->usuario->name : 'No asignado'); ?>
-
-                    </span>
-                        </div>
                     </div>
                 </div>
 
-            </div>
 
+        <div class="historia-details">
+            <div class="detail-item">
+                <span class="detail-label">Estado:</span>
+           <span class="detail-value"><?php echo e($historia->columna ? $historia->columna->nombre : 'Sin estado asignado'); ?></span>            </div>
+            <div class="detail-item">
+                <span class="detail-label">Sprint:</span>
+                <span class="detail-value"><?php echo e($historia->sprint ?? 'No asignado'); ?></span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha creación:</span>
+                <span class="detail-value"><?php echo e($historia->created_at->format('d/m/Y')); ?></span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Asignado a:</span>
+                <span class="detail-value">
+                    <?php echo e($historia->usuario ? $historia->usuario->name : 'No asignado'); ?>
+
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
 
             <a href="<?php echo e(route('tareas.show', $historia->id)); ?>"
                class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
@@ -140,4 +156,4 @@
 
     <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/historias/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/historias/show.blade.php ENDPATH**/ ?>

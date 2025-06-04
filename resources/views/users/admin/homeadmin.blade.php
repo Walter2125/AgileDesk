@@ -229,13 +229,13 @@
         <div class="col-12 mb-3">
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Users</span>
+                    <span>Usuarios</span>
                     <div class="btn-group" role="group">
                         <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-people"></i> View All
+                            <i class="bi bi-people"></i> Ver Todos
                         </a>
                         <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i> Deleted Users
+                            <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
                     </div>
                 </div>
@@ -244,11 +244,11 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
+                                    <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                    <th><i class="bi bi-tag me-1"></i> Rol</th>
+                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -257,17 +257,17 @@
                                     <td>
                                         {{ $usuario->name }}
                                         @if($usuario->trashed())
-                                            <span class="badge bg-secondary ms-1">Deleted</span>
+                                            <span class="badge bg-secondary ms-1">Eliminado</span>
                                         @endif
                                     </td>
                                     <td>{{ $usuario->email }}</td>
                                     <td>{{ ucfirst($usuario->usertype) }}</td>
                                     <td>
                                         @if($usuario->trashed())
-                                            <span class="badge bg-secondary">Deleted</span>
+                                            <span class="badge bg-secondary">Eliminado</span>
                                         @else
                                             <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $usuario->is_approved ? 'Approved' : 'Pending' }}
+                                                {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
                                             </span>
                                         @endif
                                     </td>
@@ -303,7 +303,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No users registered</td>
+                                    <td colspan="5" class="text-center">No hay usuarios registrados</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -330,10 +330,10 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Responsable</th>
-                                    <th>Miembros</th>
-                                    <th>Acciones</th>
+                                    <th><i class="bi bi-person me-1"></i>Nombre</th>
+                                    <th><i class="bi bi-person-badge"></i>Responsable</th>
+                                    <th><i class="bi bi-people-fill"></i>Miembros</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -377,9 +377,9 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Usuario</th>
-                                    <th>Acción</th>
-                                    <th>Fecha</th>
+                                    <th><i class="bi bi-person me-1"></i> Usuario</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                    <th><i class="bi bi-calendar me-1"></i> Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -418,10 +418,10 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Proyecto</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
+                                    <th><i class="bi bi-tag me-1"></i> Proyecto</th>
+                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -462,20 +462,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteUserModalLabel">Delete Confirmation</h5>
+                <h5 class="modal-title" id="deleteUserModalLabel">Confirmar Eliminación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
-                <p class="text-muted small">This user will be soft deleted and can be restored later.</p>
+                <p>¿Está seguro de que desea eliminar al usuario <strong id="deleteUserName"></strong>?</p>
+                <p class="text-muted small">Este usuario será eliminado de forma segura y podrá ser restaurado más tarde.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="deleteUserForm" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Delete User
+                        <i class="bi bi-trash me-1"></i> Eliminar Usuario
                     </button>
                 </form>
             </div>
@@ -488,19 +488,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="restoreUserModalLabel">Restore Confirmation</h5>
+                <h5 class="modal-title" id="restoreUserModalLabel">Confirmar Restauración</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to restore user <strong id="restoreUserName"></strong>?</p>
-                <p class="text-muted small">The user will be restored to active status.</p>
+                <p>¿Está seguro de que desea restaurar al usuario <strong id="restoreUserName"></strong>?</p>
+                <p class="text-muted small">El usuario será restaurado al estado activo.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="restoreUserForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Restore User
+                        <i class="bi bi-arrow-clockwise me-1"></i> Restaurar Usuario
                     </button>
                 </form>
             </div>

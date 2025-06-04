@@ -1120,17 +1120,12 @@
             
             // Inicializar dropdowns de Bootstrap
             if (typeof bootstrap !== 'undefined') {
-                console.log('Bootstrap está cargado correctamente');
-                
                 // Inicializar todos los dropdowns
                 var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                console.log('Elementos dropdown encontrados:', dropdownElements.length);
                 
                 dropdownElements.forEach(function(element, index) {
                     try {
                         var dropdown = new bootstrap.Dropdown(element);
-                        console.log('Dropdown inicializado:', index, element);
-                        
                     } catch (error) {
                         console.error('Error inicializando dropdown:', error, element);
                     }
@@ -1229,26 +1224,16 @@
     <script>
         // Script de debugging específico para el dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DEBUGGING DROPDOWN ===');
-            
             // Verificar elementos
             const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
             const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
             const dropupContainer = document.querySelector('.user-dropdown .dropup');
             
-            console.log('User dropdown element:', userDropdown);
-            console.log('Dropdown menu element:', dropdownMenu);
-            console.log('Dropup container:', dropupContainer);
-            
             if (userDropdown && dropdownMenu) {
-                console.log('✅ Elementos encontrados correctamente');
-                
                 // Agregar click handler manual como fallback
                 userDropdown.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
-                    console.log('Click en dropdown detectado');
                     
                     // Toggle del dropdown menu
                     const isOpen = dropdownMenu.classList.contains('show');
@@ -1256,11 +1241,9 @@
                     if (isOpen) {
                         dropdownMenu.classList.remove('show');
                         userDropdown.setAttribute('aria-expanded', 'false');
-                        console.log('Dropdown cerrado');
                     } else {
                         dropdownMenu.classList.add('show');
                         userDropdown.setAttribute('aria-expanded', 'true');
-                        console.log('Dropdown abierto');
                     }
                 });
                 
@@ -1269,13 +1252,8 @@
                     if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
                         dropdownMenu.classList.remove('show');
                         userDropdown.setAttribute('aria-expanded', 'false');
-                        console.log('Dropdown cerrado por click externo');
                     }
                 });
-                
-                console.log('✅ Event listeners agregados');
-            } else {
-                console.log('❌ No se encontraron los elementos del dropdown');
             }
         });
     </script>

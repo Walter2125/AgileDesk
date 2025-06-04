@@ -1,15 +1,28 @@
+<<<<<<< HEAD
+=======
+    <?php $__env->startSection('mensaje-superior'); ?>
+        Crear Nuevo Proyecto
+    <?php $__env->stopSection(); ?>
+>>>>>>> origin/main
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
+<<<<<<< HEAD
             <h2 class="mb-4">Create New Project</h2>
 
+=======
+>>>>>>> origin/main
             <form id="projectForm" method="POST" action="<?php echo e(route('projects.store')); ?>">
                 <?php echo csrf_field(); ?>
 
                 <!-- Nombre -->
                 <div class="form-group mb-3">
+<<<<<<< HEAD
                     <label for="name">Project Name</label>
+=======
+                    <label for="name">Nombre del Proyecto</label>
+>>>>>>> origin/main
                     <input id="name" type="text"
                         class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -35,7 +48,11 @@ unset($__errorArgs, $__bag); ?>
                 </div>
                 <!-- Descripción -->
                 <div class="form-group mb-3">
+<<<<<<< HEAD
                     <label for="descripcion"><?php echo e(__('Descripción')); ?></label>
+=======
+                    <label for="descripcion">Descripción</label>
+>>>>>>> origin/main
                     <textarea id="descripcion" 
                         class="form-control <?php $__errorArgs = ['descripcion'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -60,7 +77,11 @@ unset($__errorArgs, $__bag); ?>
                 </div>
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
+<<<<<<< HEAD
                     <label for="fecha_inicio">Start Date</label>
+=======
+                    <label for="fecha_inicio">Fecha de Inicio</label>
+>>>>>>> origin/main
                     <input id="fecha_inicio" type="date"
                         class="form-control <?php $__errorArgs = ['fecha_inicio'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -87,7 +108,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Fecha Fin -->
                 <div class="form-group mb-3">
+<<<<<<< HEAD
                     <label for="fecha_fin">End Date</label>
+=======
+                    <label for="fecha_fin">Fecha de Finalización</label>
+>>>>>>> origin/main
                     <input id="fecha_fin" type="date"
                         class="form-control <?php $__errorArgs = ['fecha_fin'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -114,7 +139,11 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Buscador y tabla -->
                 <div class="form-group mb-3">
+<<<<<<< HEAD
                     <label>Search Users</label>
+=======
+                    <label>Buscar Usuarios</label>
+>>>>>>> origin/main
                     <div class="search-container mb-3">
                         <input type="text" class="form-control" id="userSearch" placeholder="Escribe el nombre de un usuario...">
                         <div id="searchResults" class="mt-2"></div>
@@ -140,8 +169,13 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
+<<<<<<< HEAD
                     <button type="submit" class="btn btn-primary">Save Project</button>
                     <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-secondary">Cancel</a>
+=======
+                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-secondary">Cancelar</a>
+>>>>>>> origin/main
                 </div>
             </form>
         </div>

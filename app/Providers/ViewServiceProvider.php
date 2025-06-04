@@ -20,41 +20,44 @@ class ViewServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-public function boot(): void 
-{
-    View::composer('*', function ($view) {
-        $currentRoute = \Illuminate\Support\Facades\Route::current();
-        $route = \Illuminate\Support\Facades\Route::currentRouteName();
-        
-        // Verificar que existe una ruta actual antes de acceder a sus parámetros
-        if (!$currentRoute) {
-            return;
-        }
-        
-        $historiaParam = $currentRoute->parameter('historia');
-        $tablero = null;
-        $historia = null;
-
-        // Si $historia es un ID, lo buscamos como modelo con sus relaciones
-        if (is_numeric($historiaParam)) {
-            $historia = \App\Models\Historia::with('columna.tablero')->find($historiaParam);
-        } elseif ($historiaParam instanceof \App\Models\Historia) {
-            $historia = $historiaParam->load('columna.tablero');
-        }
-
-        // Si tenemos historia cargada y su columna tiene tablero
-        if ($historia && $historia->columna && $historia->columna->tablero) {
-            $tablero = $historia->columna->tablero;
-            View::share('historia', $historia);
-            View::share('tablero', $tablero);
-        }        // Si estamos en la ruta del tablero directamente
-        if ($route === 'tableros.show') {
-            $tableroParam = $currentRoute->parameter('tablero');
-            if ($tableroParam instanceof \App\Models\Tablero) {
-                $tablero = $tableroParam;
-            } elseif (is_numeric($tableroParam)) {
-                $tablero = \App\Models\Tablero::with('proyecto')->find($tableroParam);
+    public function boot(): void 
+    {
+        View::composer('*', function ($view) {
+            $currentRoute = Route::current();
+            $route = Route::currentRouteName();
+            
+            // Verificar que existe una ruta actual antes de acceder a sus parámetros
+            if (!$currentRoute) {
+                View::share('breadcrumbs', []);
+                return;
             }
+            
+            $historiaParam = $currentRoute->parameter('historia');
+            $tablero = null;
+            $historia = null;
+
+            // Si $historia es un ID, lo buscamos como modelo con sus relaciones
+            if (is_numeric($historiaParam)) {
+                $historia = Historia::with('columna.tablero')->find($historiaParam);
+            } elseif ($historiaParam instanceof Historia) {
+                $historia = $historiaParam->load('columna.tablero');
+            }
+
+            // Si tenemos historia cargada y su columna tiene tablero
+            if ($historia && $historia->columna && $historia->columna->tablero) {
+                $tablero = $historia->columna->tablero;
+                View::share('historia', $historia);
+                View::share('tablero', $tablero);
+            }
+            
+            // Si estamos en la ruta del tablero directamente
+            if ($route === 'tableros.show') {
+                $tableroParam = $currentRoute->parameter('tablero');
+                if ($tableroParam instanceof \App\Models\Tablero) {
+                    $tablero = $tableroParam;
+                } elseif (is_numeric($tableroParam)) {
+                    $tablero = \App\Models\Tablero::with('proyecto')->find($tableroParam);
+                }
 
                 if ($tablero) {
                     View::share('tablero', $tablero);
@@ -92,14 +95,10 @@ public function boot(): void
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
                         ['label' => 'Historia'],
                     ];
-
                 },
 
                 'historias.create.fromColumna' => function () {
-                    $columnaParam = Route::current()->parameter('columna');
-
-                },                'historias.create.fromColumna' => function () {
-                    $currentRoute = \Illuminate\Support\Facades\Route::current();
+                    $currentRoute = Route::current();
                     
                     if (!$currentRoute) {
                         return [
@@ -213,13 +212,7 @@ public function boot(): void
                 'users.search'    => 'admin.users.index',
 
                 // Tareas
-
-
                 'tareas.index' => function() use ($tablero, $historia) {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],
@@ -227,7 +220,6 @@ public function boot(): void
                             ['label'=>'Crear tarea'],
                         ];
                     }
-                    
 
                     return [
                         ['label'=>'Inicio','url'=>route('dashboard')],

@@ -1,7 +1,13 @@
         <?php $__env->startSection('mensaje-superior'); ?>
-            Lista de Tareas: <?php echo e($historia->nombre); ?>
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+                   
+         <h1 class="titulo-historia">
+            Lista de Tareas para la Historia: <?php echo e($historia->nombre); ?>
 
+        </h1>
+            </div>
         <?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('content'); ?>
 
     <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
@@ -126,4 +132,4 @@
 </a>
 
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/tareas/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/tareas/show.blade.php ENDPATH**/ ?>
