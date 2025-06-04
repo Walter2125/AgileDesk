@@ -10,6 +10,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
     @php
 
 $colCount = $tablero->columnas->count();
@@ -17,7 +18,8 @@ $colCount = $tablero->columnas->count();
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
     @endphp
-
+    
+    
     <div class="container py-4">
 
                 
@@ -38,6 +40,7 @@ $colCount = $tablero->columnas->count();
                                 }, 3000);
                             </script>
                         @endif
+
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -70,6 +73,10 @@ $colCount = $tablero->columnas->count();
                     Crear sprint
                 </button>
             </div>
+            <!-- Lado derecho: código del proyecto -->
+    <div class="text-muted fw-bold">
+        Código: {{ $tablero->project->codigo }}
+    </div>
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
