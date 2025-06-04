@@ -1,17 +1,17 @@
 @extends('layouts.app')
-
+    @section('mensaje-superior')
+        Crear Nuevo Proyecto
+    @endsection
 @section('content')
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <h2 class="mb-4">Create New Project</h2>
-
             <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
                 @csrf
 
                 <!-- Nombre -->
                 <div class="form-group mb-3">
-                    <label for="name">Project Name</label>
+                    <label for="name">Nombre del Proyecto</label>
                     <input id="name" type="text"
                         class="form-control @error('name') is-invalid @enderror"
                         name="name"
@@ -23,7 +23,7 @@
                 </div>
                 <!-- Descripción -->
                 <div class="form-group mb-3">
-                    <label for="descripcion">{{ __('Descripción') }}</label>
+                    <label for="descripcion">Descripción</label>
                     <textarea id="descripcion" 
                         class="form-control @error('descripcion') is-invalid @enderror" 
                         name="descripcion" 
@@ -34,7 +34,7 @@
                 </div>
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
-                    <label for="fecha_inicio">Start Date</label>
+                    <label for="fecha_inicio">Fecha de Inicio</label>
                     <input id="fecha_inicio" type="date"
                         class="form-control @error('fecha_inicio') is-invalid @enderror"
                         name="fecha_inicio"
@@ -47,7 +47,7 @@
 
                 <!-- Fecha Fin -->
                 <div class="form-group mb-3">
-                    <label for="fecha_fin">End Date</label>
+                    <label for="fecha_fin">Fecha de Finalización</label>
                     <input id="fecha_fin" type="date"
                         class="form-control @error('fecha_fin') is-invalid @enderror"
                         name="fecha_fin"
@@ -60,7 +60,7 @@
 
                 <!-- Buscador y tabla -->
                 <div class="form-group mb-3">
-                    <label>Search Users</label>
+                    <label>Buscar Usuarios</label>
                     <div class="search-container mb-3">
                         <input type="text" class="form-control" id="userSearch" placeholder="Escribe el nombre de un usuario...">
                         <div id="searchResults" class="mt-2"></div>
@@ -85,8 +85,8 @@
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary">Save Project</button>
-                    <a href="{{ route('projects.my') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                    <a href="{{ route('projects.my') }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

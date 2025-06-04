@@ -117,7 +117,13 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
 
         ]);
-        $columna = Columna::with('tablero')->findOrFail($request->columna_id);
+        
+        // Verificar si se proporciona una columna válida
+        $columna = null;
+        if ($request->columna_id) {
+            $columna = Columna::with('tablero')->findOrFail($request->columna_id);
+        }
+        
         $historia = new Historia();
         $historia->nombre = $request->nombre;
         $historia->trabajo_estimado = $request->trabajo_estimado;
