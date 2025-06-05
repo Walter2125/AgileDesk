@@ -1596,4 +1596,4 @@
         });
         </script>
     </body>
-</html><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/layouts/guest.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/layouts/guest.blade.php ENDPATH**/ ?>

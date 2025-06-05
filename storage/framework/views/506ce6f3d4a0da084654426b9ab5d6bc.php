@@ -3,7 +3,11 @@
 <!-- Tabler Core CSS (Admin Template) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="<?php echo e(asset('css/bootstrap.min.css')); ?>">
+    <link rel="styleshee            // Actualiza la acción del formulario
+            rejectUserForm.action = baseUrl + selectedUserId;
+
+            // Habilita o deshabilita el botón de envío
+            rejectSubmitBtn.disabled = !userId || userId === "0";"<?php echo e(asset('css/bootstrap.min.css')); ?>">
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -248,9 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Actualiza la acción del formulario
             rejectUserForm.action = `/admin/users/${userId}/reject`;
-
-            // Depuración: verifica el atributo action
-            console.log('Formulario actualizado:', rejectUserForm.action);
 
             // Habilita o deshabilita el botón de envío
             rejectSubmitBtn.disabled = !userId || userId === "0";

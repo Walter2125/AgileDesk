@@ -551,4 +551,4 @@
         </div>
     </div>
 </body>
-</html><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/errors/minimal.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/errors/minimal.blade.php ENDPATH**/ ?>
