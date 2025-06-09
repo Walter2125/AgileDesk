@@ -42,6 +42,140 @@
         scroll-behavior: smooth;
     }
 
+    /* Mejoras específicas para compatibilidad entre sistemas operativos */
+    @media screen {
+        /* Asegurar consistencia de fuentes entre SO */
+        html, body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-feature-settings: "liga", "kern";
+        }
+        
+        /* Base font size más robusta */
+        html {
+            font-size: 16px; /* Base explícita */
+        }
+        
+        body {
+            font-size: 1rem;
+            line-height: 1.5;
+            font-family: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", 
+                         "Ubuntu", "Cantarell", "Noto Sans", sans-serif;
+        }
+        
+        /* Mejorar el escalado en sistemas Linux/macOS */
+        .sidebar-heading {
+            font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+            padding: clamp(1rem, 3vw, 1.5rem);
+        }
+        
+        .list-group-item {
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+        }
+        
+        /* Asegurar tamaños mínimos consistentes */
+        .user-avatar {
+            width: clamp(32px, 5vw, 40px);
+            height: clamp(32px, 5vw, 40px);
+            min-width: clamp(32px, 5vw, 40px);
+            font-size: clamp(0.875rem, 2vw, 1rem);
+        }
+        
+        /* Mejoras específicas para Firefox/Linux */
+        @supports (-moz-appearance: none) {
+            body {
+                font-size: 1.1rem; /* Ligeramente más grande en Firefox */
+            }
+            
+            .sidebar-heading {
+                font-size: 1.6rem;
+            }
+            
+            .list-group-item {
+                font-size: 1rem;
+                padding: 0.8rem 1.3rem;
+            }
+        }
+    }
+
+    /* Media query específica para detectar sistemas con DPI bajo */
+    @media screen and (max-resolution: 96dpi) {
+        html {
+            font-size: 18px; /* Base más grande para DPI bajo */
+        }
+        
+        .sidebar-heading {
+            font-size: 1.75rem;
+            padding: 1.75rem 1.25rem;
+        }
+        
+        .list-group-item {
+            font-size: 1.1rem;
+            padding: 0.85rem 1.4rem;
+        }
+        
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Para sistemas con scaling alto */
+    @media screen and (min-resolution: 144dpi) {
+        html {
+            font-size: 15px; /* Base ligeramente menor para DPI alto */
+        }
+    }
+
+    /* Detección específica de sistemas Linux/macOS (aproximada) */
+    @supports (font-variant-ligatures: normal) {
+        /* Mejoras para sistemas que probablemente usan FreeType o CoreText */
+        body {
+            font-weight: 450; /* Peso ligeramente mayor para mejor legibilidad */
+            letter-spacing: 0.01em;
+        }
+        
+        .sidebar-heading {
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        
+        .list-group-item {
+            font-weight: 500;
+            letter-spacing: 0.005em;
+        }
+    }
+
+    /* Asegurar que los elementos no se vean muy pequeños */
+    .sidebar-heading {
+        min-font-size: 1.25rem;
+    }
+
+    .list-group-item {
+        min-font-size: 0.875rem;
+    }
+
+    .navbar {
+        min-height: 3.5rem;
+    }
+
+    /* Botones más grandes para mejor usabilidad */
+    .sidebar-toggle-btn {
+        min-width: 32px;
+        min-height: 32px;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+    }
+
+    /* Iconos con tamaño consistente */
+    .list-group-item i {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        min-width: 20px;
+    }
+
     :root {
         --sidebar-width: 280px;
         --sidebar-collapsed-width: 56px; /* Más angosto, como AdminLTE */
@@ -103,17 +237,22 @@
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
-        padding: 1.5rem 1rem;
-        font-size: 1.5rem;
+        padding: clamp(1.25rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 3rem;
     }
 
     .list-group-item {
-        padding: 0.75rem 1.25rem;
+        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
         border: none;
         border-radius: 0 !important;
         font-weight: 500;
         transition: all 0.2s ease;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
     }
 
     .list-group-item:hover {
@@ -309,9 +448,9 @@
     }
 
     .user-avatar {
-        width: 40px;
-        height: 40px;
-        min-width: 40px; /* Evita que se encoja */
+        width: clamp(32px, 5vw, 40px);
+        height: clamp(32px, 5vw, 40px);
+        min-width: clamp(32px, 5vw, 40px); /* Evita que se encoja */
         border-radius: 50%;
         background-color: #0d6efd;
         display: flex;
@@ -319,6 +458,7 @@
         justify-content: center;
         margin-right: 0.75rem;
         font-weight: bold;
+        font-size: clamp(0.875rem, 2vw, 1rem);
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -980,6 +1120,7 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             @include('layouts.navigation')
+            
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
@@ -1244,6 +1385,78 @@
                     }
                 });
             }
+        });
+    </script>
+
+    <!-- Sistema operativo y escalado automático -->
+    <script>
+        // Detectar sistema operativo y aplicar ajustes específicos
+        document.addEventListener('DOMContentLoaded', function() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isLinux = userAgent.includes('linux');
+            const isMac = userAgent.includes('mac');
+            const isFirefox = userAgent.includes('firefox');
+            
+            // Crear elemento de estilo para ajustes específicos del SO
+            const osSpecificStyles = document.createElement('style');
+            let css = '';
+            
+            if (isLinux) {
+                css += `
+                    /* Ajustes específicos para Linux */
+                    html { font-size: 17px !important; }
+                    .sidebar-heading { font-size: 1.6rem !important; }
+                    .list-group-item { font-size: 1rem !important; }
+                    .user-avatar { font-size: 1rem !important; }
+                `;
+                console.log('🐧 Sistema Linux detectado - Aplicando ajustes de escalado');
+            }
+            
+            if (isMac) {
+                css += `
+                    /* Ajustes específicos para macOS */
+                    html { font-size: 16px !important; }
+                    body { font-weight: 400 !important; }
+                    .sidebar-heading { font-weight: 500 !important; }
+                `;
+                console.log('🍎 Sistema macOS detectado - Aplicando ajustes de escalado');
+            }
+            
+            if (isFirefox && isLinux) {
+                css += `
+                    /* Ajustes específicos para Firefox en Linux */
+                    html { font-size: 18px !important; }
+                    .sidebar-heading { font-size: 1.7rem !important; }
+                    .list-group-item { font-size: 1.1rem !important; }
+                `;
+                console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
+            }
+            
+            // Detectar DPI bajo (típico en algunos sistemas Linux)
+            if (window.devicePixelRatio <= 1) {
+                css += `
+                    /* Ajustes para DPI bajo */
+                    html { font-size: 18px !important; }
+                    .sidebar-heading { font-size: 1.75rem !important; }
+                    .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
+                    .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
+                `;
+                console.log('📱 DPI bajo detectado - Aplicando escalado aumentado');
+            }
+            
+            // Aplicar los estilos si hay alguno
+            if (css) {
+                osSpecificStyles.textContent = css;
+                document.head.appendChild(osSpecificStyles);
+            }
+            
+            // Mensaje de información en consola
+            console.log('🎨 AgileDesk - Ajustes de escalado aplicados para:', {
+                userAgent: navigator.userAgent,
+                devicePixelRatio: window.devicePixelRatio,
+                screenResolution: `${screen.width}x${screen.height}`,
+                windowSize: `${window.innerWidth}x${window.innerHeight}`
+            });
         });
     </script>
 
