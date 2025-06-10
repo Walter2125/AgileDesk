@@ -1,8 +1,7 @@
-@extends('layouts.app')
-     @section('mensaje-superior')
+     <?php $__env->startSection('mensaje-superior'); ?>
         Proyectos
-    @endsection
-@section('styles')
+    <?php $__env->stopSection(); ?>
+<?php $__env->startSection('styles'); ?>
 <style>
     /* Project Card Styling */
     .projects-container {
@@ -219,36 +218,37 @@
         }
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container projects-container">
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
+            <?php echo e(session('success')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if (auth()->user()->usertype == 'admin')
+    <?php if(auth()->user()->usertype == 'admin'): ?>
         <div class="row mb-5">
             <div class="col-md-4 mb-4">
                 <div class="create-project-card">
                     <p class="card-text">Comienza un nuevo proyecto colaborativo</p>
-                    <a href="{{ route('projects.create') }}" class="btn btn-primary btn-create">
+                    <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-primary btn-create">
                         <i class="fas fa-plus mr-2"></i> Crear Proyecto
                     </a>
                 </div>
             </div>
         </div>
-    @endif
+    <?php endif; ?>
 
     <h1 class="page-title">Proyectos más recientes</h1>
 
-    @if(count($projects) > 0)
+    <?php if(count($projects) > 0): ?>
         <div class="row">
-            @foreach($projects as $project)
+            <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="project-card card h-100">
                         <div class="card-body">
@@ -256,20 +256,21 @@
                                 <div class="project-title-wrapper">
                                     <h3 class="project-title">
                                         <i class="fas fa-project-diagram"></i> 
-                                        <span>{{ $project->name }}</span>
+                                        <span><?php echo e($project->name); ?></span>
                                     </h3>
                                     <div class="project-code">
-                                        <strong>Código:</strong> {{ $project->codigo }}
+                                        <strong>Código:</strong> <?php echo e($project->codigo); ?>
+
                                     </div>
                                 </div>
 
                                 <div class="dropdown-card-options dropdown">
-                                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton{{ $project->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton<?php echo e($project->id); ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo e($project->id); ?>">
                                         <li>
-                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntegrantes{{ $project->id }}">
+                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntegrantes<?php echo e($project->id); ?>">
                                                 Ver integrantes
                                             </button>
                                         </li>
@@ -280,61 +281,62 @@
                             <div class="date-info">
                                 <div class="date-block">
                                     <i class="fas fa-calendar-alt"></i> 
-                                    <span>{{ $project->fecha_inicio }}</span>
+                                    <span><?php echo e($project->fecha_inicio); ?></span>
                                 </div>
                                 <div class="date-block">
                                     <i class="fas fa-calendar-check"></i>
-                                    <span>{{ $project->fecha_fin }}</span>
+                                    <span><?php echo e($project->fecha_fin); ?></span>
                                 </div>
                             </div>
 
                             <div class="project-description">
-                                {{ Str::limit($project->descripcion, 100) }}
+                                <?php echo e(Str::limit($project->descripcion, 100)); ?>
+
                             </div>
 
                             <div class="action-buttons">
-                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                                <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
 
-                                @if(auth()->id() === $project->user_id)
-                                    <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                                <?php if(auth()->id() === $project->user_id): ?>
+                                    <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
-                                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                                    <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
                                         <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
                                             <i class="fas fa-trash"></i> Eliminar
                                         </button>
                                     </form>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal de Integrantes -->
-                <div class="modal fade" id="modalIntegrantes{{ $project->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $project->id }}" aria-hidden="true">
+                <div class="modal fade" id="modalIntegrantes<?php echo e($project->id); ?>" tabindex="-1" aria-labelledby="modalLabel<?php echo e($project->id); ?>" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel{{ $project->id }}">Integrantes del proyecto: {{ $project->name }}</h5>
+                                <h5 class="modal-title" id="modalLabel<?php echo e($project->id); ?>">Integrantes del proyecto: <?php echo e($project->name); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                @if($project->users && $project->users->count() > 0)
+                                <?php if($project->users && $project->users->count() > 0): ?>
                                     <ul class="list-group">
-                                        @foreach($project->users as $user)
+                                        <?php $__currentLoopData = $project->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <li class="list-group-item">
-                                                <strong>{{ $user->name }}</strong> <br>
-                                                <small>{{ $user->email }}</small>
+                                                <strong><?php echo e($user->name); ?></strong> <br>
+                                                <small><?php echo e($user->email); ?></small>
                                             </li>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </ul>
-                                @else
+                                <?php else: ?>
                                     <p>No hay integrantes registrados en este proyecto.</p>
-                                @endif
+                                <?php endif; ?>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -342,20 +344,21 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-    @else
+    <?php else: ?>
         <div class="empty-state">
             <i class="fas fa-folder-open"></i>
             <h3>No hay proyectos disponibles</h3>
             <p>Cuando se creen nuevos proyectos, aparecerán aquí.</p>
-            @if (auth()->user()->usertype == 'admin')
-                <a href="{{ route('projects.create') }}" class="btn btn-primary">
+            <?php if(auth()->user()->usertype == 'admin'): ?>
+                <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-primary">
                     Crear Proyecto
                 </a>
-            @endif
+            <?php endif; ?>
         </div>
-    @endif
+    <?php endif; ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/projects/myprojects.blade.php ENDPATH**/ ?>

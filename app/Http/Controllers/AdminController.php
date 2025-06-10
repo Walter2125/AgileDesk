@@ -42,9 +42,21 @@ class AdminController extends Controller
     public function restoreUser($id)
     {
         $user = User::withTrashed()->findOrFail($id);
+        
+        // Verificar que el usuario esté soft deleted
+        if (!$user->trashed()) {
+            return redirect()->back()->with('error', 'El usuario no está eliminado.');
+        }
+        
+        // Verificar que no sea un admin
+        if ($user->usertype === 'admin') {
+            return redirect()->back()->with('error', 'No se pueden restaurar usuarios admin.');
+        }
+        
+        $userName = $user->name;
         $user->restore();
         
-        return redirect()->back()->with('success', 'User restored successfully.');
+        return redirect()->back()->with('success', "Usuario {$userName} restaurado exitosamente.");
     }
     
     /**

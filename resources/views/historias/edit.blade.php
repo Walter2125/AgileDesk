@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-         @section('mensaje-superior')
+        @section('mensaje-superior')
             Editar Historia
         @endsection
 

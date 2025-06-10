@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'Agile-Desk') }}</title>
+    <title><?php echo e(config('app.name', 'Agile-Desk')); ?></title>
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-
+    
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    
     <!-- Tabler Core CSS (Admin Template) - Comentado temporalmente para debugging -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
-
+    
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    <link rel="icon" href="<?php echo e(asset('img/agiledesk.png')); ?>" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
     <!-- Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
     /* Reset CSS para eliminar espacios por defecto */
@@ -51,30 +51,30 @@
             text-rendering: optimizeLegibility;
             font-feature-settings: "liga", "kern";
         }
-
+        
         /* Base font size más robusta */
         html {
             font-size: 16px; /* Base explícita */
         }
-
+        
         body {
             font-size: 1rem;
             line-height: 1.5;
-            font-family: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI",
+            font-family: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", 
                          "Ubuntu", "Cantarell", "Noto Sans", sans-serif;
         }
-
+        
         /* Mejorar el escalado en sistemas Linux/macOS */
         .sidebar-heading {
             font-size: clamp(1.25rem, 2.5vw, 1.5rem);
             padding: clamp(1rem, 3vw, 1.5rem);
         }
-
+        
         .list-group-item {
             font-size: clamp(0.875rem, 2vw, 1rem);
             padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
         }
-
+        
         /* Asegurar tamaños mínimos consistentes */
         .user-avatar {
             width: clamp(32px, 5vw, 40px);
@@ -82,17 +82,17 @@
             min-width: clamp(32px, 5vw, 40px);
             font-size: clamp(0.875rem, 2vw, 1rem);
         }
-
+        
         /* Mejoras específicas para Firefox/Linux */
         @supports (-moz-appearance: none) {
             body {
                 font-size: 1.1rem; /* Ligeramente más grande en Firefox */
             }
-
+            
             .sidebar-heading {
                 font-size: 1.6rem;
             }
-
+            
             .list-group-item {
                 font-size: 1rem;
                 padding: 0.8rem 1.3rem;
@@ -105,17 +105,17 @@
         html {
             font-size: 18px; /* Base más grande para DPI bajo */
         }
-
+        
         .sidebar-heading {
             font-size: 1.75rem;
             padding: 1.75rem 1.25rem;
         }
-
+        
         .list-group-item {
             font-size: 1.1rem;
             padding: 0.85rem 1.4rem;
         }
-
+        
         .user-avatar {
             width: 44px;
             height: 44px;
@@ -138,12 +138,12 @@
             font-weight: 450; /* Peso ligeramente mayor para mejor legibilidad */
             letter-spacing: 0.01em;
         }
-
+        
         .sidebar-heading {
             font-weight: 600;
             letter-spacing: 0.02em;
         }
-
+        
         .list-group-item {
             font-weight: 500;
             letter-spacing: 0.005em;
@@ -214,10 +214,9 @@
         flex-direction: column;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-
     }
-         /* Para Firefox */
-
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
+    }
 
     /* Personalizar scrollbar del sidebar para Webkit */
     #sidebar-wrapper::-webkit-scrollbar {
@@ -394,7 +393,7 @@
             display: none;
         }
     }
-
+    
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -1004,7 +1003,7 @@
 </style>
 
     <!-- Estilos adicionales de las secciones -->
-    @yield('styles')
+    <?php echo $__env->yieldContent('styles'); ?>
 
 </head>
 <body class="font-sans antialiased">
@@ -1028,11 +1027,11 @@
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Inicio">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="list-group-item list-group-item-action text-white <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Inicio">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
                     </a>
-                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
+                     <a href="<?php echo e(route('projects.my')); ?>" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
 
@@ -1041,29 +1040,20 @@
 
                      </a>
 
-                    {{-- Debug temporal
-                     @isset($currentProject)
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject está definido: {{ $currentProject->id }}
-                        </div>
-                    @else
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject NO está definido
-                        </div>
-                    @endisset--}}
+                    
 
 
-                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
-                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                    <?php if(isset($currentProject) && $currentProject instanceof \App\Models\Project): ?>
+                        <a href="<?php echo e(route('backlog.index', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
                             <span class="sidebar-text">Backlog</span>
                         </a>
 
-                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                        <a href="<?php echo e(route('tableros.show', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
-                    @endif
+                    <?php endif; ?>
 
 
                     <!-- -->
@@ -1087,26 +1077,27 @@
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
-                        <button class="user-info btn btn-link text-white p-0 w-100 text-start"
-                                type="button"
-                                data-bs-toggle="dropdown"
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
                                 aria-expanded="false"
                                 id="userDropdown">
                             <div class="user-avatar">
-                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                                <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
+
                             </div>
                             <div class="sidebar-text">
-                                <div>{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-                                <small class="text-muted">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                                <div><?php echo e(Auth::check() ? Auth::user()->name : 'Usuario'); ?></div>
+                                <small class="text-muted"><?php echo e(Auth::check() ? Auth::user()->email : 'usuario@example.com'); ?></small>
                             </div>
                         </button>
                         <!-- Dropdown menu -->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
+                            <li><a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person me-2"></i> Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item">
                                         <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                                     </button>
@@ -1120,24 +1111,44 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            @include('layouts.navigation')
+            <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
                 <main>
-                    @if (session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            @if (session('message'))
-                                <p>{{ session('message') }}</p>
-                            @endif
+                            <strong><?php echo e(session('error')); ?></strong>
+                            <?php if(session('message')): ?>
+                                <p><?php echo e(session('message')); ?></p>
+                            <?php endif; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="ps-3">
-                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                         <?php if (isset($component)) { $__componentOriginal360d002b1b676b6f84d43220f22129e2 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal360d002b1b676b6f84d43220f22129e2 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.breadcrumbs','data' => ['breadcrumbs' => $breadcrumbs ?? []]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('breadcrumbs'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($breadcrumbs ?? [])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $attributes = $__attributesOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__attributesOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $component = $__componentOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__componentOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
                     </div>
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                 </main>
             </div>
         </div>
@@ -1150,23 +1161,23 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-
+        
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-
+        
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-
+        
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-
+            
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
                 if (toggleIcon) {
@@ -1187,18 +1198,18 @@
                 }
             }
         }
-
+        
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
             const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
             const newState = !isCurrentlyCollapsed;
-
+            
             // Aplicar el nuevo estado
             applySidebarState(newState);
-
+            
             // Guardar el estado en localStorage
             saveSidebarState(newState);
-
+            
             // En pantallas pequeñas, mostrar overlay cuando sidebar está visible
             if (window.innerWidth < 992) {
                 const overlay = document.querySelector('.overlay');
@@ -1207,19 +1218,19 @@
                 }
             }
         }
-
+        
         // Función para inicializar el sidebar con el estado guardado
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
         }
-
+        
         // Detectar cambios en el tamaño de la ventana
         window.addEventListener('resize', function() {
             // Mantener el estado guardado pero actualizar los íconos
             const isCollapsed = document.body.classList.contains('sidebar-collapsed');
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-
+            
             if (toggleIcon) {
                 if (window.innerWidth >= 992) {
                     // En pantallas grandes
@@ -1242,44 +1253,39 @@
                 }
             }
         });
-
+        
         // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar el sidebar con el estado guardado
             initializeSidebar();
-
+            
             // Inicializar dropdowns de Bootstrap
             if (typeof bootstrap !== 'undefined') {
-                console.log('Bootstrap está cargado correctamente');
-
                 // Inicializar todos los dropdowns
                 var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                console.log('Elementos dropdown encontrados:', dropdownElements.length);
-
+                
                 dropdownElements.forEach(function(element, index) {
                     try {
                         var dropdown = new bootstrap.Dropdown(element);
-                        console.log('Dropdown inicializado:', index, element);
-
                     } catch (error) {
                         console.error('Error inicializando dropdown:', error, element);
                     }
                 });
-
+                
             } else {
                 console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
-
+                
                 // Fallback manual completo si Bootstrap no está disponible
                 const userDropdown = document.querySelector('#userDropdown');
                 const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-
+                
                 if (userDropdown && dropdownMenu) {
                     userDropdown.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-
+                        
                         const isOpen = dropdownMenu.classList.contains('show');
-
+                        
                         if (isOpen) {
                             dropdownMenu.classList.remove('show');
                             this.setAttribute('aria-expanded', 'false');
@@ -1288,7 +1294,7 @@
                             this.setAttribute('aria-expanded', 'true');
                         }
                     });
-
+                    
                     // Cerrar dropdown al hacer clic fuera
                     document.addEventListener('click', function(e) {
                         if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
@@ -1298,7 +1304,7 @@
                     });
                 }
             }
-
+            
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1310,13 +1316,13 @@
                 }, 5000);
             });
         });
-
+        
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
         function resetSidebarState() {
             localStorage.removeItem(SIDEBAR_STATE_KEY);
             applySidebarState(false); // Estado por defecto: expandido
         }
-
+        
         // Función opcional para verificar si hay soporte para localStorage
         function isLocalStorageAvailable() {
             try {
@@ -1328,7 +1334,7 @@
                 return false;
             }
         }
-
+        
         // Verificar soporte de localStorage al cargar
         if (!isLocalStorageAvailable()) {
             console.warn('LocalStorage no está disponible. El estado del sidebar no se guardará.');
@@ -1359,32 +1365,20 @@
     <script>
         // Script de debugging específico para el dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DEBUGGING DROPDOWN ===');
-
             // Verificar elementos
             const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
             const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
             const dropupContainer = document.querySelector('.user-dropdown .dropup');
-
-
-            console.log('User dropdown element:', userDropdown);
-            console.log('Dropdown menu element:', dropdownMenu);
-            console.log('Dropup container:', dropupContainer);
-
+            
             if (userDropdown && dropdownMenu) {
-                console.log('✅ Elementos encontrados correctamente');
-
                 // Agregar click handler manual como fallback
                 userDropdown.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-
-
-                    console.log('Click en dropdown detectado');
-
+                    
                     // Toggle del dropdown menu
                     const isOpen = dropdownMenu.classList.contains('show');
-
+                    
                     if (isOpen) {
                         dropdownMenu.classList.remove('show');
                         userDropdown.setAttribute('aria-expanded', 'false');
@@ -1393,7 +1387,7 @@
                         userDropdown.setAttribute('aria-expanded', 'true');
                     }
                 });
-
+                
                 // Cerrar al hacer click fuera
                 document.addEventListener('click', function(e) {
                     if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
@@ -1413,11 +1407,11 @@
             const isLinux = userAgent.includes('linux');
             const isMac = userAgent.includes('mac');
             const isFirefox = userAgent.includes('firefox');
-
+            
             // Crear elemento de estilo para ajustes específicos del SO
             const osSpecificStyles = document.createElement('style');
             let css = '';
-
+            
             if (isLinux) {
                 css += `
                     /* Ajustes específicos para Linux */
@@ -1428,7 +1422,7 @@
                 `;
                 console.log('🐧 Sistema Linux detectado - Aplicando ajustes de escalado');
             }
-
+            
             if (isMac) {
                 css += `
                     /* Ajustes específicos para macOS */
@@ -1438,7 +1432,7 @@
                 `;
                 console.log('🍎 Sistema macOS detectado - Aplicando ajustes de escalado');
             }
-
+            
             if (isFirefox && isLinux) {
                 css += `
                     /* Ajustes específicos para Firefox en Linux */
@@ -1448,7 +1442,7 @@
                 `;
                 console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
             }
-
+            
             // Detectar DPI bajo (típico en algunos sistemas Linux)
             if (window.devicePixelRatio <= 1) {
                 css += `
@@ -1459,18 +1453,14 @@
                     .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
                 `;
                 console.log('📱 DPI bajo detectado - Aplicando escalado aumentado');
-
-                console.log('✅ Event listeners agregados');
-            } else {
-                console.log('❌ No se encontraron los elementos del dropdown');
             }
-
+            
             // Aplicar los estilos si hay alguno
             if (css) {
                 osSpecificStyles.textContent = css;
                 document.head.appendChild(osSpecificStyles);
             }
-
+            
             // Mensaje de información en consola
             console.log('🎨 AgileDesk - Ajustes de escalado aplicados para:', {
                 userAgent: navigator.userAgent,
@@ -1482,6 +1472,6 @@
     </script>
 
     <!-- Scripts adicionales de las secciones -->
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>

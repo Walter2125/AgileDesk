@@ -1,31 +1,32 @@
-@extends('layouts.app')
+        <?php $__env->startSection('mensaje-superior'); ?>
+            Tablero de <?php echo e($project->name); ?>
 
-        @section('mensaje-superior')
-            Tablero de {{ $project->name }}
-        @endsection
+        <?php $__env->stopSection(); ?>
 
 
-@section('content')
-<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<?php $__env->startSection('content'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    @php
+
+    <?php
 
 $colCount = $tablero->columnas->count();
         $widthStyle = ($colCount <= 4)
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
-    @endphp
-
-
+    ?>
+    
+    
     <div class="container py-4">
 
-
+                
             <!-- No borren esta nofificacion -->
-                @if (session('success'))
+                <?php if(session('success')): ?>
                             <div class="alert alert-success mt-2" id="success-alert">
-                                {{ session('success') }}
+                                <?php echo e(session('success')); ?>
+
                             </div>
 
                             <script>
@@ -38,23 +39,24 @@ $colCount = $tablero->columnas->count();
                                     }
                                 }, 3000);
                             </script>
-                        @endif
+                        <?php endif; ?>
+
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
 
                 <!-- Select de sprints -->
-                @if($tablero->sprints && $tablero->sprints->count())
+                <?php if($tablero->sprints && $tablero->sprints->count()): ?>
                     <select class="form-select"
                             id="sprintSelect"
                             aria-label="Seleccionar sprint"
                             style="min-width: 200px; max-width: 240px;">
                         <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = $tablero->sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($sprint->id); ?>"><?php echo e($sprint->nombre); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
-                @endif
+                <?php endif; ?>
 
                 <!-- Botón para agregar columna -->
                 <button class="btn btn-primary"
@@ -73,7 +75,8 @@ $colCount = $tablero->columnas->count();
             </div>
             <!-- Lado derecho: código del proyecto -->
     <div class="text-muted fw-bold">
-        Código: {{ $tablero->project->codigo }}
+        Código: <?php echo e($tablero->project->codigo); ?>
+
     </div>
         </div>
 
@@ -90,28 +93,28 @@ $colCount = $tablero->columnas->count();
         <div class="overflow-auto pb-3" style="width: 100%;">
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
-                @foreach($tablero->columnas as $columna)
+                <?php $__currentLoopData = $tablero->columnas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $columna): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="bg-white border rounded shadow-sm d-flex flex-column "
-                         style="{{ $widthStyle }} min-height: 500px;">
+                         style="<?php echo e($widthStyle); ?> min-height: 500px;">
                         <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
-                            @if($columna->es_backlog)
-                                <strong>{{ $columna->nombre }}</strong>
-                            @else
+                            <?php if($columna->es_backlog): ?>
+                                <strong><?php echo e($columna->nombre); ?></strong>
+                            <?php else: ?>
                                 <input type="text"
-                                       value="{{ $columna->nombre }}"
+                                       value="<?php echo e($columna->nombre); ?>"
                                        class="form-control form-control-sm me-2 editable-title"
-                                       data-column-id="{{ $columna->id }}">
-                            @endif
+                                       data-column-id="<?php echo e($columna->id); ?>">
+                            <?php endif; ?>
 
                                 <div class="dropdown ms-2">
                                     <button class="btn btn-sm btn-secondary dropdown-toggle"
                                             type="button"
-                                            id="dropdownMenuButton{{ $columna->id }}"
+                                            id="dropdownMenuButton<?php echo e($columna->id); ?>"
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false">
                                         ⋮
                                     </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo e($columna->id); ?>">
                                         <li>
                                             <button class="dropdown-item" disabled>
                                                 <strong>Acciones</strong>
@@ -119,7 +122,8 @@ $colCount = $tablero->columnas->count();
                                         </li>
                                         <li>
                                             <button class="dropdown-item"
-                                              onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</button>
+                                                    onclick="abrirModalEliminarColumna(<?php echo e($columna->id); ?>, '<?php echo e($columna->nombre); ?>')">
+                                                Eliminar columna
                                             </button>
                                         </li>
                                     </ul>
@@ -129,7 +133,7 @@ $colCount = $tablero->columnas->count();
                         </div>
 
                         <div class="p-2 border-bottom">
-                            <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                            <a href="<?php echo e(route('historias.create.fromColumna', ['columna' => $columna->id])); ?>"
                             class="btn btn-sm btn-primary w-100">
                                 Agregar historias
                             </a>
@@ -137,40 +141,42 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
-                                @foreach ($columna->historias as $historia)
-                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
+                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="<?php echo e($columna->id); ?>">                            
+                                <?php $__currentLoopData = $columna->historias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $historia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="<?php echo e($historia->id); ?>">                                    
                                     <div class="d-flex justify-content-between align-items-start">
-                                        {{-- Columna 1: Contenido --}}
+                                        
                                         <div style="flex: 1;">
-                                            <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
+                                            <a href="<?php echo e(route('historias.show', $historia->id)); ?>" class="text-decoration-none text-dark d-block">
                                                 <strong class="d-block text-truncate"
                                                         style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                        title="{{ $historia->nombre }}">
-                                                     H{{ $historia->numero }} {{ $historia->nombre }}
+                                                        title="<?php echo e($historia->nombre); ?>">
+                                                     H<?php echo e($historia->numero); ?> <?php echo e($historia->nombre); ?>
+
                                                 </strong>
-                                                @if ($historia->descripcion)
+                                                <?php if($historia->descripcion): ?>
                                                     <div style="max-height: 4.5em; overflow: hidden; line-height: 1.5em; word-wrap: break-word; overflow-wrap: break-word;">
-                                                        Descripcion: {{ $historia->descripcion }}
+                                                        Descripcion: <?php echo e($historia->descripcion); ?>
+
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
                                             </a>
                                         </div>
 
-                                        {{-- Columna 2: Menú --}}
+                                        
                                         <div class="ms-2">
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    &#x22EE; {{-- ⋮ --}}
+                                                    &#x22EE; 
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a>
+                                                        <a class="dropdown-item" href="<?php echo e(route('historias.edit', $historia->id)); ?>">Editar</a>
                                                     </li>
                                                     <li>
                                                         <button type="button" class="dropdown-item text-danger"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                            data-bs-target="#confirmDeleteModal<?php echo e($historia->id); ?>">
                                                             Eliminar
                                                         </button>
                                                     </li>
@@ -179,27 +185,28 @@ $colCount = $tablero->columnas->count();
                                         </div>
                                     </div>
 
-                                    {{-- Modal de confirmación --}}
-                                    <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                    
+                                    <div class="modal fade" id="confirmDeleteModal<?php echo e($historia->id); ?>" tabindex="-1" aria-labelledby="confirmDeleteLabel<?php echo e($historia->id); ?>" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                                                    <h5 class="modal-title" id="confirmDeleteLabel<?php echo e($historia->id); ?>">¿Desea eliminar esta historia?</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     Se eliminará la historia:
                                                     <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;"
-                                                        title="{{ $historia->nombre }}">
-                                                        {{ $historia->nombre }}
+                                                        title="<?php echo e($historia->nombre); ?>">
+                                                        <?php echo e($historia->nombre); ?>
+
                                                     </strong><br>
                                                     Esta acción no se puede deshacer.
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                    <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                    <form action="<?php echo e(route('historias.destroy', $historia->id)); ?>" method="POST" class="d-inline">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
                                                         <button type="submit" class="btn btn-danger">Confirmar</button>
                                                     </form>
                                                 </div>
@@ -207,17 +214,17 @@ $colCount = $tablero->columnas->count();
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
 
                         <!-- fin-->
 
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
 
-    {{-- Scripts existentes --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <script>
@@ -267,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Error:', error);
                     showNotification('error', error.message);
                     // Revertir visualmente el movimiento
-                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ?
+                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ? 
                         null : evt.from.children[evt.oldIndex]);
                 });
             }
@@ -283,11 +290,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
-
+        
         // Agrega la notificación donde sea apropiado en tu UI
         const notificationContainer = document.getElementById('notification-container') || document.body;
         notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
-
+        
         // Elimina la notificación después de 5 segundos
         setTimeout(() => {
             const alert = notificationContainer.querySelector('.alert');
@@ -348,8 +355,8 @@ document.addEventListener('DOMContentLoaded', function () {
  <!-- Modal Bootstrap para agregar columna -->
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
-                @csrf
+            <form method="POST" action="<?php echo e(route('columnas.store', $tablero->id)); ?>" class="modal-content">
+                <?php echo csrf_field(); ?>
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalLabel">Agregar nueva columna</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -367,13 +374,13 @@ document.addEventListener('DOMContentLoaded', function () {
             </form>
         </div>
     </div>
-
+    
  <!-- Modal para crear sprint -->
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
-                @csrf
-                <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
+            <form id="formCrearSprint" method="POST" action="<?php echo e(route('sprints.store', $project->id)); ?>" class="modal-content">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="tablero_id" value="<?php echo e($tablero->id); ?>">
 
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCrearSprintLabel">Crear Sprint <span id="numeroSprint"></span></h5>
@@ -392,20 +399,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
 
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Crear sprint</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-<!-- Modal para confirmar eliminación de columna (fuera del modal de sprint) -->
+<!-- Modal de confirmación para eliminar columna -->
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
-            @csrf
-            @method('DELETE')
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
             <input type="hidden" name="modo" id="modoEliminar">
             <div class="modal-content">
                 <div class="modal-header">
@@ -428,6 +427,13 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear sprint</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- AJAX para actualizar nombre -->
     <script>
@@ -465,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Columna actualizada:', data);
+                            // Column updated successfully
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -476,8 +482,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
-
-
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                 document.addEventListener('DOMContentLoaded', function () {
@@ -485,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const numeroSprintSpan = document.getElementById('numeroSprint');
 
                     // Obtén el último número de sprint del backend, o 0 si no hay
-                    let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+                    let ultimoNumeroSprint = <?php echo json_encode($tablero->sprints->max('numero_sprint') ?? 0, 15, 512) ?>;
 
                     btnAbrirCrearSprint.addEventListener('click', () => {
                         const nuevoNumero = ultimoNumeroSprint + 1;
@@ -532,6 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 </script>
+
 <script>
     let columnaIdParaEliminar = null;
 
@@ -556,16 +561,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 </script>
 
-
-
-
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
             const numeroSprintSpan = document.getElementById('numeroSprint');
-            let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+            let ultimoNumeroSprint = <?php echo json_encode($tablero->sprints->max('numero_sprint') ?? 0, 15, 512) ?>;
 
             btnAbrirCrearSprint.addEventListener('click', () => {
                 const nuevoNumero = ultimoNumeroSprint + 1;
@@ -597,14 +597,13 @@ document.addEventListener('DOMContentLoaded', function () {
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
-    const columnas = document.querySelectorAll(".historia-lista");
-
+    
     function realizarBusqueda() {
         const textoBusqueda = buscador.value.toLowerCase().trim();
-
+        
         // Seleccionar todas las tarjetas de historias
         const historias = document.querySelectorAll(".card.mb-4.p-2");
-
+        
         historias.forEach(historia => {
             // Buscar en el texto de la historia (nombre + descripción)
             const textoHistoria = historia.textContent.toLowerCase();
@@ -622,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(timeoutBusqueda);
         timeoutBusqueda = setTimeout(realizarBusqueda, 300);
     });
-
+    
     // Botón para limpiar la búsqueda
     limpiarBtn.addEventListener("click", function () {
         buscador.value = "";
@@ -633,4 +632,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/users/admin/tablero.blade.php ENDPATH**/ ?>

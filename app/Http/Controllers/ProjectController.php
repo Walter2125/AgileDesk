@@ -91,9 +91,6 @@ class ProjectController extends Controller
             return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
         }
 
-
-
-
     }
 
     public function searchUsers(Request $request)
@@ -147,16 +144,15 @@ class ProjectController extends Controller
     }
 
 
-
     public function update(Request $request, $id)
     {
         // Validación de datos
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name|max:30,' . $id,
+            'name' => 'required|max:30|unique:nuevo_proyecto,name,' . $id,
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'users' => 'required|array|min:1', // Aseguramos que al menos un usuario se seleccione
+            'users' => 'required|array|min:1', 
             'users.*' => 'exists:users,id', // Aseguramos que todos los usuarios seleccionados existen
         ]);
 

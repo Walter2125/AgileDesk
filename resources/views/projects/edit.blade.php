@@ -1,11 +1,11 @@
 @extends('layouts.app')
-
+    @section('mensaje-superior')
+        Editar Proyecto: {{ $project->name }}
+    @endsection
 @section('content')
     <div class="container-fluid p-0">
         <div class="row m-0">
             <div class="col-12 p-4">
-                <h2 class="mb-4">Editar Proyecto: {{ $project->name }}</h2>
-
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
