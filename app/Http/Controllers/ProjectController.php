@@ -60,15 +60,15 @@ class ProjectController extends Controller
                 [Auth::id()],
             $request->input('selected_users', [])
             )));
-            
+
             //creacion de proyecto
             $tablero = Tablero::create([
-                'proyecto_id' => $project->id, 
+                'proyecto_id' => $project->id,
             ]);
 
             // Crear columna Backlog vinculada al tablero
             $tablero->columnas()->create([
-                'nombre' => 'Backlog',
+                'nombre' => 'Pendiente',
                 'posicion' => 1,
                 'es_backlog' => true,
             ]);
@@ -82,7 +82,7 @@ class ProjectController extends Controller
                 'posicion' => 1,
                 'es_backlog' => true,
             ]);
-          
+
             DB::commit();
 
             return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');

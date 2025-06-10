@@ -4,36 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Historia;
-use App\Models\Sprint;
-use Illuminate\Http\Request;
 
 class BacklogController extends Controller
 {
-    /**
-     * Muestra el backlog del proyecto con historias, opcionalmente filtradas por sprint.
-     */
-    public function index(Request $request, $projectId)
+    public function index(Project $project)
     {
-        // Obtener el proyecto
-        $proyecto = Project::with(['sprints', 'historias.columna'])->findOrFail($projectId);
-        
-        // Obtener el sprint seleccionado (si existe)
-        $sprintId = $request->get('sprint_id');
-        
-        // Construir la consulta base para las historias del proyecto
-        $historiasQuery = Historia::where('proyecto_id', $projectId)
-            ->with(['columna', 'sprints']);
-        
-        // Filtrar por sprint si se especifica
-        if ($sprintId) {
-            $historiasQuery->where('sprint_id', $sprintId);
-        }
-        
-        // Obtener las historias ordenadas por prioridad
-        $historias = $historiasQuery->orderBy('prioridad', 'asc')
+        $sprintId = request('sprint_id');
+
+        $proyecto = $project->load('sprints');
+
+        $historias = Historia::with(['columna', 'sprints'])
+            ->where('proyecto_id', $project->id)
+            ->when($sprintId, function ($query) use ($sprintId) {
+                $query->where('sprint_id', $sprintId);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
-        
-        return view('users.admin.backlog', compact('proyecto', 'historias', 'sprintId'));
+
+        return view('users.admin.backlog', [
+            'proyecto' => $proyecto,
+            'historias' => $historias,
+            'sprintId' => $sprintId,
+            'currentProject' => $project, // 👈 Esto es lo que necesita tu layout
+        ]);
+    }
+
+
+    public function backlog(Project $project)
+    {
+        return view('backlog.index', ['project' => $project]);
+    }
+
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

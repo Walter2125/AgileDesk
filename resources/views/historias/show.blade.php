@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('title')
-        @section('mensaje-superior')
-            Detalle de la Historia
-        @endsection
     @section('mensaje-superior')
         <div class="mt-4 text-lg font-semibold text-blue-600">
             <h1 class="titulo-historia">📖 Detalle de la Historia</h1>
@@ -37,21 +34,13 @@
                 </script>
             @endif
 
-            <div class="historia-container-fluid">
-
-                <div class="historia-header">
-                    <h2 class="historia-title"
-                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
-                        title="{{ $historia->nombre }}">
-                        {{ $historia->nombre }}
-                    </h2>
     <div class="historia-header">
         <h2 class="historia-title"
             style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
             title="{{ $historia->nombre }}">
             H{{ $historia->numero }} {{  $historia->nombre }}
         </h2>
-      
+
 
                     <div class="historia-meta">
                         <span class="badge bg-primary">{{ $historia->prioridad }}</span>
@@ -61,12 +50,6 @@
 
                 <div class="historia-content">
 
-                    <div class="historia-section">
-                        <h3 class="section-title">Descripción</h3>
-                        <div class="section-content">
-                            {{ $historia->descripcion }}
-                        </div>
-                    </div>
                 <div class="historia-section ">
                     <h3 class="section-title">Descripción</h3>
                     <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
@@ -75,10 +58,14 @@
                 </div>
 
 
-        <div class="historia-details">
+
+
+
+                    <div class="historia-details">
             <div class="detail-item">
                 <span class="detail-label">Estado:</span>
-           <span class="detail-value">{{ $historia->columna ? $historia->columna->nombre : 'Sin estado asignado' }}</span>            </div>
+                <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
+            </div>
             <div class="detail-item">
                 <span class="detail-label">Sprint:</span>
                 <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('mensaje-superior')
-    Backlog del Proyecto: {{ $proyecto->nombre }}
+    Backlog
 @endsection
 
 @section('content')
