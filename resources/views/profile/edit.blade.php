@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="page-title">
-        <h2>{{ __('Profile') }}</h2>
+        <h2>Profile</h2>
     </div>
 
     <div class="py-4">

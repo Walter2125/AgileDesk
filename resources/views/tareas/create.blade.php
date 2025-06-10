@@ -6,6 +6,9 @@
             📝 Crear Nueva Tarea para la Historia: {{ $historia->nombre }}
         </h1>
             </div>
+
+            Crear Tarea: {{ Str::limit($historia->nombre, 20) }}
+
         @endsection
 
 @section('content')
@@ -57,7 +60,7 @@
                 @enderror
             </div>
 
-            <!-- Descripción -->
+            <!-- descripción -->
             <div class="mb-4">
                 <label for="descripcion" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
                 <textarea name="descripcion" id="descripcion" class="form-control @error('descripcion') is-invalid @enderror" required>{{ old('descripcion') }}</textarea>
@@ -66,7 +69,7 @@
                 @enderror
             </div>
 
-            <!-- Actividad -->
+            <!-- actividad -->
             <div class="mb-4">
                 <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad" class="form-control @error('actividad') is-invalid @enderror" required>

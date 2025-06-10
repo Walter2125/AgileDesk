@@ -2,5 +2,5 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\SlackServiceProvider::class,
+    App\Providers\ViewComposerServiceProvider::class,
 ];

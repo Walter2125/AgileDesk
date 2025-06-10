@@ -2,6 +2,10 @@
 
 @section('title','Lista de Historias')
 
+        @section('mensaje-superior')
+            Lista de Historias
+        @endsection
+
 <!--<i class="bi bi-plus"></i>
 <i class="bi bi-trash"></i>
 <i class="bi bi-pencil-square"></i> -->

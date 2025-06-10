@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Agile Desk'),
+    'name' => 'Agile-Desk',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,11 +78,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'es'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'es'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'es'),
 
     /*
     |--------------------------------------------------------------------------
@@ -133,7 +133,7 @@ return [
         | this array to grant expanded functionality to your applications.
         |
         */
-    
+
         'providers' => [
             // Laravel Framework Service Providers...
             Illuminate\Auth\AuthServiceProvider::class,
@@ -158,13 +158,14 @@ return [
             Illuminate\Translation\TranslationServiceProvider::class,
             Illuminate\Validation\ValidationServiceProvider::class,
             Illuminate\View\ViewServiceProvider::class,
-    
+
             // Application Service Providers...
             App\Providers\AppServiceProvider::class,
             App\Providers\RouteServiceProvider::class,
-            App\Providers\RouteServiceProvider::class,  
+            App\Providers\RouteServiceProvider::class,
             App\Providers\ViewServiceProvider::class,
+            App\Providers\ViewComposerServiceProvider::class,
         ],
-    
-    
+
+
 ];

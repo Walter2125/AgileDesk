@@ -15,8 +15,8 @@ class Sprint extends Model {
         return $this->hasMany(Historia::class);
     }
 
-    public function proyectos() {
-        return $this->belongsTo(Project::class);
+    public function proyecto() {
+        return $this->belongsTo(Project::class, 'proyecto_id');
     }
 
 

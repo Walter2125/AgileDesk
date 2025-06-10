@@ -1,11 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-        
-         <h1 class="titulo-historia">
-            ✏️ Editar Tarea: {{ $tarea->nombre }}
-        </h1>
-            </div>
+        Editar Tarea: {{ $tarea->nombre }}
         @endsection
             
 
@@ -43,12 +38,13 @@
 
             <!-- Actividad -->
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad" class="form-control" required>
                     <option value="Configuracion" {{ $tarea->actividad == 'Configuracion' ? 'selected' : '' }}>Configuración</option>
                     <option value="Desarrollo" {{ $tarea->actividad == 'Desarrollo' ? 'selected' : '' }}>Desarrollo</option>
                     <option value="Prueba" {{ $tarea->actividad == 'Prueba' ? 'selected' : '' }}>Prueba</option>
                     <option value="Diseño" {{ $tarea->actividad == 'Diseño' ? 'selected' : '' }}>Diseño</option>
+                    <option value="OtroTipo" {{ $tarea->actividad == 'OtroTipo' ? 'selected' : '' }}>Otro Tipo</option>
                 </select>
             </div>
 

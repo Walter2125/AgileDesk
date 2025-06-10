@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Models\Tablero;
 
 
-
 class HistoriasController extends Controller
 {
 
@@ -122,7 +121,14 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
 
         ]);
-        $columna = Columna::with('tablero')->findOrFail($request->columna_id);
+        $tableroId = $request->tablero_id; // valor por defecto (deberías enviarlo desde el formulario también)
+
+        if ($request->filled('columna_id')) {
+            $columna = Columna::with('tablero')->findOrFail($request->columna_id);
+            $tableroId = $columna->tablero_id; // obtener el tablero desde la columna
+        }
+
+
         $historia = new Historia();
         $historia->nombre = $request->nombre;
         $historia->trabajo_estimado = $request->trabajo_estimado;
@@ -142,15 +148,47 @@ private function compartirContextoDesdeColumna(Columna $columna)
                      ->with('success', 'Historia creada con éxito');
     }
 
+    protected function obtenerProjectIdDeOtraForma(Historia $historia)
+    {
+        // Aquí tienes que definir cómo obtener el project_id cuando la historia no tiene columna.
+
+        // Algunas ideas:
+        // 1. Si tienes un campo 'project_id' en la tabla historias:
+        if (isset($historia->proyecto_id)) {
+            return $historia->proyecto_id;
+        }
+
+        // 2. Si puedes obtenerlo por otra relación o lógica, implementa aquí esa lógica.
+
+        // 3. Si no tienes forma, puedes devolver null o lanzar un error controlado:
+        return null;
+    }
+
+
     /**
      * Display the specified resource.
      */
     public function show(Historia $historia)
     {
-        $tablero = $this->cargarTableroDesdeHistoria($historia);
-        $historia->load('usuario','sprints', 'columna',);
-        return view('historias.show',compact('historia'));
+        $historia->load('usuario', 'sprints', 'columna');
+
+        if ($historia->columna) {
+            // Si tiene columna, obtenemos el proyecto por la relación
+            $currentProject = $historia->columna->tablero->project;
+        } else {
+            // Si no tiene columna, ¿cómo obtener el proyecto?
+            // Ejemplo: si la historia tiene un campo project_id, úsalo:
+            // $currentProject = Project::find($historia->project_id);
+
+            // O si la historia tiene alguna otra forma de identificar el proyecto, úsala
+            // Si no, tendrías que pasar el proyecto como parámetro en la URL o manejarlo manualmente
+
+            $currentProject = null; // Si no sabes, déjalo en null y no se muestran botones
+        }
+
+        return view('historias.show', compact('historia', 'currentProject'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -188,7 +226,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'descripcion' => 'nullable|string|max:1000',
             'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',
-            'columna_id' => 'nullable|exists:columnas,id', // ← FALTA ESTO
+            'columna_id' => 'nullable|exists:columnas,id',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
