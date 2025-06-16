@@ -3,11 +3,9 @@
 @section('title')
     @section('mensaje-superior')
         <div class="mt-4 text-lg font-semibold text-blue-600">
-            <h1 class="titulo-historia">📖 Detalle de la Historia</h1>
+            <h1 class="titulo-historia">Detalle de la Historia</h1>
         </div>
     @endsection
-
-            Detalle de la Historia
         @endsection
 
 @section('content')

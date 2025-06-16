@@ -19,7 +19,7 @@ $colCount = $tablero->columnas->count();
     @endphp
 
 
-    <div class="container py-4">
+    <div class="container py-4" style="margin-left: 5px;">
 
 
             <!-- No borren esta nofificacion -->
@@ -38,6 +38,7 @@ $colCount = $tablero->columnas->count();
                                     }
                                 }, 3000);
                             </script>
+
                         @endif
 
             <!-- Contenedor para select y botones -->
@@ -78,16 +79,17 @@ $colCount = $tablero->columnas->count();
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
-        <div class="overflow-auto pb-3 mt-3" style="width: 100%;">
+<div class="overflow-auto pb-3 mt-3" style="width: 100%; padding-left: 20px;">
 
-       <div class="input-group mb-3" style="width: 55%;">
+
+<div class="input-group mb-3" style="width: 55%;">
     <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
     <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
         ✖️
     </button>
 </div>
 
-        <div class="overflow-auto pb-3" style="width: 100%;">
+
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
