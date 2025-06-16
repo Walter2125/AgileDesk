@@ -203,7 +203,8 @@ private function compartirContextoDesdeColumna(Columna $columna)
             $columnas = $tablero ? $tablero->columnas : collect();
         }
 
-        return view('historias.edit', compact('historia', 'usuarios', 'sprints', 'columnas'));
+        return view('historias.edit', compact('historia', 'usuarios', 'sprints', 'columnas', 'proyecto'));
+
     }
 
 
