@@ -1052,7 +1052,6 @@
                         </div>
                     @endisset--}}
 
-
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
@@ -1064,6 +1063,7 @@
                             <span class="sidebar-text">Tablero</span>
                         </a>
                     @endif
+
 
 
                     <!-- -->

@@ -32,8 +32,12 @@ class BacklogController extends Controller
 
     public function backlog(Project $project)
     {
-        return view('backlog.index', ['project' => $project]);
+        return view('backlog.index', [
+            'project' => $project,
+            'currentProject' => $project, // ✅ Aseguramos que el ViewComposer lo reciba también
+        ]);
     }
+
 
 
 

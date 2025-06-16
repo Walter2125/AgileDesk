@@ -172,24 +172,16 @@ private function compartirContextoDesdeColumna(Columna $columna)
      */
     public function show(Historia $historia)
     {
-        $historia->load('usuario', 'sprints', 'columna');
+        // Cargamos también la relación con el proyecto
+        $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        if ($historia->columna) {
-            // Si tiene columna, obtenemos el proyecto por la relación
-            $currentProject = $historia->columna->tablero->project;
-        } else {
-            // Si no tiene columna, ¿cómo obtener el proyecto?
-            // Ejemplo: si la historia tiene un campo project_id, úsalo:
-            // $currentProject = Project::find($historia->project_id);
-
-            // O si la historia tiene alguna otra forma de identificar el proyecto, úsala
-            // Si no, tendrías que pasar el proyecto como parámetro en la URL o manejarlo manualmente
-
-            $currentProject = null; // Si no sabes, déjalo en null y no se muestran botones
-        }
+        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+        $currentProject = $historia->columna->tablero->project
+            ?? $historia->proyecto;
 
         return view('historias.show', compact('historia', 'currentProject'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
