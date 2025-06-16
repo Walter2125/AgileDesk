@@ -9,8 +9,9 @@ class BacklogController extends Controller
 {
     public function index(Project $project)
     {
+        $project->load('tablero');
         $sprintId = request('sprint_id');
-
+        
         $proyecto = $project->load('sprints');
 
         $historias = Historia::with(['columna', 'sprints'])
@@ -26,13 +27,17 @@ class BacklogController extends Controller
             'historias' => $historias,
             'sprintId' => $sprintId,
             'currentProject' => $project, // 👈 Esto es lo que necesita tu layout
+            'tablero' => $proyecto->tablero,
         ]);
     }
 
 
     public function backlog(Project $project)
     {
-        return view('backlog.index', ['project' => $project]);
+        return view('backlog.index', [
+            'project' => $project,
+            'tablero' => $project->tablero
+        ]);
     }
 
 
