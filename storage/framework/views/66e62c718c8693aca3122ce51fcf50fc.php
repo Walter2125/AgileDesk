@@ -1,7 +1,6 @@
         <?php $__env->startSection('mensaje-superior'); ?>
-        <div class="mt-4 text-lg font-semibold text-blue-600">       
-         <h5 class="titulo-historia"> Crear Nueva Tarea para la Historia: <?php echo e($historia->nombre); ?></h5>
-        </div>
+          Crear tarea para: <?php echo e($historia->nombre); ?>
+
         <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -104,11 +103,13 @@ endif;
 unset($__errorArgs, $__bag); ?>" required>
                     <option value=""> Seleccione una actividad </option>
                     <?php $__currentLoopData = ['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opcion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-    <option value="<?php echo e($opcion); ?>" <?php echo e(old('actividad') == $opcion ? 'selected' : ''); ?>>
-        <?php echo e($opcion == 'OtroTipo' ? 'Otro Tipo' : $opcion); ?>
+                <option value="<?php echo e($opcion); ?>" <?php echo e(old('actividad') == $opcion ? 'selected' : ''); ?>>
+                 <?php echo e($opcion == 'OtroTipo' ? 'Otro Tipo' : $opcion); ?>
 
-    </option>
-<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </option>
+
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                
                 </select>
                 <?php $__errorArgs = ['actividad'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

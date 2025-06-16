@@ -1,10 +1,6 @@
         <?php $__env->startSection('mensaje-superior'); ?>
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-         <h1 class="titulo-historia">
-             Editar Tarea: <?php echo e($tarea->nombre); ?>
+           Editar Tarea: <?php echo e($tarea->nombre); ?>
 
-        </h1>
-            </div>
         <?php $__env->stopSection(); ?>
             
 
@@ -55,10 +51,11 @@
 
             <!-- Botones -->
             <div class="d-flex justify-content-between">
-<a href="<?php echo e(route('tareas.show', $historia->id)); ?>" 
-   class="btn btn-secondary">
-    Cancelar
-</a>                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="<?php echo e(route('tareas.show', $historia->id)); ?>" 
+            class="btn btn-secondary">
+            Cancelar
+            </a>                
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
     </div>

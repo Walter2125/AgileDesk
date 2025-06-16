@@ -1,6 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-            Lista de Tareas: {{ $historia->nombre }}
+           Lista de Tareas: {{ $historia->nombre }}
         @endsection
 @section('content')
 
