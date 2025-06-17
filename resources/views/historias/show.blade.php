@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('title')
-       @section('title')
-         @section('mensaje-superior')
-            Detalle de Historia 
+    @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+            <h1 class="titulo-historia">Detalle de la Historia</h1>
+        </div>
+    @endsection
         @endsection
-    
 
 @section('content')
 
@@ -31,16 +32,13 @@
                 </script>
             @endif
 
-            <div class="historia-container-fluid">
-
-                
     <div class="historia-header">
         <h2 class="historia-title"
             style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
             title="{{ $historia->nombre }}">
             H{{ $historia->numero }} {{  $historia->nombre }}
         </h2>
-      
+
 
                     <div class="historia-meta">
                         <span class="badge bg-primary">{{ $historia->prioridad }}</span>
@@ -50,7 +48,6 @@
 
                 <div class="historia-content">
 
-                    </div>
                 <div class="historia-section ">
                     <h3 class="section-title">Descripción</h3>
                     <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
@@ -59,10 +56,14 @@
                 </div>
 
 
-        <div class="historia-details">
+
+
+
+                    <div class="historia-details">
             <div class="detail-item">
                 <span class="detail-label">Estado:</span>
-           <span class="detail-value">{{ $historia->columna ? $historia->columna->nombre : 'Sin estado asignado' }}</span>            </div>
+                <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
+            </div>
             <div class="detail-item">
                 <span class="detail-label">Sprint:</span>
                 <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
@@ -78,10 +79,13 @@
                 </span>
             </div>
         </div>
-        <a href="{{ route('tareas.show', $historia->id) }}"
+    </div>
+</div>
+
+            <a href="{{ route('tareas.show', $historia->id) }}"
                class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
                style="background-color: #e6f2ff;">
-                 Agregar Tareas
+                📋 Agregar Tareas
             </a>
 
 
@@ -96,8 +100,6 @@
                     @method('DELETE')
                     <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">Borrar</button>
                 </form>
-    </div>
-</div>
 
                 <!-- Modal de confirmación -->
                 <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
@@ -312,6 +314,6 @@
         </form>
     </div>
 </div>
- 
+
 
     @endsection
