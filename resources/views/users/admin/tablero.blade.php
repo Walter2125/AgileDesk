@@ -42,38 +42,38 @@ $colCount = $tablero->columnas->count();
 
                         @endif
 
-            <!-- Contenedor para select y botones -->
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+        <!-- Contenedor para select y botones -->
+        <div class="d-flex align-items-center flex-wrap gap-3">
 
-                <!-- Select de sprints -->
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select"
-                            id="sprintSelect"
-                            aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
-                    </select>
-                @endif
+            <!-- Lado izquierdo: Select + Crear sprint -->
+            @if($tablero->sprints && $tablero->sprints->count())
+                <select class="form-select"
+                        id="sprintSelect"
+                        aria-label="Seleccionar sprint"
+                        style="min-width: 200px; max-width: 240px;">
+                    <option selected disabled>Selecciona un sprint</option>
+                    @foreach($tablero->sprints as $sprint)
+                        <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                    @endforeach
+                </select>
+            @endif
 
-                <!-- Botón para agregar columna -->
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
+            <button class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCrearSprint"
+                    id="btnAbrirCrearSprint">
+                Crear sprint
+            </button>
 
-                <!-- Botón para crear sprint -->
-                <button class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCrearSprint"
-                        id="btnAbrirCrearSprint">
-                    Crear sprint
-                </button>
-            </div>
-            <!-- Lado derecho: código del proyecto -->
+            <!-- Lado derecho: botón agregar columna -->
+            <button class="btn btn-primary ms-auto"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgregarColumna">
+                Agregar columna
+            </button>
+        </div>
+
+        <!-- Lado derecho: código del proyecto -->
     <div class="text-muted fw-bold">
         Código: {{ $tablero->project->codigo }}
     </div>
@@ -89,7 +89,6 @@ $colCount = $tablero->columnas->count();
         ✖️
     </button>
 </div>
-
 
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">

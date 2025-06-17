@@ -6,6 +6,11 @@
     Crea una nueva Historia
 @endsection
 
+@php
+    $currentProject = $proyecto;
+@endphp
+
+
 
 @section('content')
    <meta http-equiv="Cache-Control" content="no-store" />
