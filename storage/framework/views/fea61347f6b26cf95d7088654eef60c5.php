@@ -197,8 +197,7 @@
 
                         <!-- Modal Editar Respuesta -->
                         <div id="editarComentarioModal<?php echo e($respuesta->id); ?>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                            <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                                <form action="<?php echo e(route('comentarios.update', $respuesta->id)); ?>" method="POST">
+                        <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                                <form action="<?php echo e(route('comentarios.update', $respuesta->id)); ?>" method="POST">
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('PUT'); ?>
                                     <div class="flex items-center mb-4">
@@ -225,8 +224,7 @@
 
                 <!-- Modal de Responder -->
                 <div id="responderComentarioModal<?php echo e($comentario->id); ?>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                        <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
+                <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                        <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
                             <?php echo csrf_field(); ?>
                             <input type="hidden" name="parent_id" value="<?php echo e($comentario->id); ?>">
                             <div class="flex items-center mb-4">
@@ -251,8 +249,7 @@
 
                 <!-- Modal Editar Comentario -->
                 <div id="editarComentarioModal<?php echo e($comentario->id); ?>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                        <form action="<?php echo e(route('comentarios.update', $comentario->id)); ?>" method="POST">
+                <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                        <form action="<?php echo e(route('comentarios.update', $comentario->id)); ?>" method="POST">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('PUT'); ?>
                             <div class="flex items-center mb-4">
@@ -284,7 +281,7 @@
 
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="width: 600px; background-color: #f9fafb;">
         <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
             <div class="flex items-center mb-4">
