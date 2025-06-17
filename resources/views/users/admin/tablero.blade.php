@@ -94,7 +94,7 @@ $colCount = $tablero->columnas->count();
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
                     <div class="bg-white border rounded shadow-sm d-flex flex-column "
-                         style="{{ $widthStyle }} min-height: 500px;">
+                         >
                         <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom">
                             @if($columna->es_backlog)
                                 <strong>{{ $columna->nombre }}</strong>
@@ -121,7 +121,7 @@ $colCount = $tablero->columnas->count();
                                         </li>
                                         <li>
                                             <button class="dropdown-item"
-                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
+                                                    onclick="abrirModalEliminarColumna({ $columnaid }, '{{ $columna->nombre }}')">
                                                 Eliminar columna
                                             </button>
                                         </li>
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return;
                     }
 
-                    fetch(/columnas/${columnId}, {
+                    fetch(/columnas/$columnId, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -485,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const numeroSprintSpan = document.getElementById('numeroSprint');
 
                     // Obtén el último número de sprint del backend, o 0 si no hay
-                    let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+                
 
                     btnAbrirCrearSprint.addEventListener('click', () => {
                         const nuevoNumero = ultimoNumeroSprint + 1;
@@ -561,8 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('DOMContentLoaded', function () {
             const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
             const numeroSprintSpan = document.getElementById('numeroSprint');
-            let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
-
+          
             btnAbrirCrearSprint.addEventListener('click', () => {
                 const nuevoNumero = ultimoNumeroSprint + 1;
                 numeroSprintSpan.textContent = nuevoNumero;
