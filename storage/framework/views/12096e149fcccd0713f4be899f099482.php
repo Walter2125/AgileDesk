@@ -21,7 +21,7 @@
                 <!-- Mensaje personalizado -->
                 <div class="d-none d-sm-block">
                     <div class="text-dark text-truncate fw-bold" style="max-width: 250px; font-size: 1rem;">
-                        @yield('mensaje-superior')
+                        <?php echo $__env->yieldContent('mensaje-superior'); ?>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,8 @@
                 <!-- Información del usuario (opciones en sidebar) -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <div class="text-sm text-gray-600">
-                        {{ Auth::user()->name }}
+                        <?php echo e(Auth::user()->name); ?>
+
                     </div>
                 </div>
 
@@ -100,16 +101,34 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <?php if (isset($component)) { $__componentOriginald69b52d99510f1e7cd3d80070b28ca18 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald69b52d99510f1e7cd3d80070b28ca18 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.responsive-nav-link','data' => ['href' => route('dashboard'),'active' => request()->routeIs('dashboard')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('responsive-nav-link'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('dashboard')),'active' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request()->routeIs('dashboard'))]); ?>
                 Dashboard
-            </x-responsive-nav-link>
+             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald69b52d99510f1e7cd3d80070b28ca18)): ?>
+<?php $attributes = $__attributesOriginald69b52d99510f1e7cd3d80070b28ca18; ?>
+<?php unset($__attributesOriginald69b52d99510f1e7cd3d80070b28ca18); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald69b52d99510f1e7cd3d80070b28ca18)): ?>
+<?php $component = $__componentOriginald69b52d99510f1e7cd3d80070b28ca18; ?>
+<?php unset($__componentOriginald69b52d99510f1e7cd3d80070b28ca18); ?>
+<?php endif; ?>
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-base text-gray-800"><?php echo e(Auth::user()->name); ?></div>
+                <div class="font-medium text-sm text-gray-500"><?php echo e(Auth::user()->email); ?></div>
             </div>
         </div>
     </div>
@@ -513,4 +532,4 @@ window.setFontScale = setFontScale;
 window.resetFontScale = resetFontScale;
 window.toggleFontScaleDropdown = toggleFontScaleDropdown;
 window.toggleSidebar = toggleSidebar;
-</script>
+</script><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>

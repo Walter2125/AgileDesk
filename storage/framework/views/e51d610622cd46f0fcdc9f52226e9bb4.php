@@ -1668,6 +1668,8 @@
 
     <!-- Scripts adicionales de las secciones -->
     <?php echo $__env->yieldContent('scripts'); ?>
+
+    
 </body>
 </html>
-<?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>

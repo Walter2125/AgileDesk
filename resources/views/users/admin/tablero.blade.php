@@ -595,6 +595,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
+
    <script>
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");

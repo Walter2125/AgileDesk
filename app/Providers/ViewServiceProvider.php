@@ -191,6 +191,48 @@ class ViewServiceProvider extends ServiceProvider
                 'projects.searchUsers'=> 'projects.my',
                 'projects.listUsers'  => 'projects.my',
 
+                // Backlog
+                'backlog.index' => function() {
+                    $currentRoute = Route::current();
+                    
+                    // Verificar si la ruta existe y tiene parámetro project
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Backlog']
+                        ];
+                    }
+
+                    $project = $currentRoute->parameter('project');
+                    
+                    // Si no hay proyecto, retornar breadcrumb básico
+                    if (!$project) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Backlog']
+                        ];
+                    }
+
+                    // Cargar la relación tablero si no está cargada
+                    if (is_numeric($project)) {
+                        $project = Project::with('tablero')->find($project);
+                    } elseif (is_object($project) && !$project->relationLoaded('tablero')) {
+                        $project->load('tablero');
+                    }
+
+                    return [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                        [
+                            'label' => 'Tablero', 
+                            'url' => $project->tablero 
+                                ? route('tableros.show', ['project' => $project->id]) 
+                                : '#'
+                        ],
+                        ['label' => 'Backlog']
+                    ];
+                },
+                
                 // Tableros y columnas
                 'tableros.show'     => [
                     ['label' => 'Inicio',      'url' => route('dashboard')],

@@ -9,6 +9,7 @@ class BacklogController extends Controller
 {
     public function index(Project $project)
     {
+        $project->load('tablero');
         $sprintId = request('sprint_id');
 
         $proyecto = $project->load('sprints');
@@ -26,6 +27,7 @@ class BacklogController extends Controller
             'historias' => $historias,
             'sprintId' => $sprintId,
             'currentProject' => $project, // 👈 Esto es lo que necesita tu layout
+            'tablero' => $proyecto->tablero,
         ]);
     }
 
@@ -34,10 +36,13 @@ class BacklogController extends Controller
     {
         return view('backlog.index', [
             'project' => $project,
+            'tablero' => $project->tablero
+        ]);
+        return view('backlog.index', [
+            'project' => $project,
             'currentProject' => $project, // ✅ Aseguramos que el ViewComposer lo reciba también
         ]);
     }
-
 
 
 
