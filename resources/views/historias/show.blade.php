@@ -194,8 +194,7 @@
 
                         <!-- Modal Editar Respuesta -->
                         <div id="editarComentarioModal{{ $respuesta->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                            <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                                <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+                        <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                                <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="flex items-center mb-4">
@@ -222,8 +221,7 @@
 
                 <!-- Modal de Responder -->
                 <div id="responderComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+                <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="parent_id" value="{{ $comentario->id }}">
                             <div class="flex items-center mb-4">
@@ -248,8 +246,7 @@
 
                 <!-- Modal Editar Comentario -->
                 <div id="editarComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                    <div class="bg-white rounded-4 shadow-lg w-full max-w-2xl p-6">
-                        <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
+                <div class="bg-white rounded-4 shadow-lg p-6" style="width: 600px;">                        <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="flex items-center mb-4">
@@ -281,7 +278,7 @@
 
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="width: 600px; background-color: #f9fafb;">
         <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
             @csrf
             <div class="flex items-center mb-4">
