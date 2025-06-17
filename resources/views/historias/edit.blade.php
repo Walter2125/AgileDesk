@@ -64,7 +64,7 @@
             <div class="mb-3">
                 <label for="columna_id" class="form-label">Estado</label>
                 <select name="columna_id" id="columna_id" class="form-control">
-                    <option value="">Sin Estado</option>
+                    <option value="">Backlog</option>
                     @foreach ($columnas as $columna)
                         <option value="{{ $columna->id }}" {{ old('columna_id') == $columna->id ? 'selected' : '' }}>
                             {{ $columna->nombre }}

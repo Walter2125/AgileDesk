@@ -18,6 +18,7 @@ use App\Http\Controllers\ColumnaController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\HistorialCambioController;
 use App\Http\Controllers\BacklogController;
+use App\Http\Controllers\ComentarioController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
@@ -145,6 +146,7 @@ Route::middleware(['auth', 'role:admin'])
 
         //------------
         Route::get('/projects/{project}/backlog', [BacklogController::class, 'index'])->name('backlog.index');
+        Route::get('/projects/{project}/backlog/export-pdf', [BacklogController::class, 'exportPdf'])->name('backlog.export-pdf');
 
         // Rutas para columnas
 
@@ -177,4 +179,10 @@ Route::post('/tareas/{tarea}/completar', [TareaController::class, 'toggleComplet
 
 });
 
+//Rutas para comentarios 
+Route::prefix('comentarios')->name('comentarios.')->group(function () {
+    Route::post('/{historia}', [ComentarioController::class, 'store'])->name('store');
+    Route::put('/{comentario}', [ComentarioController::class, 'update'])->name('update');
+    Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy'); 
+});
 require __DIR__.'/auth.php';

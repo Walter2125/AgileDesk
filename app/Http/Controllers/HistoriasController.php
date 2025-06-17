@@ -85,6 +85,11 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas'));
     }
 
+
+
+
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -117,13 +122,15 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
 
         ]);
-        
+
+
+
         // Verificar si se proporciona una columna válida
         $columna = null;
         if ($request->columna_id) {
             $columna = Columna::with('tablero')->findOrFail($request->columna_id);
         }
-        
+
         $historia = new Historia();
         $historia->nombre = $request->nombre;
         $historia->trabajo_estimado = $request->trabajo_estimado;
@@ -143,15 +150,38 @@ private function compartirContextoDesdeColumna(Columna $columna)
                      ->with('success', 'Historia creada con éxito');
     }
 
+    protected function obtenerProjectIdDeOtraForma(Historia $historia)
+    {
+        // Aquí tienes que definir cómo obtener el project_id cuando la historia no tiene columna.
+
+        // Algunas ideas:
+        // 1. Si tienes un campo 'project_id' en la tabla historias:
+        if (isset($historia->proyecto_id)) {
+            return $historia->proyecto_id;
+        }
+
+        // 2. Si puedes obtenerlo por otra relación o lógica, implementa aquí esa lógica.
+
+        // 3. Si no tienes forma, puedes devolver null o lanzar un error controlado:
+        return null;
+    }
+
+
     /**
      * Display the specified resource.
      */
     public function show(Historia $historia)
     {
-        $tablero = $this->cargarTableroDesdeHistoria($historia);
-        $historia->load('usuario','sprints', 'columna',);
-        return view('historias.show',compact('historia'));
+        // Cargamos también la relación con el proyecto
+        $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
+
+        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+        $currentProject = $historia->columna->tablero->project
+            ?? $historia->proyecto;
+
+        return view('historias.show', compact('historia', 'currentProject'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -163,6 +193,8 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $proyecto = $historia->proyecto;
         $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
         $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
+        View::share('currentProject', $proyecto);
+
 
         // Obtener columnas desde el tablero si existe, sino vacío
         if ($historia->columna && $historia->columna->tablero) {
@@ -173,7 +205,8 @@ private function compartirContextoDesdeColumna(Columna $columna)
             $columnas = $tablero ? $tablero->columnas : collect();
         }
 
-        return view('historias.edit', compact('historia', 'usuarios', 'sprints', 'columnas'));
+        return view('historias.edit', compact('historia', 'usuarios', 'sprints', 'columnas', 'proyecto'));
+
     }
 
 
@@ -189,7 +222,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'descripcion' => 'nullable|string|max:1000',
             'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',
-            'columna_id' => 'nullable|exists:columnas,id', // ← FALTA ESTO
+            'columna_id' => 'nullable|exists:columnas,id',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
@@ -241,7 +274,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
         // Obtener la historia
         $historia = Historia::findOrFail($id);
-        
+
         // Verificar que la columna destino pertenece al mismo tablero
         $columnaDestino = Columna::findOrFail($validated['columna_id']);
         if ($historia->columna->tablero_id !== $columnaDestino->tablero_id) {

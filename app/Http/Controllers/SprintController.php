@@ -20,13 +20,21 @@ class SprintController extends Controller
             'tablero_id' => 'required|exists:tableros,id',
         ]);
 
-        // Obtener el proyecto (por validación y contexto)
         $project = Project::findOrFail($projectId);
 
-        // Obtener el número de sprint más alto ya existente
+        // Obtener el último sprint por tablero
+        $ultimoSprint = Sprint::where('tablero_id', $request->tablero_id)
+            ->orderByDesc('fecha_fin')
+            ->first();
+
+        if ($ultimoSprint && $request->fecha_inicio <= $ultimoSprint->fecha_fin) {
+            return back()->withErrors([
+                'fecha_inicio' => 'La fecha de inicio del nuevo sprint debe ser posterior a la fecha de fin del sprint anterior (' . $ultimoSprint->fecha_fin . ').'
+            ])->withInput();
+        }
+
         $ultimoNumero = Sprint::where('tablero_id', $request->tablero_id)->max('numero_sprint') ?? 0;
 
-        // Crear el nuevo sprint
         Sprint::create([
             'nombre' => 'Sprint ' . ($ultimoNumero + 1),
             'numero_sprint' => $ultimoNumero + 1,
@@ -36,9 +44,9 @@ class SprintController extends Controller
             'proyecto_id' => $projectId,
         ]);
 
-        // Redirige a la vista del tablero para evitar error de variable no definida
         return redirect()->route('tableros.show', $projectId)->with('success', 'Sprint creado correctamente.');
     }
+
 
     /**
      * Elimina un sprint específico (si usas esta función).
