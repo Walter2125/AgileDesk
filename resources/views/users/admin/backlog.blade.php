@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('mensaje-superior')
-    Backlog del Proyecto: {{ $proyecto->nombre }}
+    Backlog
 @endsection
 
 @section('content')
@@ -23,7 +23,16 @@
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}" class="btn btn-primary" style="height: 38px; display: flex; align-items: center;">
                 Agregar Historia
             </a>
-
+            
+            <!-- Botón para exportar a PDF (solo para administradores) -->
+            @if(auth()->user()->usertype === 'admin')
+                <a href="{{ route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId]) }}" 
+                   class="btn btn-secondary" 
+                   style="height: 38px; display: flex; align-items: center;"
+                   title="Exportar a PDF">
+                    <i class="bi bi-file-earmark-pdf me-1"></i> Exportar a PDF
+                </a>
+            @endif
 
             </a>
         </form>

@@ -55,6 +55,9 @@ protected $fillable = [
     {
         return $this->hasMany(Tarea::class, 'historia_id');
     }
-
-
+   
+    public function comentarios()
+    {
+    return $this->hasMany(Comentario::class);
+    }
 }

@@ -1,0 +1,841 @@
+/* Prevenir flash de claro a oscuro durante la carga de la página */
+html.dark-mode-preload,
+html.dark-mode-preload *,
+html.dark-mode-preload *:before,
+html.dark-mode-preload *:after {
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -ms-animation: none !important;
+    -o-animation: none !important;
+}
+
+/* dark-mode-optimized.css - Versión mejorada para legibilidad */
+:root {
+    /* Paleta de fondos mejorada */
+    --dark-bg-primary: #121218;
+    --dark-bg-secondary: #1e1e2a;
+    --dark-bg-tertiary: #2a2a3a;
+    --dark-bg-quaternary: #37374a;
+    
+    /* Paleta de textos optimizada para contraste */
+    --dark-text-primary: #f0f0f5;
+    --dark-text-secondary: #d0d0dd;
+    --dark-text-terciary: #a0a0b0;
+    
+    /* Colores de bordes */
+    --dark-border-primary: #3d3d50;
+    --dark-border-secondary: #4a4a60;
+    
+    /* Paleta de acentos */
+    --dark-accent-primary: #8a7cff;
+    --dark-accent-hover: #6a5cef;
+    --dark-accent-light: rgba(138, 124, 255, 0.1);
+    
+    /* Colores semánticos mejorados */
+    --dark-success: #28a873;
+    --dark-success-light: rgba(40, 168, 115, 0.15);
+    --dark-warning: #ff9e3c;
+    --dark-warning-light: rgba(255, 158, 60, 0.15);
+    --dark-danger: #ff5c5c;
+    --dark-danger-light: rgba(255, 92, 92, 0.15);
+    --dark-info: #42a5ff;
+    --dark-info-light: rgba(66, 165, 255, 0.15);
+    
+    /* Sombras mejor definidas */
+    --dark-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+    --dark-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --dark-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.35);
+    
+    /* Transiciones suaves */
+    --dark-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevenir flash de claro a oscuro durante la carga de la página */
+html.dark-mode-preload * {
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+}
+
+/* Transiciones suaves solo para cambios manuales de tema */
+.theme-transition,
+.theme-transition *,
+.theme-transition *:before,
+.theme-transition *:after {
+    transition: background-color 0.3s ease, 
+                color 0.3s ease, 
+                border-color 0.3s ease, 
+                box-shadow 0.3s ease !important;
+}
+
+/* Estilos base mejorados sin transición durante la carga inicial */
+body.dark-mode {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+    /* Eliminamos la transición por defecto para evitar el flash al cargar */
+}
+
+/* Tipografía optimizada */
+body.dark-mode {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Contenedores principales */
+body.dark-mode .navbar,
+body.dark-mode .sidebar,
+body.dark-mode .card,
+body.dark-mode .modal-content,
+body.dark-mode .dropdown-menu {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--dark-border-primary);
+    box-shadow: var(--dark-shadow-sm);
+    /* Eliminamos la transición por defecto para evitar el flash al cargar */
+}
+
+/* Textos y encabezados */
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+    color: var(--dark-text-primary);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+body.dark-mode p, body.dark-mode li, body.dark-mode td {
+    color: var(--dark-text-secondary);
+    line-height: 1.6;
+}
+
+body.dark-mode small, body.dark-mode .text-muted {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Componentes interactivos */
+body.dark-mode .btn {
+    background-color: var(--dark-bg-terciary);
+    color: var(--dark-text-secondary);
+    border-color: var(--dark-border-primary);
+    /* Sin transición por defecto */
+}
+
+body.dark-mode .btn:hover {
+    background-color: var(--dark-bg-quaternary);
+    color: var(--dark-text-primary);
+    transform: translateY(-1px);
+    transition: var(--dark-transition); /* Aplicamos transición solo en hover */
+}
+
+body.dark-mode .btn-primary {
+    background-color: var(--dark-accent-primary);
+    border-color: var(--dark-accent-primary);
+    color: #fff;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: var(--dark-accent-hover);
+    border-color: var(--dark-accent-hover);
+}
+
+/* Formularios mejorados */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode input,
+body.dark-mode textarea {
+    background-color: var(--dark-bg-terciary);
+    border-color: var(--dark-border-primary);
+    color: var(--dark-text-primary);
+    /* Sin transición por defecto */
+}
+
+body.dark-mode .form-control:focus {
+    background-color: var(--dark-bg-quaternary);
+    border-color: var(--dark-accent-primary);
+    box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25);
+    transition: var(--dark-transition); /* Transición solo en focus */
+}
+
+/* Estilos optimizados para tablas en admin */
+body.dark-mode .table,
+body.dark-mode .table-bordered,
+body.dark-mode .table-striped {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .table th,
+body.dark-mode .table td,
+body.dark-mode .table thead th {
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Tarjetas mejoradas */
+body.dark-mode .card {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--dark-border-primary);
+    box-shadow: var(--dark-shadow-sm);
+}
+
+body.dark-mode .card-header {
+    background-color: var(--dark-bg-terciary);
+    border-bottom-color: var(--dark-border-primary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .card-footer {
+    background-color: var(--dark-bg-terciary);
+    border-top-color: var(--dark-border-primary);
+}
+
+/* Estados semánticos */
+body.dark-mode .alert-success {
+    background-color: var(--dark-success-light);
+    border-color: var(--dark-success);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .alert-warning {
+    background-color: var(--dark-warning-light);
+    border-color: var(--dark-warning);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .alert-danger {
+    background-color: var(--dark-danger-light);
+    border-color: var(--dark-danger);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .alert-info {
+    background-color: var(--dark-info-light) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-info) !important;
+}
+
+/* Efectos visuales mejorados */
+body.dark-mode .list-group-item {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--dark-border-primary);
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .list-group-item:hover {
+    background-color: var(--dark-bg-terciary);
+    color: var(--dark-text-primary);
+}
+
+/* Barra de scroll personalizada (opcional) */
+body.dark-mode ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--dark-bg-primary);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--dark-bg-terciary);
+    border-radius: 4px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-accent-primary);
+}
+
+/* Mejoras para la navegación */
+body.dark-mode .navbar,
+body.dark-mode nav {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .nav-message {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Ajustes para el botón de navegación en modo oscuro */
+body.dark-mode .navbar {
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .navbar button:focus,
+body.dark-mode .navbar button:active {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Asegurar que los enlaces de navegación son consistentes */
+body.dark-mode .navbar a,
+body.dark-mode .navbar .nav-link {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .navbar a:hover,
+body.dark-mode .navbar .nav-link:hover {
+    color: var(--dark-accent-primary) !important;
+}
+
+/* Mejoras para alineación en navegación */
+.navbar .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 992px) {
+    .navbar .container-fluid {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+.navbar .d-flex.justify-content-start {
+    height: 4rem;
+}
+
+.navbar .ms-auto {
+    margin-left: auto !important;
+}
+
+/* Mejora para el botón de modo oscuro */
+body.dark-mode .btn-mode-toggle {
+    background-color: var(--dark-bg-terciario) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-secondary) !important;
+}
+
+body.dark-mode .btn-mode-toggle:hover {
+    background-color: var(--dark-bg-quaternario) !important;
+    border-color: var(--dark-accent-primary) !important;
+}
+
+/* Botón de sidebar en modo oscuro */
+body.dark-mode .sidebar-toggle-desktop {
+    background-color: var(--dark-bg-terciario) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .sidebar-toggle-desktop:hover {
+    background-color: var(--dark-bg-quaternario) !important;
+}
+
+/* Optimización general para bg-white y text-dark */
+body.dark-mode .bg-white,
+body.dark-mode [class*="bg-light"] {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .text-dark,
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-900 {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .text-muted {
+    color: var(--dark-text-terciario) !important;
+}
+
+/* Espacios en dropdowns y menús desplegables */
+body.dark-mode .dropdown-menu {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .dropdown-item {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: var(--dark-bg-terciario) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Ajustes para dashboard y paneles */
+body.dark-mode .font-semibold,
+body.dark-mode .fw-bold {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizar hidden sm:hidden y similares */
+body.dark-mode .hidden {
+    background-color: transparent !important;
+}
+
+/* Manejar correctamente los bordes */
+body.dark-mode .border,
+body.dark-mode .border-b,
+body.dark-mode .border-t,
+body.dark-mode .border-gray-100,
+body.dark-mode .border-gray-200 {
+    border-color: var(--dark-border-primary) !important;
+}
+
+/* Estilo específico para vista de backlog */
+body.dark-mode .card.mb-2.p-3 {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: var(--dark-shadow-sm);
+    transition: var(--dark-transition);
+}
+
+body.dark-mode .card.mb-2.p-3:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    box-shadow: var(--dark-shadow-md);
+}
+
+body.dark-mode .card.mb-2.p-3 strong {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode a.text-decoration-none.text-dark {
+    color: var(--dark-text-primary) !important;
+    text-decoration: none;
+}
+
+/* Específico para contenedores de tablero */
+body.dark-mode #kanban-board {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+/* Estilos específicos para inputs, selects y botones en formularios */
+body.dark-mode select.form-select {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode input.form-control {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode input.form-control::placeholder {
+    color: var(--dark-text-terciario) !important;
+}
+
+/* Estilo específico para modal en modo oscuro */
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    border-color: var(--dark-border-primary) !important;
+}
+
+/* Estilos específicos para componentes de tablero */
+body.dark-mode .overflow-auto.pb-3,
+body.dark-mode .overflow-auto.p-2 {
+    background-color: transparent !important;
+}
+
+/* Clases específicas para contenedores y bordes en todo el sistema */
+body.dark-mode .container, 
+body.dark-mode .container-fluid {
+    background-color: transparent !important;
+}
+
+/* Estilos específicos para admin panel */
+body.dark-mode .admin-header {
+    background-color: var(--dark-bg-terciary) !important;
+    border-left-color: var(--dark-accent-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .admin-card {
+    background-color: var(--dark-bg-secondary) !important;
+    box-shadow: var(--dark-shadow-sm) !important;
+}
+
+body.dark-mode .admin-card .card-header {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .button-container .btn {
+    background: linear-gradient(to right, var(--dark-accent-primary), var(--dark-accent-hover)) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .button-container .btn:hover {
+    background: linear-gradient(to right, var(--dark-accent-hover), var(--dark-accent-primary)) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--dark-shadow-md);
+}
+
+body.dark-mode .card-body {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .admin-table th {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .pagination-container .page-link {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .pagination-container .page-item.active .page-link {
+    background-color: var(--dark-accent-primary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-accent-primary) !important;
+}
+
+/* Vistas de colaboradores */
+body.dark-mode .hero-section {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+body.dark-mode .hero-bg img {
+    filter: brightness(0.7) contrast(1.1) !important;
+}
+
+body.dark-mode .hero-title {
+    color: var(--dark-text-primary) !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .section-title {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .description {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Acordeones y pestañas */
+body.dark-mode .accordion-button {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .accordion-button:not(.collapsed) {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .accordion-item {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .accordion-collapse {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .nav-tabs .nav-link {
+    color: var(--dark-text-secondary) !important;
+    border-color: transparent !important;
+}
+
+body.dark-mode .nav-tabs .nav-link.active {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-terciary) !important;
+    border-color: var(--dark-border-primary) var(--dark-border-primary) transparent !important;
+}
+
+/* Asegurar que todos los fondos blancos se manejen correctamente */
+body.dark-mode .bg-white,
+body.dark-mode .bg-light,
+body.dark-mode div[class*="bg-white"],
+body.dark-mode div[class*="bg-light"],
+body.dark-mode [style*="background-color: #fff"],
+body.dark-mode [style*="background-color: white"],
+body.dark-mode [style*="background-color: rgb(255, 255, 255)"],
+body.dark-mode [style*="background: white"],
+body.dark-mode [style*="background: #fff"] {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Asegurar que todos los textos oscuros se manejen correctamente */
+body.dark-mode .text-dark,
+body.dark-mode .text-black,
+body.dark-mode div[class*="text-dark"],
+body.dark-mode div[class*="text-black"],
+body.dark-mode [style*="color: #000"],
+body.dark-mode [style*="color: black"],
+body.dark-mode [style*="color: rgb(0, 0, 0)"] {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizar enlaces y urls */
+body.dark-mode a:not(.btn):not(.nav-link):not(.badge) {
+    color: var(--dark-accent-primary) !important;
+}
+
+body.dark-mode a:not(.btn):not(.nav-link):not(.badge):hover {
+    color: var(--dark-accent-hover) !important;
+}
+
+/* Mejora para el botón de modo oscuro */
+.btn-mode-toggle {
+    background-color: transparent;
+    border: 1px solid #dee2e6;
+    color: #343a40;
+    padding: 0.25rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;    transition: all 0.2s ease-in-out;
+}
+
+.btn-mode-toggle:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+/* Estilos específicos para la vista de historias */
+body.dark-mode .historia-container-fluid {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .historia-header,
+body.dark-mode .historia-title {
+    background-color: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .historia-section,
+body.dark-mode .historia-content,
+body.dark-mode .historia-details {
+    background-color: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .section-title {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .detail-label {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .detail-value {
+    color: var(--dark-text-primary);
+}
+
+/* Comentarios en modo oscuro */
+body.dark-mode .card.mt-5.shadow {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .card-header.bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .card-body.bg-light {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+body.dark-mode .text-dark {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .text-info {
+    color: var(--dark-accent-primary) !important;
+}
+
+body.dark-mode .btn-light {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+/* Comentarios y respuestas */
+body.dark-mode .border.rounded-4.p-4.mb-4.bg-white,
+body.dark-mode .mt-3.ms-5.p-3.rounded-3.bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .text-secondary {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Modales */
+body.dark-mode .fixed .bg-white,
+body.dark-mode #nuevoComentarioModal .bg-white,
+body.dark-mode [id^="editarComentarioModal"] .bg-white,
+body.dark-mode [id^="responderComentarioModal"] .bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode .form-control {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .bg-black.bg-opacity-50 {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Botones en las vistas de historias */
+body.dark-mode .btn-outline-secondary,
+body.dark-mode .btn-outline-info,
+body.dark-mode .btn-outline-danger {
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-secondary);
+}
+
+body.dark-mode .btn-outline-secondary:hover,
+body.dark-mode .btn-outline-info:hover,
+body.dark-mode .btn-outline-danger:hover {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .btn-warning.text-white {
+    background-color: var(--dark-accent-primary);
+    border-color: var(--dark-accent-primary);
+}
+
+body.dark-mode .btn-warning.text-white:hover {
+    background-color: var(--dark-accent-hover);
+    border-color: var(--dark-accent-hover);
+}
+
+/* Modal de confirmación */
+body.dark-mode .modal-content {
+    background-color: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .modal-title {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Estilos específicos para componentes de la vista de historias */
+body.dark-mode .mi-container {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .alert-success {
+    background-color: var(--dark-success-light);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-success);
+}
+
+/* Estilo para el botón de agregar tareas */
+body.dark-mode a.text-primary.border.border-primary[style*="background-color: #e6f2ff"] {
+    background-color: var(--dark-bg-tertiary) !important;
+    color: var(--dark-accent-primary) !important;
+    border-color: var(--dark-accent-primary) !important;
+}
+
+/* Estilos para badges */
+body.dark-mode .badge.bg-primary {
+    background-color: var(--dark-accent-primary) !important;
+}
+
+body.dark-mode .badge.bg-secondary {
+    background-color: var(--dark-bg-quaternary) !important;
+}
+
+/* Clases fixed para modales */
+body.dark-mode .fixed {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Estilos para inputs en modales */
+body.dark-mode textarea.form-control {
+    background-color: var(--dark-bg-tertiary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+body.dark-mode textarea.form-control::placeholder {
+    color: var(--dark-text-tertiary) !important;
+}
+
+/* Ajustes para botones de acción en comentarios */
+body.dark-mode .btn-group-sm .btn {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .btn-group-sm .btn:hover {
+    background-color: var(--dark-bg-quaternary);
+}
+
+/* Estilos para elementos de usuario y tiempos */
+body.dark-mode .text-primary {
+    color: var(--dark-accent-primary) !important;
+}
+
+body.dark-mode .text-muted {
+    color: var(--dark-text-tertiary) !important;
+}
+
+/* Optimizaciones para modales en modo oscuro */
+body.dark-mode .fixed.inset-0.z-50.flex.items-center.justify-center.bg-black.bg-opacity-50 {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+body.dark-mode .fixed.inset-0.z-50.flex.items-center.justify-center.bg-black.bg-opacity-50 .bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+/* Estilos específicos para elementos en modales de historias */
+body.dark-mode .fw-bold.text-dark,
+body.dark-mode .fw-bold.mb-0.text-dark {
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .historia-container-fluid .btn-secondary {
+    background-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border-color: var(--dark-border-primary);
+}
+
+body.dark-mode .historia-container-fluid .btn-secondary:hover {
+    background-color: var(--dark-bg-quaternary);
+}
+
+body.dark-mode .historia-container-fluid .btn-primary {
+    background-color: var(--dark-accent-primary);
+    border-color: var(--dark-accent-primary);
+}
+
+body.dark-mode .historia-container-fluid .btn-primary:hover {
+    background-color: var(--dark-accent-hover);
+}

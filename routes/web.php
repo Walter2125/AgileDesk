@@ -18,12 +18,12 @@ use App\Http\Controllers\ColumnaController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\HistorialCambioController;
 use App\Http\Controllers\BacklogController;
+use App\Http\Controllers\ComentarioController;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Columna;
 use App\Models\Notificaciones;
 use App\Models\Tablero;
-
 
 
 Route::get('/', fn() => redirect('/login')); // Redirigir a la página de inicio de sesión
@@ -106,7 +106,7 @@ Route::middleware(['auth', 'role:admin'])
         // Rutas para historial de usuarios eliminados
         Route::get('/deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
         Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
-        
+
         //historial de cambios
         Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 
@@ -122,7 +122,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
 
         // Crud de tableros
-
         Route::get('/projects/{project}/tablero', [TableroController::class, 'show'])->name('tableros.show');
         Route::post('/columnas/{tablero}/store', [ColumnaController::class, 'store'])->name('columnas.store');
 
@@ -136,7 +135,6 @@ Route::middleware(['auth', 'role:admin'])
         //--------------------------------------------------
 
         // Crud de Sprints
-
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');
 
 
@@ -148,13 +146,11 @@ Route::middleware(['auth', 'role:admin'])
 
         //------------
         Route::get('/projects/{project}/backlog', [BacklogController::class, 'index'])->name('backlog.index');
+        Route::get('/projects/{project}/backlog/export-pdf', [BacklogController::class, 'exportPdf'])->name('backlog.export-pdf');
 
         // Rutas para columnas
 
      // <-- aquí
-
-
-
 
 
 
@@ -179,6 +175,14 @@ Route::put('historias/{historia}/tareas/{tarea}', [TareaController::class, 'upda
 Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
 Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
 
+Route::post('/tareas/{tarea}/completar', [TareaController::class, 'toggleCompletada'])->name('tareas.toggleCompletada');
+
 });
 
+//Rutas para comentarios 
+Route::prefix('comentarios')->name('comentarios.')->group(function () {
+    Route::post('/{historia}', [ComentarioController::class, 'store'])->name('store');
+    Route::put('/{comentario}', [ComentarioController::class, 'update'])->name('update');
+    Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy'); 
+});
 require __DIR__.'/auth.php';
