@@ -1,20 +1,22 @@
 // dark-mode.js - Optimizado
 (function() {
-    const DARK_MODE_KEY = 'agiledesk_dark_mode';
+    const DARK_MODE_KEY = 'darkMode';
     const body = document.body;
     const toggleBtnId = 'dark-mode-toggle-btn';
     const TRANSITION_DURATION = 300; // ms
-
+    
     function setDarkMode(enabled) {
         // Añadir clase de transición
         body.classList.add('theme-transition');
         
         if (enabled) {
             body.classList.add('dark-mode');
-            localStorage.setItem(DARK_MODE_KEY, '1');
+            document.documentElement.style.backgroundColor = '#121218';
+            localStorage.setItem(DARK_MODE_KEY, 'enabled');
         } else {
             body.classList.remove('dark-mode');
-            localStorage.setItem(DARK_MODE_KEY, '0');
+            document.documentElement.style.backgroundColor = '';
+            localStorage.setItem(DARK_MODE_KEY, 'disabled');
         }
         
         updateButtonIcon();
@@ -54,9 +56,7 @@
 
     // Expose for global use
     window.toggleDarkMode = toggleDarkMode;
-    window.setDarkMode = setDarkMode;
-
-    // On load, set mode from localStorage or system preference
+    window.setDarkMode = setDarkMode;    // On load, set mode from localStorage or system preference
     document.addEventListener('DOMContentLoaded', function() {
         // Aplicar inmediatamente para evitar flash de tema incorrecto
         const saved = localStorage.getItem(DARK_MODE_KEY);
@@ -65,16 +65,20 @@
             // Si no hay preferencia guardada, usar la del sistema
             setDarkMode(getSystemPreference());
         } else {
-            setDarkMode(saved === '1');
+            setDarkMode(saved === 'enabled');
         }
+        
+        // Remover la clase preload
+        setTimeout(() => {
+            document.documentElement.classList.remove('dark-mode-preload');
+        }, 100);
         
         // Attach event if button exists
         const btn = document.getElementById(toggleBtnId);
         if (btn) {
             btn.addEventListener('click', toggleDarkMode);
         }
-        
-        // Escuchar cambios en la preferencia del sistema
+          // Escuchar cambios en la preferencia del sistema
         if (window.matchMedia) {
             window.matchMedia('(prefers-color-scheme: dark)')
                 .addEventListener('change', e => {
