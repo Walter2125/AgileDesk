@@ -137,8 +137,8 @@
     <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center px-4 py-3">
         <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
         <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#nuevoComentarioModal">
-    <i class="bi bi-chat-left-text me-1"></i> Comentar
-</button>
+            <i class="bi bi-chat-left-text me-1"></i> Comentar
+        </button>
     </div>
 
     <div class="card-body bg-light p-4">
@@ -147,20 +147,19 @@
                 <div class="border rounded-4 p-4 mb-4 bg-white shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
-                         <strong class="text-dark fs-6">
-                         <?php echo e(optional($comentario->user)->name ?? 'Usuario eliminado'); ?>
-
-                         </strong>                            
-                        <small class="text-muted ms-2"><?php echo e($comentario->created_at->diffForHumans()); ?></small>
+                            <strong class="text-dark fs-6"><?php echo e(optional($comentario->user)->name ?? 'Usuario eliminado'); ?></strong>
+                            <small class="text-muted ms-2"><?php echo e($comentario->created_at->diffForHumans()); ?></small>
                         </div>
                         <?php if(Auth::id() === $comentario->user_id): ?>
                             <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarComentarioModal<?php echo e($comentario->id); ?>">
-                                    <i class="bi bi-pencil-square"></i>
+                                <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal<?php echo e($comentario->id); ?>">
+                                    <i class="bi bi-pencil-square fs-5"></i>
                                 </button>
                                 <form action="<?php echo e(route('comentarios.destroy', $comentario)); ?>" method="POST" onsubmit="return confirm('¿Deseas eliminar este comentario?')">
                                     <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                    <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    <button class="btn btn-outline-danger px-2 py-1">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </button>
                                 </form>
                             </div>
                         <?php endif; ?>
@@ -173,83 +172,179 @@
                     </button>
 
                     <?php $__currentLoopData = $comentario->respuestas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $respuesta): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="mt-4 ms-4 ps-4 border-start border-3 border-info">
-                            <div class="d-flex justify-content-between">
+                        <div class="mt-3 ms-5 p-3 rounded-3 bg-white shadow-sm border">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                <strong class="text-success">
-                                 <?php echo e(optional($respuesta->user)->name ?? 'Usuario eliminado'); ?>
-
-                                </strong>                                    
-                                 <small class="text-muted ms-2"><?php echo e($respuesta->created_at->diffForHumans()); ?></small>
+                                    <strong class="text-primary"><?php echo e(optional($respuesta->user)->name ?? 'Usuario eliminado'); ?></strong>
+                                    <small class="text-muted ms-2"><?php echo e($respuesta->created_at->diffForHumans()); ?></small>
                                 </div>
                                 <?php if(Auth::id() === $respuesta->user_id): ?>
                                     <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editarComentarioModal<?php echo e($respuesta->id); ?>">
-                                            <i class="bi bi-pencil"></i>
+                                        <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal<?php echo e($respuesta->id); ?>">
+                                            <i class="bi bi-pencil-square fs-5"></i>
                                         </button>
-                                        <form action="<?php echo e(route('comentarios.destroy', $respuesta)); ?>" method="POST" onsubmit="return confirm('¿Eliminar respuesta?')">
+                                        <form action="<?php echo e(route('comentarios.destroy', $respuesta)); ?>" method="POST" onsubmit="return confirm('¿Deseas eliminar esta respuesta?')">
                                             <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                            <button class="btn btn-outline-danger px-2 py-1">
+                                                <i class="bi bi-trash fs-5"></i>
+                                            </button>
                                         </form>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <p class="text-secondary mt-2"><?php echo e($respuesta->contenido); ?></p>
+                            <p class="text-secondary mt-2 mb-0"><?php echo e($respuesta->contenido); ?></p>
+                        </div>
+
+                        <!-- Modal Editar Respuesta -->
+                        <div class="modal fade" id="editarComentarioModal<?php echo e($respuesta->id); ?>" tabindex="-1">
+                            <div class="modal-dialog modal-md modal-dialog-centered">
+                                <div class="modal-content shadow-lg rounded-3">
+                                    <form action="<?php echo e(route('comentarios.update', $respuesta->id)); ?>" method="POST">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('PUT'); ?>
+                                        <div class="modal-header bg-warning text-white rounded-top-3">
+                                            <h5 class="modal-title">Editar Respuesta</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea name="contenido" class="form-control" rows="3" required><?php echo e($respuesta->contenido); ?></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-warning">Actualizar</button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
 
                 <!-- Modal de Responder -->
                 <div class="modal fade" id="responderComentarioModal<?php echo e($comentario->id); ?>" tabindex="-1">
-                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                        <div class="modal-content shadow-lg rounded-4">
-                            <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
-                                <?php echo csrf_field(); ?>
-                                <input type="hidden" name="parent_id" value="<?php echo e($comentario->id); ?>">
-                                <div class="modal-header bg-dark text-white rounded-top-4">
-                                    <h5 class="modal-title">Responder Comentario</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <textarea name="contenido" class="form-control" rows="4" placeholder="Escribe tu respuesta..." required></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-success">Publicar Respuesta</button>
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        <?php else: ?>
-            <p class="text-muted text-center">No hay comentarios aún.</p>
-        <?php endif; ?>
-    </div>
-</div>
-
-<!-- Modal Nuevo Comentario -->
-<div class="modal fade" id="nuevoComentarioModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content shadow-lg rounded-4">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg p-0" style="background-color: #f9fafb;">
             <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
                 <?php echo csrf_field(); ?>
-                <div class="modal-header bg-info text-white rounded-top-4">
-                    <h5 class="modal-title">Nuevo Comentario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <textarea name="contenido" class="form-control" rows="5" placeholder="Escribe tu comentario aquí..." required></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-info text-white">Publicar</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <input type="hidden" name="parent_id" value="<?php echo e($comentario->id); ?>">
+                <div class="p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-reply-fill text-info fs-2"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-dark">Responder Comentario</h4>
+                            <small class="text-muted">Escribe una respuesta para este comentario.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="respuesta<?php echo e($comentario->id); ?>" class="form-label text-dark fw-semibold">Tu Respuesta</label>
+                        <textarea name="contenido"
+                                  id="respuesta<?php echo e($comentario->id); ?>"
+                                  class="form-control rounded-4 border-0 shadow-sm p-3"
+                                  rows="5"
+                                  placeholder="Escribe tu respuesta aquí..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success text-white rounded-3 px-4 py-2">
+                            <i class="bi bi-send me-1"></i> Publicar Respuesta
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+                <!-- Modal Editar Comentario -->
+<div class="modal fade" id="editarComentarioModal<?php echo e($comentario->id); ?>" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg p-0" style="background-color: #f9fafb;">
+            <form action="<?php echo e(route('comentarios.update', $comentario->id)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
+                <div class="p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-pencil-square text-warning fs-2"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-dark">Editar Comentario</h4>
+                            <small class="text-muted">Modifica tu comentario.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="editarContenido<?php echo e($comentario->id); ?>" class="form-label text-dark fw-semibold">Tu Comentario</label>
+                        <textarea name="contenido"
+                                  id="editarContenido<?php echo e($comentario->id); ?>"
+                                  class="form-control rounded-4 border-0 shadow-sm p-3"
+                                  rows="5"
+                                  placeholder="Edita tu comentario..." required><?php echo e($comentario->contenido); ?></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-warning text-white rounded-3 px-4 py-2">
+                            <i class="bi bi-pencil-square me-1"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo Comentario -->
+<div class="modal fade" id="nuevoComentarioModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg p-0" style="background-color: #f9fafb;">
+            <form action="<?php echo e(route('comentarios.store', $historia->id)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <div class="p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <i class="bi bi-chat-left-text-fill text-primary fs-2"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+                            <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="contenido" class="form-label text-dark fw-semibold">Tu Comentario</label>
+                        <textarea name="contenido"
+                                  id="contenido"
+                                  class="form-control rounded-4 border-0 shadow-sm p-3"
+                                  rows="5"
+                                  placeholder="Escribe tu comentario aquí..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+                            <i class="bi bi-send-fill me-1"></i> Publicar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+ <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> <!-- Cierre del foreach de comentarios -->
+    <?php endif; ?> <!-- Cierre del if que verifica si hay comentarios -->
+</div> <!-- Cierre del card-body -->
+
     <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/historias/show.blade.php ENDPATH**/ ?>
