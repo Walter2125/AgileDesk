@@ -6,6 +6,30 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
+    
+    <!-- Prevenir flash en modo oscuro - Script inline para carga inmediata -->
+    <script>
+        // Se ejecuta antes que cualquier otro recurso
+        (function() {
+            // Verifica si el modo oscuro está activado en localStorage
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                // Aplica estilos críticos inmediatamente para evitar flash
+                document.documentElement.style.backgroundColor = '#121218';
+                document.documentElement.classList.add('dark-mode-preload');
+                
+                // Inyecta un estilo básico en el head para aplicar colores oscuros inmediatamente
+                var style = document.createElement('style');
+                style.textContent = `
+                    body { background-color: #121218 !important; color: #f0f0f5 !important; }
+                    .navbar, .sidebar, .card { background-color: #1e1e2a !important; }
+                `;
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+    <!-- Cargar los estilos de modo oscuro lo antes posible -->
+    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -1658,6 +1682,7 @@
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
 
+    <script src="{{ asset('js/dark-mode.js') }}"></script>
 
 </body>
 </html>
