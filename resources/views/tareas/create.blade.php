@@ -1,6 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-          Crear tarea para: {{ $historia->nombre }}
+            Crear Tarea para: {{ Str::limit($historia->nombre, 20) }}
         @endsection
 
 @section('content')

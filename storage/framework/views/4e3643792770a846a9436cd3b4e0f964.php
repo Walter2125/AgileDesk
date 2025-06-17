@@ -1,6 +1,5 @@
 <?php $__env->startSection('mensaje-superior'); ?>
-    Backlog del Proyecto: <?php echo e($proyecto->nombre); ?>
-
+    Backlog
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -58,4 +57,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/users/admin/backlog.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/users/admin/backlog.blade.php ENDPATH**/ ?>

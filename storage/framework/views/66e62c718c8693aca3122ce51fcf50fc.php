@@ -1,5 +1,5 @@
         <?php $__env->startSection('mensaje-superior'); ?>
-          Crear tarea para: <?php echo e($historia->nombre); ?>
+            Crear Tarea para: <?php echo e(Str::limit($historia->nombre, 20)); ?>
 
         <?php $__env->stopSection(); ?>
 

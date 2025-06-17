@@ -10,7 +10,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
     @php
 
 $colCount = $tablero->columnas->count();
@@ -18,11 +17,11 @@ $colCount = $tablero->columnas->count();
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
     @endphp
-    
-    
+
+
     <div class="container py-4">
 
-                
+
             <!-- No borren esta nofificacion -->
                 @if (session('success'))
                             <div class="alert alert-success mt-2" id="success-alert">
@@ -40,7 +39,6 @@ $colCount = $tablero->columnas->count();
                                 }, 3000);
                             </script>
                         @endif
-
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -121,8 +119,7 @@ $colCount = $tablero->columnas->count();
                                         </li>
                                         <li>
                                             <button class="dropdown-item"
-                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
-                                                Eliminar columna
+                                              onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</button>
                                             </button>
                                         </li>
                                     </ul>
@@ -140,9 +137,9 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">                            
+                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                 @foreach ($columna->historias as $historia)
-                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">                                    
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                     <div class="d-flex justify-content-between align-items-start">
                                         {{-- Columna 1: Contenido --}}
                                         <div style="flex: 1;">
@@ -270,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Error:', error);
                     showNotification('error', error.message);
                     // Revertir visualmente el movimiento
-                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ? 
+                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ?
                         null : evt.from.children[evt.oldIndex]);
                 });
             }
@@ -286,11 +283,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
-        
+
         // Agrega la notificación donde sea apropiado en tu UI
         const notificationContainer = document.getElementById('notification-container') || document.body;
         notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
-        
+
         // Elimina la notificación después de 5 segundos
         setTimeout(() => {
             const alert = notificationContainer.querySelector('.alert');
@@ -370,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </form>
         </div>
     </div>
-    
+
  <!-- Modal para crear sprint -->
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -395,7 +392,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
 
 
-<!-- Modal de confirmación para eliminar columna -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear sprint</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Modal para confirmar eliminación de columna (fuera del modal de sprint) -->
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
@@ -423,13 +428,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Crear sprint</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- AJAX para actualizar nombre -->
     <script>
@@ -467,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return response.json();
                         })
                         .then(data => {
-                            // Column updated successfully
+                            console.log('Columna actualizada:', data);
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -477,6 +475,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     </script>
+
+
 
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
@@ -532,7 +532,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 </script>
-
 <script>
     let columnaIdParaEliminar = null;
 
@@ -556,6 +555,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
+
+
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -594,13 +598,14 @@ document.addEventListener('DOMContentLoaded', function () {
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
-    
+    const columnas = document.querySelectorAll(".historia-lista");
+
     function realizarBusqueda() {
         const textoBusqueda = buscador.value.toLowerCase().trim();
-        
+
         // Seleccionar todas las tarjetas de historias
         const historias = document.querySelectorAll(".card.mb-4.p-2");
-        
+
         historias.forEach(historia => {
             // Buscar en el texto de la historia (nombre + descripción)
             const textoHistoria = historia.textContent.toLowerCase();
@@ -618,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(timeoutBusqueda);
         timeoutBusqueda = setTimeout(realizarBusqueda, 300);
     });
-    
+
     // Botón para limpiar la búsqueda
     limpiarBtn.addEventListener("click", function () {
         buscador.value = "";

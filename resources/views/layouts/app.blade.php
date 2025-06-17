@@ -9,13 +9,13 @@
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <!-- Tabler Core CSS (Admin Template) - Comentado temporalmente para debugging -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
-    
+
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
     <!-- Fonts -->
@@ -40,6 +40,140 @@
         height: 100%;
         overflow-x: hidden;
         scroll-behavior: smooth;
+    }
+
+    /* Mejoras específicas para compatibilidad entre sistemas operativos */
+    @media screen {
+        /* Asegurar consistencia de fuentes entre SO */
+        html, body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-feature-settings: "liga", "kern";
+        }
+
+        /* Base font size más robusta */
+        html {
+            font-size: 16px; /* Base explícita */
+        }
+
+        body {
+            font-size: 1rem;
+            line-height: 1.5;
+            font-family: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         "Ubuntu", "Cantarell", "Noto Sans", sans-serif;
+        }
+
+        /* Mejorar el escalado en sistemas Linux/macOS */
+        .sidebar-heading {
+            font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+            padding: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        .list-group-item {
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+        }
+
+        /* Asegurar tamaños mínimos consistentes */
+        .user-avatar {
+            width: clamp(32px, 5vw, 40px);
+            height: clamp(32px, 5vw, 40px);
+            min-width: clamp(32px, 5vw, 40px);
+            font-size: clamp(0.875rem, 2vw, 1rem);
+        }
+
+        /* Mejoras específicas para Firefox/Linux */
+        @supports (-moz-appearance: none) {
+            body {
+                font-size: 1.1rem; /* Ligeramente más grande en Firefox */
+            }
+
+            .sidebar-heading {
+                font-size: 1.6rem;
+            }
+
+            .list-group-item {
+                font-size: 1rem;
+                padding: 0.8rem 1.3rem;
+            }
+        }
+    }
+
+    /* Media query específica para detectar sistemas con DPI bajo */
+    @media screen and (max-resolution: 96dpi) {
+        html {
+            font-size: 18px; /* Base más grande para DPI bajo */
+        }
+
+        .sidebar-heading {
+            font-size: 1.75rem;
+            padding: 1.75rem 1.25rem;
+        }
+
+        .list-group-item {
+            font-size: 1.1rem;
+            padding: 0.85rem 1.4rem;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Para sistemas con scaling alto */
+    @media screen and (min-resolution: 144dpi) {
+        html {
+            font-size: 15px; /* Base ligeramente menor para DPI alto */
+        }
+    }
+
+    /* Detección específica de sistemas Linux/macOS (aproximada) */
+    @supports (font-variant-ligatures: normal) {
+        /* Mejoras para sistemas que probablemente usan FreeType o CoreText */
+        body {
+            font-weight: 450; /* Peso ligeramente mayor para mejor legibilidad */
+            letter-spacing: 0.01em;
+        }
+
+        .sidebar-heading {
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .list-group-item {
+            font-weight: 500;
+            letter-spacing: 0.005em;
+        }
+    }
+
+    /* Asegurar que los elementos no se vean muy pequeños */
+    .sidebar-heading {
+        min-font-size: 1.25rem;
+    }
+
+    .list-group-item {
+        min-font-size: 0.875rem;
+    }
+
+    .navbar {
+        min-height: 3.5rem;
+    }
+
+    /* Botones más grandes para mejor usabilidad */
+    .sidebar-toggle-btn {
+        min-width: 32px;
+        min-height: 32px;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+    }
+
+    /* Iconos con tamaño consistente */
+    .list-group-item i {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        min-width: 20px;
     }
 
     :root {
@@ -80,9 +214,10 @@
         flex-direction: column;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
     }
-        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
-    }
+         /* Para Firefox */
+
 
     /* Personalizar scrollbar del sidebar para Webkit */
     #sidebar-wrapper::-webkit-scrollbar {
@@ -103,17 +238,22 @@
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
-        padding: 1.5rem 1rem;
-        font-size: 1.5rem;
+        padding: clamp(1.25rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 3rem;
     }
 
     .list-group-item {
-        padding: 0.75rem 1.25rem;
+        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
         border: none;
         border-radius: 0 !important;
         font-weight: 500;
         transition: all 0.2s ease;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
     }
 
     .list-group-item:hover {
@@ -217,6 +357,20 @@
         transition: transform 0.2s ease;
     }
 
+    /* Asegurar que el navbar no tape el botón */
+    .navbar {
+        z-index: 1000;
+        position: relative;
+    }
+
+    /* Ajustar el icono cuando el sidebar está abierto */
+    #mobile-sidebar-toggle i.bi-list {
+        transition: transform 0.3s ease;
+    }
+
+    body:not(.sidebar-collapsed) #mobile-sidebar-toggle i.bi-list {
+        transform: rotate(90deg);
+    }
     /* Collapsed sidebar styles */
     body.sidebar-collapsed #sidebar-wrapper {
         width: var(--sidebar-collapsed-width);
@@ -254,7 +408,7 @@
             display: none;
         }
     }
-    
+
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -309,9 +463,9 @@
     }
 
     .user-avatar {
-        width: 40px;
-        height: 40px;
-        min-width: 40px; /* Evita que se encoja */
+        width: clamp(32px, 5vw, 40px);
+        height: clamp(32px, 5vw, 40px);
+        min-width: clamp(32px, 5vw, 40px); /* Evita que se encoja */
         border-radius: 50%;
         background-color: #0d6efd;
         display: flex;
@@ -319,6 +473,7 @@
         justify-content: center;
         margin-right: 0.75rem;
         font-weight: bold;
+        font-size: clamp(0.875rem, 2vw, 1rem);
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -510,8 +665,39 @@
         }
 
         body.sidebar-collapsed #sidebar-wrapper {
-            transform: translateX(0); /* Mostrar al estar collapsed/abierto */
+            transform: translateX(-100%); /* Mantener oculto cuando está colapsado */
             width: var(--sidebar-collapsed-width) !important;
+        }
+
+        /* Mostrar sidebar cuando NO está colapsado (expandido) */
+        body:not(.sidebar-collapsed) #sidebar-wrapper {
+            transform: translateX(0) !important; /* Mostrar cuando está expandido */
+            width: var(--sidebar-width) !important;
+        }
+
+        /* Mostrar overlay cuando sidebar está expandido (visible) en móviles */
+        body:not(.sidebar-collapsed) .overlay {
+            display: block;
+        }
+
+        /* Indicador visual para swipe en móviles */
+        body.sidebar-collapsed::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 50%;
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to right, transparent, rgba(0, 123, 255, 0.5));
+            border-radius: 0 3px 3px 0;
+            transform: translateY(-50%);
+            z-index: 1002;
+            animation: swipeHint 3s ease-in-out infinite;
+        }
+
+        @keyframes swipeHint {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         #page-content-wrapper {
@@ -562,14 +748,27 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-        body.sidebar-collapsed #sidebar-wrapper {
-            transform: translateX(0);
+        
+        /* Sidebar expandido (visible) */
+        body:not(.sidebar-collapsed) #sidebar-wrapper {
+            transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
+        }
+        
+        /* Sidebar colapsado (oculto en tablets) */
+        body.sidebar-collapsed #sidebar-wrapper {
+            transform: translateX(-100%) !important;
+            width: var(--sidebar-collapsed-width) !important;
         }
         #page-content-wrapper {
             margin-left: 0 !important;
         }
         body.sidebar-collapsed .overlay {
+            display: none; /* Ocultar overlay cuando sidebar está colapsado */
+        }
+        
+        /* Mostrar overlay cuando sidebar está expandido en tablets */
+        body:not(.sidebar-collapsed) .overlay {
             display: block;
         }
         body.sidebar-collapsed .sidebar-text,
@@ -946,9 +1145,9 @@
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
-                        <button class="user-info btn btn-link text-white p-0 w-100 text-start" 
-                                type="button" 
-                                data-bs-toggle="dropdown" 
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start"
+                                type="button"
+                                data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 id="userDropdown">
                             <div class="user-avatar">
@@ -1009,23 +1208,24 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-        
+
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-        
+
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-        
+
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            
+            const mobileIcon = document.getElementById('mobile-sidebar-icon');
+
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
                 if (toggleIcon) {
@@ -1038,47 +1238,91 @@
                         toggleIcon.classList.add('bi-chevron-right');
                     }
                 }
+                // Actualizar icono móvil
+                if (mobileIcon) {
+                    mobileIcon.classList.remove('bi-x');
+                    mobileIcon.classList.add('bi-list');
+                }
             } else {
                 body.classList.remove('sidebar-collapsed');
                 if (toggleIcon) {
                     toggleIcon.classList.remove('bi-chevron-right');
                     toggleIcon.classList.add('bi-chevron-left');
                 }
-            }
-        }
-        
-        // Sidebar toggle functionality mejorada
-        function toggleSidebar() {
-            const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-            const newState = !isCurrentlyCollapsed;
-            
-            // Aplicar el nuevo estado
-            applySidebarState(newState);
-            
-            // Guardar el estado en localStorage
-            saveSidebarState(newState);
-            
-            // En pantallas pequeñas, mostrar overlay cuando sidebar está visible
-            if (window.innerWidth < 992) {
-                const overlay = document.querySelector('.overlay');
-                if (overlay) {
-                    overlay.style.display = newState ? 'block' : 'none';
+                // Actualizar icono móvil
+                if (mobileIcon) {
+                    mobileIcon.classList.remove('bi-list');
+                    mobileIcon.classList.add('bi-x');
                 }
             }
         }
-        
+
+        // Sidebar toggle functionality mejorada
+        function toggleSidebar() {
+        const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
+        const newState = !isCurrentlyCollapsed;
+        const overlay = document.querySelector('.overlay');
+        const mobileIcon = document.getElementById('mobile-sidebar-icon');
+
+        // Aplicar el nuevo estado
+        document.body.classList.toggle('sidebar-collapsed', newState);
+        saveSidebarState(newState);
+
+        // Actualizar icono
+        if (mobileIcon) {
+            if (newState) {
+                mobileIcon.classList.remove('bi-x');
+                mobileIcon.classList.add('bi-list');
+            } else {
+                mobileIcon.classList.remove('bi-list');
+                mobileIcon.classList.add('bi-x');
+            }
+        }
+
+        // Manejar overlay en móviles
+        if (window.innerWidth < 992) {
+            if (overlay) {
+                overlay.style.display = newState ? 'none' : 'block';
+            }
+            
+            // Forzar scroll al top para evitar problemas
+            window.scrollTo(0, 0);
+        }
+    }
         // Función para inicializar el sidebar con el estado guardado
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
+            
+            // Inicializar overlay correctamente en móviles
+            if (window.innerWidth < 992) {
+                const overlay = document.querySelector('.overlay');
+                if (overlay) {
+                    // Mostrar overlay cuando sidebar está expandido (no colapsado)
+                    overlay.style.display = savedState ? 'none' : 'block';
+                }
+                
+                // Inicializar icono móvil
+                const mobileIcon = document.getElementById('mobile-sidebar-icon');
+                if (mobileIcon) {
+                    if (savedState) {
+                        mobileIcon.classList.remove('bi-x');
+                        mobileIcon.classList.add('bi-list');
+                    } else {
+                        mobileIcon.classList.remove('bi-list');
+                        mobileIcon.classList.add('bi-x');
+                    }
+                }
+            }
         }
-        
+
         // Detectar cambios en el tamaño de la ventana
         window.addEventListener('resize', function() {
             // Mantener el estado guardado pero actualizar los íconos
             const isCollapsed = document.body.classList.contains('sidebar-collapsed');
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            
+            const mobileIcon = document.getElementById('mobile-sidebar-icon');
+
             if (toggleIcon) {
                 if (window.innerWidth >= 992) {
                     // En pantallas grandes
@@ -1100,40 +1344,56 @@
                     }
                 }
             }
+            
+            // Actualizar icono móvil
+            if (mobileIcon && window.innerWidth < 992) {
+                if (isCollapsed) {
+                    mobileIcon.classList.remove('bi-x');
+                    mobileIcon.classList.add('bi-list');
+                } else {
+                    mobileIcon.classList.remove('bi-list');
+                    mobileIcon.classList.add('bi-x');
+                }
+            }
         });
-        
+
         // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar el sidebar con el estado guardado
             initializeSidebar();
-            
+
             // Inicializar dropdowns de Bootstrap
             if (typeof bootstrap !== 'undefined') {
+                console.log('Bootstrap está cargado correctamente');
+
                 // Inicializar todos los dropdowns
                 var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                
+                console.log('Elementos dropdown encontrados:', dropdownElements.length);
+
                 dropdownElements.forEach(function(element, index) {
                     try {
                         var dropdown = new bootstrap.Dropdown(element);
+                        console.log('Dropdown inicializado:', index, element);
+
                     } catch (error) {
                         console.error('Error inicializando dropdown:', error, element);
                     }
                 });
-                
+
             } else {
                 console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
-                
+
                 // Fallback manual completo si Bootstrap no está disponible
                 const userDropdown = document.querySelector('#userDropdown');
                 const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-                
+
                 if (userDropdown && dropdownMenu) {
                     userDropdown.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        
+
                         const isOpen = dropdownMenu.classList.contains('show');
-                        
+
                         if (isOpen) {
                             dropdownMenu.classList.remove('show');
                             this.setAttribute('aria-expanded', 'false');
@@ -1142,7 +1402,7 @@
                             this.setAttribute('aria-expanded', 'true');
                         }
                     });
-                    
+
                     // Cerrar dropdown al hacer clic fuera
                     document.addEventListener('click', function(e) {
                         if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
@@ -1152,7 +1412,7 @@
                     });
                 }
             }
-            
+
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1164,13 +1424,13 @@
                 }, 5000);
             });
         });
-        
+
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
         function resetSidebarState() {
             localStorage.removeItem(SIDEBAR_STATE_KEY);
             applySidebarState(false); // Estado por defecto: expandido
         }
-        
+
         // Función opcional para verificar si hay soporte para localStorage
         function isLocalStorageAvailable() {
             try {
@@ -1182,7 +1442,7 @@
                 return false;
             }
         }
-        
+
         // Verificar soporte de localStorage al cargar
         if (!isLocalStorageAvailable()) {
             console.warn('LocalStorage no está disponible. El estado del sidebar no se guardará.');
@@ -1202,31 +1462,103 @@
         if (overlay) {
             overlay.addEventListener('click', function() {
                 if (window.innerWidth < 992) {
-                    applySidebarState(false);
-                    saveSidebarState(false);
+                    // Colapsar sidebar (ocultarlo) al hacer clic en overlay
+                    applySidebarState(true);
+                    saveSidebarState(true);
                 }
             });
         }
+
+        // Soporte para gestos de swipe en móviles mejorado
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let isSwipeGesture = false;
+        
+        function handleSwipeGesture() {
+            if (window.innerWidth >= 992) return; // Solo en móviles
+            
+            const threshold = 80; // Distancia mínima para considerar un swipe
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+            
+            // Verificar que es un swipe horizontal (no vertical)
+            if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
+            
+            if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
+                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                
+                if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
+                    // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
+                    applySidebarState(false);
+                    saveSidebarState(false);
+                    console.log('📱 Sidebar abierto por swipe');
+                } else if (swipeDistanceX < -50 && !isCollapsed && touchStartX < 250) {
+                    // Swipe hacia la izquierda desde el sidebar - cerrar sidebar
+                    applySidebarState(true);
+                    saveSidebarState(true);
+                    console.log('📱 Sidebar cerrado por swipe');
+                }
+            }
+        }
+        
+        // Agregar event listeners para touch events
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            isSwipeGesture = true;
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            // Si hay mucho movimiento, podría no ser un swipe intencional
+            const currentX = e.changedTouches[0].screenX;
+            const currentY = e.changedTouches[0].screenY;
+            const deltaY = Math.abs(currentY - touchStartY);
+            
+            if (deltaY > 50) {
+                isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
+            }
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipeGesture();
+            isSwipeGesture = false;
+        });
     </script>
 
     <!-- Debug Script para Dropdown -->
     <script>
         // Script de debugging específico para el dropdown
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DEBUGGING DROPDOWN ===');
+
             // Verificar elementos
             const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
             const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
             const dropupContainer = document.querySelector('.user-dropdown .dropup');
-            
+
+
+            console.log('User dropdown element:', userDropdown);
+            console.log('Dropdown menu element:', dropdownMenu);
+            console.log('Dropup container:', dropupContainer);
+
             if (userDropdown && dropdownMenu) {
+                console.log('✅ Elementos encontrados correctamente');
+
                 // Agregar click handler manual como fallback
                 userDropdown.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
+
+                    console.log('Click en dropdown detectado');
+
                     // Toggle del dropdown menu
                     const isOpen = dropdownMenu.classList.contains('show');
-                    
+
                     if (isOpen) {
                         dropdownMenu.classList.remove('show');
                         userDropdown.setAttribute('aria-expanded', 'false');
@@ -1235,7 +1567,7 @@
                         userDropdown.setAttribute('aria-expanded', 'true');
                     }
                 });
-                
+
                 // Cerrar al hacer click fuera
                 document.addEventListener('click', function(e) {
                     if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
@@ -1244,6 +1576,82 @@
                     }
                 });
             }
+        });
+    </script>
+
+    <!-- Sistema operativo y escalado automático -->
+    <script>
+        // Detectar sistema operativo y aplicar ajustes específicos
+        document.addEventListener('DOMContentLoaded', function() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isLinux = userAgent.includes('linux');
+            const isMac = userAgent.includes('mac');
+            const isFirefox = userAgent.includes('firefox');
+
+            // Crear elemento de estilo para ajustes específicos del SO
+            const osSpecificStyles = document.createElement('style');
+            let css = '';
+
+            if (isLinux) {
+                css += `
+                    /* Ajustes específicos para Linux */
+                    html { font-size: 17px !important; }
+                    .sidebar-heading { font-size: 1.6rem !important; }
+                    .list-group-item { font-size: 1rem !important; }
+                    .user-avatar { font-size: 1rem !important; }
+                `;
+                console.log('🐧 Sistema Linux detectado - Aplicando ajustes de escalado');
+            }
+
+            if (isMac) {
+                css += `
+                    /* Ajustes específicos para macOS */
+                    html { font-size: 16px !important; }
+                    body { font-weight: 400 !important; }
+                    .sidebar-heading { font-weight: 500 !important; }
+                `;
+                console.log('🍎 Sistema macOS detectado - Aplicando ajustes de escalado');
+            }
+
+            if (isFirefox && isLinux) {
+                css += `
+                    /* Ajustes específicos para Firefox en Linux */
+                    html { font-size: 18px !important; }
+                    .sidebar-heading { font-size: 1.7rem !important; }
+                    .list-group-item { font-size: 1.1rem !important; }
+                `;
+                console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
+            }
+
+            // Detectar DPI bajo (típico en algunos sistemas Linux)
+            if (window.devicePixelRatio <= 1) {
+                css += `
+                    /* Ajustes para DPI bajo */
+                    html { font-size: 18px !important; }
+                    .sidebar-heading { font-size: 1.75rem !important; }
+                    .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
+                    .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
+                `;
+                console.log('📱 DPI bajo detectado - Aplicando escalado aumentado');
+
+                console.log('✅ Event listeners agregados');
+            } else {
+                console.log('❌ No se encontraron los elementos del dropdown');
+            }
+
+            // Aplicar los estilos si hay alguno
+            if (css) {
+                osSpecificStyles.textContent = css;
+                document.head.appendChild(osSpecificStyles);
+            }
+
+            // Mensaje de información en consola
+            console.log('🎨 AgileDesk - Ajustes de escalado aplicados para:', {
+                userAgent: navigator.userAgent,
+                devicePixelRatio: window.devicePixelRatio,
+                screenResolution: `${screen.width}x${screen.height}`,
+                windowSize: `${window.innerWidth}x${window.innerHeight}`
+            });
         });
     </script>
 
