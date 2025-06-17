@@ -1249,5 +1249,7 @@
 
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
+
+    
 </body>
 </html>
