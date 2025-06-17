@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Historia;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BacklogController extends Controller
 {
@@ -88,5 +90,38 @@ class BacklogController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Export the backlog to PDF.
+     */
+    public function exportPdf(Project $project)
+    {
+        $project->load(['tablero', 'sprints']);
+        $sprintId = request('sprint_id');
+        
+        $historias = Historia::with(['columna', 'sprints', 'usuario', 'tareas'])
+            ->where('proyecto_id', $project->id)
+            ->when($sprintId, function ($query) use ($sprintId) {
+                $query->where('sprint_id', $sprintId);
+            })
+            ->orderBy('prioridad', 'desc') // Ordenar por prioridad
+            ->get();
+            
+        // Agrupar historias por estado (columna)
+        $historiasPorEstado = $historias->groupBy(function($historia) {
+            return $historia->columna ? $historia->columna->nombre : 'Sin asignar';
+        });
+
+        $pdf = PDF::loadView('pdf.backlog_pdf', [
+            'proyecto' => $project,
+            'historias' => $historias,
+            'historiasPorEstado' => $historiasPorEstado,
+            'sprintId' => $sprintId,
+            'fechaGeneracion' => now()->format('d/m/Y H:i')
+        ]);
+        
+        $filename = 'backlog_' . $project->nombre . '_' . now()->format('Ymd_His') . '.pdf';
+        return $pdf->download($filename);
     }
 }
