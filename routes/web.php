@@ -148,6 +148,7 @@ Route::middleware(['auth', 'role:admin'])
 
         //------------
         Route::get('/projects/{project}/backlog', [BacklogController::class, 'index'])->name('backlog.index');
+        Route::get('/projects/{project}/backlog/export-pdf', [BacklogController::class, 'exportPdf'])->name('backlog.export-pdf');
 
         // Rutas para columnas
 

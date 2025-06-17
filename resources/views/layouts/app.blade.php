@@ -26,6 +26,8 @@
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
+
     <style>
     /* Reset CSS para eliminar espacios por defecto */
     * {
@@ -1657,5 +1659,6 @@
 
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
+    <script src="{{ asset('js/dark-mode.js') }}"></script>
 </body>
 </html>
