@@ -10,6 +10,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
     @php
 
 $colCount = $tablero->columnas->count();
@@ -105,27 +106,22 @@ $colCount = $tablero->columnas->count();
                                        data-column-id="{{ $columna->id }}">
                             @endif
 
-                                <div class="dropdown ms-2">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle"
-                                            type="button"
-                                            id="dropdownMenuButton{{ $columna->id }}"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        ⋮
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
-                                        <li>
-                                            <button class="dropdown-item" disabled>
-                                                <strong>Acciones</strong>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item"
-                                              onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</button>
-                                            </button>
-                                        </li>
-                                    </ul>
+                                <div class="menu-wrapper">
+                                    <input type="checkbox" class="toggler" id="toggle-{{ $columna->id }}" />
+                                    <div class="dots">
+                                        <div></div>
+                                    </div>
+                                    <div class="menu">
+                                        <ul>
+                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
+                                            <li>
+                                                <a href="#" class="link" onclick="editarNombreColumna({{ $columna->id }})">Editar nombre</a>
+                                            </li>
+                                            <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
+
 
 
                         </div>
@@ -635,5 +631,119 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
-</div>
+<style>
+    .menu-wrapper {
+        position: relative;
+        display: inline-block;
+        z-index: 1000;
+    }
+
+    /* Checkbox invisible */
+    .toggler {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 30px;
+        height: 30px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    /* Puntos visuales */
+    .dots {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dots div {
+        position: relative;
+        width: 4px;   /* más pequeño */
+        height: 4px;
+        background: #777;
+        border-radius: 50%;
+        transition: 0.4s ease;
+    }
+
+    .dots div::before,
+    .dots div::after {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #777;
+        border-radius: 50%;
+        transition: 0.4s ease;
+    }
+
+    /* Posición vertical inicial (alineados) */
+    .dots div::before {
+        top: -6px;
+        left: 0;
+    }
+
+    .dots div::after {
+        top: 6px;
+        left: 0;
+    }
+
+    /* Cuando se activa: formar diagonal ↘ */
+    .toggler:checked + .dots div::before {
+        top: -6px;
+        left: -6px;
+    }
+
+    .toggler:checked + .dots div::after {
+        top: 6px;
+        left: 6px;
+    }
+
+    /* Opcional: una leve rotación del punto central */
+    .toggler:checked + .dots div {
+        transform: rotate(0deg); /* podés poner 0 o algo leve si querés */
+    }
+
+    /* Menú */
+    .menu {
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: white;
+        padding: 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        min-width: 160px;
+    }
+
+    .menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu ul li {
+        margin-bottom: 8px;
+    }
+
+    .menu ul li:last-child {
+        margin-bottom: 0;
+    }
+
+    .toggler:checked ~ .menu {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+
+
 @endsection

@@ -40,7 +40,7 @@ class BacklogController extends Controller
         ]);
         return view('backlog.index', [
             'project' => $project,
-            'currentProject' => $project, // ✅ Aseguramos que el ViewComposer lo reciba también
+            'currentProject' => $project,
         ]);
     }
 

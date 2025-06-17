@@ -748,13 +748,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -766,7 +766,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-        
+
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1284,7 +1284,7 @@
             if (overlay) {
                 overlay.style.display = newState ? 'none' : 'block';
             }
-            
+
             // Forzar scroll al top para evitar problemas
             window.scrollTo(0, 0);
         }
@@ -1293,7 +1293,7 @@
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-            
+
             // Inicializar overlay correctamente en móviles
             if (window.innerWidth < 992) {
                 const overlay = document.querySelector('.overlay');
@@ -1301,7 +1301,7 @@
                     // Mostrar overlay cuando sidebar está expandido (no colapsado)
                     overlay.style.display = savedState ? 'none' : 'block';
                 }
-                
+
                 // Inicializar icono móvil
                 const mobileIcon = document.getElementById('mobile-sidebar-icon');
                 if (mobileIcon) {
@@ -1344,7 +1344,7 @@
                     }
                 }
             }
-            
+
             // Actualizar icono móvil
             if (mobileIcon && window.innerWidth < 992) {
                 if (isCollapsed) {
@@ -1475,20 +1475,20 @@
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
-        
+
         function handleSwipeGesture() {
             if (window.innerWidth >= 992) return; // Solo en móviles
-            
+
             const threshold = 80; // Distancia mínima para considerar un swipe
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            
+
             // Verificar que es un swipe horizontal (no vertical)
             if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
-            
+
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
                 const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                
+
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
                     // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
@@ -1502,25 +1502,25 @@
                 }
             }
         }
-        
+
         // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
-        
+
         document.addEventListener('touchmove', function(e) {
             // Si hay mucho movimiento, podría no ser un swipe intencional
             const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
-            
+
             if (deltaY > 50) {
                 isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
             }
         });
-        
+
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1658,6 +1658,6 @@
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
 
-    
+
 </body>
 </html>

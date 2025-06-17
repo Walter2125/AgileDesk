@@ -29,6 +29,8 @@ class ViewComposerServiceProvider extends ServiceProvider
                 $currentProject = $data['proyecto'];
             } elseif (isset($data['columna']) && $data['columna']->tablero?->project) {
                 $currentProject = $data['columna']->tablero->project;
+            } elseif (isset($data['historia']) && $data['historia']->proyecto) {
+                $currentProject = $data['historia']->proyecto;
             } else {
                 $currentProject = null;
             }

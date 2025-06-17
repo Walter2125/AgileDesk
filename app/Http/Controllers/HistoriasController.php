@@ -193,6 +193,8 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $proyecto = $historia->proyecto;
         $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
         $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
+        View::share('currentProject', $proyecto);
+
 
         // Obtener columnas desde el tablero si existe, sino vacío
         if ($historia->columna && $historia->columna->tablero) {
