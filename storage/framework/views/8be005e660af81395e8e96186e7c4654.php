@@ -6,43 +6,44 @@
 <?php $__env->startSection('styles'); ?>
 <style>
     body {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
-        color: #fff;
+        background-color: #ffffff;
+        color: #000000;
         font-family: 'Segoe UI', sans-serif;
     }
 
     .card {
-        background-color: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .table {
-        color: #fff;
+        color: #000000;
     }
 
     .table th,
     .table td {
         vertical-align: middle;
-        background-color: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-weight: black; /* 👈 AQUI está lo nuevo */
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        font-weight: normal;
     }
 
     .table-hover tbody tr:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: #f1f1f1;
     }
 
     .progress {
         height: 25px;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: #e0e0e0;
         border-radius: 20px;
         overflow: hidden;
     }
 
     .progress-bar {
+        background-color: #198754;
+        color: #ffffff;
         font-weight: bold;
         line-height: 25px;
         transition: width 0.4s ease-in-out;
@@ -78,13 +79,13 @@
     }
 
     .btn-info {
-        background-color: #00adb5;
-        border-color: #00adb5;
+        background-color: #0dcaf0;
+        border-color: #0dcaf0;
     }
 
     .btn-info:hover {
-        background-color: #009fa6;
-        border-color: #009fa6;
+        background-color: #0bb2d6;
+        border-color: #0bb2d6;
     }
 
     .alert {
