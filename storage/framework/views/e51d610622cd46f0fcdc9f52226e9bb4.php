@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'Agile-Desk') }}</title>
+    <title><?php echo e(config('app.name', 'Agile-Desk')); ?></title>
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -17,14 +17,14 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    <link rel="icon" href="<?php echo e(asset('img/agiledesk.png')); ?>" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
     <!-- Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
     /* Reset CSS para eliminar espacios por defecto */
@@ -1062,7 +1062,7 @@
 </style>
 
     <!-- Estilos adicionales de las secciones -->
-    @yield('styles')
+    <?php echo $__env->yieldContent('styles'); ?>
 
 </head>
 <body class="font-sans antialiased">
@@ -1086,11 +1086,11 @@
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Inicio">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="list-group-item list-group-item-action text-white <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Inicio">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
                     </a>
-                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
+                     <a href="<?php echo e(route('projects.my')); ?>" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
 
@@ -1099,29 +1099,20 @@
 
                      </a>
 
-                    {{-- Debug temporal
-                     @isset($currentProject)
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject está definido: {{ $currentProject->id }}
-                        </div>
-                    @else
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject NO está definido
-                        </div>
-                    @endisset--}}
+                    
 
 
-                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
-                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                    <?php if(isset($currentProject) && $currentProject instanceof \App\Models\Project): ?>
+                        <a href="<?php echo e(route('backlog.index', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
                             <span class="sidebar-text">Backlog</span>
                         </a>
 
-                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                        <a href="<?php echo e(route('tableros.show', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
-                    @endif
+                    <?php endif; ?>
 
 
                     <!-- -->
@@ -1151,20 +1142,21 @@
                                 aria-expanded="false"
                                 id="userDropdown">
                             <div class="user-avatar">
-                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                                <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
+
                             </div>
                             <div class="sidebar-text">
-                                <div>{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-                                <small class="text-muted">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                                <div><?php echo e(Auth::check() ? Auth::user()->name : 'Usuario'); ?></div>
+                                <small class="text-muted"><?php echo e(Auth::check() ? Auth::user()->email : 'usuario@example.com'); ?></small>
                             </div>
                         </button>
                         <!-- Dropdown menu -->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
+                            <li><a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person me-2"></i> Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item">
                                         <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                                     </button>
@@ -1178,24 +1170,43 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            @include('layouts.navigation')
+            <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
                 <main>
-                    @if (session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            @if (session('message'))
-                                <p>{{ session('message') }}</p>
-                            @endif
+                            <strong><?php echo e(session('error')); ?></strong>
+                            <?php if(session('message')): ?>
+                                <p><?php echo e(session('message')); ?></p>
+                            <?php endif; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="ps-3">
-                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                         <?php if (isset($component)) { $__componentOriginal360d002b1b676b6f84d43220f22129e2 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal360d002b1b676b6f84d43220f22129e2 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.breadcrumbs','data' => ['breadcrumbs' => $breadcrumbs ?? []]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('breadcrumbs'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($breadcrumbs ?? [])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $attributes = $__attributesOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__attributesOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $component = $__componentOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__componentOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
                     </div>
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                 </main>
             </div>
         </div>
@@ -1656,8 +1667,9 @@
     </script>
 
     <!-- Scripts adicionales de las secciones -->
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
 
     
 </body>
 </html>
+<?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>
