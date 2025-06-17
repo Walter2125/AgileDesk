@@ -78,7 +78,7 @@
             <div class="mb-3">
                 <label for="columna_id" class="form-label">Estado</label>
                 <select name="columna_id" id="columna_id" class="form-control">
-                    <option value="">Sin Estado</option>
+                    <option value="">Backlog</option>
                     <?php $__currentLoopData = $columnas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $columna): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($columna->id); ?>" <?php echo e(old('columna_id') == $columna->id ? 'selected' : ''); ?>>
                             <?php echo e($columna->nombre); ?>
