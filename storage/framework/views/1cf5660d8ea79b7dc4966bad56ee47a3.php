@@ -74,7 +74,7 @@
             </select>
         </div>
 
-        <?php if($columnas && $columnas->isNotEmpty()): ?>
+        <?php if($columna && $columnas->isNotEmpty()): ?>
             <div class="mb-3">
                 <label for="columna_id" class="form-label">Estado</label>
                 <select name="columna_id" id="columna_id" class="form-control">
