@@ -1,6 +1,6 @@
 @extends('layouts.app')
         @section('mensaje-superior')
-        Editar Tarea: {{ $tarea->nombre }}
+           Editar Tarea: {{ $tarea->nombre }}
         @endsection
             
 
@@ -50,10 +50,11 @@
 
             <!-- Botones -->
             <div class="d-flex justify-content-between">
-<a href="{{ route('tareas.show', $historia->id) }}" 
-   class="btn btn-secondary">
-    Cancelar
-</a>                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="{{ route('tareas.show', $historia->id) }}" 
+            class="btn btn-secondary">
+            Cancelar
+            </a>                
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
     </div>
