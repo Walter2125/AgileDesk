@@ -1,10 +1,9 @@
-@extends('layouts.app')
+<?php $__env->startSection('mensaje-superior'); ?>
+    Lista de Tareas: <?php echo e($historia->nombre); ?>
 
-@section('mensaje-superior')
-    Lista de Tareas: {{ $historia->nombre }}
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
     body {
         background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -92,19 +91,19 @@
         font-weight: bold;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container py-4" style="max-width: 1200px;">
     <div class="card p-5 mb-5">
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if(session('deleted'))
-            <div class="alert alert-info">{{ session('deleted') }}</div>
-        @endif
+        <?php if(session('success')): ?>
+            <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+        <?php endif; ?>
+        <?php if(session('deleted')): ?>
+            <div class="alert alert-info"><?php echo e(session('deleted')); ?></div>
+        <?php endif; ?>
 
         <div class="mb-4">
             <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
@@ -128,31 +127,31 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($tareas as $tarea)
+                <?php $__empty_1 = true; $__currentLoopData = $tareas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tarea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr>
                         <td class="text-center">
                             <input type="checkbox"
                                    class="form-check-input tarea-checkbox"
-                                   data-id="{{ $tarea->id }}"
-                                   {{ $tarea->completada ? 'checked' : '' }}>
+                                   data-id="<?php echo e($tarea->id); ?>"
+                                   <?php echo e($tarea->completada ? 'checked' : ''); ?>>
                         </td>
-                        <td>{{ $tarea->id }}</td>
-                        <td>{{ $tarea->nombre }}</td>
-                        <td>{{ $tarea->descripcion }}</td>
-                        <td>{{ $tarea->actividad }}</td>
-                        <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
+                        <td><?php echo e($tarea->id); ?></td>
+                        <td><?php echo e($tarea->nombre); ?></td>
+                        <td><?php echo e($tarea->descripcion); ?></td>
+                        <td><?php echo e($tarea->actividad); ?></td>
+                        <td><?php echo e($tarea->created_at->format('d/m/Y H:i')); ?></td>
                         <td class="text-center">
-                            <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}"
+                            <a href="<?php echo e(route('tareas.edit', [$historia->id, $tarea->id])); ?>"
                                class="btn btn-outline-warning btn-sm" title="Editar">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                    data-bs-target="#deleteModal<?php echo e($tarea->id); ?>" title="Eliminar">
                                 <i class="bi bi-trash3"></i>
                             </button>
 
-                            <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1"
-                                 aria-labelledby="deleteModalLabel{{ $tarea->id }}" aria-hidden="true">
+                            <div class="modal fade" id="deleteModal<?php echo e($tarea->id); ?>" tabindex="-1"
+                                 aria-labelledby="deleteModalLabel<?php echo e($tarea->id); ?>" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content rounded shadow">
                                         <div class="modal-header bg-info text-white">
@@ -161,14 +160,14 @@
                                                     data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            ¿Seguro que deseas eliminar <strong>{{ $tarea->nombre }}</strong>?
+                                            ¿Seguro que deseas eliminar <strong><?php echo e($tarea->nombre); ?></strong>?
                                             <p class="text-muted small">Esta acción no se puede deshacer.</p>
                                         </div>
                                         <div class="modal-footer bg-light">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="<?php echo e(route('tareas.destroy', [$historia->id, $tarea->id])); ?>" method="POST" class="d-inline">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="btn btn-info text-white">Eliminar</button>
                                             </form>
                                         </div>
@@ -177,24 +176,25 @@
                             </div>
                         </td>
                     </tr>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="7" class="text-center text-muted">No hay tareas registradas.</td>
                     </tr>
-                @endforelse
+                <?php endif; ?>
             </tbody>
         </table>
 
         <div class="d-flex justify-content-center mt-4">
-            {{ $tareas->links() }}
+            <?php echo e($tareas->links()); ?>
+
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('historias.show', ['historia' => $historia->id]) }}"
+            <a href="<?php echo e(route('historias.show', ['historia' => $historia->id])); ?>"
                class="btn btn-light text-primary border border-primary rounded-pill px-4 py-2 shadow-sm">
                 ⬅️ Cancelar
             </a>
-            <a href="{{ route('tareas.index', $historia->id) }}"
+            <a href="<?php echo e(route('tareas.index', $historia->id)); ?>"
                class="btn btn-light text-primary border border-primary rounded-pill px-4 py-2 shadow-sm">
                 ➕ Nueva Tarea
             </a>
@@ -223,7 +223,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
                 },
                 body: JSON.stringify({})
             }).then(response => {
@@ -239,4 +239,6 @@
 
     window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/tareas/show.blade.php ENDPATH**/ ?>

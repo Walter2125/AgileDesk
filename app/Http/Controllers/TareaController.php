@@ -75,5 +75,14 @@ class TareaController extends Controller
 
         return view('tareas.show', compact('tareas', 'historia'));
     }
+    public function toggleCompletada(Request $request, $id)
+{
+    $tarea = Tarea::findOrFail($id);
+    $tarea->completada = !$tarea->completada;
+    $tarea->save();
+
+    return response()->json(['success' => true]);
+}
+
 
 }
