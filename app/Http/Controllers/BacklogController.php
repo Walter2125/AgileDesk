@@ -13,7 +13,7 @@ class BacklogController extends Controller
     {
         $project->load('tablero');
         $sprintId = request('sprint_id');
-        
+
         $proyecto = $project->load('sprints');
 
         $historias = Historia::with(['columna', 'sprints'])
@@ -39,6 +39,10 @@ class BacklogController extends Controller
         return view('backlog.index', [
             'project' => $project,
             'tablero' => $project->tablero
+        ]);
+        return view('backlog.index', [
+            'project' => $project,
+            'currentProject' => $project,
         ]);
     }
 
