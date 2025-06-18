@@ -86,6 +86,11 @@
                     </ul>
                 </div>
 
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle-btn" class="btn btn-sm btn-outline-secondary" type="button" title="Alternar modo oscuro">
+                    <i class="bi bi-moon"></i> <span class="d-none d-md-inline">Modo Oscuro</span>
+                </button>
+
                 <!-- Información del usuario (opciones en sidebar) -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <div class="text-sm text-gray-600">

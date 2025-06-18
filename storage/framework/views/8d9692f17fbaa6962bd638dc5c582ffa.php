@@ -1,5 +1,5 @@
         <?php $__env->startSection('mensaje-superior'); ?>
-           Editar Tarea: <?php echo e($tarea->nombre); ?>
+        Editar Tarea: <?php echo e($tarea->nombre); ?>
 
         <?php $__env->stopSection(); ?>
             
@@ -51,14 +51,13 @@
 
             <!-- Botones -->
             <div class="d-flex justify-content-between">
-            <a href="<?php echo e(route('tareas.show', $historia->id)); ?>" 
-            class="btn btn-secondary">
-            Cancelar
-            </a>                
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+<a href="<?php echo e(route('tareas.show', $historia->id)); ?>" 
+   class="btn btn-secondary">
+    Cancelar
+</a>                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
     </div>
 </div>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\gutya\Desktop\AgileDesk\resources\views/tareas/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/tareas/edit.blade.php ENDPATH**/ ?>

@@ -2,9 +2,7 @@
 
 @section('title')
     @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-            <h1 class="titulo-historia">Detalle de la Historia</h1>
-        </div>
+        Detalle de la Historia
     @endsection
         @endsection
 
@@ -85,7 +83,7 @@
             <a href="{{ route('tareas.show', $historia->id) }}"
                class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
                style="background-color: #e6f2ff;">
-                📋 Agregar Tareas
+                 Agregar Tareas
             </a>
 
 
@@ -314,6 +312,7 @@
         </form>
     </div>
 </div>
-
+    DOminio de correos modificable y que se puedan loguear docentes
+    -- ponerle de fondo la imagen que habia antes del tablero
 
     @endsection
