@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }} - Esperando Aprobación</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo e(config('app.name', 'Laravel')); ?> - Esperando Aprobación</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     
     <style>
         :root {
         /* Definir la variable para la imagen de fondo */
-        --auth-bg-image: url("{{ asset('img/tablero.png') }}");
+        --auth-bg-image: url("<?php echo e(asset('img/tablero.png')); ?>");
         }
             * {
             margin: 0;
@@ -45,7 +45,7 @@
         }
         
         .pending-card {
-            background-color: white;
+            background-color: #62b0f0;
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 2rem 1.5rem;
@@ -199,10 +199,10 @@
                 Gracias por registrarte. Tu cuenta está pendiente de aprobación por parte del administrador. 
                 Te notificaremos por correo electrónico cuando tu cuenta haya sido aprobada.
             </p>
-            <a href="{{ route('login') }}" class="back-button">
+            <a href="<?php echo e(route('login')); ?>" class="back-button">
                 Volver al inicio de sesión
             </a>
         </div>
     </div>
 </body>
-</html>
+</html><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/pendiente.blade.php ENDPATH**/ ?>

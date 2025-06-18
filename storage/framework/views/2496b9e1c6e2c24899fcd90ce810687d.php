@@ -1,4 +1,13 @@
-<x-guest-layout>
+<?php if (isset($component)) { $__componentOriginal69dc84650370d1d4dc1b42d016d7226b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal69dc84650370d1d4dc1b42d016d7226b = $attributes; } ?>
+<?php $component = App\View\Components\GuestLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('guest-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\GuestLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <!-- Estilos para el modal de términos y condiciones -->
     <style>
         /* Animaciones y transiciones para el modal */
@@ -37,30 +46,44 @@
     <div class="auth-header">
         <h2>Register</h2>
         <div class="auth-header-links">
-            <a href="{{ route('login') }}">Login</a>
-            <a href="{{ route('register') }}" class="active">Registro</a>
+            <a href="<?php echo e(route('login')); ?>">Login</a>
+            <a href="<?php echo e(route('register')); ?>" class="active">Registro</a>
         </div>
     </div>
 
-    <form method="POST" action="{{ route('register') }}" class="auth-form">
-        @csrf
+    <form method="POST" action="<?php echo e(route('register')); ?>" class="auth-form">
+        <?php echo csrf_field(); ?>
 
         <!-- Name -->
         <div class="form-group">
             <label for="name">Nombre</label>
-            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Ingresa tu nombre completo" />
-            @error('name')
-                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-            @enderror
+            <input id="name" type="text" name="name" value="<?php echo e(old('name')); ?>" required autofocus autocomplete="name" placeholder="Ingresa tu nombre completo" />
+            <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="text-xs text-red-400 mt-1"><?php echo e($message); ?></p>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
 
         <!-- Email Address -->
         <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="Ingresa @unah.hn o @unah.edu.hn email" />
-            @error('email')
-                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-            @enderror
+            <input id="email" type="email" name="email" value="<?php echo e(old('email')); ?>" required autocomplete="username" placeholder="Ingresa @unah.hn o @unah.edu.hn email" />
+            <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="text-xs text-red-400 mt-1"><?php echo e($message); ?></p>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
 
         <!-- Password -->
@@ -70,9 +93,16 @@
                 <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" />
                 <i class="fa-regular fa-eye toggle-password"></i>
             </div>
-            @error('password')
-                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-            @enderror
+            <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="text-xs text-red-400 mt-1"><?php echo e($message); ?></p>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
 
         <!-- Confirm Password -->
@@ -82,18 +112,32 @@
                 <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" />
                 <i class="fa-regular fa-eye toggle-password"></i>
             </div>
-            @error('password_confirmation')
-                <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
-            @enderror
+            <?php $__errorArgs = ['password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="text-xs text-red-400 mt-1"><?php echo e($message); ?></p>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
 
         <!-- Terms of Service -->
         <div class="checkbox-group flex-wrap">
             <input id="terms" type="checkbox" name="terms" required>
             <label for="terms" class="text-sm">Estoy de acuerdo con todo en <a href="#" class="underline" onclick="openTermsModal(); return false;">términos de servicio</a></label>
-            @error('terms')
-                <p class="text-xs text-red-400 mt-1 w-full">{{ $message }}</p>
-            @enderror
+            <?php $__errorArgs = ['terms'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <p class="text-xs text-red-400 mt-1 w-full"><?php echo e($message); ?></p>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
         <!-- Modal de Términos y Condiciones - Versión mejorada -->
         <div class="fixed inset-0 z-50 overflow-auto hidden" id="termsModal" aria-labelledby="termsModalLabel" aria-hidden="true" style="background-color: rgba(0,0,0,0.5);">
@@ -205,4 +249,13 @@
                     });
                 });
             </script>
-</x-guest-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal69dc84650370d1d4dc1b42d016d7226b)): ?>
+<?php $attributes = $__attributesOriginal69dc84650370d1d4dc1b42d016d7226b; ?>
+<?php unset($__attributesOriginal69dc84650370d1d4dc1b42d016d7226b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal69dc84650370d1d4dc1b42d016d7226b)): ?>
+<?php $component = $__componentOriginal69dc84650370d1d4dc1b42d016d7226b; ?>
+<?php unset($__componentOriginal69dc84650370d1d4dc1b42d016d7226b); ?>
+<?php endif; ?><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/auth/register.blade.php ENDPATH**/ ?>

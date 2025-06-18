@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-        <title>{{ config('app.name', 'Agile Desk') }}</title>
+        <title><?php echo e(config('app.name', 'Agile Desk')); ?></title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- logo -->
-        <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+        <link rel="icon" href="<?php echo e(asset('img/agiledesk.png')); ?>" type="image/x-icon">
     
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
         <!-- Estilos personalizados optimizados -->
         <style>
@@ -23,7 +23,7 @@
                 --primary-blue: #62b0f0;
                 --dark-blue: #2d3a4d;
                 --accent-green: #4dd0b4;
-                --auth-bg-image: url("{{ asset('img/tablero.png') }}");
+                --auth-bg-image: url("<?php echo e(asset('img/tablero.png')); ?>");
             }
 
             
@@ -1311,25 +1311,26 @@
                     <h1>AgileDesk</h1>
                     <h2>Organiza tus proyectos de una manera facil y rapida</h2>
                     <div class="rocket-illustration">
-                        <img src="{{ asset('img/agiledesk.png') }}" alt="Fondo decorativo" class="img-fluid">
+                        <img src="<?php echo e(asset('img/agiledesk.png')); ?>" alt="Fondo decorativo" class="img-fluid">
                     </div>
                 </div>
                 <div class="auth-content">
                     <!-- Header móvil solo para dispositivos pequeños -->
                     <div class="mobile-header d-block d-sm-none">
                         <div class="mobile-logo">
-                            <img src="{{ asset('img/agiledesk.png') }}" alt="AgileDesk Logo" />
+                            <img src="<?php echo e(asset('img/agiledesk.png')); ?>" alt="AgileDesk Logo" />
                             <h1>AgileDesk</h1>
                         </div>
                     </div>
                     
-                    {{ $slot }}
+                    <?php echo e($slot); ?>
+
                     <!-- Div invisible para forzar scroll en tablets -->
                     <div class="scroll-spacer" style="height: 150vh; width: 1px; visibility: hidden; pointer-events: none;"></div>
                 </div>
             </div>
         </div>
-        <script src="{{ asset('js/iconos.js') }}"></script>
+        <script src="<?php echo e(asset('js/iconos.js')); ?>"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const toggleButtons = document.querySelectorAll('.toggle-password');
@@ -1594,4 +1595,4 @@
         });
         </script>
     </body>
-</html>
+</html><?php /**PATH C:\Users\Wally\Herd\AgileDesk\resources\views/layouts/guest.blade.php ENDPATH**/ ?>
