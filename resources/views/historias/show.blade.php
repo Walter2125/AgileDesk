@@ -281,7 +281,7 @@
 
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="background-color: #f9fafb;">
         <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
             @csrf
             <div class="flex items-center mb-4">
