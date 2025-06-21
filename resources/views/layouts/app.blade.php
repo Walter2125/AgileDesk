@@ -442,6 +442,7 @@
 
     /* User dropdown in sidebar */
     .user-dropdown {
+        position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: auto;
     }
@@ -497,7 +498,7 @@
         transform: none !important;
         margin-bottom: 0.5rem;
         min-width: 200px;
-        z-index: 1050;
+        z-index: 9999 !important;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -1061,6 +1062,7 @@
             font-weight: 600;
         }
     }
+    
 </style>
 
     <!-- Estilos adicionales de las secciones -->
@@ -1359,62 +1361,6 @@
             }
         });
 
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar el sidebar con el estado guardado
-            initializeSidebar();
-
-            // Inicializar dropdowns de Bootstrap
-            if (typeof bootstrap !== 'undefined') {
-                console.log('Bootstrap está cargado correctamente');
-
-                // Inicializar todos los dropdowns
-                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                console.log('Elementos dropdown encontrados:', dropdownElements.length);
-
-                dropdownElements.forEach(function(element, index) {
-                    try {
-                        var dropdown = new bootstrap.Dropdown(element);
-                        console.log('Dropdown inicializado:', index, element);
-
-                    } catch (error) {
-                        console.error('Error inicializando dropdown:', error, element);
-                    }
-                });
-
-            } else {
-                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
-
-                // Fallback manual completo si Bootstrap no está disponible
-                const userDropdown = document.querySelector('#userDropdown');
-                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-
-                if (userDropdown && dropdownMenu) {
-                    userDropdown.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const isOpen = dropdownMenu.classList.contains('show');
-
-                        if (isOpen) {
-                            dropdownMenu.classList.remove('show');
-                            this.setAttribute('aria-expanded', 'false');
-                        } else {
-                            dropdownMenu.classList.add('show');
-                            this.setAttribute('aria-expanded', 'true');
-                        }
-                    });
-
-                    // Cerrar dropdown al hacer clic fuera
-                    document.addEventListener('click', function(e) {
-                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                            dropdownMenu.classList.remove('show');
-                            userDropdown.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-                }
-            }
-
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1655,6 +1601,25 @@
                 windowSize: `${window.innerWidth}x${window.innerHeight}`
             });
         });
+    </script>
+
+    <script>
+    // Mantén solo este código para el sidebar
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar el sidebar con el estado guardado
+        initializeSidebar();
+
+        // Código para cerrar alerts automáticamente
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const closeBtn = alert.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.click();
+                }
+            }, 5000);
+        });
+    });
     </script>
 
     <!-- Scripts adicionales de las secciones -->
