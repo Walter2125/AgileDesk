@@ -43,7 +43,7 @@
 
     .progress-bar {
         background-color: #198754;
-        color: #ffffff;
+        color:rgb(7, 6, 6);
         font-weight: bold;
         line-height: 25px;
         transition: width 0.4s ease-in-out;
@@ -109,13 +109,13 @@
         <div class="mb-4">
             <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
             <div class="progress">
-                <div id="progress-bar" class="progress-bar bg-success" role="progressbar"
+                <div id="progress-bar" class="progress-bar bg-primary" role="progressbar"
                      style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%
                 </div>
             </div>
         </div>
 
-        <table class="table table-hover table-bordered text-white">
+        <table class="table table-hover table-bordered text-dark">
             <thead>
                 <tr class="text-center">
                     <th>✓</th>

@@ -113,20 +113,22 @@
     }
     
     .action-buttons .btn {
-        flex: 1;
-        min-width: 0;
-        border-radius: 50px;
-        padding: 0.5rem;
-        font-size: 0.82rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-        transition: all 0.2s ease;
-        font-weight: 500;
-        white-space: nowrap;
-        height: 38px; /* Altura fija */
+    flex: 1;
+    min-width: 0;
+    border-radius: 50px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    white-space: nowrap;
+    height: 40px;
+    text-align: center;
     }
+
     
     .btn-view {
         background-color: #00bcd4;
@@ -148,9 +150,12 @@
     
     /* Asegurar que el formulario no afecte el tamaño del botón */
     .action-buttons form {
-        flex: 1;
-        display: flex;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     }
+
     
     .action-buttons form .btn {
         width: 100%;
@@ -265,8 +270,8 @@
                                 </div>
 
                                 <div class="dropdown-card-options dropdown">
-                                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton<?php echo e($project->id); ?>" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
+                                    <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        &#x22EE; 
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo e($project->id); ?>">
                                         <li>
