@@ -58,25 +58,32 @@ $colCount = $tablero->columnas->count();
                     </select>
                 @endif
 
-                <!-- Botón para agregar columna -->
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
+        <!-- Contenedor de toda la fila -->
+        <div class="d-flex justify-content-between align-items-center mb-3 w-100">
+        <!-- Lado izquierdo: botones -->
+        <div class="d-flex gap-2">
+        <!-- Botón para agregar columna -->
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalAgregarColumna">
+            Agregar columna
+        </button>
 
-                <!-- Botón para crear sprint -->
-                <button class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCrearSprint"
-                        id="btnAbrirCrearSprint">
-                    Crear sprint
-                </button>
+        <!-- Botón para crear sprint -->
+            <button class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalCrearSprint"
+                id="btnAbrirCrearSprint">
+                Crear sprint
+            </button>
+        </div>
+
+        <!-- Lado derecho: código del proyecto alineado al extremo derecho -->
+            <div class="text-muted fw-bold text-end" style="margin-left: auto;">
+                Código: {{ $tablero->project->codigo }}
             </div>
-            <!-- Lado derecho: código del proyecto -->
-    <div class="text-muted fw-bold">
-        Código: {{ $tablero->project->codigo }}
-    </div>
+        </div>
+
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
