@@ -23,7 +23,7 @@
                 --primary-blue: #62b0f0;
                 --dark-blue: #2d3a4d;
                 --accent-green: #4dd0b4;
-                --auth-bg-image: url("{{ asset('img/tablero.png') }}");
+                --auth-bg-image: url("{{ asset('img/table.png') }}");
             }
 
             
