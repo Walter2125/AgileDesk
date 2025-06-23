@@ -78,56 +78,74 @@
                     {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
                 </span>
             </div>
+                    
         </div>
-    </div>
-</div>
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case"
+>Tareas</a>
 
-            <a href="{{ route('tareas.show', $historia->id) }}"
-               class="btn text-primary border border-primary rounded-pill px-4 py-2 shadow-sm"
-               style="background-color: #e6f2ff;">
-                📋 Agregar Tareas
-            </a>
+                            <div>
+                                <a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Atrás</a>
 
+                                <a href="{{ route('historias.edit', $historia->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Editar</a>
 
+                                <form action="{{ route('historias.destroy', $historia->id) }}" method="post" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="inline-block bg-red-400 border border-red-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-600 mr- normal-case" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                        Borrar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        
+        
 
-            <div class="mb-3 d-flex justify-content-end">
-                <a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="btn btn-secondary">Atrás</a>
-
-                <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-primary ms-2">Editar</a>
-
-                <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">Borrar</button>
-                </form>
-
-                <!-- Modal de confirmación -->
+                <!--elimina historia-->
                 <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
                     <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                        <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header border-bottom-0">
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
-                            <div class="modal-body">
-                                Se eliminará la historia "<strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;" title="{{ $historia->nombre }}">
-                                    {{ $historia->nombre }}
-                                </strong>".
-                                Esta acción no se puede deshacer.
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <div class="modal-body text-center ">
+                            <div class="mb-4">
+                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
+                                <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
+                                    
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                        <div class="alert alert-danger d-flex align-items-center">
+                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
 
+                                    <div>
+                                        "<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
                                 <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
                                 </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+    </div>
+        
+    
+</div>
         </div>
 
 
@@ -156,7 +174,7 @@
                                 </button>
                                 <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" onsubmit="return confirm('¿Deseas eliminar este comentario?')">
                                     @csrf @method('DELETE')
-                                    <button class="btn btn-outline-danger px-2 py-1">
+                                    <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
                                         <i class="bi bi-trash fs-5"></i>
                                     </button>
                                 </form>
@@ -184,7 +202,7 @@
                                         </button>
                                         <form action="{{ route('comentarios.destroy', $respuesta) }}" method="POST" onsubmit="return confirm('¿Deseas eliminar esta respuesta?')">
                                             @csrf @method('DELETE')
-                                            <button class="btn btn-outline-danger px-2 py-1">
+                                            <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
                                                 <i class="bi bi-trash fs-5"></i>
                                             </button>
                                         </form>
@@ -212,14 +230,38 @@
                                         <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="this.closest('.fixed').classList.add('hidden')">
                                             Cancelar
                                         </button>
-                                        <button type="submit" class="btn btn-warning text-white rounded-3 px-4 py-2">
+                                        <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                                             <i class="bi bi-save-fill me-1"></i> Actualizar
                                         </button>
                                     </div>
                                 </form>
                             </div>
+                            
+                    </div>
+                    <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1" aria-labelledby="modalLabelRespuesta{{ $respuesta->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content rounded-4 shadow">
+                                    <div class="modal-header border-bottom-0">
+                                        <h5 class="modal-title text-danger" id="modalLabelRespuesta{{ $respuesta->id }}">Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                        <p class="mt-3">¿Estás seguro de que deseas eliminar esta respuesta?</p>
+                                        <div class="d-flex justify-content-end gap-2 mt-4">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form action="{{ route('comentarios.destroy', $respuesta) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
+                    
                 </div>
 
                 <!-- Modal de Responder -->
@@ -240,7 +282,7 @@
                                 <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="this.closest('.fixed').classList.add('hidden')">
                                     Cancelar
                                 </button>
-                                <button type="submit" class="btn btn-success text-white rounded-3 px-4 py-2">
+                                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                                     <i class="bi bi-send-fill me-1"></i> Publicar Respuesta
                                 </button>
                             </div>
@@ -266,7 +308,7 @@
                                 <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="this.closest('.fixed').classList.add('hidden')">
                                     Cancelar
                                 </button>
-                                <button type="submit" class="btn btn-warning text-white rounded-3 px-4 py-2">
+                                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                                     <i class="bi bi-save-fill me-1"></i> Actualizar
                                 </button>
                             </div>
@@ -275,6 +317,28 @@
                 </div>
 
             @endforeach
+            <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $comentario->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title text-danger" id="modalLabel{{ $comentario->id }}">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                <p class="mt-3">¿Estás seguro de que deseas eliminar este comentario?</p>
+                                <div class="d-flex justify-content-end gap-2 mt-4">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         @else
             <p class="text-muted text-center">No hay comentarios aún.</p>
         @endif
@@ -283,7 +347,7 @@
 
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="background-color: #f9fafb;">
         <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
             @csrf
             <div class="flex items-center mb-4">
@@ -304,10 +368,10 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">
+                <button type="button" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">
                     Cancelar
                 </button>
-                <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                     <i class="bi bi-send-fill me-1"></i> Publicar
                 </button>
             </div>

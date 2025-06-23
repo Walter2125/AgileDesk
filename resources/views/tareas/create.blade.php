@@ -142,10 +142,10 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="{{ route('tareas.show', $historia->id) }}" class="btn btn-secondary">
+                <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
                     Cancelar
                 </a>
-                <button type="submit" class="btn btn-primary">Crear Tarea</button>
+                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar </button>
             </div>
         </form>
     </div>

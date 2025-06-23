@@ -236,7 +236,7 @@
             <div class="col-md-4 mb-4">
                 <div class="create-project-card">
                     <p class="card-text">Comienza un nuevo proyecto colaborativo</p>
-                    <a href="{{ route('projects.create') }}" class="btn btn-primary btn-create">
+                    <a href="{{ route('projects.create') }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                         <i class="fas fa-plus mr-2"></i> Crear Proyecto
                     </a>
                 </div>
@@ -293,26 +293,57 @@
                             </div>
 
                             <div class="action-buttons">
-                                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                                <a href="{{ route('tableros.show', $project->id) }}" class="inline-block bg-indigo-400 border border-indigo-300 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-indigo-600 mr-3 normal-case">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
-
+                               
                                 @if(auth()->id() === $project->user_id)
-                                    <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                                    <a href="{{ route('projects.edit', $project->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                                         <i class="fas fa-edit"></i> Editar
                                     </a>
-                                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </form>
+                                    
+                                <button type="button" class="inline-block bg-red-500 border border-red-400 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-700 mr-3 normal-case" data-bs-toggle="modal" data-bs-target="#deleteProjectModal{{ $project->id }}">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
                                 @endif
                             </div>
                         </div>
                     </div>
                 </div>
+                    <div class="modal fade" id="deleteProjectModal{{ $project->id }}" tabindex="-1" aria-labelledby="deleteProjectModalLabel{{ $project->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content rounded-4 shadow">
+                                <div class="modal-header border-bottom-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+
+                                <div class="modal-body text-center">
+                                    <div class="mb-4">
+                                        <h5 class="modal-title text-danger" id="deleteProjectModalLabel{{ $project->id }}">Confirmar Eliminación</h5>
+                                        <h5 class="modal-title text-danger">¿Deseas eliminar este proyecto?</h5>
+
+                                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+
+                                        <div class="alert alert-danger d-flex align-items-center mt-3">
+                                            <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                            <div>
+                                                El proyecto <strong>"{{ $project->name }}"</strong> será eliminado permanentemente.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 <!-- Modal de Integrantes -->
                 <div class="modal fade" id="modalIntegrantes{{ $project->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $project->id }}" aria-hidden="true">
@@ -337,7 +368,7 @@
                                 @endif
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </div>
                     </div>
