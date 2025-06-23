@@ -288,11 +288,11 @@
                                 </div>
                             </div>
 
-                            <div class="project-description">
+                            <div class=" mb-4 project-description">
                                 {{ Str::limit($project->descripcion, 100) }}
                             </div>
 
-                            <div class="action-buttons">
+                            <div class="mt-4">
                                 <a href="{{ route('tableros.show', $project->id) }}" class="inline-block bg-indigo-400 border border-indigo-300 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-indigo-600 mr-3 normal-case">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>

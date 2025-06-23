@@ -33,60 +33,56 @@
             @endif
 
     <div class="historia-header">
-        <h2 class="historia-title"
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
-            title="{{ $historia->nombre }}">
-            H{{ $historia->numero }} {{  $historia->nombre }}
-        </h2>
-
-
+                    <h2 class="historia-title"
+                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
+                        title="{{ $historia->nombre }}">
+                        H{{ $historia->numero }} {{  $historia->nombre }}
+                    </h2>
                     <div class="historia-meta">
                         <span class="badge bg-primary">{{ $historia->prioridad }}</span>
                         <span class="badge bg-secondary">{{ $historia->trabajo_estimado }} horas</span>
                     </div>
-                </div>
 
-                <div class="historia-content">
+             <div class="historia-content">
 
-                <div class="historia-section ">
-                    <h3 class="section-title">Descripción</h3>
+                    <div class="historia-section ">
+                        <h3 class="section-title">Descripción</h3>
                     <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
-                        {{ $historia->descripcion }}
-                    </div>
+                                {{ $historia->descripcion }}
                 </div>
+    
 
 
 
 
 
-                    <div class="historia-details">
-            <div class="detail-item">
-                <span class="detail-label">Estado:</span>
-                <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Sprint:</span>
-                <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Fecha creación:</span>
-                <span class="detail-value">{{ $historia->created_at->format('d/m/Y') }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Asignado a:</span>
-                <span class="detail-value">
-                    {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
-                </span>
-            </div>
+            <div class="historia-details md-3">
+                <div class="detail-item">
+                    <span class="detail-label">Estado:</span>
+                    <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Sprint:</span>
+                    <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Fecha creación:</span>
+                    <span class="detail-value">{{ $historia->created_at->format('d/m/Y') }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Asignado a:</span>
+                    <span class="detail-value">
+                        {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
+                    </span>
+                </div>
                     
-        </div>
-        <table class="table table-borderless">
+            </div>
+        <table class="table table-borderless mt-3">
             <thead>
                 <tr>
                     <th colspan="2">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case"
->Tareas</a>
+                            <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case">Tareas</a>
 
                             <div>
                                 <a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Atrás</a>
@@ -106,42 +102,6 @@
                 </tr>
             </thead>
         </table>
-        
-        
-
-                <!--elimina historia-->
-                <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content rounded-4 shadow">
-                            <div class="modal-header border-bottom-0">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body text-center ">
-                            <div class="mb-4">
-                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
-                                <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
-                                    
-                                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                                        <div class="alert alert-danger d-flex align-items-center">
-                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
-
-                                    <div>
-                                        "<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.
-                                    </div>
-                                </div>
-                                </div>
-                                <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
     </div>
         
     
