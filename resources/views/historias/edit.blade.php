@@ -66,7 +66,8 @@
                 <select name="columna_id" id="columna_id" class="form-control">
                     <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
-                        <option value="{{ $columna->id }}" {{ old('columna_id') == $columna->id ? 'selected' : '' }}>
+                        <option value="{{ $columna->id }}"
+                            {{ old('columna_id', $historia->columna_id ?? '') == $columna->id ? 'selected' : '' }}>
                             {{ $columna->nombre }}
                         </option>
                     @endforeach

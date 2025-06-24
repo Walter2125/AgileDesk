@@ -15,6 +15,10 @@
     gap: 10px;
 }
 
+    .dropdown-menu {
+        z-index: 1055 !important;
+    }
+
 
 
 .historia-container {

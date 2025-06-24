@@ -7,6 +7,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
     @php
@@ -133,7 +134,7 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
+                               <div class="p-2" style="flex: 4; overflow-y: auto; overflow-x: visible;" data-columna-id="{{ $columna->id }}">
                                 @foreach ($columna->historias as $historia)
                                 <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                     <div class="d-flex justify-content-between align-items-start">
@@ -175,7 +176,7 @@ $colCount = $tablero->columnas->count();
                                         </div>
                                     </div>
 
-                                    {{-- Modal de confirmación --}}
+                                    <!--confirmacion -->
                                    <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content rounded-4 shadow">
