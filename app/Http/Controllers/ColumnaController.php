@@ -88,5 +88,5 @@ class ColumnaController extends Controller
             'tablero' => $tablero->id,
         ])->with('success', 'Columna eliminada correctamente');
     }
-    }
+}
 
