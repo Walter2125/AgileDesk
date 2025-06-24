@@ -8,8 +8,6 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 
     @php
 
@@ -537,7 +535,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function abrirModalEliminarColumna(columnaId) {
         columnaIdParaEliminar = columnaId;
         const form = document.getElementById('formEliminarColumna');
-        form.action = `/columnas/${columnaId}`; // URL para eliminar columna (ajusta si usas prefijo)
+        
+        // Asegurar que la URL comience con "/" para que sea una ruta absoluta
+        // y agregar el prefijo de administrador para acceder a la ruta correcta
+        form.action = `/admin/columnas/${columnaId}`; 
 
         // Resetea el input modo por si acaso
         document.getElementById('modoEliminar').value = '';

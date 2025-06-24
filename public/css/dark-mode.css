@@ -185,6 +185,28 @@ body.dark-mode .table-hover tbody tr:hover {
     color: var(--dark-text-primary) !important;
 }
 
+body.dark-mode .table-striped > tbody > tr:nth-of-type(odd),
+body.dark-mode .table-striped > tbody > tr:nth-of-type(even) {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+body.dark-mode .table-striped > tbody > tr:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .table-striped .bg-light,
+body.dark-mode .table-striped .bg-white,
+body.dark-mode .table-striped [class*="bg-light"],
+body.dark-mode .table-striped [class*="bg-white"],
+body.dark-mode .table-striped [style*="background-color: #fff"],
+body.dark-mode .table-striped [style*="background-color: white"],
+body.dark-mode .table-striped [style*="background: #fff"],
+body.dark-mode .table-striped [style*="background: white"] {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
 /* Tarjetas mejoradas */
 body.dark-mode .card {
     background-color: var(--dark-bg-secondary);
@@ -350,7 +372,7 @@ body.dark-mode .text-gray-900 {
 }
 
 body.dark-mode .text-muted {
-    color: var(--dark-text-terciario) !important;
+    color: var(--dark-text-terciary) !important;
 }
 
 /* Espacios en dropdowns y menús desplegables */
@@ -559,12 +581,12 @@ body.dark-mode .nav-tabs .nav-link.active {
 body.dark-mode .bg-white,
 body.dark-mode .bg-light,
 body.dark-mode div[class*="bg-white"],
-body.dark-mode div[class*="bg-light"],
-body.dark-mode [style*="background-color: #fff"],
-body.dark-mode [style*="background-color: white"],
-body.dark-mode [style*="background-color: rgb(255, 255, 255)"],
-body.dark-mode [style*="background: white"],
-body.dark-mode [style*="background: #fff"] {
+body.dark_mode div[class*="bg-light"],
+body.dark_mode [style*="background-color: #fff"],
+body.dark_mode [style*="background-color: white"],
+body.dark_mode [style*="background-color: rgb(255, 255, 255)"],
+body.dark_mode [style*="background: white"],
+body.dark_mode [style*="background: #fff"] {
     background-color: var(--dark-bg-secondary) !important;
 }
 
@@ -642,24 +664,24 @@ body.dark-mode .card.mt-5.shadow {
     border-color: var(--dark-border-primary);
 }
 
-body.dark-mode .card-header.bg-white {
+body.dark.mode .card-header.bg-white {
     background-color: var(--dark-bg-secondary) !important;
     border-color: var(--dark-border-primary);
 }
 
-body.dark-mode .card-body.bg-light {
+body.dark.mode .card-body.bg-light {
     background-color: var(--dark-bg-primary) !important;
 }
 
-body.dark-mode .text-dark {
+body.dark.mode .text-dark {
     color: var(--dark-text-primary) !important;
 }
 
-body.dark-mode .text-info {
+body.dark.mode .text-info {
     color: var(--dark-accent-primary) !important;
 }
 
-body.dark-mode .btn-light {
+body.dark.mode .btn-light {
     background-color: var(--dark-bg-tertiary);
     color: var(--dark-text-primary);
     border-color: var(--dark-border-primary);
@@ -686,7 +708,7 @@ body.dark-mode [id^="responderComentarioModal"] .bg-white {
 }
 
 body.dark-mode .form-control {
-    background-color: var(--dark-bg-tertiary);
+    background-color: var(--dark-bg-terciary);
     color: var(--dark-text-primary);
     border-color: var(--dark-border-primary);
 }
@@ -706,7 +728,7 @@ body.dark-mode .btn-outline-danger {
 body.dark-mode .btn-outline-secondary:hover,
 body.dark-mode .btn-outline-info:hover,
 body.dark-mode .btn-outline-danger:hover {
-    background-color: var(--dark-bg-tertiary);
+    background-color: var(--dark-bg-terciary);
     color: var(--dark-text-primary);
 }
 
@@ -715,7 +737,7 @@ body.dark-mode .btn-warning.text-white {
     border-color: var(--dark-accent-primary);
 }
 
-body.dark-mode .btn-warning.text-white:hover {
+body.dark.mode .btn-warning.text-white:hover {
     background-color: var(--dark-accent-hover);
     border-color: var(--dark-accent-hover);
 }
@@ -754,7 +776,7 @@ body.dark-mode .alert-success {
 
 /* Estilo para el botón de agregar tareas */
 body.dark-mode a.text-primary.border.border-primary[style*="background-color: #e6f2ff"] {
-    background-color: var(--dark-bg-tertiary) !important;
+    background-color: var(--dark-bg-terciary) !important;
     color: var(--dark-accent-primary) !important;
     border-color: var(--dark-accent-primary) !important;
 }
@@ -775,24 +797,24 @@ body.dark-mode .fixed {
 
 /* Estilos para inputs en modales */
 body.dark-mode textarea.form-control {
-    background-color: var(--dark-bg-tertiary) !important;
+    background-color: var(--dark-bg-terciary) !important;
     color: var(--dark-text-primary) !important;
     border-color: var(--dark-border-primary) !important;
 }
 
 body.dark-mode textarea.form-control::placeholder {
-    color: var(--dark-text-tertiary) !important;
+    color: var(--dark-text-terciario) !important;
 }
 
 /* Ajustes para botones de acción en comentarios */
 body.dark-mode .btn-group-sm .btn {
-    background-color: var(--dark-bg-tertiary);
+    background-color: var(--dark-bg-terciary);
     color: var(--dark-text-primary);
     border-color: var(--dark-border-primary);
 }
 
 body.dark-mode .btn-group-sm .btn:hover {
-    background-color: var(--dark-bg-quaternary);
+    background-color: var(--dark-bg-quaternario);
 }
 
 /* Estilos para elementos de usuario y tiempos */
@@ -801,7 +823,7 @@ body.dark-mode .text-primary {
 }
 
 body.dark-mode .text-muted {
-    color: var(--dark-text-tertiary) !important;
+    color: var(--dark-text-terciary) !important;
 }
 
 /* Optimizaciones para modales en modo oscuro */
@@ -822,13 +844,13 @@ body.dark-mode .fw-bold.mb-0.text-dark {
 }
 
 body.dark-mode .historia-container-fluid .btn-secondary {
-    background-color: var(--dark-bg-tertiary);
+    background-color: var(--dark-bg-terciary);
     color: var(--dark-text-primary);
     border-color: var(--dark-border-primary);
 }
 
 body.dark-mode .historia-container-fluid .btn-secondary:hover {
-    background-color: var(--dark-bg-quaternary);
+    background-color: var(--dark-bg-quaternario);
 }
 
 body.dark-mode .historia-container-fluid .btn-primary {

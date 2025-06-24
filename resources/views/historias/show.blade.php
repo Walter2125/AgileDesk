@@ -3,8 +3,10 @@
 @section('title')
        @section('title')
          @section('mensaje-superior')
-             Detalle de Historia 
+            Detalle de Historia 
+      
         @endsection
+    
     
 
 @section('content')
@@ -34,12 +36,14 @@
             <div class="historia-container-fluid">
 
                 
+                
     <div class="historia-header">
         <h2 class="historia-title"
             style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
             title="{{ $historia->nombre }}">
             H{{ $historia->numero }} {{  $historia->nombre }}
         </h2>
+      
       
 
                     <div class="historia-meta">
@@ -50,6 +54,7 @@
 
                 <div class="historia-content">
 
+                   
                     </div>
                 <div class="historia-section ">
                     <h3 class="section-title">Descripción</h3>
@@ -98,6 +103,7 @@
                 </form>
     </div>
 </div>
+    
 
                 <!-- Modal de confirmación -->
                 <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
@@ -312,6 +318,7 @@
         </form>
     </div>
 </div>
+ 
  
 
     @endsection

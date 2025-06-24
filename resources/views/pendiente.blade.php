@@ -14,7 +14,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
-        * {
+        :root {
+        /* Definir la variable para la imagen de fondo */
+        --auth-bg-image: url("{{ asset('img/tablero.png') }}");
+        }
+            * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -31,7 +35,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #62b0f0;
+            background: 
+                /* Overlay semi-transparente para mejor legibilidad */
+                linear-gradient(rgba(255, 255, 255, 0.42), rgba(255,255,255,0.85)),
+                /* Imagen de fondo en vista completa */
+                var(--auth-bg-image) center/cover no-repeat fixed;    
             padding: 1rem;
             width: 100%;
         }
