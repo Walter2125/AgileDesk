@@ -6,6 +6,8 @@ use App\Models\Columna;
 use App\Models\Project;
 use App\Models\Tablero;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 
 class TableroController extends Controller
 {
@@ -36,6 +38,8 @@ class TableroController extends Controller
     /**
      * Display the specified resource.
      */
+
+
     public function show($projectId)
     {
         $project = Project::findOrFail($projectId);
@@ -45,23 +49,34 @@ class TableroController extends Controller
         $sprintId = request('sprint_id');
 
         if ($sprintId) {
-            // Filtra las historias de cada columna según el sprint_id
+            $sprintActivo = $tablero->sprints->firstWhere('id', $sprintId);
+        } else {
+            // Obtener la fecha actual
+            $hoy = Carbon::now()->format('Y-m-d');
+
+            // Buscar sprint activo por fecha
+            $sprintActivo = $tablero->sprints
+                ->where('fecha_inicio', '<=', $hoy)
+                ->where('fecha_fin', '>=', $hoy)
+                ->first();
+        }
+
+        // Si hay sprint activo, filtramos historias por ese sprint
+        if ($sprintActivo) {
             foreach ($tablero->columnas as $columna) {
-                $columna->historias = $columna->historias()->where('sprint_id', $sprintId)->get();
+                $columna->historias = $columna->historias()
+                    ->where('sprint_id', $sprintActivo->id)
+                    ->get();
             }
         } else {
-            // Si no hay sprint_id, muestra todas las historias como ahora
+            // Si no hay sprint activo ni seleccionado, mostramos todas las historias
             foreach ($tablero->columnas as $columna) {
                 $columna->historias = $columna->historias;
             }
         }
 
-        return view('users.admin.tablero', compact('tablero', 'project'));
+        return view('users.admin.tablero', compact('tablero', 'project', 'sprintActivo'));
     }
-
-
-
-
 
 
     /**

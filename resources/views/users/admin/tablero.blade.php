@@ -18,11 +18,11 @@ $colCount = $tablero->columnas->count();
             ? 'width: calc(100% / ' . $colCount . ' - 1rem); max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
     @endphp
-    
-    
-    <div class="container py-4">
 
-                
+
+    <div class="container py-4" style="margin-left: 5px;">
+
+
             <!-- No borren esta nofificacion -->
                 @if (session('success'))
                             <div class="alert alert-success mt-2" id="success-alert">
@@ -39,8 +39,8 @@ $colCount = $tablero->columnas->count();
                                     }
                                 }, 3000);
                             </script>
-                        @endif
 
+                        @endif
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -87,16 +87,17 @@ $colCount = $tablero->columnas->count();
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
-        <div class="overflow-auto pb-3 mt-3" style="width: 100%;">
+<div class="overflow-auto pb-3 mt-3" style="width: 100%; padding-left: 20px;">
 
-       <div class="input-group mb-3" style="width: 55%;">
+
+<div class="input-group mb-3" style="width: 55%;">
     <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
     <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
         ✖️
     </button>
 </div>
 
-        <div class="overflow-auto pb-3" style="width: 100%;">
+
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
@@ -112,28 +113,22 @@ $colCount = $tablero->columnas->count();
                                        data-column-id="{{ $columna->id }}">
                             @endif
 
-                                <div class="dropdown ms-2">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle"
-                                            type="button"
-                                            id="dropdownMenuButton{{ $columna->id }}"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        ⋮
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $columna->id }}">
-                                        <li>
-                                            <button class="dropdown-item" disabled>
-                                                <strong>Acciones</strong>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item"
-                                                    onclick="abrirModalEliminarColumna({{ $columna->id }}, '{{ $columna->nombre }}')">
-                                                Eliminar columna
-                                            </button>
-                                        </li>
-                                    </ul>
+                                <div class="menu-wrapper">
+                                    <input type="checkbox" class="toggler" id="toggle-{{ $columna->id }}" />
+                                    <div class="dots">
+                                        <div></div>
+                                    </div>
+                                    <div class="menu">
+                                        <ul>
+                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
+                                            <li>
+                                                <a href="#" class="link" onclick="editarNombreColumna({{ $columna->id }})">Editar nombre</a>
+                                            </li>
+                                            <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
+
 
 
                         </div>
@@ -147,9 +142,9 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">                            
+                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                 @foreach ($columna->historias as $historia)
-                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">                                    
+                                <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                     <div class="d-flex justify-content-between align-items-start">
                                         {{-- Columna 1: Contenido --}}
                                         <div style="flex: 1;">
@@ -277,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Error:', error);
                     showNotification('error', error.message);
                     // Revertir visualmente el movimiento
-                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ? 
+                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ?
                         null : evt.from.children[evt.oldIndex]);
                 });
             }
@@ -293,11 +288,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
-        
+
         // Agrega la notificación donde sea apropiado en tu UI
         const notificationContainer = document.getElementById('notification-container') || document.body;
         notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
-        
+
         // Elimina la notificación después de 5 segundos
         setTimeout(() => {
             const alert = notificationContainer.querySelector('.alert');
@@ -377,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </form>
         </div>
     </div>
-    
+
  <!-- Modal para crear sprint -->
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -402,7 +397,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
 
 
-<!-- Modal de confirmación para eliminar columna -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear sprint</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Modal para confirmar eliminación de columna (fuera del modal de sprint) -->
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
@@ -430,13 +433,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Crear sprint</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- AJAX para actualizar nombre -->
     <script>
@@ -474,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return response.json();
                         })
                         .then(data => {
-                            // Column updated successfully
+                            console.log('Columna actualizada:', data);
                         })
                         .catch(error => {
                             alert("No se pudo actualizar el nombre de la columna.");
@@ -484,6 +480,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     </script>
+
+
 
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
@@ -539,7 +537,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 </script>
-
 <script>
     let columnaIdParaEliminar = null;
 
@@ -563,6 +560,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
+
+
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -596,17 +598,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
+
    <script>
  document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
-    
+    const columnas = document.querySelectorAll(".historia-lista");
+
     function realizarBusqueda() {
         const textoBusqueda = buscador.value.toLowerCase().trim();
-        
+
         // Seleccionar todas las tarjetas de historias
         const historias = document.querySelectorAll(".card.mb-4.p-2");
-        
+
         historias.forEach(historia => {
             // Buscar en el texto de la historia (nombre + descripción)
             const textoHistoria = historia.textContent.toLowerCase();
@@ -624,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(timeoutBusqueda);
         timeoutBusqueda = setTimeout(realizarBusqueda, 300);
     });
-    
+
     // Botón para limpiar la búsqueda
     limpiarBtn.addEventListener("click", function () {
         buscador.value = "";
@@ -634,5 +638,119 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
-</div>
+<style>
+    .menu-wrapper {
+        position: relative;
+        display: inline-block;
+        z-index: 1000;
+    }
+
+    /* Checkbox invisible */
+    .toggler {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 30px;
+        height: 30px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    /* Puntos visuales */
+    .dots {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dots div {
+        position: relative;
+        width: 4px;   /* más pequeño */
+        height: 4px;
+        background: #777;
+        border-radius: 50%;
+        transition: 0.4s ease;
+    }
+
+    .dots div::before,
+    .dots div::after {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #777;
+        border-radius: 50%;
+        transition: 0.4s ease;
+    }
+
+    /* Posición vertical inicial (alineados) */
+    .dots div::before {
+        top: -6px;
+        left: 0;
+    }
+
+    .dots div::after {
+        top: 6px;
+        left: 0;
+    }
+
+    /* Cuando se activa: formar diagonal ↘ */
+    .toggler:checked + .dots div::before {
+        top: -6px;
+        left: -6px;
+    }
+
+    .toggler:checked + .dots div::after {
+        top: 6px;
+        left: 6px;
+    }
+
+    /* Opcional: una leve rotación del punto central */
+    .toggler:checked + .dots div {
+        transform: rotate(0deg); /* podés poner 0 o algo leve si querés */
+    }
+
+    /* Menú */
+    .menu {
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: white;
+        padding: 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        min-width: 160px;
+    }
+
+    .menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu ul li {
+        margin-bottom: 8px;
+    }
+
+    .menu ul li:last-child {
+        margin-bottom: 0;
+    }
+
+    .toggler:checked ~ .menu {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+
+
 @endsection
