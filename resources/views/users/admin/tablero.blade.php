@@ -7,6 +7,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
     @php
@@ -133,7 +134,7 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
+                               <div class="p-2" style="flex: 4; overflow-y: auto; overflow-x: visible;" data-columna-id="{{ $columna->id }}">
                                 @foreach ($columna->historias as $historia)
                                 <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                     <div class="d-flex justify-content-between align-items-start">
@@ -175,29 +176,35 @@ $colCount = $tablero->columnas->count();
                                         </div>
                                     </div>
 
-                                    {{-- Modal de confirmación --}}
-                                    <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                    <!--confirmacion -->
+                                   <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                                            <div class="modal-content rounded-4 shadow">
+                                                <div class="modal-header border-bottom-0">
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                                 </div>
-                                                <div class="modal-body">
-                                                    Se eliminará la historia:
-                                                    <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;"
-                                                        title="{{ $historia->nombre }}">
-                                                        {{ $historia->nombre }}
-                                                    </strong><br>
-                                                    Esta acción no se puede deshacer.
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <div class="modal-body text-center ">
+                                                <div class="mb-4">
+                                                    <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
+                                                    <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
+                                                        
+                                                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                                            <div class="alert alert-danger d-flex align-items-center">
+                                                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+
+                                                        <div>
+                                                            "<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
                                                     <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
                                                     </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -14,13 +14,11 @@
     align-items: center;
     gap: 10px;
 }
-.descripcion-limitada {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;        /* Cambia a 3, 4 o más si necesitas */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
+    .dropdown-menu {
+        z-index: 1055 !important;
+    }
+
 
 
 .historia-container {
