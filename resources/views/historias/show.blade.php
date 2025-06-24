@@ -169,14 +169,39 @@
                                         <i class="bi bi-pencil-square fs-5"></i>
                                     </button>
                                     <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" onsubmit="return confirm('¿Deseas eliminar este comentario?')">
-                                        @csrf @method('DELETE')
+                                        @csrf 
+                                        @method('DELETE')
                                         <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
                                             <i class="bi bi-trash fs-5"></i>
                                         </button>
                                     </form>
                                 </div>
                             @endif
+                            <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1" aria-labelledby="modalLabelComentario{{ $comentario->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content rounded-4 shadow">
+                                        <div class="modal-header border-bottom-0">
+                                            <h5 class="modal-title text-danger" id="modalLabelComentario{{ $comentario->id }}">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                            <p class="mt-3">¿Estás seguro de que deseas eliminar este comentario?</p>
+                                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
+
 
                         <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
 
@@ -197,7 +222,8 @@
                                                 <i class="bi bi-pencil-square fs-5"></i>
                                             </button>
                                             <form action="{{ route('comentarios.destroy', $respuesta) }}" method="POST" onsubmit="return confirm('¿Deseas eliminar esta respuesta?')">
-                                                @csrf @method('DELETE')
+                                            @csrf 
+                                            @method('DELETE')
                                                 <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
                                                     <i class="bi bi-trash fs-5"></i>
                                                 </button>
@@ -234,7 +260,7 @@
                                 </div>
                                 
                         </div>
-                        <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1" aria-labelledby="modalLabelRespuesta{{ $respuesta->id }}" aria-hidden="true">
+                            <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1" aria-labelledby="modalLabelRespuesta{{ $respuesta->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content rounded-4 shadow">
                                         <div class="modal-header border-bottom-0">

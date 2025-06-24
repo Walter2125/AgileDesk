@@ -134,7 +134,7 @@ $colCount = $tablero->columnas->count();
 
                      <!--inicio-->
 
-                               <div class="p-2" style="flex: 4; overflow-y: auto; overflow-x: visible;" data-columna-id="{{ $columna->id }}">
+                               <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                 @foreach ($columna->historias as $historia)
                                 <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                     <div class="d-flex justify-content-between align-items-start">
