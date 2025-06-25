@@ -23,7 +23,7 @@
                 --primary-blue: #62b0f0;
                 --dark-blue: #2d3a4d;
                 --accent-green: #4dd0b4;
-                --auth-bg-image: url("{{ asset('img/table.png') }}");
+                --auth-bg-image: url("{{ asset('img/trabajo.png') }}");
             }
 
             
@@ -51,7 +51,7 @@
                 align-items: center;
                  background: 
                     /* Overlay semi-transparente para mejor legibilidad */
-                    linear-gradient(rgba(255, 255, 255, 0.384), rgba(255,255,255,0.85)),
+                    linear-gradient(rgba(255, 255, 255, 0.573), rgba(255, 255, 255, 0.61)),
                     /* Imagen de fondo en vista completa */
                     var(--auth-bg-image) center/cover no-repeat fixed;
                 padding: 0;
