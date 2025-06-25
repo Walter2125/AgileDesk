@@ -7,6 +7,8 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -20,11 +22,11 @@ $colCount = $tablero->columnas->count();
     @endphp
 
 
-<div class="container py-4" style="margin-left: 5px;">
-    <!-- Fila superior con buscador, select y botones alineados -->
+<div class="container py-2" style="margin-left: 5px; margin-top: -40px;">
+
     <div class="container py-4">
 
-        <!-- Notificación -->
+
         @if (session('success'))
             <div class="alert alert-success mt-2" id="success-alert">
                 {{ session('success') }}
@@ -41,16 +43,21 @@ $colCount = $tablero->columnas->count();
             </script>
         @endif
 
-        <!-- Fila superior con buscador, select y botones -->
+
         <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
-            <!-- Buscador que se expande -->
-            <div class="input-group flex-grow-1" style="max-width: 100%;">
-                <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
-                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">✖️</button>
+            <div class="input-group">
+    <span class="input-group-text">
+        <i class="bi bi-search"></i>
+    </span>
+                <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre...">
+                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
 
-            <!-- Select de Sprint -->
+
+
             @if($tablero->sprints && $tablero->sprints->count())
                 <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
                         style="min-width: 200px; max-width: 240px;">
@@ -61,7 +68,7 @@ $colCount = $tablero->columnas->count();
                 </select>
             @endif
 
-            <!-- Botones al final -->
+
             <div class="d-flex gap-2 ms-auto">
                 <button class="btn btn-outline-primary"
                         data-bs-toggle="modal"
@@ -78,7 +85,7 @@ $colCount = $tablero->columnas->count();
             </div>
         </div>
 
-        <!-- Contenedor columnas con scroll horizontal -->
+
         <div class="w-100 mt-3">
 
             <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
@@ -89,7 +96,7 @@ $colCount = $tablero->columnas->count();
                         <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
                              style="{{ $widthStyle }} min-height: 600px; max-height: 600px;">
 
-                            <!-- Header -->
+
                             <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                 <strong>{{ $columna->nombre }}</strong>
 
@@ -110,7 +117,7 @@ $colCount = $tablero->columnas->count();
                                 </div>
                             </div>
 
-                            <!-- Botón agregar historias -->
+
                             <div class="p-2 border-bottom flex-shrink-0">
                                 <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
                                    class="btn btn-sm btn-primary w-100">
@@ -118,13 +125,13 @@ $colCount = $tablero->columnas->count();
                                 </a>
                             </div>
 
-                            <!-- Contenedor scroll vertical para historias -->
+
                             <div class="overflow-y-auto overflow-x-hidden p-2 flex-grow-1" style="min-height: 0;" data-columna-id="{{ $columna->id }}">
 
                             @foreach ($columna->historias as $historia)
                                     <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
                                         <div class="d-flex justify-content-between align-items-start">
-                                            <!-- Contenido historia -->
+
                                             <div style="flex: 1;">
                                                 <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
                                                     <strong class="d-block text-truncate"
@@ -140,7 +147,7 @@ $colCount = $tablero->columnas->count();
                                                 </a>
                                             </div>
 
-                                            <!-- Menú acciones historia -->
+
                                             <div class="ms-2">
                                                 <div class="dropdown">
                                                     <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -162,7 +169,7 @@ $colCount = $tablero->columnas->count();
                                             </div>
                                         </div>
 
-                                        <!-- Modal confirmación eliminar -->
+
                                         <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -331,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
- <!-- Modal Bootstrap para agregar columna -->
+
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
@@ -354,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 
- <!-- Modal para crear sprint -->
+
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
@@ -386,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 
-<!-- Modal para confirmar eliminación de columna (fuera del modal de sprint) -->
+
 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="formEliminarColumna" method="POST" action="">
@@ -415,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 
-    <!-- AJAX para actualizar nombre -->
+
     <script>
         setTimeout(function() {
             const alert = document.getElementById('success-alert');
@@ -742,6 +749,9 @@ document.addEventListener('DOMContentLoaded', function () {
         display: block;
         opacity: 1;
         transform: translateY(0);
+    }
+    .container.py-2 {
+        margin-top: -40px !important;
     }
 </style>
 
