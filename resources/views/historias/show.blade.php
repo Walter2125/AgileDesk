@@ -312,7 +312,4 @@
         </form>
     </div>
 </div>
-    DOminio de correos modificable y que se puedan loguear docentes
-    -- ponerle de fondo la imagen que habia antes del tablero
-
     @endsection

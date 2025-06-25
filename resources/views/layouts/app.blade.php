@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
-    
+
     <!-- Prevenir flash en modo oscuro - Script inline para carga inmediata -->
     <script>
         // Se ejecuta antes que cualquier otro recurso
@@ -16,7 +16,7 @@
                 // Aplica estilos críticos inmediatamente para evitar flash
                 document.documentElement.style.backgroundColor = '#121218';
                 document.documentElement.classList.add('dark-mode-preload');
-                
+
                 // Inyecta un estilo básico en el head para aplicar colores oscuros inmediatamente
                 var style = document.createElement('style');
                 style.textContent = `
@@ -1143,6 +1143,11 @@
                         <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
+                        </a>
+
+                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-columns-gap"></i>
+                            <span class="sidebar-text">Sprint</span>
                         </a>
                     @endif
 

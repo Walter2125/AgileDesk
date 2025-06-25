@@ -42,14 +42,18 @@ $colCount = $tablero->columnas->count();
 
                         @endif
 
-        <!-- Contenedor para select y botones -->
-        <div class="d-flex align-items-center flex-wrap gap-3">
 
-            <!-- Lado izquierdo: Select + Crear sprint -->
+        <div class="d-flex align-items-center gap-3 w-100 flex-nowrap overflow-auto" style="padding-bottom: 1rem;">
+
+            <!-- Buscador que crece -->
+            <div class="input-group flex-grow-1" style="max-width: 100%;">
+                <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
+                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">✖️</button>
+            </div>
+
+            <!-- Select de Sprints (tamaño fijo) -->
             @if($tablero->sprints && $tablero->sprints->count())
-                <select class="form-select"
-                        id="sprintSelect"
-                        aria-label="Seleccionar sprint"
+                <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
                         style="min-width: 200px; max-width: 240px;">
                     <option selected disabled>Selecciona un sprint</option>
                     @foreach($tablero->sprints as $sprint)
@@ -58,37 +62,28 @@ $colCount = $tablero->columnas->count();
                 </select>
             @endif
 
-            <button class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCrearSprint"
-                    id="btnAbrirCrearSprint">
-                Crear sprint
-            </button>
+            <!-- Contenedor de botones alineado a la derecha -->
+            <div class="d-flex gap-2 ms-auto">
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint">
+                    Crear sprint
+                </button>
 
-            <!-- Lado derecho: botón agregar columna -->
-            <button class="btn btn-primary ms-auto"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalAgregarColumna">
-                Agregar columna
-            </button>
-        </div>
-
-        <!-- Lado derecho: código del proyecto -->
-    <div class="text-muted fw-bold">
-        Código: {{ $tablero->project->codigo }}
-    </div>
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna">
+                    Agregar columna
+                </button>
+            </div>
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
 <div class="overflow-auto pb-3 mt-3" style="width: 100%; padding-left: 20px;">
 
 
-<div class="input-group mb-3" style="width: 55%;">
-    <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
-    <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
-        ✖️
-    </button>
-</div>
+
 
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
@@ -99,10 +94,8 @@ $colCount = $tablero->columnas->count();
                             @if($columna->es_backlog)
                                 <strong>{{ $columna->nombre }}</strong>
                             @else
-                                <input type="text"
-                                       value="{{ $columna->nombre }}"
-                                       class="form-control form-control-sm me-2 editable-title"
-                                       data-column-id="{{ $columna->id }}">
+                                <strong>{{ $columna->nombre }}</strong>
+
                             @endif
 
                                 <div class="menu-wrapper">
