@@ -12,7 +12,7 @@
                 <!-- Nombre -->
                 <div class="form-group mb-3">
                     <label for="name">Nombre del Proyecto</label>
-                    <input id="name" type="text"
+                    <input id="name" type="text" maxlength="50"
                         class="form-control @error('name') is-invalid @enderror"
                         name="name"
                         value="{{ old('name') }}"

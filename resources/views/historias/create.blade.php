@@ -32,7 +32,7 @@
 
     <form action="{{ route('historias.store') }}" method="POST">
         @csrf
-       <!-- <h1 class="titulo-historia">Crea una nueva Historia</h1>-->
+
 
         <input type="hidden" name="proyecto_id" value="{{ $proyecto ? $proyecto->id : '' }}">
         <input type="hidden" name="columna_id" value="{{ $columna ? $columna->id : '' }}">
@@ -42,7 +42,7 @@
 
         <div class="mb-3 ">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
-            <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ old('nombre') }}" >
+            <input type="text" name="nombre" id="nombre" class="form-control rounded" maxlength="100" value="{{ old('nombre') }}" >
         </div>
 
 
@@ -110,7 +110,7 @@
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
+            <textarea name="descripcion" id="descripcion" maxlength="5000" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
         </div>
 
         <div class="mb-3 d-flex justify-content-end">

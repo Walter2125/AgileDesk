@@ -27,7 +27,7 @@
             <!-- Nombre -->
             <div class="mb-4">
                 <label for="nombre" class="form-label fw-bold">Nombre de la Tarea <span class="text-danger">*</span></label>
-                <input type="text" name="nombre" id="nombre" class="form-control" value="{{ $tarea->nombre }}" required>
+                <input type="text" name="nombre" id="nombre" class="form-control" maxlength="100" value="{{ $tarea->nombre }}" required>
             </div>
 
             <!-- Descripción -->

@@ -97,14 +97,14 @@ private function compartirContextoDesdeColumna(Columna $columna)
     public function store(Request $request)
     {
         $request -> validate([
-            'nombre' => ['required','string','min:3','max:255',
+            'nombre' => ['required','string','min:3','max:100',
                 Rule::unique('historias')->where(function ($query) use ($request) {
                     return $query->where('proyecto_id', $request->proyecto_id);
                 }),
             ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
              'proyecto_id' => 'required|exists:nuevo_proyecto,id',
             'columna_id' => 'nullable|exists:columnas,id',
 
@@ -230,7 +230,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
             'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',
             'columna_id' => 'nullable|exists:columnas,id',

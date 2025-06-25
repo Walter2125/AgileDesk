@@ -32,7 +32,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name|max:30',
+            'name' => 'required|unique:nuevo_proyecto,name|max:50',
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',

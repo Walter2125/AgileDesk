@@ -106,8 +106,8 @@
             @csrf
 
             <div class="mb-4">
-                <label for="nombre" class="form-label fw-bold">Nombre de la Tarea <span class="text-danger">*</span></label>
-                <input type="text" name="nombre" id="nombre"
+                <label for="nombre" class="form-label fw-bold" >Nombre de la Tarea <span class="text-danger">*</span></label>
+                <input type="text" name="nombre" id="nombre" maxlength="100"
                        class="form-control @error('nombre') is-invalid @enderror"
                        value="{{ old('nombre') }}" required>
                 @error('nombre')

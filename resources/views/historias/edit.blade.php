@@ -28,7 +28,7 @@
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
-            <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ $historia->nombre }}" >
+            <input type="text" name="nombre" id="nombre" class="form-control rounded" maxlength="100" value="{{ $historia->nombre }}" >
         </div>
 
 
@@ -93,7 +93,7 @@
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ $historia->descripcion }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control" maxlength="5000" rows="4">{{ $historia->descripcion }}</textarea>
         </div>
 
 

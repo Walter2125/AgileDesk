@@ -17,7 +17,7 @@
                     <!-- Nombre -->
                     <div class="form-group mb-3">
                         <label for="name">Nombre del Proyecto</label>
-                        <input id="name" type="text" class="form-control" name="name"
+                        <input id="name" type="text" class="form-control" name="name" maxlength="50"
                                value="{{ old('name', $project->name) }}" required autocomplete="off">
                     </div>
                     <!-- Descripción -->
