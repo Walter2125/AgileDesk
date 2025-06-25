@@ -110,7 +110,7 @@
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
+            <textarea name="descripcion" id="descripcion" maxlength="5000" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
         </div>
 
         <div class="mb-3 d-flex justify-content-end">

@@ -104,7 +104,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
              'proyecto_id' => 'required|exists:nuevo_proyecto,id',
             'columna_id' => 'nullable|exists:columnas,id',
 
@@ -230,7 +230,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
             'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',
             'columna_id' => 'nullable|exists:columnas,id',

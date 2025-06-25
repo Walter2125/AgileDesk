@@ -32,23 +32,30 @@
                 </script>
             @endif
 
-            <div class="historia-header">
-                    <h2 class="historia-title"
-                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; display: block;"
-                        title="{{ $historia->nombre }}">
-                        H{{ $historia->numero }} {{  $historia->nombre }}
-                    </h2>
-                    <div class="historia-meta">
-                        <span class="badge bg-primary">{{ $historia->prioridad }}</span>
-                        <span class="badge bg-secondary">{{ $historia->trabajo_estimado }} horas</span>
+ <div class="historia-header">
+                    <div class="historia-header d-flex justify-content-between align-items-start">
+
+                        <div>
+                            <h2 class="historia-title mb-1" 
+                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;"
+                                title="{{ $historia->nombre }}">
+                                H{{ $historia->numero }} {{ $historia->nombre }}
+                            </h2>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-primary">{{ $historia->prioridad }}</span>
+                                <span class="badge bg-secondary">{{ $historia->trabajo_estimado }} horas</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case" data-bs-toggle="tooltip" title="Crea una Tarea"><i class="bi bi-plus-lg"></i></a>
+                                          
                     </div>
 
-                <div class="historia-content">
+                    <div class="historia-content">
 
-                    <div class="historia-section ">
-                        <h3 class="section-title">Descripción</h3>
-                        <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
-                                    {{ $historia->descripcion }}
+                        <div class="historia-section ">
+                            <h3 class="section-title">Descripción</h3>
+                            <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
+                                        {{ $historia->descripcion }}
                         </div>
                     </div>
     
@@ -78,34 +85,30 @@
                             </div>
                                 
                         </div>
-                            <table class="table table-borderless mt-3">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">
-                                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                                <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case">Tareas</a>
 
-                                                <div>
-                                                    <a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Atrás</a>
+                                               <div class="d-flex justify-content-end align-items-center mt-4 pt-3 border-top gap-2">
+                                                <a href="{{ route('tableros.show', $historia->proyecto_id) }}" 
+                                                class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white normal-case">
+                                                Atrás
+                                                </a>
+                                                
+                                                <a href="{{ route('historias.edit', $historia->id) }}" 
+                                                class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 normal-case">
+                                                Editar
+                                                </a>
 
-                                                    <a href="{{ route('historias.edit', $historia->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Editar</a>
-
-                                                    <form action="{{ route('historias.destroy', $historia->id) }}" method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                            class="inline-block bg-red-400 border border-red-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-600 mr- normal-case"
+                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="post" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button"
+                                                            class="inline-block bg-red-400 border border-red-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-600 normal-case"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#deleteHistoriaModal{{ $historia->id }}">
                                                             Borrar
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                                    </button>
+                                                </form>
                                             </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
+
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content rounded-4 shadow">
