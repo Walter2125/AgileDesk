@@ -30,7 +30,7 @@ class TareaController extends Controller
     public function store(Request $request, Historia $historia)
     {
         $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string', // ← ahora obligatorio
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
         ]);
@@ -51,7 +51,7 @@ class TareaController extends Controller
     public function update(Request $request, Historia $historia, Tarea $tarea)
     {
         $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string', 
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
         ]);
