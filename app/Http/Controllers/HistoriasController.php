@@ -97,7 +97,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
     public function store(Request $request)
     {
         $request -> validate([
-            'nombre' => ['required','string','min:3','max:255',
+            'nombre' => ['required','string','min:3','max:100',
                 Rule::unique('historias')->where(function ($query) use ($request) {
                     return $query->where('proyecto_id', $request->proyecto_id);
                 }),
