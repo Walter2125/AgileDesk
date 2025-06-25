@@ -614,7 +614,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
+
 </script>
+<script>
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.toggler').forEach(function (checkbox) {
+            const menuWrapper = checkbox.closest('.menu-wrapper');
+            if (menuWrapper && !menuWrapper.contains(e.target)) {
+                checkbox.checked = false;
+            }
+        });
+    });
+</script>
+
 <style>
     .menu-wrapper {
         position: relative;
