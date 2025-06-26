@@ -23,10 +23,11 @@
                 --primary-blue: #62b0f0;
                 --dark-blue: #2d3a4d;
                 --accent-green: #4dd0b4;
-                --auth-bg-image: url("{{ asset('img/agiledesk3.png') }}");
+                --auth-bg-image: url("{{ asset('img/trabajo.png') }}");
             }
 
-            * {
+
+             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
@@ -34,12 +35,11 @@
 
             html, body {
                 height: 100%;
-                overflow: hidden;
-                max-width: 100vw;
-                position: fixed;
                 width: 100%;
+                overflow: hidden;
             }
 
+            /* Contenedor principal con imagen de fondo en vista completa */
             .auth-container {
                 position: fixed;
                 top: 0;
@@ -49,22 +49,30 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                background-color: #fff;
+                 background:
+                    /* Overlay semi-transparente para mejor legibilidad */
+                    linear-gradient(rgba(255, 255, 255, 0.573), rgba(255, 255, 255, 0.61)),
+                    /* Imagen de fondo en vista completa */
+                    var(--auth-bg-image) center/cover no-repeat fixed;
                 padding: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
+                width: 100vw;
+                height: 100vh;
+                z-index: 1;
             }
 
+             /* Contenedor de la tarjeta de autenticación */
             .auth-card {
                 background: #fff;
                 display: flex;
                 width: 100%;
-                height: 100%;
-                max-height: 100vh;
+                max-width: 1000px;
+                height: auto;
+                max-height: 90vh;
                 overflow: auto;
-                box-shadow: none;
-                transition: all 0.3s ease;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                z-index: 2;
+                position: relative;
             }
 
             .auth-sidebar {
@@ -1345,46 +1353,36 @@
                     });
                 });
 
-                // Email validation for @unah.hn domain
-                const emailInputs = document.querySelectorAll('input[type="email"]');
+                // Validación de email para dominio @unah.hn
+                document.querySelectorAll('input[type="email"]').forEach(input => {
+                    const contenedor = input.closest('.form-group') || input.parentElement;
+                    let mensaje = contenedor.querySelector('.email-validation-message');
 
-                emailInputs.forEach(input => {
-                    const parentDiv = input.closest('.form-group') || input.parentElement;
-                    let validationMessage = parentDiv.querySelector('.email-validation-message');
-
-                    // Create validation message element if it doesn't exist
-                    if (!validationMessage) {
-                        validationMessage = document.createElement('p');
-                        validationMessage.className = 'email-validation-message text-xs mt-1';
-                        validationMessage.style.display = 'none';
-
-                        // Insert after the input or after existing error messages
-                        const existingError = parentDiv.querySelector('.text-red-400');
-                        if (existingError) {
-                            existingError.parentNode.insertBefore(validationMessage, existingError.nextSibling);
-                        } else {
-                            input.parentNode.insertBefore(validationMessage, input.nextSibling);
-                        }
+                    // Crear elemento de mensaje si no existe
+                    if (!mensaje) {
+                        mensaje = document.createElement('p');
+                        mensaje.className = 'email-validation-message text-xs mt-1 hidden';
+                        contenedor.appendChild(mensaje);
                     }
 
-                    input.addEventListener('input', function() {
-                        const email = this.value.trim();
-                        const unahEmailPattern = /^[a-zA-Z0-9._%+-]+@unah\.hn$/i;
+                    input.addEventListener('input', () => {
+                        const email = input.value.trim();
+                        const esValido = /^[a-zA-Z0-9._%+-]+@(unah\.hn|unah\.edu\.hn)$/i.test(email);
 
                         if (email === '') {
-                            validationMessage.style.display = 'none';
-                            this.style.borderBottomColor = 'rgba(255, 255, 255, 0.2)';
-                        } else if (unahEmailPattern.test(email)) {
-                            validationMessage.textContent = '✓ Email UNAH valido';
-                            validationMessage.className = 'email-validation-message text-xs mt-1 text-green-400';
-                            validationMessage.style.display = 'block';
-                            this.style.borderBottomColor = '#4ade80';
-                        } else {
-                            validationMessage.textContent = '✗ Solo @unah.hn emails permitidos';
-                            validationMessage.className = 'email-validation-message text-xs mt-1 text-red-400';
-                            validationMessage.style.display = 'block';
-                            this.style.borderBottomColor = '#ef4444';
+                            mensaje.classList.add('hidden');
+                            input.style.borderBottomColor = 'rgba(255, 255, 255, 0.2)';
+                            return;
                         }
+
+                        // Configurar mensaje y estilos según validación
+                        mensaje.textContent = esValido
+                            ? '✓ Email UNAH válido'
+                            : '✗ Solo se permiten emails @unah.hn o @unah.edu.hn';
+
+                        mensaje.className = `email-validation-message text-xs mt-1 ${esValido ? 'text-green-400' : 'text-red-400'}`;
+                        mensaje.classList.remove('hidden');
+                        input.style.borderBottomColor = esValido ? '#4ade80' : '#ef4444';
                     });
                 });
             });

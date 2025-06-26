@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
-
+ <!-- Modal Bootstrap para agregar columna -->
     <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     </div>
 
-
+ <!-- Modal para crear sprint -->
     <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
@@ -532,7 +532,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function abrirModalEliminarColumna(columnaId) {
         columnaIdParaEliminar = columnaId;
         const form = document.getElementById('formEliminarColumna');
-        form.action = `/columnas/${columnaId}`; // URL para eliminar columna (ajusta si usas prefijo)
+
+        // Asegurar que la URL comience con "/" para que sea una ruta absoluta
+        // y agregar el prefijo de administrador para acceder a la ruta correcta
+        form.action = `/admin/columnas/${columnaId}`;
 
         // Resetea el input modo por si acaso
         document.getElementById('modoEliminar').value = '';

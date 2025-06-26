@@ -7,30 +7,6 @@
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
 
-    <!-- Prevenir flash en modo oscuro - Script inline para carga inmediata -->
-    <script>
-        // Se ejecuta antes que cualquier otro recurso
-        (function() {
-            // Verifica si el modo oscuro está activado en localStorage
-            if (localStorage.getItem('darkMode') === 'enabled') {
-                // Aplica estilos críticos inmediatamente para evitar flash
-                document.documentElement.style.backgroundColor = '#121218';
-                document.documentElement.classList.add('dark-mode-preload');
-
-                // Inyecta un estilo básico en el head para aplicar colores oscuros inmediatamente
-                var style = document.createElement('style');
-                style.textContent = `
-                    body { background-color: #121218 !important; color: #f0f0f5 !important; }
-                    .navbar, .sidebar, .card { background-color: #1e1e2a !important; }
-                `;
-                document.head.appendChild(style);
-            }
-        })();
-    </script>
-
-    <!-- Cargar los estilos de modo oscuro lo antes posible -->
-    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
-
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
@@ -47,8 +23,15 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
+    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
 
     <style>
     /* Reset CSS para eliminar espacios por defecto */
@@ -464,6 +447,7 @@
 
     /* User dropdown in sidebar */
     .user-dropdown {
+        position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: auto;
     }
@@ -519,7 +503,7 @@
         transform: none !important;
         margin-bottom: 0.5rem;
         min-width: 200px;
-        z-index: 1050;
+        z-index: 9999 !important;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -1144,11 +1128,6 @@
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
-
-                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
-                            <i class="bi bi-columns-gap"></i>
-                            <span class="sidebar-text">Sprint</span>
-                        </a>
                     @endif
 
 
@@ -1386,62 +1365,6 @@
             }
         });
 
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar el sidebar con el estado guardado
-            initializeSidebar();
-
-            // Inicializar dropdowns de Bootstrap
-            if (typeof bootstrap !== 'undefined') {
-                console.log('Bootstrap está cargado correctamente');
-
-                // Inicializar todos los dropdowns
-                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                console.log('Elementos dropdown encontrados:', dropdownElements.length);
-
-                dropdownElements.forEach(function(element, index) {
-                    try {
-                        var dropdown = new bootstrap.Dropdown(element);
-                        console.log('Dropdown inicializado:', index, element);
-
-                    } catch (error) {
-                        console.error('Error inicializando dropdown:', error, element);
-                    }
-                });
-
-            } else {
-                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
-
-                // Fallback manual completo si Bootstrap no está disponible
-                const userDropdown = document.querySelector('#userDropdown');
-                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-
-                if (userDropdown && dropdownMenu) {
-                    userDropdown.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const isOpen = dropdownMenu.classList.contains('show');
-
-                        if (isOpen) {
-                            dropdownMenu.classList.remove('show');
-                            this.setAttribute('aria-expanded', 'false');
-                        } else {
-                            dropdownMenu.classList.add('show');
-                            this.setAttribute('aria-expanded', 'true');
-                        }
-                    });
-
-                    // Cerrar dropdown al hacer clic fuera
-                    document.addEventListener('click', function(e) {
-                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                            dropdownMenu.classList.remove('show');
-                            userDropdown.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-                }
-            }
-
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1451,7 +1374,6 @@
                         closeBtn.click();
                     }
                 }, 5000);
-            });
         });
 
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
@@ -1682,6 +1604,25 @@
                 windowSize: `${window.innerWidth}x${window.innerHeight}`
             });
         });
+    </script>
+
+    <script>
+    // Mantén solo este código para el sidebar
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar el sidebar con el estado guardado
+        initializeSidebar();
+
+        // Código para cerrar alerts automáticamente
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const closeBtn = alert.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.click();
+                }
+            }, 5000);
+        });
+    });
     </script>
 
     <!-- Scripts adicionales de las secciones -->

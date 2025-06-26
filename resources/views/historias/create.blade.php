@@ -37,7 +37,7 @@
 
     <form action="{{ route('historias.store') }}" method="POST">
         @csrf
-       <!-- <h1 class="titulo-historia">Crea una nueva Historia</h1>-->
+
 
         <input type="hidden" name="proyecto_id" value="{{ $proyecto ? $proyecto->id : '' }}">
         <input type="hidden" name="columna_id" value="{{ $columna ? $columna->id : '' }}">
@@ -47,7 +47,7 @@
 
         <div class="mb-3 ">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
-            <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ old('nombre') }}" >
+            <input type="text" name="nombre" id="nombre" class="form-control rounded" maxlength="100" value="{{ old('nombre') }}" >
         </div>
 
 
@@ -81,7 +81,7 @@
             </select>
         </div>
 
-        @if ($columnas && $columnas->isNotEmpty())
+        @if ($columna && $columnas->isNotEmpty())
             <div class="mb-3">
                 <label for="columna_id" class="form-label">Estado</label>
                 <select name="columna_id" id="columna_id" class="form-control">
@@ -115,15 +115,16 @@
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
+            <textarea name="descripcion" id="descripcion" maxlength="5000" class="form-control" rows="4">{{ old('descripcion') }}</textarea>
         </div>
 
         <div class="mb-3 d-flex justify-content-end">
              <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}"
-               class="btn btn-secondary me-2">
+               class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case me-2">
                 Cancelar
             </a>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar</button>
+            
         </div>
     </form>
 </div>

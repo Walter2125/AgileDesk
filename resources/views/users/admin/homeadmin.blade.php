@@ -460,28 +460,38 @@
 <!-- Modal para confirmar eliminación de usuario -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteUserModalLabel">Confirmar Eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-                <p>¿Está seguro de que desea eliminar al usuario <strong id="deleteUserName"></strong>?</p>
-                <p class="text-muted small">Este usuario será eliminado de forma segura y podrá ser restaurado más tarde.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form id="deleteUserForm" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Eliminar Usuario
-                    </button>
-                </form>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <h5 class="modal-title text-danger" id="deleteUserModalLabel">Confirmar Eliminación</h5>
+                    <h5 class="modal-title text-danger">¿Deseas eliminar este usuario?</h5>
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                    <div class="alert alert-danger d-flex align-items-center mt-3">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        <div>
+                            "<strong><span id="deleteUserName"></span></strong>" será eliminado permanentemente.
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="deleteUserForm" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <!-- Modal para confirmar restauración de usuario -->
 <div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
