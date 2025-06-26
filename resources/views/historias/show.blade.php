@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title')
-<<<<<<< HEAD
        @section('title')
          @section('mensaje-superior')
             Detalle de Historia 
@@ -9,14 +8,15 @@
         @endsection
     
     
-=======
+
     @section('mensaje-superior')
         <div class="mt-4 text-lg font-semibold text-blue-600">
             <h1 class="titulo-historia">Detalle de la Historia</h1>
         </div>
     @endsection
         @endsection
->>>>>>> main
+    
+    
 
 @section('content')
 
@@ -45,7 +45,7 @@
  <div class="historia-header">
                     <div class="historia-header d-flex justify-content-between align-items-start">
 
-<<<<<<< HEAD
+
                 
                 
     <div class="historia-header">
@@ -66,6 +66,22 @@
                 <div class="historia-content">
 
                    
+ <div class="historia-header">
+                    <div class="historia-header d-flex justify-content-between align-items-start">
+
+                        <div>
+                            <h2 class="historia-title mb-1" 
+                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;"
+                                title="{{ $historia->nombre }}">
+                                H{{ $historia->numero }} {{ $historia->nombre }}
+                            </h2>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-primary">{{ $historia->prioridad }}</span>
+                                <span class="badge bg-secondary">{{ $historia->trabajo_estimado }} horas</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case" data-bs-toggle="tooltip" title="Crea una Tarea"><i class="bi bi-plus-lg"></i></a>
+                                          
                     </div>
                 <div class="historia-section ">
                     <h3 class="section-title">Descripción</h3>
@@ -160,8 +176,7 @@
             @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
                 <div class="border rounded-4 p-4 mb-4 bg-white shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-=======
->>>>>>> main
+
                         <div>
                             <h2 class="historia-title mb-1" 
                                 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;"
@@ -497,6 +512,18 @@
             </div>
         </div>
 
+<!-- Modal Nuevo Comentario -->
+<div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="Sbackground-color: #f9fafb;">
+        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+            @csrf
+            <div class="flex items-center mb-4">
+                <i class="bi bi-chat-left-text-fill text-primary fs-2 me-3"></i>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+                    <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
+                </div>
+            </div>
             <!-- Modal Nuevo Comentario -->
             <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="background-color: #f9fafb;">
@@ -531,7 +558,7 @@
             </div>
 </div>
 
-<<<<<<< HEAD
+
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="Sbackground-color: #f9fafb;">
@@ -565,9 +592,5 @@
         </form>
     </div>
 </div>
- 
- 
-=======
->>>>>>> main
 
     @endsection
