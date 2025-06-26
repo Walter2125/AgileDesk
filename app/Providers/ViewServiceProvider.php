@@ -38,8 +38,8 @@ class ViewServiceProvider extends ServiceProvider
 
             // Si $historia es un ID, lo buscamos como modelo con sus relaciones
             if (is_numeric($historiaParam)) {
-                $historia = \App\Models\Historia::with('columna.tablero')->find($historiaParam);
-            } elseif ($historiaParam instanceof \App\Models\Historia) {
+                $historia = Historia::with('columna.tablero')->find($historiaParam);
+            } elseif ($historiaParam instanceof Historia) {
                 $historia = $historiaParam->load('columna.tablero');
             }
 
@@ -272,7 +272,7 @@ class ViewServiceProvider extends ServiceProvider
                         ['label'=>'Crear tarea'],
                     ];
                 },
-                'tareas.store'   => 'tareas.index',
+                'tareas.store'=> 'tareas.index',
                 'tareas.edit' => function() use ($tablero, $historia) {
                     if (!$tablero || !$historia) {
                         return [
@@ -291,8 +291,7 @@ class ViewServiceProvider extends ServiceProvider
                     ];
                 },
                 'tareas.update'  => 'tareas.edit',
-                'tareas.destroy' => 'tareas.index',
-                'tareas.show' => function() use ($tablero, $historia) {
+                'tareas.destroy' => 'tareas.index','tareas.show' => function() use ($tablero, $historia) {
                     if (!$tablero || !$historia) {
                         return [
                             ['label'=>'Inicio','url'=>route('dashboard')],

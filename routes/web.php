@@ -122,7 +122,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
 
         //historial de cambios
-        Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
+        Route::get('
+        ', [HistorialCambioController::class, 'index'])->name('historial.index');
 
         // CRUD de proyectos
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
