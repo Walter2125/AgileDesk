@@ -74,7 +74,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
                 $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
 
-                // Obtener columnas del primer tablero del proyecto, si existe
                 if ($proyecto->tablero) {
                     $columnas = $proyecto->tablero->columnas;
                 }
@@ -85,14 +84,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas'));
     }
 
-
-
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request -> validate([
@@ -108,7 +99,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'sprint_id' => 'nullable|exists:sprints,id',
 
         ],
-[   'nombre.required' => 'El nombre es obligatorio.',
+        [   'nombre.required' => 'El nombre es obligatorio.',
             'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
             'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
              'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
@@ -118,18 +109,18 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
             'prioridad.required' => 'Debe seleccionar una prioridad.',
             'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
-
-
-
         ]);
 
 
 
-        // Verificar si se proporciona una columna válida
-        $columna = null;
-        if ($request->columna_id) {
-            $columna = Columna::with('tablero')->findOrFail($request->columna_id);
-        }
+        // Obtener el proyecto
+        $proyecto = Project::findOrFail($request->proyecto_id);
+
+        // Contar cuántas historias ya tiene este proyecto
+        $numeroHistoria = Historia::where('proyecto_id', $proyecto->id)->count() + 1;
+
+        // Crear código como PROY01-H1
+        $codigoHistoria = $proyecto->codigo . '-H' . $numeroHistoria;
 
         $historia = new Historia();
         $historia->nombre = $request->nombre;
@@ -138,31 +129,26 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $historia->descripcion = $request->descripcion;
         $historia->proyecto_id = $request->proyecto_id;
         $historia->columna_id = $request->columna_id;
-
         $historia->tablero_id = $request->tablero_id;
-       $historia->usuario_id = $request->usuario_id;
+        $historia->usuario_id = $request->usuario_id;
         $historia->sprint_id = $request->sprint_id;
+
+        // Asignar el código generado
+        $historia->codigo = $codigoHistoria;
 
         $historia->save();
 
+        return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
+                 ->with('success', 'Historia creada con código ' . $codigoHistoria);
 
-    return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
-                     ->with('success', 'Historia creada con éxito');
     }
 
     protected function obtenerProjectIdDeOtraForma(Historia $historia)
     {
-        // Aquí tienes que definir cómo obtener el project_id cuando la historia no tiene columna.
-
-        // Algunas ideas:
-        // 1. Si tienes un campo 'project_id' en la tabla historias:
         if (isset($historia->proyecto_id)) {
             return $historia->proyecto_id;
         }
 
-        // 2. Si puedes obtenerlo por otra relación o lógica, implementa aquí esa lógica.
-
-        // 3. Si no tienes forma, puedes devolver null o lanzar un error controlado:
         return null;
     }
 
@@ -249,11 +235,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
             ->with('success', 'Historia editada con éxito');
     }
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
    public function destroy(Historia $historia)
         {
             $proyectoId = $historia->proyecto_id; // Guardas el ID antes de eliminar
@@ -312,4 +293,4 @@ private function compartirContextoDesdeColumna(Columna $columna)
     }
 }
 
-}
+}          

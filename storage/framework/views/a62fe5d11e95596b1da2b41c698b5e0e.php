@@ -1,13 +1,17 @@
-     <?php $__env->startSection('mensaje-superior'); ?>
-        Proyectos
-    <?php $__env->stopSection(); ?>
+ 
+<?php $__env->startSection('mensaje-superior'); ?>
+    Proyectos
+<?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('styles'); ?>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-    /* Project Card Styling */
     .projects-container {
         margin-top: 2rem;
     }
-    
+
     .project-card {
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
@@ -19,20 +23,19 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .project-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
     }
-    
+
     .project-card .card-body {
         padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
-    
-    /* Project Header  */
+
     .project-header {
         display: flex;
         justify-content: space-between;
@@ -40,12 +43,12 @@
         margin-bottom: 0.8rem;
         width: 100%;
     }
-    
+
     .project-title-wrapper {
         flex: 1;
         text-align: left;
     }
-    
+
     .project-title {
         color: #2c3e50;
         font-weight: 700;
@@ -57,27 +60,26 @@
         justify-content: flex-start;
         width: 100%;
     }
-    
+
     .project-title i {
         color: #3498db;
         font-size: 1.1rem;
         flex-shrink: 0;
     }
-    
+
     .project-code {
         font-size: 0.82rem;
         color: #6c757d;
         text-align: left;
     }
-    
-    /* Project Dates */
+
     .date-info {
-    display: flex;
-    justify-content: space-between; 
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    color: #5d6778;
-    font-size: 0.82rem;
+        display: flex;
+        justify-content: space-between; 
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        color: #5d6778;
+        font-size: 0.82rem;
     }
 
     .date-block {
@@ -89,13 +91,12 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .date-block i {
         color: #6c757d;
         font-size: 0.75rem;
     }
-    
-    /* Project Description */
+
     .project-description {
         margin: 0.5rem 0;
         font-size: 0.92rem;
@@ -104,72 +105,67 @@
         text-align: left;
         line-height: 1.5;
     }
-    
-    /* Action Buttons */
+
     .action-buttons {
         display: flex;
         gap: 0.6rem;
         margin-top: 1.2rem;
     }
-    
+
     .action-buttons .btn {
-    flex: 1;
-    min-width: 0;
-    border-radius: 50px;
-    padding: 0.5rem 0.7rem;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-    font-weight: 600;
-    white-space: nowrap;
-    height: 40px;
-    text-align: center;
+        flex: 1;
+        min-width: 0;
+        border-radius: 50px;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        white-space: nowrap;
+        height: 40px;
+        text-align: center;
     }
 
-    
     .btn-view {
         background-color: #00bcd4;
         border-color: #00bcd4;
         color: white;
     }
-    
+
     .btn-edit {
         background-color: #ffc107;
         border-color: #ffc107;
         color: #212529;
     }
-    
+
     .btn-delete {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
-    
-    /* Asegurar que el formulario no afecte el tamaño del botón */
+
     .action-buttons form {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    
     .action-buttons form .btn {
         width: 100%;
     }
-    
+
     .btn-view:hover, .btn-edit:hover, .btn-delete:hover {
         transform: translateY(-2px);
     }
-    
-    /* Dropdown Options */
+
     .dropdown-card-options {
         margin-left: auto;
     }
-    
+
     .dropdown-card-options .dropdown-toggle {
         padding: 0.2rem 0.5rem;
         font-size: 0.9rem;
@@ -177,51 +173,73 @@
         background: transparent;
         border: none;
     }
-    
-    /* Resto de estilos */
-    .create-project-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        border: 2px dashed #adb5bd;
-        text-align: center;
-        padding: 2.5rem 1.5rem;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    
+
     .page-title {
-        color: #2c3e50;
-        font-weight: 800;
-        margin-bottom: 2rem;
-        font-size: 2.2rem;
-        border-left: 5px solid #3498db;
-        padding-left: 1rem;
-    }
+    color: #2c3e50;
+    font-weight: 800;
     
-    /* Responsive */
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    
+}
+
+.page-title::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    margin-top: 0.6rem;
+    background: linear-gradient(to right,rgb(6, 95, 164),rgb(35, 181, 200));
+    border-radius: 2px;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    z-index: 0;
+}
+
+.page-title a {
+    margin-left: 1rem;
+    z-index: 1;
+}
+
+
     @media (max-width: 767.98px) {
         .date-info {
             flex-direction: column;
             gap: 0.5rem;
         }
-        
+
         .action-buttons {
             flex-direction: column;
         }
-        
+
         .action-buttons .btn {
             width: 100%;
         }
-        
+
         .project-code {
             margin-left: 0;
         }
     }
+
+ .page-title {
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+.page-title::before {
+    content: none !important;
+    display: none !important;
+}
+
+h1.page-title {
+    border-bottom: none !important;
+    outline: none !important;
+}
+
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -236,134 +254,35 @@
         </div>
     <?php endif; ?>
 
-    <?php if(auth()->user()->usertype == 'admin'): ?>
-        <div class="row mb-5">
-            <div class="col-md-4 mb-4">
-                <div class="create-project-card">
-                    <p class="card-text">Comienza un nuevo proyecto colaborativo</p>
-                    <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-primary btn-create">
-                        <i class="fas fa-plus mr-2"></i> Crear Proyecto
-                    </a>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
+    
+    <h1 class="page-title">
+        Proyectos más recientes
+        <?php if(auth()->check() && auth()->user()->usertype == 'admin'): ?>
+            <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-link p-0" title="Crear nuevo proyecto">
+                <i class="fas fa-plus fa-lg text-primary"></i>
+            </a>
+        <?php endif; ?>
+    </h1>
+    <div class="row">
+        <?php $__empty_1 = true; $__currentLoopData = $recentProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php echo $__env->make('projects.project-card', ['project' => $project], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <p class="text-muted">No hay proyectos recientes aún.</p>
+        <?php endif; ?>
+    </div>
 
-    <h1 class="page-title">Proyectos más recientes</h1>
-
-    <?php if(count($projects) > 0): ?>
-        <div class="row">
-            <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="project-card card h-100">
-                        <div class="card-body">
-                            <div class="project-header">
-                                <div class="project-title-wrapper">
-                                    <h3 class="project-title">
-                                        <i class="fas fa-project-diagram"></i> 
-                                        <span><?php echo e($project->name); ?></span>
-                                    </h3>
-                                    <div class="project-code">
-                                        <strong>Código:</strong> <?php echo e($project->codigo); ?>
-
-                                    </div>
-                                </div>
-
-                                <div class="dropdown-card-options dropdown">
-                                    <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        &#x22EE; 
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo e($project->id); ?>">
-                                        <li>
-                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntegrantes<?php echo e($project->id); ?>">
-                                                Ver integrantes
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="date-info">
-                                <div class="date-block">
-                                    <i class="fas fa-calendar-alt"></i> 
-                                    <span><?php echo e($project->fecha_inicio); ?></span>
-                                </div>
-                                <div class="date-block">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span><?php echo e($project->fecha_fin); ?></span>
-                                </div>
-                            </div>
-
-                            <div class="project-description">
-                                <?php echo e(Str::limit($project->descripcion, 100)); ?>
-
-                            </div>
-
-                            <div class="action-buttons">
-                                <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-
-                                <?php if(auth()->id() === $project->user_id): ?>
-                                    <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
-                                        <?php echo csrf_field(); ?>
-                                        <?php echo method_field('DELETE'); ?>
-                                        <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal de Integrantes -->
-                <div class="modal fade" id="modalIntegrantes<?php echo e($project->id); ?>" tabindex="-1" aria-labelledby="modalLabel<?php echo e($project->id); ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo e($project->id); ?>">Integrantes del proyecto: <?php echo e($project->name); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <?php if($project->users && $project->users->count() > 0): ?>
-                                    <ul class="list-group">
-                                        <?php $__currentLoopData = $project->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <li class="list-group-item">
-                                                <strong><?php echo e($user->name); ?></strong> <br>
-                                                <small><?php echo e($user->email); ?></small>
-                                            </li>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </ul>
-                                <?php else: ?>
-                                    <p>No hay integrantes registrados en este proyecto.</p>
-                                <?php endif; ?>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </div>
-    <?php else: ?>
-        <div class="empty-state">
-            <i class="fas fa-folder-open"></i>
-            <h3>No hay proyectos disponibles</h3>
-            <p>Cuando se creen nuevos proyectos, aparecerán aquí.</p>
-            <?php if(auth()->user()->usertype == 'admin'): ?>
-                <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-primary">
-                    Crear Proyecto
-                </a>
-            <?php endif; ?>
-        </div>
-    <?php endif; ?>
+    
+    <h2 class="page-title mt-5">Todos los proyectos</h2>
+    <div class="row">
+        <?php $__empty_1 = true; $__currentLoopData = $allProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php echo $__env->make('projects.project-card', ['project' => $project], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <p class="text-muted">No hay proyectos para mostrar.</p>
+        <?php endif; ?>
+    </div>
 </div>
 <?php $__env->stopSection(); ?>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/myprojects.blade.php ENDPATH**/ ?>

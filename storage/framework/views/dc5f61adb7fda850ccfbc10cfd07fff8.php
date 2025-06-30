@@ -18,10 +18,7 @@ $colCount = $tablero->columnas->count();
             : 'width: 300px; flex-shrink: 0;';
     ?>
 
-
     <div class="container py-4" style="margin-left: 5px;">
-
-
             <!-- No borren esta nofificacion -->
                 <?php if(session('success')): ?>
                             <div class="alert alert-success mt-2" id="success-alert">
@@ -39,8 +36,7 @@ $colCount = $tablero->columnas->count();
                                     }
                                 }, 3000);
                             </script>
-
-                        <?php endif; ?>
+                <?php endif; ?>
 
             <!-- Contenedor para select y botones -->
             <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -78,13 +74,6 @@ $colCount = $tablero->columnas->count();
             </button>
         </div>
 
-        <!-- Lado derecho: código del proyecto alineado al extremo derecho -->
-            <div class="text-muted fw-bold text-end" style="margin-left: auto;">
-                Código: <?php echo e($tablero->project->codigo); ?>
-
-            </div>
-        </div>
-
         </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
@@ -96,10 +85,7 @@ $colCount = $tablero->columnas->count();
     <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
         ✖️
     </button>
-</div>
-
-
-
+        </div>
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 <?php $__currentLoopData = $tablero->columnas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $columna): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="bg-white border rounded shadow-sm d-flex flex-column "
@@ -129,9 +115,6 @@ $colCount = $tablero->columnas->count();
                                         </ul>
                                     </div>
                                 </div>
-
-
-
                         </div>
 
                         <div class="p-2 border-bottom">
@@ -153,7 +136,7 @@ $colCount = $tablero->columnas->count();
                                                 <strong class="d-block text-truncate"
                                                         style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                                                         title="<?php echo e($historia->nombre); ?>">
-                                                     H<?php echo e($historia->numero); ?> <?php echo e($historia->nombre); ?>
+                                                     <?php echo e($historia->codigo); ?> <?php echo e($historia->nombre); ?>
 
                                                 </strong>
                                                 <?php if($historia->descripcion): ?>
@@ -218,9 +201,7 @@ $colCount = $tablero->columnas->count();
                                 </div>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-
                         <!-- fin-->
-
                 </div>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
@@ -304,7 +285,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 });
-
 
     </script>
 
@@ -484,9 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     </script>
-
-
-
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                 document.addEventListener('DOMContentLoaded', function () {
@@ -564,12 +541,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
-
-
-
-
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
@@ -604,7 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
    <script>
- document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     const buscador = document.getElementById("buscadorHistorias");
     const limpiarBtn = document.getElementById("limpiarBusqueda");
     const columnas = document.querySelectorAll(".historia-lista");
@@ -754,9 +725,6 @@ document.addEventListener('DOMContentLoaded', function () {
         transform: translateY(0);
     }
 </style>
-
-
-
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/users/admin/tablero.blade.php ENDPATH**/ ?>

@@ -1,7 +1,7 @@
-@extends('layouts.app')
-    @section('mensaje-superior')
-        Editar Proyecto: {{ $project->name }}
-    @endsection
+    <?php $__env->startSection('mensaje-superior'); ?>
+        Editar Proyecto: <?php echo e($project->name); ?>
+
+    <?php $__env->stopSection(); ?>
 
 <style>
     .search-container {
@@ -25,59 +25,74 @@
         border-radius: 15px !important;
     }
 </style>
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-fluid p-0">
         <div class="row m-0">
             <div class="col-12 p-4">
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
+                <?php if(session('success')): ?>
+                    <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+                <?php endif; ?>
 
-                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}">
-                    @csrf
-                    @method('PUT')
+                <form id="editProjectForm" method="POST" action="<?php echo e(route('projects.update', $project->id)); ?>">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
 
                     <div class="form-group mb-3">
                         <label for="name">Nombre del Proyecto</label>
                         <input id="name" type="text" class="form-control" name="name"
-                               value="{{ old('name', $project->name) }}" required maxlength="30">
+                               value="<?php echo e(old('name', $project->name)); ?>" required maxlength="30">
                     </div>
 
                     <div class="mb-3">
                         <label for="codigo" class="form-label">Código del Proyecto</label>
                         <input type="text" name="codigo" id="codigo" class="form-control"
-                            value="{{ old('codigo', $project->codigo) }}" required maxlength="10">
+                            value="<?php echo e(old('codigo', $project->codigo)); ?>" required maxlength="10">
                         <small class="form-text text-muted">Debe ser un código único (por ejemplo: PRJ001).</small>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="descripcion">{{ __('Descripción') }}</label>
+                        <label for="descripcion"><?php echo e(__('Descripción')); ?></label>
                         <textarea id="descripcion" 
-                            class="form-control @error('descripcion') is-invalid @enderror" 
+                            class="form-control <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                             name="descripcion" 
-                            rows="4">{{ old('descripcion', $project->descripcion) }}</textarea>
-                        @error('descripcion')
-                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
+                            rows="4"><?php echo e(old('descripcion', $project->descripcion)); ?></textarea>
+                        <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <span class="invalid-feedback d-block"><?php echo e($message); ?></span>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="fecha_inicio">Fecha de Inicio</label>
                         <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
-                               value="{{ old('fecha_inicio', $project->fecha_inicio) }}" required>
+                               value="<?php echo e(old('fecha_inicio', $project->fecha_inicio)); ?>" required>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="fecha_fin">Fecha de Fin</label>
                         <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
-                               value="{{ old('fecha_fin', $project->fecha_fin) }}" required>
+                               value="<?php echo e(old('fecha_fin', $project->fecha_fin)); ?>" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Administrador del Proyecto</label>
                         <div class="form-check">
                             <label class="form-check-label">
-                                {{ $project->creator->name }}
+                                <?php echo e($project->creator->name); ?>
+
                             </label>
                         </div>
                     </div>
@@ -90,34 +105,35 @@
                         </div>
 
                         <div id="usersTableContainer">
-                            @include('projects.partials.users_table', [
+                            <?php echo $__env->make('projects.partials.users_table', [
                                 'users' => $users,
                                 'selectedUsers' => $selectedUsers,
                                 'creatorId' => $project->user_id
-                            ])
+                            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                             <div class="d-flex justify-content-center mt-3">
-                                {{ $users->links() }}
+                                <?php echo e($users->links()); ?>
+
                             </div>
                         </div>
                     </div>
 
                     <div id="selectedUsersInputs">
-                        @foreach($selectedUsers as $id)
-                            <input type="hidden" name="users[]" value="{{ $id }}">
-                        @endforeach
+                        <?php $__currentLoopData = $selectedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <input type="hidden" name="users[]" value="<?php echo e($id); ?>">
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
                     <div class="form-group mt-4">
                         <button type="submit" class="btn btn-primary">Actualizar Proyecto</button>
-                        <a href="{{ route('projects.my') }}" class="btn btn-secondary">Cancelar</a>
+                        <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
     <style>
         .search-container { position: relative; }
         #searchResults {
@@ -126,13 +142,13 @@
             max-height: 300px; overflow-y: auto; display: none;
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function () {
-            let selectedUsers = @json($selectedUsers);
+            let selectedUsers = <?php echo json_encode($selectedUsers, 15, 512) ?>;
 
             function applySelections() {
                 $('input.user-checkbox, input.user-checkbox-search').each(function() {
@@ -183,7 +199,7 @@
                 const q = $(this).val().trim();
                 if (q.length < 1) return $('#searchResults').hide();
 
-                $.getJSON('{{ route("projects.searchUsers") }}', { query: q })
+                $.getJSON('<?php echo e(route("projects.searchUsers")); ?>', { query: q })
                     .done(users => {
                         if (!users.length) {
                             return $('#searchResults').html('<div class="p-2">No se encontraron usuarios</div>').show();
@@ -218,4 +234,5 @@
             updateHiddenInputs();
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/edit.blade.php ENDPATH**/ ?>

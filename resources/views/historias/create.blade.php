@@ -38,14 +38,10 @@
         <input type="hidden" name="columna_id" value="{{ $columna ? $columna->id : '' }}">
 
 
-
-
         <div class="mb-3 ">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
             <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ old('nombre') }}" >
         </div>
-
-
 
         <div class="mb-3">
             <label for="trabajo_estimado" class="form-label">Horas de trabajo estimado* </label>
