@@ -34,7 +34,8 @@
     <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
 
     <style>
-    /* Reset CSS para eliminar espacios por defecto */
+
+        /* Reset CSS para eliminar espacios por defecto */
     * {
         margin: 0;
         padding: 0;
@@ -1067,13 +1068,25 @@
             font-weight: 600;
         }
     }
-</style>
+    /* Ajustar el ancho del contenedor cuando el sidebar esté colapsado */
+    body.sidebar-collapsed #page-content-wrapper {
+        margin-left: var(--sidebar-collapsed-width);
+        width: calc(100vw - var(--sidebar-collapsed-width));
+    }
+
+    /* Ajustar el tablero para que se expanda correctamente */
+    body.sidebar-collapsed #kanban-board {
+        width: 100% !important;
+    }
+
+    </style>
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
 
 </head>
-<body class="font-sans antialiased">
+
+
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
