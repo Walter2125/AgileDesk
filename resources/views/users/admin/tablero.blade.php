@@ -11,11 +11,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
     @php
-
-
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
             ? 'flex: 1 1 0; max-width: none;'
@@ -96,8 +92,7 @@
 
                         @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
-                                 style="{{ $widthStyle }} min-height: 600px; max-height: 600px;">
-
+                                 style="{{ $widthStyle }} min-height: 520px; max-height: 520px;">
 
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
@@ -419,6 +414,7 @@
                             </button>
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
