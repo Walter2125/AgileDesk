@@ -53,38 +53,41 @@ $colCount = $tablero->columnas->count();
                     </select>
                 @endif
 
-                <!-- Botón para agregar columna -->
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalAgregarColumna">
-                    Agregar columna
-                </button>
+                <div class="container-fluid">
+    <!-- Fila de buscador y botones -->
+    <div class="row align-items-center mb-3">
 
-                <!-- Botón para crear sprint -->
-                <button class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalCrearSprint"
-                        id="btnAbrirCrearSprint">
-                    Crear sprint
+        <!-- Barra de búsqueda -->
+        <div class="col-12 col-md-8 mb-2 mb-md-0">
+            <div class="input-group">
+                <input type="text" id="buscadorHistorias" class="form-control" placeholder=" Buscar historia por nombre...">
+                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
+                    ✖️
                 </button>
             </div>
-            <!-- Lado derecho: código del proyecto -->
-    <div class="text-muted fw-bold">
-        Código: {{ $tablero->project->codigo }}
-    </div>
         </div>
+
+        <!-- Botones -->
+        <div class="col-12 col-md-4 text-md-end">
+            <button class="btn btn-primary me-2 mb-2 mb-md-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgregarColumna">
+                Agregar columna
+            </button>
+
+            <button class="btn btn-outline-primary mb-2 mb-md-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCrearSprint"
+                    id="btnAbrirCrearSprint">
+                Crear sprint
+            </button>
+        </div>
+
+    </div>
+</div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
 <div class="overflow-auto pb-3 mt-3" style="width: 100%; padding-left: 20px;">
-
-
-<div class="input-group mb-3" style="width: 55%;">
-    <input type="text" id="buscadorHistorias" class="form-control" placeholder="🔍 Buscar historia por nombre...">
-    <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
-        ✖️
-    </button>
-</div>
-
 
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
@@ -296,8 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 });
-
-
     </script>
 
     <script>
@@ -477,8 +478,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
 
-
-
             <script>
                 // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                 document.addEventListener('DOMContentLoaded', function () {
@@ -559,10 +558,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
-
-
-
-
 
 
     <script>
@@ -749,7 +744,5 @@ document.addEventListener('DOMContentLoaded', function () {
         transform: translateY(0);
     }
 </style>
-
-
 
 @endsection
