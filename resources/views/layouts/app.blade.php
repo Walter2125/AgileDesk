@@ -34,7 +34,8 @@
     <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
 
     <style>
-    /* Reset CSS para eliminar espacios por defecto */
+
+        /* Reset CSS para eliminar espacios por defecto */
     * {
         margin: 0;
         padding: 0;
@@ -756,13 +757,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -774,7 +775,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-        
+
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1067,14 +1068,25 @@
             font-weight: 600;
         }
     }
-    
-</style>
+    /* Ajustar el ancho del contenedor cuando el sidebar esté colapsado */
+    body.sidebar-collapsed #page-content-wrapper {
+        margin-left: var(--sidebar-collapsed-width);
+        width: calc(100vw - var(--sidebar-collapsed-width));
+    }
+
+    /* Ajustar el tablero para que se expanda correctamente */
+    body.sidebar-collapsed #kanban-board {
+        width: 100% !important;
+    }
+
+    </style>
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
 
 </head>
-<body class="font-sans antialiased">
+
+
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
@@ -1119,7 +1131,6 @@
                         </div>
                     @endisset--}}
 
-
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
@@ -1131,6 +1142,7 @@
                             <span class="sidebar-text">Tablero</span>
                         </a>
                     @endif
+
 
 
                     <!-- -->
@@ -1293,7 +1305,7 @@
             if (overlay) {
                 overlay.style.display = newState ? 'none' : 'block';
             }
-            
+
             // Forzar scroll al top para evitar problemas
             window.scrollTo(0, 0);
         }
@@ -1302,7 +1314,7 @@
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-            
+
             // Inicializar overlay correctamente en móviles
             if (window.innerWidth < 992) {
                 const overlay = document.querySelector('.overlay');
@@ -1310,7 +1322,7 @@
                     // Mostrar overlay cuando sidebar está expandido (no colapsado)
                     overlay.style.display = savedState ? 'none' : 'block';
                 }
-                
+
                 // Inicializar icono móvil
                 const mobileIcon = document.getElementById('mobile-sidebar-icon');
                 if (mobileIcon) {
@@ -1353,7 +1365,7 @@
                     }
                 }
             }
-            
+
             // Actualizar icono móvil
             if (mobileIcon && window.innerWidth < 992) {
                 if (isCollapsed) {
@@ -1375,7 +1387,6 @@
                         closeBtn.click();
                     }
                 }, 5000);
-            });
         });
 
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
@@ -1428,20 +1439,20 @@
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
-        
+
         function handleSwipeGesture() {
             if (window.innerWidth >= 992) return; // Solo en móviles
-            
+
             const threshold = 80; // Distancia mínima para considerar un swipe
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            
+
             // Verificar que es un swipe horizontal (no vertical)
             if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
-            
+
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
                 const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                
+
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
                     // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
@@ -1455,25 +1466,25 @@
                 }
             }
         }
-        
+
         // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
-        
+
         document.addEventListener('touchmove', function(e) {
             // Si hay mucho movimiento, podría no ser un swipe intencional
             const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
-            
+
             if (deltaY > 50) {
                 isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
             }
         });
-        
+
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1629,6 +1640,8 @@
 
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
+
     <script src="{{ asset('js/dark-mode.js') }}"></script>
+
 </body>
 </html>
