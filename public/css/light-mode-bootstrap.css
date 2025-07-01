@@ -134,12 +134,6 @@ html:not(.dark-mode) .modal-content {
   color: #212529 !important;
 }
 
-body:not(.dark-mode) .dropdown-menu,
-html:not(.dark-mode) .dropdown-menu {
-  background-color: #fff !important;
-  color: #212529 !important;
-  border-color: #dee2e6 !important;
-}
 
 body:not(.dark-mode) .nav-link,
 html:not(.dark-mode) .nav-link {

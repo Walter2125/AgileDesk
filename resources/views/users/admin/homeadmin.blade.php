@@ -120,6 +120,42 @@
         .row{
             padding-block-start: 1rem;
         }
+
+        /* Estilos para los btn-group sin bordes redondeados y separados */
+        .btn-group {
+            gap: 8px; /* Separación entre botones */
+        }
+        
+        .btn-group .btn {
+            border-radius: 0 !important; /* Eliminar bordes redondeados */
+            margin-right: 0 !important; /* Eliminar margen derecho predeterminado */
+        }
+        
+        /* Eliminar el borde entre botones en los grupos */
+        .btn-group > .btn:not(:first-child),
+        .btn-group > .btn-group:not(:first-child) {
+            margin-left: 0;
+            border-left: none;
+        }
+        
+        /* Estilos específicos para los botones de acciones */
+        .action-buttons .btn {
+            border-radius: 0 !important;
+            margin: 0 4px;
+        }
+
+        /* Badges sin bordes redondeados */
+        .badge {
+            border-radius: 0 !important;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            display: inline-block;
+        }
     </style>
 @stop
 @section('content')
