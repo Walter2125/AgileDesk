@@ -17,7 +17,6 @@ $colCount = $tablero->columnas->count();
 
     <div class="container py-4" style="margin-left: 5px;">
 
-
             <!-- No borren esta nofificacion -->
                 @if (session('success'))
                             <div class="alert alert-success mt-2" id="success-alert">
@@ -37,58 +36,51 @@ $colCount = $tablero->columnas->count();
 
                         @endif
 
-            <!-- Contenedor para select y botones -->
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+<!-- Contenedor general alineado -->
+<div class="container-fluid mb-3">
+    <div class="d-flex flex-wrap gap-3 align-items-stretch justify-content-between">
 
-                <!-- Select de sprints -->
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select"
-                            id="sprintSelect"
-                            aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
-                        @endforeach
-                    </select>
-                @endif
+        <!-- Select de sprints -->
+        @if($tablero->sprints && $tablero->sprints->count())
+            <select class="form-select"
+                    id="sprintSelect"
+                    aria-label="Seleccionar sprint"
+                    style="min-width: 200px; max-width: 240px;">
+                <option selected disabled>Selecciona un sprint</option>
+                @foreach($tablero->sprints as $sprint)
+                    <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                @endforeach
+            </select>
+        @endif
 
-                <div class="container-fluid">
-    <!-- Fila de buscador y botones -->
-    <div class="row align-items-center mb-3">
-
-        <!-- Barra de búsqueda -->
-        <div class="col-12 col-md-8 mb-2 mb-md-0">
-            <div class="input-group">
-                <input type="text" id="buscadorHistorias" class="form-control" placeholder=" Buscar historia por nombre...">
-                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
-                    ✖️
-                </button>
+        <!-- Buscador -->
+        <div class="flex-grow-1">
+            <div class="input-group w-100">
+                <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre...">
+                <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">✖️</button>
             </div>
         </div>
 
         <!-- Botones -->
-        <div class="col-12 col-md-4 text-md-end">
-            <button class="btn btn-primary me-2 mb-2 mb-md-0"
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#modalAgregarColumna">
                 Agregar columna
             </button>
 
-            <button class="btn btn-outline-primary mb-2 mb-md-0"
+            <button class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#modalCrearSprint"
                     id="btnAbrirCrearSprint">
                 Crear sprint
             </button>
         </div>
-
     </div>
 </div>
 
         <!-- Contenedor de columnas scrollable horizontal -->
 <div class="overflow-auto pb-3 mt-3" style="width: 100%; padding-left: 20px;">
-
 
             <div id="kanban-board" class="d-flex" style="min-width: max-content; gap: 1rem; min-height: 500px;">
                 @foreach($tablero->columnas as $columna)
@@ -119,8 +111,6 @@ $colCount = $tablero->columnas->count();
                                         </ul>
                                     </div>
                                 </div>
-
-
 
                         </div>
 
@@ -224,6 +214,7 @@ $colCount = $tablero->columnas->count();
     {{-- Scripts existentes --}}
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+    <!-- modal para mover entre columnas-->
     <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.overflow-auto.p-2').forEach(function (el) {
@@ -265,7 +256,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     console.log('Movimiento exitoso:', data);
                     // Opcional: Mostrar notificación
-                    showNotification('success', data.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -430,7 +420,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
-
     <!-- AJAX para actualizar nombre -->
     <script>
         setTimeout(function() {
@@ -532,6 +521,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 </script>
+
 <script>
     let columnaIdParaEliminar = null;
 
@@ -558,7 +548,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('formEliminarColumna').submit();
     }
 </script>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -591,7 +580,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     </script>
-
 
    <script>
  document.addEventListener("DOMContentLoaded", function () {
@@ -630,8 +618,8 @@ document.addEventListener('DOMContentLoaded', function () {
         historias.forEach(h => h.style.display = "block");
     });
 });
-
 </script>
+
 <style>
     .menu-wrapper {
         position: relative;

@@ -61,10 +61,6 @@
                     </div>
     
 
-
-
-
-
                         <div class="historia-details md-3">
                             <div class="detail-item">
                                 <span class="detail-label">Estado:</span>
@@ -144,6 +140,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            
                 </div>
             </div>
     </div>
@@ -383,19 +381,6 @@
                     <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
                 </div>
             </div>
-            <!-- Modal Nuevo Comentario -->
-            <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="background-color: #f9fafb;">
-                <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
-                    @csrf
-                    <div class="flex items-center mb-4">
-                        <i class="bi bi-chat-left-text-fill text-primary fs-2 me-3"></i>
-                        <div>
-                            <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
-                            <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
-                        </div>
-                    </div>
-
                         <div class="form-group mb-4">
                             <label for="contenido" class="form-label text-dark fw-semibold">Tu Comentario</label>
                             <textarea name="contenido"
@@ -416,7 +401,6 @@
                 </form>
             </div>
 </div>
-
 
 <!-- Modal Nuevo Comentario -->
 <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
