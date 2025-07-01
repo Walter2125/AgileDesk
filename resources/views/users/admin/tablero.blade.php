@@ -8,14 +8,11 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
-
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @php
-
-
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
             ? 'flex: 1 1 0; max-width: none;'
@@ -45,6 +42,7 @@
             @endif
 
 
+
             <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
                 <div class="input-group">
@@ -56,6 +54,8 @@
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
+
+
 
 
 
@@ -96,8 +96,7 @@
 
                         @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
-                                 style="{{ $widthStyle }} min-height: 600px; max-height: 600px;">
-
+                                 style="{{ $widthStyle }} min-height: 520px; max-height: 520px;">
 
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
@@ -111,7 +110,11 @@
                                             <ul>
                                                 <li><span class="link disabled"><strong>Acciones</strong></span></li>
                                                 <li>
-                                                    <a href="#" class="link" onclick="editarNombreColumna({{ $columna->id }})">Editar nombre</a>
+                                                    <a href="#" class="link"
+                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                        Editar nombre
+                                                    </a>
+
                                                 </li>
                                                 <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
                                             </ul>
@@ -128,37 +131,40 @@
                                 </div>
 
 
-                                <div class="overflow-y-auto overflow-x-hidden p-2 flex-grow-1" style="min-height: 0;" data-columna-id="{{ $columna->id }}">
-
+                                <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                     @foreach ($columna->historias as $historia)
-                                        <div class="card mb-4 p-2 text-dark position-relative" style="width: 100%; word-break: break-word;" data-historia-id="{{ $historia->id }}">
-                                            <div class="d-flex justify-content-between align-items-start">
+                                        <div class="card mb-4 p-2 text-dark position-relative"
+                                             style="width: 100%; word-break: break-word; overflow-wrap: break-word; max-width: 100%;"
+                                             data-historia-id="{{ $historia->id }}">
 
-                                                <div style="flex: 1;">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                {{-- Columna 1: Contenido --}}
+                                                <div style="flex: 1; min-width: 0;">
                                                     <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
-                                                        <strong class="d-block text-truncate"
-                                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+
+                                                        <strong class="d-block"
+                                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block;"
                                                                 title="{{ $historia->nombre }}">
                                                             H{{ $historia->numero }} {{ $historia->nombre }}
                                                         </strong>
+
                                                         @if ($historia->descripcion)
-                                                            <div style="max-height: 4.5em; overflow: hidden; line-height: 1.5em; word-wrap: break-word; overflow-wrap: break-word;">
+                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
                                                         @endif
+
                                                     </a>
                                                 </div>
 
-
+                                                {{-- Columna 2: Menú --}}
                                                 <div class="ms-2">
                                                     <div class="dropdown">
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            &#x22EE;
+                                                            &#x22EE; {{-- ⋮ --}}
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li>
-                                                                <a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a>
-                                                            </li>
+                                                            <li><a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a></li>
                                                             <li>
                                                                 <button type="button" class="dropdown-item text-danger"
                                                                         data-bs-toggle="modal"
@@ -171,44 +177,47 @@
                                                 </div>
                                             </div>
 
-
-                                            <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                            {{-- Modal Confirmación --}}
+                                            <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
+                                                 aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
                                                 <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="confirmDeleteLabel{{ $historia->id }}">¿Desea eliminar esta historia?</h5>
+                                                    <div class="modal-content rounded-4 shadow">
+                                                        <div class="modal-header border-bottom-0">
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                                         </div>
-                                                        <div class="modal-body">
-                                                            Se eliminará la historia:
-                                                            <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 300px;"
-                                                                    title="{{ $historia->nombre }}">
-                                                                {{ $historia->nombre }}
-                                                            </strong><br>
-                                                            Esta acción no se puede deshacer.
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                            <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger">Confirmar</button>
-                                                            </form>
+                                                        <div class="modal-body text-center">
+                                                            <div class="mb-4">
+                                                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
+                                                                <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
+                                                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                                                <div class="alert alert-danger d-flex align-items-center mt-3">
+                                                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                                                    <div>"<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
+
                                     @endforeach
                                 </div>
+
+                                <!-- fin-->
+
                             </div>
                         @endforeach
-
                     </div>
                 </div>
-            </div>
-        </div>
 
 
 
@@ -352,7 +361,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre de la columna</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" required maxlength="30">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -419,21 +428,57 @@
                             </button>
                         </div>
                     </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para editar nombre de columna -->
+        <!-- Modal para editar nombre de columna -->
+        <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="formEditarColumna" method="POST" action="">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="inputNombreColumna" class="form-label">Nombre</label>
+                                <input type="text"
+                                       name="nombre"
+                                       id="inputNombreColumna"
+                                       class="form-control"
+                                       placeholder="Nombre de la columna"
+                                       maxlength="50"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
 
 
 
+
+
         <script>
-            setTimeout(function() {
+            /*setTimeout(function() {
                 const alert = document.getElementById('success-alert');
                 if (alert) {
                     alert.style.transition = "opacity 0.5s ease";
                     alert.style.opacity = 0;
                     setTimeout(() => alert.remove(), 500);
                 }
-            }, 3000);
+            }, 3000);*/
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".editable-title").forEach(input => {
@@ -528,6 +573,14 @@
 
         </script>
         <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const inputNombre = document.getElementById('inputNombreColumna');
+                inputNombre.addEventListener('input', function () {
+                    this.value = this.value.replace(/[0-9]/g, '');
+                });
+            });
+
             let columnaIdParaEliminar = null;
 
             // Función para abrir el modal y asignar el action del formulario
@@ -593,6 +646,7 @@
 
 
         <script>
+
             document.addEventListener("DOMContentLoaded", function () {
                 const buscador = document.getElementById("buscadorHistorias");
                 const limpiarBtn = document.getElementById("limpiarBusqueda");
@@ -643,6 +697,20 @@
                 });
             });
         </script>
+
+        <script>
+            function abrirModalEditarColumna(id, nombre) {
+                const form = document.getElementById('formEditarColumna');
+                const input = document.getElementById('inputNombreColumna');
+
+                form.action = `/columnas/${id}`; // Asegúrate que esta ruta está definida
+                input.value = nombre;
+
+                const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));
+                modal.show();
+            }
+        </script>
+
 
         <style>
             .menu-wrapper {
