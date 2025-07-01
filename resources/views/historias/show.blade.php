@@ -1,17 +1,19 @@
 @extends('layouts.app')
 
-@section('title')
-    @section('mensaje-superior')
+       @section('title')
+         @section('mensaje-superior')
         <div class="mt-4 text-lg font-semibold text-blue-600">
             <h1 class="titulo-historia">Detalle de la Historia</h1>
         </div>
     @endsection
-        @endsection
+            @endsection
 
 @section('content')
-
-
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <div class="container-fluid-m-2 mi-container m-2">
 
@@ -58,10 +60,6 @@
                                         {{ $historia->descripcion }}
                         </div>
                     </div>
-
-
-
-
 
 
                         <div class="historia-details md-3">
@@ -143,6 +141,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            
                 </div>
             </div>
     </div>
@@ -370,19 +370,18 @@
             </div>
         </div>
 
-            <!-- Modal Nuevo Comentario -->
-            <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="background-color: #f9fafb;">
-                <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
-                    @csrf
-                    <div class="flex items-center mb-4">
-                        <i class="bi bi-chat-left-text-fill text-primary fs-2 me-3"></i>
-                        <div>
-                            <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
-                            <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
-                        </div>
-                    </div>
-
+<!-- Modal Nuevo Comentario -->
+<div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="Sbackground-color: #f9fafb;">
+        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+            @csrf
+            <div class="flex items-center mb-4">
+                <i class="bi bi-chat-left-text-fill text-primary fs-2 me-3"></i>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+                    <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
+                </div>
+            </div>
                         <div class="form-group mb-4">
                             <label for="contenido" class="form-label text-dark fw-semibold">Tu Comentario</label>
                             <textarea name="contenido"
@@ -404,5 +403,38 @@
             </div>
 </div>
 
+<!-- Modal Nuevo Comentario -->
+<div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-2xl p-6" style="Sbackground-color: #f9fafb;">
+        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+            @csrf
+            <div class="flex items-center mb-4">
+                <i class="bi bi-chat-left-text-fill text-primary fs-2 me-3"></i>
+                <div>
+                    <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+                    <small class="text-muted">Participa compartiendo tu opinión o experiencia.</small>
+                </div>
+            </div>
 
-    @endsection
+            <div class="form-group mb-4">
+                <label for="contenido" class="form-label text-dark fw-semibold">Tu Comentario</label>
+                <textarea name="contenido"
+                          id="contenido"
+                          class="form-control rounded-4 border-0 shadow-sm p-3 w-full"
+                          rows="5"
+                          placeholder="Escribe tu comentario aquí..." required></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+                    <i class="bi bi-send-fill me-1"></i> Publicar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@endsection

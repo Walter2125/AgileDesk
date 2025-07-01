@@ -123,7 +123,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
-                    <th>Tipo</th>
+                    <th>Tipo de Actividad</th>
                     <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>

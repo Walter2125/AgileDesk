@@ -123,11 +123,11 @@
             </div>
 
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad"
                         class="form-control @error('actividad') is-invalid @enderror" required>
                     <option value="">Seleccione una actividad</option>
-                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño'] as $opcion)
+                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo'] as $opcion)
                         <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
                             {{ $opcion }}
                         </option>
