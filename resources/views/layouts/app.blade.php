@@ -6,6 +6,43 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
+    <script>
+        // Detectar y aplicar el modo oscuro antes de renderizar
+        (function() {
+            const DARK_MODE_KEY = 'agiledesk-darkMode';
+            const html = document.documentElement;
+            const body = document.body;
+            
+            // 1. Añadir clase preload inmediatamente
+            html.classList.add('dark-mode-preload');
+            
+            // 2. Determinar el modo preferido
+            let darkMode = false;
+            const saved = localStorage.getItem(DARK_MODE_KEY);
+            
+            if (saved === 'enabled') {
+                darkMode = true;
+            } else if (saved === 'disabled') {
+                darkMode = false;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                darkMode = true;
+            }
+            
+            // 3. Aplicar el modo oscuro ANTES de que se renderice la página
+            if (darkMode) {
+                html.classList.add('dark-mode');
+                body.classList.add('dark-mode');
+                html.style.backgroundColor = '#121218';
+            } else {
+                // Asegurar que en modo claro el fondo sea claro
+                html.style.backgroundColor = '#f8f9fa';
+                body.style.backgroundColor = '#f8f9fa';
+            }
+            
+            // 4. Guardar el estado inicial para sincronización
+            window.initialDarkModeState = darkMode;
+        })();
+    </script>
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -32,9 +69,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/light-mode-bootstrap.css') }}">
 
     <style>
-    /* Reset CSS para eliminar espacios por defecto */
     * {
         margin: 0;
         padding: 0;
@@ -184,7 +221,7 @@
     }
 
     :root {
-        --sidebar-width: 280px;
+        --sidebar-width: 250px;
         --sidebar-collapsed-width: 56px; /* Más angosto, como AdminLTE */
         --sidebar-bg: #212529;
         --sidebar-hover: #2c3136;
@@ -1068,6 +1105,40 @@
         }
     }
     
+/* Ajustes optimizados para alineación perfecta */
+.sidebar-heading {
+    width: 100%;
+    padding: 0.75rem var(--navbar-padding-x); /* Usa la misma variable de padding */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0; /* Elimina márgenes inconsistentes */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px; /* Altura consistente con navbar */
+}
+
+/* Asegura que el ancho del sidebar coincida exactamente */
+#sidebar-wrapper {
+    width: calc(var(--sidebar-width) - 1px); /* Compensa el borde del navbar */
+    left: 0;
+    top: 0;
+    transform: none !important; /* Anula transformaciones conflictivas */
+    border-right: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con navbar */
+}
+
+/* Corrección para el estado colapsado */
+.sidebar-collapsed #sidebar-wrapper {
+    width: calc(var(--sidebar-collapsed-width) - 1px);
+}
+
+/* Ajuste fino para el navbar */
+.navbar-optimized {
+    padding-left: var(--navbar-padding-x);
+    padding-right: var(--navbar-padding-x);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con sidebar */
+    height: 64px; /* Altura fija para alineación vertical */
+}
+
 </style>
 
     <!-- Estilos adicionales de las secciones -->
@@ -1082,8 +1153,8 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center w-100 justify-content-between">
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between py-3 px-2">
+   
                         <span>
                             <i class="bi bi-code-slash me-2"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
@@ -1091,7 +1162,7 @@
                         <button class="sidebar-toggle-btn ms-2" onclick="toggleSidebar()" aria-label="Colapsar sidebar">
                             <i class="bi bi-chevron-left" id="sidebar-toggle-icon"></i>
                         </button>
-                    </div>
+                    
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
@@ -1234,23 +1305,20 @@
             const body = document.body;
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             const mobileIcon = document.getElementById('mobile-sidebar-icon');
+            const overlay = document.querySelector('.overlay');
 
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
                 if (toggleIcon) {
-                    // Lógica del ícono según el tamaño de pantalla
-                    if (window.innerWidth < 992) {
-                        toggleIcon.classList.remove('bi-chevron-left');
-                        toggleIcon.classList.add('bi-chevron-right');
-                    } else {
-                        toggleIcon.classList.remove('bi-chevron-left');
-                        toggleIcon.classList.add('bi-chevron-right');
-                    }
+                    toggleIcon.classList.remove('bi-chevron-left');
+                    toggleIcon.classList.add('bi-chevron-right');
                 }
-                // Actualizar icono móvil
                 if (mobileIcon) {
                     mobileIcon.classList.remove('bi-x');
                     mobileIcon.classList.add('bi-list');
+                }
+                if (window.innerWidth < 992 && overlay) {
+                    overlay.style.display = 'none';
                 }
             } else {
                 body.classList.remove('sidebar-collapsed');
@@ -1258,115 +1326,31 @@
                     toggleIcon.classList.remove('bi-chevron-right');
                     toggleIcon.classList.add('bi-chevron-left');
                 }
-                // Actualizar icono móvil
                 if (mobileIcon) {
                     mobileIcon.classList.remove('bi-list');
                     mobileIcon.classList.add('bi-x');
+                }
+                if (window.innerWidth < 992 && overlay) {
+                    overlay.style.display = 'block';
                 }
             }
         }
 
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
-        const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-        const newState = !isCurrentlyCollapsed;
-        const overlay = document.querySelector('.overlay');
-        const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
-        // Aplicar el nuevo estado
-        document.body.classList.toggle('sidebar-collapsed', newState);
-        saveSidebarState(newState);
-
-        // Actualizar icono
-        if (mobileIcon) {
-            if (newState) {
-                mobileIcon.classList.remove('bi-x');
-                mobileIcon.classList.add('bi-list');
-            } else {
-                mobileIcon.classList.remove('bi-list');
-                mobileIcon.classList.add('bi-x');
-            }
+            const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
+            const newState = !isCurrentlyCollapsed;
+            applySidebarState(newState);
+            saveSidebarState(newState);
         }
 
-        // Manejar overlay en móviles
-        if (window.innerWidth < 992) {
-            if (overlay) {
-                overlay.style.display = newState ? 'none' : 'block';
-            }
-            
-            // Forzar scroll al top para evitar problemas
-            window.scrollTo(0, 0);
-        }
-    }
-        // Función para inicializar el sidebar con el estado guardado
-        function initializeSidebar() {
+        // Inicializar el sidebar con el estado guardado al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar sidebar
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-            
-            // Inicializar overlay correctamente en móviles
-            if (window.innerWidth < 992) {
-                const overlay = document.querySelector('.overlay');
-                if (overlay) {
-                    // Mostrar overlay cuando sidebar está expandido (no colapsado)
-                    overlay.style.display = savedState ? 'none' : 'block';
-                }
-                
-                // Inicializar icono móvil
-                const mobileIcon = document.getElementById('mobile-sidebar-icon');
-                if (mobileIcon) {
-                    if (savedState) {
-                        mobileIcon.classList.remove('bi-x');
-                        mobileIcon.classList.add('bi-list');
-                    } else {
-                        mobileIcon.classList.remove('bi-list');
-                        mobileIcon.classList.add('bi-x');
-                    }
-                }
-            }
-        }
 
-        // Detectar cambios en el tamaño de la ventana
-        window.addEventListener('resize', function() {
-            // Mantener el estado guardado pero actualizar los íconos
-            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-            const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
-            if (toggleIcon) {
-                if (window.innerWidth >= 992) {
-                    // En pantallas grandes
-                    if (isCollapsed) {
-                        toggleIcon.classList.remove('bi-chevron-left');
-                        toggleIcon.classList.add('bi-chevron-right');
-                    } else {
-                        toggleIcon.classList.remove('bi-chevron-right');
-                        toggleIcon.classList.add('bi-chevron-left');
-                    }
-                } else {
-                    // En pantallas pequeñas
-                    if (isCollapsed) {
-                        toggleIcon.classList.remove('bi-chevron-left');
-                        toggleIcon.classList.add('bi-chevron-right');
-                    } else {
-                        toggleIcon.classList.remove('bi-chevron-right');
-                        toggleIcon.classList.add('bi-chevron-left');
-                    }
-                }
-            }
-            
-            // Actualizar icono móvil
-            if (mobileIcon && window.innerWidth < 992) {
-                if (isCollapsed) {
-                    mobileIcon.classList.remove('bi-x');
-                    mobileIcon.classList.add('bi-list');
-                } else {
-                    mobileIcon.classList.remove('bi-list');
-                    mobileIcon.classList.add('bi-x');
-                }
-            }
-        });
-
-            // Close alerts automatically after 5 seconds
+            // Cerrar alerts automáticamente
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
                 setTimeout(function() {
@@ -1378,28 +1362,24 @@
             });
         });
 
-        // Función opcional para limpiar el estado guardado (por si necesitas resetear)
-        function resetSidebarState() {
-            localStorage.removeItem(SIDEBAR_STATE_KEY);
-            applySidebarState(false); // Estado por defecto: expandido
-        }
+        // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
+        window.addEventListener('resize', function() {
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            applySidebarState(isCollapsed);
+        });
 
-        // Función opcional para verificar si hay soporte para localStorage
-        function isLocalStorageAvailable() {
-            try {
-                const test = '__localStorage_test__';
-                localStorage.setItem(test, test);
-                localStorage.removeItem(test);
-                return true;
-            } catch(e) {
-                return false;
+        // Cerrar sidebar al hacer clic en overlay en móvil
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.querySelector('.overlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        applySidebarState(true);
+                        saveSidebarState(true);
+                    }
+                });
             }
-        }
-
-        // Verificar soporte de localStorage al cargar
-        if (!isLocalStorageAvailable()) {
-            console.warn('LocalStorage no está disponible. El estado del sidebar no se guardará.');
-        }
+        });
 
         // Submenu toggle
         function toggleSubmenu(event, submenuId) {
@@ -1410,70 +1390,41 @@
             }
         }
 
-        // Cerrar sidebar al hacer clic en overlay en móvil
-        const overlay = document.querySelector('.overlay');
-        if (overlay) {
-            overlay.addEventListener('click', function() {
-                if (window.innerWidth < 992) {
-                    // Colapsar sidebar (ocultarlo) al hacer clic en overlay
-                    applySidebarState(true);
-                    saveSidebarState(true);
-                }
-            });
-        }
-
         // Soporte para gestos de swipe en móviles mejorado
         let touchStartX = 0;
         let touchEndX = 0;
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
-        
         function handleSwipeGesture() {
-            if (window.innerWidth >= 992) return; // Solo en móviles
-            
-            const threshold = 80; // Distancia mínima para considerar un swipe
+            if (window.innerWidth >= 992) return;
+            const threshold = 80;
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            
-            // Verificar que es un swipe horizontal (no vertical)
-            if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
-            
+            if (swipeDistanceY > 100) return;
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
-                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
-                    // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
                     saveSidebarState(false);
-                    console.log('📱 Sidebar abierto por swipe');
                 } else if (swipeDistanceX < -50 && !isCollapsed && touchStartX < 250) {
-                    // Swipe hacia la izquierda desde el sidebar - cerrar sidebar
                     applySidebarState(true);
                     saveSidebarState(true);
-                    console.log('📱 Sidebar cerrado por swipe');
                 }
             }
         }
-        
-        // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
-        
         document.addEventListener('touchmove', function(e) {
-            // Si hay mucho movimiento, podría no ser un swipe intencional
-            const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
-            
             if (deltaY > 50) {
-                isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
+                isSwipeGesture = false;
             }
         });
-        
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1482,55 +1433,6 @@
         });
     </script>
 
-    <!-- Debug Script para Dropdown -->
-    <script>
-        // Script de debugging específico para el dropdown
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DEBUGGING DROPDOWN ===');
-
-            // Verificar elementos
-            const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
-            const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-            const dropupContainer = document.querySelector('.user-dropdown .dropup');
-
-
-            console.log('User dropdown element:', userDropdown);
-            console.log('Dropdown menu element:', dropdownMenu);
-            console.log('Dropup container:', dropupContainer);
-
-            if (userDropdown && dropdownMenu) {
-                console.log('✅ Elementos encontrados correctamente');
-
-                // Agregar click handler manual como fallback
-                userDropdown.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-
-                    console.log('Click en dropdown detectado');
-
-                    // Toggle del dropdown menu
-                    const isOpen = dropdownMenu.classList.contains('show');
-
-                    if (isOpen) {
-                        dropdownMenu.classList.remove('show');
-                        userDropdown.setAttribute('aria-expanded', 'false');
-                    } else {
-                        dropdownMenu.classList.add('show');
-                        userDropdown.setAttribute('aria-expanded', 'true');
-                    }
-                });
-
-                // Cerrar al hacer click fuera
-                document.addEventListener('click', function(e) {
-                    if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                        dropdownMenu.classList.remove('show');
-                        userDropdown.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            }
-        });
-    </script>
 
     <!-- Sistema operativo y escalado automático -->
     <script>
@@ -1614,6 +1516,17 @@
         // Inicializar el sidebar con el estado guardado
         initializeSidebar();
 
+        // Refuerzo: asegurar que el overlay y los íconos reflejen el estado tras recargar
+        const isCollapsed = getSavedSidebarState();
+        applySidebarState(isCollapsed);
+        // Overlay en móviles
+        if (window.innerWidth < 992) {
+            const overlay = document.querySelector('.overlay');
+            if (overlay) {
+                overlay.style.display = isCollapsed ? 'none' : 'block';
+            }
+        }
+
         // Código para cerrar alerts automáticamente
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(function(alert) {
@@ -1629,6 +1542,7 @@
 
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
+    <script src="bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/dark-mode.js') }}"></script>
 </body>
 </html>

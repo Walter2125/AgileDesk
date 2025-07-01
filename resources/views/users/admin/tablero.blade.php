@@ -4,7 +4,7 @@
             Tablero de {{ $project->name }}
         @endsection
 
-
+        
 @section('content')
     @php
 
