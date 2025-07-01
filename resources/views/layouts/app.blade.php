@@ -23,13 +23,19 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
+    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
 
     <style>
-    /* Reset CSS para eliminar espacios por defecto */
+
+        /* Reset CSS para eliminar espacios por defecto */
     * {
         margin: 0;
         padding: 0;
@@ -442,6 +448,7 @@
 
     /* User dropdown in sidebar */
     .user-dropdown {
+        position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: auto;
     }
@@ -497,7 +504,7 @@
         transform: none !important;
         margin-bottom: 0.5rem;
         min-width: 200px;
-        z-index: 1050;
+        z-index: 9999 !important;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -750,13 +757,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -768,7 +775,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-        
+
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1061,13 +1068,25 @@
             font-weight: 600;
         }
     }
-</style>
+    /* Ajustar el ancho del contenedor cuando el sidebar esté colapsado */
+    body.sidebar-collapsed #page-content-wrapper {
+        margin-left: var(--sidebar-collapsed-width);
+        width: calc(100vw - var(--sidebar-collapsed-width));
+    }
+
+    /* Ajustar el tablero para que se expanda correctamente */
+    body.sidebar-collapsed #kanban-board {
+        width: 100% !important;
+    }
+
+    </style>
 
     <!-- Estilos adicionales de las secciones -->
     @yield('styles')
 
 </head>
-<body class="font-sans antialiased">
+
+
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
@@ -1112,7 +1131,6 @@
                         </div>
                     @endisset--}}
 
-
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
@@ -1124,6 +1142,7 @@
                             <span class="sidebar-text">Tablero</span>
                         </a>
                     @endif
+
 
 
                     <!-- -->
@@ -1286,7 +1305,7 @@
             if (overlay) {
                 overlay.style.display = newState ? 'none' : 'block';
             }
-            
+
             // Forzar scroll al top para evitar problemas
             window.scrollTo(0, 0);
         }
@@ -1295,7 +1314,7 @@
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-            
+
             // Inicializar overlay correctamente en móviles
             if (window.innerWidth < 992) {
                 const overlay = document.querySelector('.overlay');
@@ -1303,7 +1322,7 @@
                     // Mostrar overlay cuando sidebar está expandido (no colapsado)
                     overlay.style.display = savedState ? 'none' : 'block';
                 }
-                
+
                 // Inicializar icono móvil
                 const mobileIcon = document.getElementById('mobile-sidebar-icon');
                 if (mobileIcon) {
@@ -1346,7 +1365,7 @@
                     }
                 }
             }
-            
+
             // Actualizar icono móvil
             if (mobileIcon && window.innerWidth < 992) {
                 if (isCollapsed) {
@@ -1359,62 +1378,6 @@
             }
         });
 
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar el sidebar con el estado guardado
-            initializeSidebar();
-
-            // Inicializar dropdowns de Bootstrap
-            if (typeof bootstrap !== 'undefined') {
-                console.log('Bootstrap está cargado correctamente');
-
-                // Inicializar todos los dropdowns
-                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-                console.log('Elementos dropdown encontrados:', dropdownElements.length);
-
-                dropdownElements.forEach(function(element, index) {
-                    try {
-                        var dropdown = new bootstrap.Dropdown(element);
-                        console.log('Dropdown inicializado:', index, element);
-
-                    } catch (error) {
-                        console.error('Error inicializando dropdown:', error, element);
-                    }
-                });
-
-            } else {
-                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
-
-                // Fallback manual completo si Bootstrap no está disponible
-                const userDropdown = document.querySelector('#userDropdown');
-                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
-
-                if (userDropdown && dropdownMenu) {
-                    userDropdown.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const isOpen = dropdownMenu.classList.contains('show');
-
-                        if (isOpen) {
-                            dropdownMenu.classList.remove('show');
-                            this.setAttribute('aria-expanded', 'false');
-                        } else {
-                            dropdownMenu.classList.add('show');
-                            this.setAttribute('aria-expanded', 'true');
-                        }
-                    });
-
-                    // Cerrar dropdown al hacer clic fuera
-                    document.addEventListener('click', function(e) {
-                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                            dropdownMenu.classList.remove('show');
-                            userDropdown.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-                }
-            }
-
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1424,7 +1387,6 @@
                         closeBtn.click();
                     }
                 }, 5000);
-            });
         });
 
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
@@ -1477,20 +1439,20 @@
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
-        
+
         function handleSwipeGesture() {
             if (window.innerWidth >= 992) return; // Solo en móviles
-            
+
             const threshold = 80; // Distancia mínima para considerar un swipe
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            
+
             // Verificar que es un swipe horizontal (no vertical)
             if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
-            
+
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
                 const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                
+
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
                     // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
@@ -1504,25 +1466,25 @@
                 }
             }
         }
-        
+
         // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
-        
+
         document.addEventListener('touchmove', function(e) {
             // Si hay mucho movimiento, podría no ser un swipe intencional
             const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
-            
+
             if (deltaY > 50) {
                 isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
             }
         });
-        
+
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1657,8 +1619,29 @@
         });
     </script>
 
+    <script>
+    // Mantén solo este código para el sidebar
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar el sidebar con el estado guardado
+        initializeSidebar();
+
+        // Código para cerrar alerts automáticamente
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const closeBtn = alert.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.click();
+                }
+            }, 5000);
+        });
+    });
+    </script>
+
     <!-- Scripts adicionales de las secciones -->
     @yield('scripts')
+
     <script src="{{ asset('js/dark-mode.js') }}"></script>
+
 </body>
 </html>

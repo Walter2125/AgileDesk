@@ -1,3 +1,15 @@
+.descripcion-limitada {
+    display:-webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.5em;
+    line-height: 1.5em;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
 .mi-container {
     background-color: #ffff;
     padding: 30px;
@@ -14,13 +26,11 @@
     align-items: center;
     gap: 10px;
 }
-.descripcion-limitada {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;        /* Cambia a 3, 4 o más si necesitas */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
+    .dropdown-menu {
+        z-index: 1055 !important;
+    }
+
 
 
 .historia-container {

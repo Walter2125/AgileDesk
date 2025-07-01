@@ -14,9 +14,9 @@ class UnahEmailRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // Check if the email ends with @unah.hn (case insensitive)
-        if (!preg_match('/^[a-zA-Z0-9._%+-]+@unah\.hn$/i', $value)) {
-            $fail('Only emails with @unah.hn domain are allowed.');
+        // Check if the email ends with @unah.hn or @unah.edu.hn (case insensitive)
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@(unah\.hn|unah\.edu\.hn)$/i', $value)) {
+            $fail('Sólo se permiten correos electrónicos con dominio @unah.hn o @unah.edu.hn.');
         }
     }
 }
