@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Columna;
 use App\Models\Tablero;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
 
 class ColumnaController extends Controller
 {
@@ -19,7 +21,7 @@ class ColumnaController extends Controller
         }
 
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => ['required', 'string', 'max:255', 'regex:/^[^\d]+$/'],
             'posicion' => 'nullable|integer|min:1|max:9',
         ]);
 
@@ -43,23 +45,29 @@ class ColumnaController extends Controller
     }
 
     // Actualizar nombre de la columna
-    public function update(Request $request, Columna $columna)
+    public function update(Request $request, $id)
     {
+        $columna = Columna::findOrFail($id);
+
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => [
+                'required',
+                'max:50',
+                'regex:/^[^\d]*$/', // Evita números
+                Rule::unique('columnas')->ignore($columna->id)->where(function ($query) use ($columna) {
+                    return $query->where('tablero_id', $columna->tablero_id);
+                }),
+            ],
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
+            'nombre.regex' => 'El nombre no debe contener números.',
         ]);
 
-        $columna->update([
-            'nombre' => $request->nombre,
-        ]);
+        $columna->nombre = $request->nombre;
+        $columna->save();
 
-        // Para peticiones AJAX retornamos JSON
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'nombre' => $columna->nombre]);
-        }
-
-        // Para peticiones normales, redireccionar
-        return redirect()->route('tableros.show', $columna->tablero->proyecto_id)->with('success', 'Columna actualizada.');
+        return redirect()->back()->with('success', 'Nombre de columna actualizado.');
     }
 
 
