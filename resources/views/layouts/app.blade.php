@@ -222,10 +222,9 @@
         flex-direction: column;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-
     }
-         /* Para Firefox */
-
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
+    }
 
     /* Personalizar scrollbar del sidebar para Webkit */
     #sidebar-wrapper::-webkit-scrollbar {
@@ -246,22 +245,17 @@
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
-        padding: clamp(1.25rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
-        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+        padding: 1.5rem 1rem;
+        font-size: 1.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        min-height: 3rem;
     }
 
     .list-group-item {
-        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+        padding: 0.75rem 1.25rem;
         border: none;
         border-radius: 0 !important;
         font-weight: 500;
         transition: all 0.2s ease;
-        font-size: clamp(0.875rem, 2vw, 1rem);
-        min-height: 2.5rem;
-        display: flex;
-        align-items: center;
     }
 
     .list-group-item:hover {
@@ -365,20 +359,6 @@
         transition: transform 0.2s ease;
     }
 
-    /* Asegurar que el navbar no tape el botón */
-    .navbar {
-        z-index: 1000;
-        position: relative;
-    }
-
-    /* Ajustar el icono cuando el sidebar está abierto */
-    #mobile-sidebar-toggle i.bi-list {
-        transition: transform 0.3s ease;
-    }
-
-    body:not(.sidebar-collapsed) #mobile-sidebar-toggle i.bi-list {
-        transform: rotate(90deg);
-    }
     /* Collapsed sidebar styles */
     body.sidebar-collapsed #sidebar-wrapper {
         width: var(--sidebar-collapsed-width);
@@ -416,7 +396,7 @@
             display: none;
         }
     }
-
+    
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -472,9 +452,9 @@
     }
 
     .user-avatar {
-        width: clamp(32px, 5vw, 40px);
-        height: clamp(32px, 5vw, 40px);
-        min-width: clamp(32px, 5vw, 40px); /* Evita que se encoja */
+        width: 40px;
+        height: 40px;
+        min-width: 40px; /* Evita que se encoja */
         border-radius: 50%;
         background-color: #0d6efd;
         display: flex;
@@ -482,7 +462,6 @@
         justify-content: center;
         margin-right: 0.75rem;
         font-weight: bold;
-        font-size: clamp(0.875rem, 2vw, 1rem);
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -674,39 +653,8 @@
         }
 
         body.sidebar-collapsed #sidebar-wrapper {
-            transform: translateX(-100%); /* Mantener oculto cuando está colapsado */
+            transform: translateX(0); /* Mostrar al estar collapsed/abierto */
             width: var(--sidebar-collapsed-width) !important;
-        }
-
-        /* Mostrar sidebar cuando NO está colapsado (expandido) */
-        body:not(.sidebar-collapsed) #sidebar-wrapper {
-            transform: translateX(0) !important; /* Mostrar cuando está expandido */
-            width: var(--sidebar-width) !important;
-        }
-
-        /* Mostrar overlay cuando sidebar está expandido (visible) en móviles */
-        body:not(.sidebar-collapsed) .overlay {
-            display: block;
-        }
-
-        /* Indicador visual para swipe en móviles */
-        body.sidebar-collapsed::before {
-            content: '';
-            position: fixed;
-            left: 0;
-            top: 50%;
-            width: 3px;
-            height: 40px;
-            background: linear-gradient(to right, transparent, rgba(0, 123, 255, 0.5));
-            border-radius: 0 3px 3px 0;
-            transform: translateY(-50%);
-            z-index: 1002;
-            animation: swipeHint 3s ease-in-out infinite;
-        }
-
-        @keyframes swipeHint {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
         }
 
         #page-content-wrapper {
@@ -757,13 +705,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-
+        
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-
+        
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -775,7 +723,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-
+        
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1166,9 +1114,9 @@
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
-                        <button class="user-info btn btn-link text-white p-0 w-100 text-start"
-                                type="button"
-                                data-bs-toggle="dropdown"
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
                                 aria-expanded="false"
                                 id="userDropdown">
                             <div class="user-avatar">
@@ -1229,24 +1177,23 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-
+        
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-
+        
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-
+        
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
+            
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
                 if (toggleIcon) {
@@ -1259,25 +1206,15 @@
                         toggleIcon.classList.add('bi-chevron-right');
                     }
                 }
-                // Actualizar icono móvil
-                if (mobileIcon) {
-                    mobileIcon.classList.remove('bi-x');
-                    mobileIcon.classList.add('bi-list');
-                }
             } else {
                 body.classList.remove('sidebar-collapsed');
                 if (toggleIcon) {
                     toggleIcon.classList.remove('bi-chevron-right');
                     toggleIcon.classList.add('bi-chevron-left');
                 }
-                // Actualizar icono móvil
-                if (mobileIcon) {
-                    mobileIcon.classList.remove('bi-list');
-                    mobileIcon.classList.add('bi-x');
-                }
             }
         }
-
+        
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
         const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
@@ -1305,7 +1242,7 @@
             if (overlay) {
                 overlay.style.display = newState ? 'none' : 'block';
             }
-
+            
             // Forzar scroll al top para evitar problemas
             window.scrollTo(0, 0);
         }
@@ -1314,7 +1251,7 @@
         function initializeSidebar() {
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-
+            
             // Inicializar overlay correctamente en móviles
             if (window.innerWidth < 992) {
                 const overlay = document.querySelector('.overlay');
@@ -1322,7 +1259,7 @@
                     // Mostrar overlay cuando sidebar está expandido (no colapsado)
                     overlay.style.display = savedState ? 'none' : 'block';
                 }
-
+                
                 // Inicializar icono móvil
                 const mobileIcon = document.getElementById('mobile-sidebar-icon');
                 if (mobileIcon) {
@@ -1336,14 +1273,13 @@
                 }
             }
         }
-
+        
         // Detectar cambios en el tamaño de la ventana
         window.addEventListener('resize', function() {
             // Mantener el estado guardado pero actualizar los íconos
             const isCollapsed = document.body.classList.contains('sidebar-collapsed');
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
+            
             if (toggleIcon) {
                 if (window.innerWidth >= 992) {
                     // En pantallas grandes
@@ -1365,7 +1301,7 @@
                     }
                 }
             }
-
+            
             // Actualizar icono móvil
             if (mobileIcon && window.innerWidth < 992) {
                 if (isCollapsed) {
@@ -1378,6 +1314,58 @@
             }
         });
 
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar el sidebar con el estado guardado
+            initializeSidebar();
+            
+            // Inicializar dropdowns de Bootstrap
+            if (typeof bootstrap !== 'undefined') {
+                // Inicializar todos los dropdowns
+                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+                
+                dropdownElements.forEach(function(element, index) {
+                    try {
+                        var dropdown = new bootstrap.Dropdown(element);
+                    } catch (error) {
+                        console.error('Error inicializando dropdown:', error, element);
+                    }
+                });
+                
+            } else {
+                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
+                
+                // Fallback manual completo si Bootstrap no está disponible
+                const userDropdown = document.querySelector('#userDropdown');
+                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
+                
+                if (userDropdown && dropdownMenu) {
+                    userDropdown.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const isOpen = dropdownMenu.classList.contains('show');
+                        
+                        if (isOpen) {
+                            dropdownMenu.classList.remove('show');
+                            this.setAttribute('aria-expanded', 'false');
+                        } else {
+                            dropdownMenu.classList.add('show');
+                            this.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+                    
+                    // Cerrar dropdown al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                            userDropdown.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            }
+            
             // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
@@ -1388,13 +1376,13 @@
                     }
                 }, 5000);
         });
-
+        
         // Función opcional para limpiar el estado guardado (por si necesitas resetear)
         function resetSidebarState() {
             localStorage.removeItem(SIDEBAR_STATE_KEY);
             applySidebarState(false); // Estado por defecto: expandido
         }
-
+        
         // Función opcional para verificar si hay soporte para localStorage
         function isLocalStorageAvailable() {
             try {
@@ -1406,7 +1394,7 @@
                 return false;
             }
         }
-
+        
         // Verificar soporte de localStorage al cargar
         if (!isLocalStorageAvailable()) {
             console.warn('LocalStorage no está disponible. El estado del sidebar no se guardará.');
@@ -1439,20 +1427,20 @@
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
-
+        
         function handleSwipeGesture() {
             if (window.innerWidth >= 992) return; // Solo en móviles
-
+            
             const threshold = 80; // Distancia mínima para considerar un swipe
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-
+            
             // Verificar que es un swipe horizontal (no vertical)
             if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
-
+            
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
                 const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-
+                
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
                     // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
@@ -1466,25 +1454,25 @@
                 }
             }
         }
-
+        
         // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
-
+        
         document.addEventListener('touchmove', function(e) {
             // Si hay mucho movimiento, podría no ser un swipe intencional
             const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
-
+            
             if (deltaY > 50) {
                 isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
             }
         });
-
+        
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1497,32 +1485,20 @@
     <script>
         // Script de debugging específico para el dropdown
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DEBUGGING DROPDOWN ===');
-
             // Verificar elementos
             const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
             const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
             const dropupContainer = document.querySelector('.user-dropdown .dropup');
-
-
-            console.log('User dropdown element:', userDropdown);
-            console.log('Dropdown menu element:', dropdownMenu);
-            console.log('Dropup container:', dropupContainer);
-
+            
             if (userDropdown && dropdownMenu) {
-                console.log('✅ Elementos encontrados correctamente');
-
                 // Agregar click handler manual como fallback
                 userDropdown.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-
-
-                    console.log('Click en dropdown detectado');
-
+                    
                     // Toggle del dropdown menu
                     const isOpen = dropdownMenu.classList.contains('show');
-
+                    
                     if (isOpen) {
                         dropdownMenu.classList.remove('show');
                         userDropdown.setAttribute('aria-expanded', 'false');
@@ -1531,7 +1507,7 @@
                         userDropdown.setAttribute('aria-expanded', 'true');
                     }
                 });
-
+                
                 // Cerrar al hacer click fuera
                 document.addEventListener('click', function(e) {
                     if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
