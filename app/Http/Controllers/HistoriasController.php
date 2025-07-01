@@ -67,6 +67,10 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $usuarios = collect(); // por defecto vacío
         $sprints = collect();  // por defecto vacío
         $columnas = collect(); // columnas también
+        $currentProject = $proyecto;
+
+
+
 
         if ($request->has('proyecto')) {
             $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
@@ -75,7 +79,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
                 $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
 
-                // Obtener columnas del primer tablero del proyecto, si existe
+
                 if ($proyecto->tablero) {
                     $columnas = $proyecto->tablero->columnas;
                 }
@@ -83,7 +87,10 @@ private function compartirContextoDesdeColumna(Columna $columna)
             }
         }
 
-        return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas'));
+        return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas', 'currentProject'));
+
+
+
     }
 
 
