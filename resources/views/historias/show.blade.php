@@ -13,6 +13,7 @@
 
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 
+
     <div class="container-fluid-m-2 mi-container m-2">
 
              @if (session('success'))

@@ -3,6 +3,8 @@
         Editar Proyecto: {{ $project->name }}
     @endsection
 @section('content')
+
+
     <div class="container-fluid p-0">
         <div class="row m-0">
             <div class="col-12 p-4">
