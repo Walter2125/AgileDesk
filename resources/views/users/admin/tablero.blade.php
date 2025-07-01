@@ -347,7 +347,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre de la columna</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" required maxlength="30">
                         </div>
                     </div>
                     <div class="modal-footer">
