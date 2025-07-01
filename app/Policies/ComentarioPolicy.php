@@ -36,14 +36,14 @@ class ComentarioPolicy
      * Determine whether the user can update the model.
      */
     public function update(User $user, Comentario $comentario) 
-{ 
+    { 
     return $user->id === $comentario->user_id; 
-} 
+    } 
  
-public function delete(User $user, Comentario $comentario) 
-{ 
+    public function delete(User $user, Comentario $comentario) 
+    { 
     return $user->id === $comentario->user_id; 
-} 
+    } 
 
 
     /**

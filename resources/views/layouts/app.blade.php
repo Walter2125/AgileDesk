@@ -258,10 +258,9 @@
         flex-direction: column;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-
     }
-         /* Para Firefox */
-
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
+    }
 
     /* Personalizar scrollbar del sidebar para Webkit */
     #sidebar-wrapper::-webkit-scrollbar {
@@ -282,22 +281,17 @@
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
-        padding: clamp(1.25rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
-        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+        padding: 1.5rem 1rem;
+        font-size: 1.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        min-height: 3rem;
     }
 
     .list-group-item {
-        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+        padding: 0.75rem 1.25rem;
         border: none;
         border-radius: 0 !important;
         font-weight: 500;
         transition: all 0.2s ease;
-        font-size: clamp(0.875rem, 2vw, 1rem);
-        min-height: 2.5rem;
-        display: flex;
-        align-items: center;
     }
 
     .list-group-item:hover {
@@ -401,20 +395,6 @@
         transition: transform 0.2s ease;
     }
 
-    /* Asegurar que el navbar no tape el botón */
-    .navbar {
-        z-index: 1000;
-        position: relative;
-    }
-
-    /* Ajustar el icono cuando el sidebar está abierto */
-    #mobile-sidebar-toggle i.bi-list {
-        transition: transform 0.3s ease;
-    }
-
-    body:not(.sidebar-collapsed) #mobile-sidebar-toggle i.bi-list {
-        transform: rotate(90deg);
-    }
     /* Collapsed sidebar styles */
     body.sidebar-collapsed #sidebar-wrapper {
         width: var(--sidebar-collapsed-width);
@@ -452,7 +432,7 @@
             display: none;
         }
     }
-
+    
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -508,9 +488,9 @@
     }
 
     .user-avatar {
-        width: clamp(32px, 5vw, 40px);
-        height: clamp(32px, 5vw, 40px);
-        min-width: clamp(32px, 5vw, 40px); /* Evita que se encoja */
+        width: 40px;
+        height: 40px;
+        min-width: 40px; /* Evita que se encoja */
         border-radius: 50%;
         background-color: #0d6efd;
         display: flex;
@@ -518,7 +498,6 @@
         justify-content: center;
         margin-right: 0.75rem;
         font-weight: bold;
-        font-size: clamp(0.875rem, 2vw, 1rem);
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -710,39 +689,8 @@
         }
 
         body.sidebar-collapsed #sidebar-wrapper {
-            transform: translateX(-100%); /* Mantener oculto cuando está colapsado */
+            transform: translateX(0); /* Mostrar al estar collapsed/abierto */
             width: var(--sidebar-collapsed-width) !important;
-        }
-
-        /* Mostrar sidebar cuando NO está colapsado (expandido) */
-        body:not(.sidebar-collapsed) #sidebar-wrapper {
-            transform: translateX(0) !important; /* Mostrar cuando está expandido */
-            width: var(--sidebar-width) !important;
-        }
-
-        /* Mostrar overlay cuando sidebar está expandido (visible) en móviles */
-        body:not(.sidebar-collapsed) .overlay {
-            display: block;
-        }
-
-        /* Indicador visual para swipe en móviles */
-        body.sidebar-collapsed::before {
-            content: '';
-            position: fixed;
-            left: 0;
-            top: 50%;
-            width: 3px;
-            height: 40px;
-            background: linear-gradient(to right, transparent, rgba(0, 123, 255, 0.5));
-            border-radius: 0 3px 3px 0;
-            transform: translateY(-50%);
-            z-index: 1002;
-            animation: swipeHint 3s ease-in-out infinite;
-        }
-
-        @keyframes swipeHint {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
         }
 
         #page-content-wrapper {
@@ -1145,7 +1093,8 @@
     @yield('styles')
 
 </head>
-<body class="font-sans antialiased">
+
+
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
@@ -1190,7 +1139,6 @@
                         </div>
                     @endisset--}}
 
-
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
@@ -1202,6 +1150,7 @@
                             <span class="sidebar-text">Tablero</span>
                         </a>
                     @endif
+
 
 
                     <!-- -->
@@ -1225,9 +1174,9 @@
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
-                        <button class="user-info btn btn-link text-white p-0 w-100 text-start"
-                                type="button"
-                                data-bs-toggle="dropdown"
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
                                 aria-expanded="false"
                                 id="userDropdown">
                             <div class="user-avatar">
@@ -1288,18 +1237,18 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-
+        
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-
+        
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-
+        
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
@@ -1335,7 +1284,7 @@
                 }
             }
         }
-
+        
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
             const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
@@ -1359,7 +1308,6 @@
                         closeBtn.click();
                     }
                 }, 5000);
-            });
         });
 
         // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
@@ -1544,5 +1492,6 @@
     @yield('scripts')
     <script src="bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/dark-mode.js') }}"></script>
+
 </body>
 </html>
