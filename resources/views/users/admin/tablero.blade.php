@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @php
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
@@ -83,7 +84,12 @@
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
                             style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
                         <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
+                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
+                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
                         @foreach($tablero->sprints as $sprint)
+                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                {{ $sprint->nombre }}
+                            </option>
                             <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
                                 {{ $sprint->nombre }}
                             </option>
@@ -106,6 +112,7 @@
                         Agregar columna
                     </button>
                 </div>
+            </div>
             </div>
 
 
@@ -314,6 +321,7 @@
 
 
 
+
         {{-- Scripts existentes --}}
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
@@ -329,7 +337,23 @@
                             const historiaId = historiaElement.dataset.historiaId;
                             const columnaElement = evt.to.closest('[data-columna-id]');
                             const nuevaColumnaId = columnaElement.dataset.columnaId;
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.overflow-auto.p-2').forEach(function (el) {
+                    new Sortable(el, {
+                        group: 'historias',
+                        animation: 150,
+                        draggable: '.card',
+                        onEnd: function (evt) {
+                            const historiaElement = evt.item;
+                            const historiaId = historiaElement.dataset.historiaId;
+                            const columnaElement = evt.to.closest('[data-columna-id]');
+                            const nuevaColumnaId = columnaElement.dataset.columnaId;
 
+                            if (!historiaId || !nuevaColumnaId) {
+                                console.error('Faltan IDs requeridos');
+                                return;
+                            }
                             if (!historiaId || !nuevaColumnaId) {
                                 console.error('Faltan IDs requeridos');
                                 return;
@@ -370,7 +394,46 @@
                         }
                     });
                 });
+                            fetch(/historias/${historiaId}/mover, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    columna_id: nuevaColumnaId
+                                })
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.json().then(err => { throw err; });
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (!data.success) {
+                                        throw new Error(data.message || 'Error al mover la historia');
+                                    }
+                                    console.log('Movimiento exitoso:', data);
+                                    // Opcional: Mostrar notificación
+                                    showNotification('success', data.message);
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    showNotification('error', error.message);
+                                    // Revertir visualmente el movimiento
+                                    evt.from.insertBefore(evt.item, evt.oldIndex >= evt.from.children.length ?
+                                        null : evt.from.children[evt.oldIndex]);
+                                });
+                        }
+                    });
+                });
 
+                function showNotification(type, message) {
+                    // Implementa tu sistema de notificaciones o usa alertas simples
+                    const alertType = type === 'error' ? 'danger' : type;
+                    const alertHtml = `
                 function showNotification(type, message) {
                     // Implementa tu sistema de notificaciones o usa alertas simples
                     const alertType = type === 'error' ? 'danger' : type;
@@ -384,6 +447,17 @@
                     // Agrega la notificación donde sea apropiado en tu UI
                     const notificationContainer = document.getElementById('notification-container') || document.body;
                     notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
+                    // Agrega la notificación donde sea apropiado en tu UI
+                    const notificationContainer = document.getElementById('notification-container') || document.body;
+                    notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
+
+                    // Elimina la notificación después de 5 segundos
+                    setTimeout(() => {
+                        const alert = notificationContainer.querySelector('.alert');
+                        if (alert) alert.remove();
+                    }, 5000);
+                }
+            });
 
                     // Elimina la notificación después de 5 segundos
                     setTimeout(() => {
@@ -394,6 +468,7 @@
             });
 
 
+        </script>
         </script>
 
         <script>
@@ -619,6 +694,7 @@
 
         <!-- Modal para editar nombre de columna -->
         <!-- Modal para editar nombre de columna -->
+        <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="formEditarColumna" method="POST" action="">
@@ -798,6 +874,7 @@
             });
 
         </script>
+        </script>
         <script>
 
             document.addEventListener('DOMContentLoaded', function () {
@@ -816,6 +893,7 @@
 
                 // Asegurar que la URL comience con "/" para que sea una ruta absoluta
                 // y agregar el prefijo de administrador para acceder a la ruta correcta
+                form.action = /admin/columnas/${columnaId};
                 form.action = /admin/columnas/${columnaId};
 
                 // Resetea el input modo por si acaso
@@ -983,6 +1061,7 @@
                 const input = document.getElementById('inputNombreColumna');
 
                 form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
+                form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
                 input.value = nombre;
 
                 const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));
@@ -1000,7 +1079,18 @@
                 </script>
 
 
+                <script>
+                    function seleccionarSprint(select) {
+                        const sprintId = select.value;
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
+                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
+                    }
+                </script>
 
+
+
+                <style>
                 <style>
             .menu-wrapper {
                 position: relative;
@@ -1202,7 +1292,18 @@
                 margin-top: -40px !important;
             }
         </style>
+            .toggler:checked ~ .menu {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .container.py-2 {
+                margin-top: -40px !important;
+            }
+        </style>
 
 
+
+@endsection
 
 @endsection
