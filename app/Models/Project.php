@@ -43,7 +43,6 @@ class Project extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    //relacion nesesaria con historias
     public function historias()
     {
         return $this->hasMany(Historia::class, 'proyecto_id');
@@ -67,6 +66,14 @@ class Project extends Model
             'id'
         );
     }
+    public function tareas() {
+    return $this->hasMany(Tarea::class, 'proyecto_id');
+}
+
+public function sprint() {
+    return $this->hasMany(Sprint::class, 'proyecto_id');
+}
+
 
 }
 

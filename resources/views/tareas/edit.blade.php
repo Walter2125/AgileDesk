@@ -2,8 +2,6 @@
         @section('mensaje-superior')
            Editar Tarea: {{ $tarea->nombre }}
         @endsection
-            
-
 @section('content')
 
 
