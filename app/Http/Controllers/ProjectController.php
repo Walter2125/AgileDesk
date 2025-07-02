@@ -109,13 +109,13 @@ class ProjectController extends Controller
 {
     $user = Auth::user();
 
-    $projects = $user->projects()->with(['tareas', 'historias', 'sprint'])->get();
+    $projects = $user->projects()->with(['tareas', 'historias', 'sprints'])->get();
 
     $sorted = $projects->sortByDesc(function ($project) {
         return max([
             optional($project->tareas->max('updated_at')),
             optional($project->historias->max('updated_at')),
-            optional($project->sprint->max('updated_at')),
+            optional($project->sprints->max('updated_at')),
             $project->updated_at,
         ]);
     });

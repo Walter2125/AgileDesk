@@ -206,13 +206,11 @@ $(function () {
         fecha_fin: $('#fecha_fin').val()
     };
 
-    // Restaurar valores del formulario
     $('#name').val(formData.name);
     $('#descripcion').val(formData.descripcion);
     $('#fecha_inicio').val(formData.fecha_inicio);
     $('#fecha_fin').val(formData.fecha_fin);
 
-    // Función para guardar el estado actual
     function saveFormState() {
         sessionStorage.setItem('projectFormData', JSON.stringify({
             name: $('#name').val(),
@@ -223,7 +221,6 @@ $(function () {
         }));
     }
 
-    // Guardar estado cuando cambien los campos
     $('#name, #descripcion, #fecha_inicio, #fecha_fin').on('change input', saveFormState);
 
     function applySelections() {

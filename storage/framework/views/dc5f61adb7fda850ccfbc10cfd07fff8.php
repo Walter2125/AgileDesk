@@ -142,9 +142,9 @@
                                                     <a href="<?php echo e(route('historias.show', $historia->id)); ?>" class="text-decoration-none text-dark d-block">
 
                                                         <strong class="d-block text-truncate"
-                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                        title="<?php echo e($historia->nombre); ?>">
-                                                        <?php echo e($historia->codigo); ?> <?php echo e($historia->nombre); ?>
+                                                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                                            title="<?php echo e($historia->nombre); ?>">
+                                                            <?php echo e($historia->codigo); ?> <?php echo e($historia->nombre); ?>
 
                                                         </strong>
 

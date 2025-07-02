@@ -141,9 +141,9 @@
                                                     <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
 
                                                         <strong class="d-block text-truncate"
-                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                        title="{{ $historia->nombre }}">
-                                                        {{ $historia->codigo }} {{ $historia->nombre }}
+                                                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                                            title="{{ $historia->nombre }}">
+                                                            {{ $historia->codigo }} {{ $historia->nombre }}
                                                         </strong>
 
                                                         @if ($historia->descripcion)

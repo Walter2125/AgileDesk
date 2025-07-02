@@ -152,16 +152,12 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return null;
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Historia $historia)
     {
-        // Cargamos también la relación con el proyecto
+      
         $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+       
         $currentProject = $historia->columna->tablero->project
             ?? $historia->proyecto;
 
@@ -169,9 +165,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
     }
 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $historia = Historia::with(['proyecto', 'usuario', 'columna.tablero'])->findOrFail($id);
@@ -181,12 +174,9 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
         View::share('currentProject', $proyecto);
 
-
-        // Obtener columnas desde el tablero si existe, sino vacío
         if ($historia->columna && $historia->columna->tablero) {
             $columnas = $historia->columna->tablero->columnas;
         } else {
-            // Buscar tablero del proyecto
             $tablero = $proyecto->tablero()->with('columnas')->first();
             $columnas = $tablero ? $tablero->columnas : collect();
         }
@@ -195,10 +185,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Historia $historia)
     {
         $request->validate([
@@ -228,7 +214,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
             'sprint_id' => $request->sprint_id,
-            'columna_id' => $request->columna_id, // ← TAMBIÉN FALTABA ESTO
+            'columna_id' => $request->columna_id, 
         ]);
 
         return redirect()->route('historias.show', $historia->id)
@@ -237,9 +223,9 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
    public function destroy(Historia $historia)
         {
-            $proyectoId = $historia->proyecto_id; // Guardas el ID antes de eliminar
+            $proyectoId = $historia->proyecto_id; 
 
-            $historia->delete(); // Eliminas la historia
+            $historia->delete(); 
 
             return redirect()->route('tableros.show', ['project' => $proyectoId])
                             ->with('success', 'Historia borrada con éxito');
