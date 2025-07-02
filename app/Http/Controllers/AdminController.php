@@ -13,10 +13,11 @@ class AdminController extends Controller
     public function index()
     {
         // Solo mostrar usuarios activos (sin soft deletes)
-        $usuarios = User::where('usertype', '!=', 'admin')->paginate(5);
-        $proyectos = Project::with('creator', 'users')->paginate(5);
-        $historial = HistorialCambio::paginate(5);
-        $sprints = Sprint::with('proyecto')->paginate(5);
+        $usuarios = User::where('usertype', '!=', 'admin')->paginate(5, ['*'], 'usuarios_page');
+        $proyectos = Project::with('creator', 'users')->paginate(5, ['*'], 'proyectos_page');
+        $historial = HistorialCambio::paginate(5, ['*'], 'historial_page');
+        $sprints = Sprint::with('proyecto')->paginate(5, ['*'], 'sprints_page');
+
 
         return view('users.admin.homeadmin', compact('usuarios', 'proyectos', 'historial', 'sprints'));
     }

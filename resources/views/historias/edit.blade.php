@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-        @section('mensaje-superior')
+         @section('mensaje-superior')
             Editar Historia
         @endsection
 
@@ -28,7 +28,7 @@
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la Historia*</label>
-            <input type="text" name="nombre" id="nombre" class="form-control rounded" value="{{ $historia->nombre }}" >
+            <input type="text" name="nombre" id="nombre" class="form-control rounded" maxlength="100" value="{{ $historia->nombre }}" >
         </div>
 
 
@@ -64,9 +64,10 @@
             <div class="mb-3">
                 <label for="columna_id" class="form-label">Estado</label>
                 <select name="columna_id" id="columna_id" class="form-control">
-                    <option value="">Backlog</option>
+                    <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
-                        <option value="{{ $columna->id }}" {{ old('columna_id') == $columna->id ? 'selected' : '' }}>
+                        <option value="{{ $columna->id }}"
+                            {{ old('columna_id', $historia->columna_id ?? '') == $columna->id ? 'selected' : '' }}>
                             {{ $columna->nombre }}
                         </option>
                     @endforeach
@@ -92,7 +93,7 @@
 
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4">{{ $historia->descripcion }}</textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control" maxlength="5000" rows="4">{{ $historia->descripcion }}</textarea>
         </div>
 
 
@@ -100,9 +101,10 @@
 
 
          <div class="mb-3 d-flex justify-content-end">
-            <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-secondary me-2">Atras</a>
 
-            <button type="submit" class="btn btn-primary">Actualizar</button>
+            <a href="{{ route('historias.show', $historia->id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case me-2">Atras</a>
+
+            <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Actualizar</button>
         </div>
     </form>
 </div>

@@ -30,9 +30,20 @@ class TareaController extends Controller
     public function store(Request $request, Historia $historia)
     {
         $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string', // ← ahora obligatorio
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
+
+             ], [
+        'nombre.required' => 'El nombre de la tarea es obligatorio.',
+        'nombre.string' => 'El nombre de la tarea debe ser un texto.',
+        'nombre.max' => 'El nombre de la tarea no debe exceder los 255 caracteres.',
+
+        'descripcion.required' => 'La descripción es obligatoria.',
+        'descripcion.string' => 'La descripción debe ser un texto.',
+
+        'actividad.required' => 'La actividad es obligatoria.',
+        'actividad.in' => 'La actividad seleccionada no es válida. Debe ser Configuración, Desarrollo, Prueba, Diseño u OtroTipo.',
         ]);
 
         // Asociar tarea con la historia
@@ -51,10 +62,22 @@ class TareaController extends Controller
     public function update(Request $request, Historia $historia, Tarea $tarea)
     {
         $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string', 
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
-        ]);
+
+            ], [
+        'nombre.required' => 'El nombre de la tarea es obligatorio.',
+        'nombre.string' => 'El nombre de la tarea debe ser un texto.',
+        'nombre.max' => 'El nombre de la tarea no debe exceder los 255 caracteres.',
+
+        'descripcion.required' => 'La descripción es obligatoria.',
+        'descripcion.string' => 'La descripción debe ser un texto.',
+
+        'actividad.required' => 'La actividad es obligatoria.',
+        'actividad.in' => 'La actividad seleccionada no es válida. Debe ser Configuración, Desarrollo, Prueba, Diseño u OtroTipo.',
+    ]);
+        
 
         $tarea->update($validatedData);
 

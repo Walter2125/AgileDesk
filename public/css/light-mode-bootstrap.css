@@ -1,0 +1,181 @@
+/* light-mode-bootstrap.css: Fuerza los colores y estilos de Bootstrap en modo claro para toda la app */
+
+body:not(.dark-mode), html:not(.dark-mode) {
+  background-color: #fff !important;
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .card,
+html:not(.dark-mode) .card {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}
+
+body:not(.dark-mode) .card-header,
+html:not(.dark-mode) .card-header {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .card-body,
+html:not(.dark-mode) .card-body {
+  background-color: #fff !important;
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .form-control,
+html:not(.dark-mode) .form-control {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body:not(.dark-mode) .form-label,
+html:not(.dark-mode) .form-label,
+body:not(.dark-mode) label,
+html:not(.dark-mode) label {
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .btn-primary,
+html:not(.dark-mode) .btn-primary {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .btn-secondary,
+html:not(.dark-mode) .btn-secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .btn-danger,
+html:not(.dark-mode) .btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .btn-success,
+html:not(.dark-mode) .btn-success {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .btn-info,
+html:not(.dark-mode) .btn-info {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .btn-warning,
+html:not(.dark-mode) .btn-warning {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .btn-light,
+html:not(.dark-mode) .btn-light {
+  background-color: #f8f9fa !important;
+  border-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+body:not(.dark-mode) .btn-dark,
+html:not(.dark-mode) .btn-dark {
+  background-color: #212529 !important;
+  border-color: #212529 !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .alert,
+html:not(.dark-mode) .alert {
+  color: #212529 !important;
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+}
+
+body:not(.dark-mode) .badge.bg-primary,
+html:not(.dark-mode) .badge.bg-primary {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .badge.bg-secondary,
+html:not(.dark-mode) .badge.bg-secondary {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}
+
+body:not(.dark-mode) .table,
+html:not(.dark-mode) .table {
+  color: #212529 !important;
+  background-color: #fff !important;
+}
+
+body:not(.dark-mode) .table th,
+body:not(.dark-mode) .table td,
+html:not(.dark-mode) .table th,
+html:not(.dark-mode) .table td {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}
+
+body:not(.dark-mode) .modal-content,
+html:not(.dark-mode) .modal-content {
+  background-color: #fff !important;
+  color: #212529 !important;
+}
+
+
+body:not(.dark-mode) .nav-link,
+html:not(.dark-mode) .nav-link {
+  color: #0d6efd !important;
+}
+
+body:not(.dark-mode) .nav-link.active,
+html:not(.dark-mode) .nav-link.active {
+  color: #fff !important;
+  background-color: #0d6efd !important;
+}
+
+body:not(.dark-mode) .progress-bar,
+html:not(.dark-mode) .progress-bar {
+  background-color: #0d6efd !important;
+}
+
+body:not(.dark-mode) .input-group-text,
+html:not(.dark-mode) .input-group-text {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body:not(.dark-mode) .form-select,
+html:not(.dark-mode) .form-select {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body:not(.dark-mode) .pagination .page-link,
+html:not(.dark-mode) .pagination .page-link {
+  background-color: #fff !important;
+  color: #0d6efd !important;
+  border-color: #dee2e6 !important;
+}
+body:not(.dark-mode) .pagination .page-link.active,
+html:not(.dark-mode) .pagination .page-link.active {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+  border-color: #0d6efd !important;
+}
+
+/* Puedes agregar más reglas según los componentes Bootstrap que uses */

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Sprint;
 use App\Models\Columna;
+use App\Models\Project;
+use App\Models\Tablero;
 use App\Models\Historia;
 use Illuminate\Http\Request;
-use App\Models\Sprint;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
-use App\Models\Project;
-use App\Models\User;
-use App\Models\Tablero;
 
 
 
@@ -66,6 +67,10 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $usuarios = collect(); // por defecto vacío
         $sprints = collect();  // por defecto vacío
         $columnas = collect(); // columnas también
+        $currentProject = $proyecto;
+
+
+
 
         if ($request->has('proyecto')) {
             $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
@@ -87,10 +92,14 @@ private function compartirContextoDesdeColumna(Columna $columna)
     public function store(Request $request)
     {
         $request -> validate([
-            'nombre'=> 'required|string|min:3|max:255|unique:historias,nombre',
+            'nombre' => ['required','string','min:3','max:100',
+                Rule::unique('historias')->where(function ($query) use ($request) {
+                    return $query->where('proyecto_id', $request->proyecto_id);
+                }),
+            ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
              'proyecto_id' => 'required|exists:nuevo_proyecto,id',
             'columna_id' => 'nullable|exists:columnas,id',
 
@@ -188,10 +197,16 @@ private function compartirContextoDesdeColumna(Columna $columna)
     public function update(Request $request, Historia $historia)
     {
         $request->validate([
-            'nombre' => 'required|string|min:3|max:255|unique:historias,nombre,' . $historia->id,
+            'nombre' => [ 'required','string','min:3','max:255',
+                    Rule::unique('historias')
+                        ->where(function ($query) use ($request) {
+                            return $query->where('proyecto_id', $request->proyecto_id);
+                        })
+                        ->ignore($historia->id),
+                ],
             'trabajo_estimado' => 'nullable|integer|min:0',
             'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:1000',
+            'descripcion' => 'nullable|string|max:5000',
             'usuario_id' => 'nullable|exists:users,id',
             'sprint_id' => 'nullable|exists:sprints,id',
             'columna_id' => 'nullable|exists:columnas,id',
