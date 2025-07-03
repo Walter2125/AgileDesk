@@ -97,6 +97,7 @@ body *::after {
 .dark-mode .navbar,
 .dark-mode .sidebar,
 .dark-mode .card,
+.dark-mode .menu,
 .dark-mode .modal-content,
 .dark-mode .modal-footer,
 .dark-mode .dropdown-menu {
