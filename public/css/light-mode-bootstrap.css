@@ -1,4 +1,14 @@
-/* light-mode-bootstrap.css: Fuerza los colores y estilos de Bootstrap en modo claro para toda la app */
+body:not(.dark-mode) .modal-footer,
+html:not(.dark-mode) .modal-footer {
+  background-color: #ffffff !important;
+}
+
+body:not(.dark-mode) .dropdown-menu,
+html:not(.dark-mode) .dropdown-menu {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}
 
 body:not(.dark-mode), html:not(.dark-mode) {
   background-color: #fff !important;
@@ -29,6 +39,34 @@ html:not(.dark-mode) .form-control {
   background-color: #fff !important;
   color: #212529 !important;
   border-color: #ced4da !important;
+  box-shadow: none !important;
+  caret-color: #212529 !important;
+}
+
+body:not(.dark-mode) input[type="text"],
+body:not(.dark-mode) input[type="email"],
+body:not(.dark-mode) input[type="password"],
+body:not(.dark-mode) input[type="number"],
+body:not(.dark-mode) textarea,
+html:not(.dark-mode) input[type="text"],
+html:not(.dark-mode) input[type="email"],
+html:not(.dark-mode) input[type="password"],
+html:not(.dark-mode) input[type="number"],
+html:not(.dark-mode) textarea {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+  box-shadow: none !important;
+  caret-color: #212529 !important;
+  opacity: 1 !important;
+}
+
+body:not(.dark-mode) input[readonly],
+html:not(.dark-mode) input[readonly] {
+  background-color: #f8f9fa !important;
+  color: #adb5bd !important;
+  border-color: #ced4da !important;
+  opacity: 1 !important;
 }
 
 body:not(.dark-mode) .form-label,

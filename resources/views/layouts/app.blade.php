@@ -1120,10 +1120,7 @@
 }
 
 </style>
-
-    <!-- Estilos adicionales de las secciones -->
     @yield('styles')
-
 </head>
 
 
@@ -1134,16 +1131,11 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between py-3 px-2">
-   
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between py-3 px-4"> 
                         <span>
-                            <i class="bi bi-code-slash me-2"></i>
+                            <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
                         </span>
-                        <button class="sidebar-toggle-btn ms-2" onclick="toggleSidebar()" aria-label="Colapsar sidebar">
-                            <i class="bi bi-chevron-left" id="sidebar-toggle-icon"></i>
-                        </button>
-                    
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
@@ -1154,22 +1146,7 @@
                      <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
-
-
-
-
                      </a>
-
-                    {{-- Debug temporal
-                     @isset($currentProject)
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject está definido: {{ $currentProject->id }}
-                        </div>
-                    @else
-                        <div style="color: white; padding: 1rem; background: red;">
-                            currentProject NO está definido
-                        </div>
-                    @endisset--}}
 
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
@@ -1183,9 +1160,6 @@
                         </a>
                     @endif
 
-
-
-                    <!-- -->
 
                     <!-- otros botones comentados por ahora -->
 
@@ -1207,18 +1181,18 @@
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
                         <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-        id="userDropdown">
-    <div class="user-avatar d-flex align-items-center justify-content-center">
-        {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
-    </div>
-    <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
-        <div class="fw-semibold" style="font-size:1rem; line-height:1.1;">{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-        <small class="text-muted" style="font-size:0.85rem;">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
-    </div>
-</button>
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                id="userDropdown">
+                            <div class="user-avatar d-flex align-items-center justify-content-center">
+                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                            </div>
+                            <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
+                                <div class="fw-semibold" style="font-size:1rem; line-height:1.1;">{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
+                                <small class="text-muted" style="font-size:0.85rem;">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                            </div>
+                        </button>
                         <!-- Dropdown menu -->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
@@ -1266,228 +1240,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <!-- Base Layout Script -->
-    <script>
-        // Constantes para localStorage
-        const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-        
-        // Función para obtener el estado guardado del sidebar
-        function getSavedSidebarState() {
-            const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
-            return saved === 'true';
-        }
-        
-        // Función para guardar el estado del sidebar
-        function saveSidebarState(isCollapsed) {
-            localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
-        }
-        
-        // Función para aplicar el estado del sidebar
-        function applySidebarState(isCollapsed) {
-            const body = document.body;
-            const toggleIcon = document.getElementById('sidebar-toggle-icon');
-            const mobileIcon = document.getElementById('mobile-sidebar-icon');
-            const overlay = document.querySelector('.overlay');
-
-            if (isCollapsed) {
-                body.classList.add('sidebar-collapsed');
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('bi-chevron-left');
-                    toggleIcon.classList.add('bi-chevron-right');
-                }
-                if (mobileIcon) {
-                    mobileIcon.classList.remove('bi-x');
-                    mobileIcon.classList.add('bi-list');
-                }
-                if (window.innerWidth < 992 && overlay) {
-                    overlay.style.display = 'none';
-                }
-            } else {
-                body.classList.remove('sidebar-collapsed');
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('bi-chevron-right');
-                    toggleIcon.classList.add('bi-chevron-left');
-                }
-                if (mobileIcon) {
-                    mobileIcon.classList.remove('bi-list');
-                    mobileIcon.classList.add('bi-x');
-                }
-                if (window.innerWidth < 992 && overlay) {
-                    overlay.style.display = 'block';
-                }
-            }
-        }
-        
-        // Sidebar toggle functionality mejorada
-        function toggleSidebar() {
-            const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-            const newState = !isCurrentlyCollapsed;
-            applySidebarState(newState);
-            saveSidebarState(newState);
-        }
-
-        // Inicializar el sidebar con el estado guardado al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar sidebar
-            const savedState = getSavedSidebarState();
-            applySidebarState(savedState);
-
-            // Cerrar alerts automáticamente
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const closeBtn = alert.querySelector('.btn-close');
-                    if (closeBtn) {
-                        closeBtn.click();
-                    }
-                }, 5000);
-            });
-
-            // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
-            window.addEventListener('resize', function() {
-                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                applySidebarState(isCollapsed);
-            });
-
-            // Cerrar sidebar al hacer clic en overlay en móvil
-            const overlay = document.querySelector('.overlay');
-            if (overlay) {
-                overlay.addEventListener('click', function() {
-                    if (window.innerWidth < 992) {
-                        applySidebarState(true);
-                        saveSidebarState(true);
-                    }
-                });
-            }
-        });
-
-        // Submenu toggle
-        function toggleSubmenu(event, submenuId) {
-            event.stopPropagation();
-            const submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.toggle('open');
-            }
-        }
-
-        // Soporte para gestos de swipe en móviles mejorado
-        let touchStartX = 0;
-        let touchEndX = 0;
-        let touchStartY = 0;
-        let touchEndY = 0;
-        let isSwipeGesture = false;
-        function handleSwipeGesture() {
-            if (window.innerWidth >= 992) return;
-            const threshold = 80;
-            const swipeDistanceX = touchEndX - touchStartX;
-            const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            if (swipeDistanceY > 100) return;
-            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-            if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
-                if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
-                    applySidebarState(false);
-                    saveSidebarState(false);
-                } else if (swipeDistanceX < -50 && !isCollapsed && touchStartX < 250) {
-                    applySidebarState(true);
-                    saveSidebarState(true);
-                }
-            }
-        }
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-            isSwipeGesture = true;
-        });
-        document.addEventListener('touchmove', function(e) {
-            const currentY = e.changedTouches[0].screenY;
-            const deltaY = Math.abs(currentY - touchStartY);
-            if (deltaY > 50) {
-                isSwipeGesture = false;
-            }
-        });
-        document.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipeGesture();
-            isSwipeGesture = false;
-        });
-    </script>
-
-    <!-- Sistema operativo y escalado automático -->
-    <script>
-        // Detectar sistema operativo y aplicar ajustes específicos
-        document.addEventListener('DOMContentLoaded', function() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const isLinux = userAgent.includes('linux');
-            const isMac = userAgent.includes('mac');
-            const isFirefox = userAgent.includes('firefox');
-
-            // Crear elemento de estilo para ajustes específicos del SO
-            const osSpecificStyles = document.createElement('style');
-            let css = '';
-
-            if (isLinux) {
-                css += `
-                    /* Ajustes específicos para Linux */
-                    html { font-size: 17px !important; }
-                    .sidebar-heading { font-size: 1.6rem !important; }
-                    .list-group-item { font-size: 1rem !important; }
-                    .user-avatar { font-size: 1rem !important; }
-                `;
-                console.log('🐧 Sistema Linux detectado - Aplicando ajustes de escalado');
-            }
-
-            if (isMac) {
-                css += `
-                    /* Ajustes específicos para macOS */
-                    html { font-size: 16px !important; }
-                    body { font-weight: 400 !important; }
-                    .sidebar-heading { font-weight: 500 !important; }
-                `;
-                console.log('🍎 Sistema macOS detectado - Aplicando ajustes de escalado');
-            }
-
-            if (isFirefox && isLinux) {
-                css += `
-                    /* Ajustes específicos para Firefox en Linux */
-                    html { font-size: 18px !important; }
-                    .sidebar-heading { font-size: 1.7rem !important; }
-                    .list-group-item { font-size: 1.1rem !important; }
-                `;
-                console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
-            }
-
-            // Detectar DPI bajo (típico en algunos sistemas Linux)
-            if (window.devicePixelRatio <= 1) {
-                css += `
-                    /* Ajustes para DPI bajo */
-                    html { font-size: 18px !important; }
-                    .sidebar-heading { font-size: 1.75rem !important; }
-                    .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
-                    .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
-                `;
-                console.log('📱 DPI bajo detectado - Aplicando escalado aumentado');
-
-                console.log('✅ Event listeners agregados');
-            } else {
-                console.log('❌ No se encontraron los elementos del dropdown');
-            }
-
-            // Aplicar los estilos si hay alguno
-            if (css) {
-                osSpecificStyles.textContent = css;
-                document.head.appendChild(osSpecificStyles);
-            }
-
-            // Mensaje de información en consola
-            console.log('🎨 AgileDesk - Ajustes de escalado aplicados para:', {
-                userAgent: navigator.userAgent,
-                devicePixelRatio: window.devicePixelRatio,
-                screenResolution: `${screen.width}x${screen.height}`,
-                windowSize: `${window.innerWidth}x${window.innerHeight}`
-            });
-        });
-    </script>
-
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';

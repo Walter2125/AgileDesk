@@ -79,7 +79,6 @@
         }
 
         .navbar-optimized .btn-optimized:focus {
-            outline: 2px solid var(--primary-color);
             outline-offset: 2px;
         }
 
