@@ -67,7 +67,13 @@ class User extends Authenticatable
         return $this->usertype === 'admin';
     }
 
-    
+    /**
+     * Relación: un usuario tiene muchas historias (por usuario_id)
+     */
+    public function historias()
+    {
+        return $this->hasMany(\App\Models\Historia::class, 'usuario_id');
+    }
 
   public function projects()
 {
