@@ -43,8 +43,6 @@ protected $fillable = [
         return $this->belongsTo(Project::class, 'proyecto_id');
     }
 
-
-
     public function usuario()
     {
         return $this->belongsTo(User::class, 'usuario_id');

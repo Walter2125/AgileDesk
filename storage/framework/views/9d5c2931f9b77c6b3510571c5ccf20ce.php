@@ -1,9 +1,8 @@
-@extends('layouts.app')
-    @section('mensaje-superior')
+    <?php $__env->startSection('mensaje-superior'); ?>
         Crear Nuevo Proyecto
-    @endsection
+    <?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
     .search-container {
         position: relative;
@@ -26,37 +25,65 @@
         border-radius: 15px !important;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
-                @csrf
+            <form id="projectForm" method="POST" action="<?php echo e(route('projects.store')); ?>">
+                <?php echo csrf_field(); ?>
 
                 <!-- Nombre -->
                 <div class="form-group mb-3">
                     <label for="name">Nombre del Proyecto</label>
-                    <input id="name" type="text" maxlength="50"
-                        class="form-control @error('name') is-invalid @enderror"
+                    <input id="name" type="text"
+                        class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                         name="name"
-                        value="{{ old('name') }}"
+                        value="<?php echo e(old('name')); ?>"
                         required maxlength="30" autofocus>
-                    @error('name')
-                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="invalid-feedback d-block"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 <!-- Descripción -->
                 <div class="form-group mb-3">
                     <label for="descripcion">Descripción</label>
                     <textarea id="descripcion" 
-                        class="form-control @error('descripcion') is-invalid @enderror" 
+                        class="form-control <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                         name="descripcion" 
-                        rows="4">{{ old('descripcion') }}</textarea>
-                    @error('descripcion')
-                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                    @enderror
+                        rows="4"><?php echo e(old('descripcion')); ?></textarea>
+                    <?php $__errorArgs = ['descripcion'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="invalid-feedback d-block"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 <div class="mb-3">
                     <label for="codigo" class="form-label">Código del Proyecto</label>
@@ -68,26 +95,54 @@
                 <div class="form-group mb-3">
                     <label for="fecha_inicio">Fecha de Inicio</label>
                     <input id="fecha_inicio" type="date"
-                        class="form-control @error('fecha_inicio') is-invalid @enderror"
+                        class="form-control <?php $__errorArgs = ['fecha_inicio'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                         name="fecha_inicio"
-                        value="{{ old('fecha_inicio') }}"
+                        value="<?php echo e(old('fecha_inicio')); ?>"
                         required>
-                    @error('fecha_inicio')
-                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['fecha_inicio'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="invalid-feedback d-block"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <!-- Fecha Fin -->
                 <div class="form-group mb-3">
                     <label for="fecha_fin">Fecha de Finalización</label>
                     <input id="fecha_fin" type="date"
-                        class="form-control @error('fecha_fin') is-invalid @enderror"
+                        class="form-control <?php $__errorArgs = ['fecha_fin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                         name="fecha_fin"
-                        value="{{ old('fecha_fin') }}"
+                        value="<?php echo e(old('fecha_fin')); ?>"
                         required>
-                    @error('fecha_fin')
-                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                    @enderror
+                    <?php $__errorArgs = ['fecha_fin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <span class="invalid-feedback d-block"><?php echo e($message); ?></span>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <!-- Buscador y tabla -->
@@ -99,34 +154,35 @@
                     </div>
 
                     <div id="usersTableContainer">
-                        @include('projects.partials.users_table', [
+                        <?php echo $__env->make('projects.partials.users_table', [
                             'users' => $users,
                             'selectedUsers' => old('selected_users', [])
-                        ])
+                        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                         <div class="d-flex justify-content-center mt-3">
-                            {{ $users->links() }}
+                            <?php echo e($users->links()); ?>
+
                         </div>
                     </div>
                 </div>
 
                 <!-- Campo oculto con usuarios seleccionados -->
-                @foreach(old('selected_users', []) as $id)
-                    <input type="hidden" name="selected_users[]" value="{{ $id }}">
-                @endforeach
+                <?php $__currentLoopData = old('selected_users', []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <input type="hidden" name="selected_users[]" value="<?php echo e($id); ?>">
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <div id="selectedUsersInputs"></div>
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar Proyecto</button>
-                    <a href="{{ route('projects.my') }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
     .search-container { position: relative; }
     #searchResults {
@@ -135,14 +191,14 @@
         max-height: 300px; overflow-y: auto; display: none;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(function () {
     // Recuperar datos del sessionStorage si existen
-    let selectedUsers = @json(old('selected_users', []));
+    let selectedUsers = <?php echo json_encode(old('selected_users', []), 512) ?>;
     let formData = JSON.parse(sessionStorage.getItem('projectFormData')) || {
         name: $('#name').val(),
         descripcion: $('#descripcion').val(),
@@ -219,7 +275,7 @@ $(function () {
         const q = $(this).val().trim();
         if (q.length < 1) return $('#searchResults').hide();
 
-        $.getJSON('{{ route("projects.searchUsers") }}', { query: q })
+        $.getJSON('<?php echo e(route("projects.searchUsers")); ?>', { query: q })
             .done(users => {
                 if (!users.length) {
                     return $('#searchResults').html('<div class="p-2">No se encontraron usuarios</div>').show();
@@ -262,4 +318,5 @@ $(function () {
     updateHiddenInputs();
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/create.blade.php ENDPATH**/ ?>
