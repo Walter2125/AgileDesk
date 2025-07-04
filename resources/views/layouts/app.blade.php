@@ -338,7 +338,7 @@
     }
 
     .content-wrapper {
-        padding: 0rem;
+        padding: 64px 0 0 0;
         transition: all var(--transition-speed) ease;
         overflow-x: hidden; /* Evitar scroll horizontal */
     }
@@ -360,7 +360,7 @@
     }
 
     .content-wrapper {
-        padding: 0rem;
+        padding: 64px 0 0 0;
         transition: all var(--transition-speed) ease;
     }
 

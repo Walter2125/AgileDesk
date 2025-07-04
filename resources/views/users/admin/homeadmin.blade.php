@@ -310,24 +310,44 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table align-middle">
                             <thead>
                                 <tr>
                                     <th>Usuario</th>
-                                    <th>Acciones</th>
+                                    <th>Acción</th>
+                                    <th>Detalles</th>
+                                    <!-- <th>Sprint</th> -->
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($historial as $item)
                                 <tr>
-                                    <td>{{ $item->usuario }}</td>
-                                    <td>{{ $item->accion }}</td>
-                                    <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <span class="fw-semibold">{{ $item->usuario }}</span>
+                                    </td>
+                                    <td>
+                                        {{ $item->accion }}
+                                    </td>
+                                    <td>
+                                        <span title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
+                                    </td>
+                                    <!-- <td>
+                                        @if($item->sprint)
+                                            <span class="badge bg-info text-dark">#{{ $item->sprint }}</span>
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
+                                    </td> -->
+                                    <td>
+                                        <span title="{{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s') }}">
+                                            {{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans() }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">No hay historial registrado</td>
+                                    <td colspan="5" class="text-center">No hay historial registrado</td>
                                 </tr>
                                 @endforelse
                             </tbody>

@@ -3,8 +3,8 @@ html:not(.dark-mode) .modal-footer {
   background-color: #ffffff !important;
 }
 
-body:not(.dark-mode) .dropdown-menu,
-html:not(.dark-mode) .dropdown-menu {
+body:not(.dark-mode) .dropdown-menu-end,
+html:not(.dark-mode) .dropdown-menu-end{
   background-color: #ffffff !important;
   color: #212529 !important;
   border-color: #dee2e6 !important;
