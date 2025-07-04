@@ -1,12 +1,10 @@
 @extends('layouts.app')
 
        @section('title')
-         @section('mensaje-superior')
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-            <h1 class="titulo-historia">Detalle de la Historia</h1>
-        </div>
+        @section('mensaje-superior')
+        Detalle de la Historia
+        @endsection
     @endsection
-            @endsection
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">

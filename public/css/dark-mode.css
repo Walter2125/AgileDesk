@@ -1,3 +1,16 @@
+/* Combobox (select) específico del tablero en modo oscuro */
+.dark-mode #sprintSelect,
+.dark-mode #sprintSelect.form-select {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode #sprintSelect:focus {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25);
+}
 /* ======= PREVENIR FLASH DURANTE LA CARGA ======= */
 html.dark-mode-preload {
     visibility: hidden !important;
@@ -99,8 +112,8 @@ body *::after {
 .dark-mode .card,
 .dark-mode .menu,
 .dark-mode .modal-content,
-.dark-mode .modal-footer,
-.dark-mode .dropdown-menu {
+.dark-mode .dropdown-menu,
+.dark-mode .modal-footer{
     background-color: var(--dark-bg-secondary);
     border-color: var(--dark-border-primary);
     box-shadow: var(--dark-shadow-sm);
@@ -378,11 +391,6 @@ body *::after {
     color: var(--dark-text-terciary) !important;
 }
 
-/* Espacios en dropdowns y menús desplegables */
-.dark-mode .dropdown-menu {
-    background-color: var(--dark-bg-secondary) !important;
-    border-color: var(--dark-border-primary) !important;
-}
 
 .dark-mode .dropdown-item {
     color: var(--dark-text-primary) !important;
