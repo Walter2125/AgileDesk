@@ -1086,15 +1086,18 @@
     }
     
 /* Ajustes optimizados para alineación perfecta */
+
 .sidebar-heading {
     width: 100%;
-    padding: 0.75rem var(--navbar-padding-x); /* Usa la misma variable de padding */
+    padding: 0 var(--navbar-padding-x);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0; /* Elimina márgenes inconsistentes */
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 64px; /* Altura consistente con navbar */
+    height: 4rem;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 /* Asegura que el ancho del sidebar coincida exactamente */
@@ -1115,8 +1118,10 @@
 .navbar-optimized {
     padding-left: var(--navbar-padding-x);
     padding-right: var(--navbar-padding-x);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con sidebar */
-    height: 64px; /* Altura fija para alineación vertical */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    height: 4rem;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 </style>
