@@ -1190,9 +1190,13 @@
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 id="userDropdown">
-                            <div class="user-avatar d-flex align-items-center justify-content-center">
-                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
-                            </div>
+                            @if (Auth::check() && Auth::user()->photo)
+                                <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Foto de perfil" class="user-avatar" style="object-fit:cover; border-radius:50%; border:2px solid #fff2; width:40px; height:40px; min-width:40px;">
+                            @else
+                                <div class="user-avatar d-flex align-items-center justify-content-center">
+                                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                                </div>
+                            @endif
                             <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
                                 <div class="fw-semibold" style="font-size:1rem; line-height:1.1;">{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
                                 <small class="text-muted" style="font-size:0.85rem;">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>

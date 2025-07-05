@@ -27,6 +27,7 @@ class ProfileUpdateRequest extends FormRequest
                 new UnahEmailRule(),
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'photo' => ['nullable', 'image', 'max:2048'], // 2MB máximo
         ];
     }
 

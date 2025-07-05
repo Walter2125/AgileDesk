@@ -446,6 +446,14 @@
         .navbar-optimized .fs-4 {
             font-size: 1.25rem;
         }
+            .navbar-optimized .btn-scale-toggle {
+            overflow: visible; /* ← para permitir que el badge sobresalga */
+            padding-top: 0.75rem; /* ← o aumentá si querés más separación */
+        }
+        .navbar-optimized .btn-scale-toggle .badge {
+            top: -4px;
+        }
+
     </style>
 </head>
 <body>
