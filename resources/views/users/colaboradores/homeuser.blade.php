@@ -463,9 +463,13 @@
                 @foreach($estadisticas as $stat)
                     <div class="user-card">
                         <div class="user-header">
-                            <div class="user-avatar">
-                                {{ strtoupper(substr($stat['usuario']->name,0,1)) }}
-                            </div>
+                            @if ($stat['usuario']->photo)
+                                <img src="{{ asset('storage/' . $stat['usuario']->photo) }}" alt="Foto de perfil" class="user-avatar" style="object-fit:cover; border-radius:50%; width:40px; height:40px; min-width:40px;">
+                            @else
+                                <div class="user-avatar">
+                                    {{ strtoupper(substr($stat['usuario']->name,0,1)) }}
+                                </div>
+                            @endif
                             <div class="user-info">
                                 <h4>{{ $stat['usuario']->name }}</h4>
                                 <p class="user-email">{{ $stat['usuario']->email }}</p>
