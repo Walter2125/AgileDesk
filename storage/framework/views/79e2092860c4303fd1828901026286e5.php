@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Administration - Agile Desk'); ?>
 
-@section('title', 'Administration - Agile Desk')
-
-@section('styles')
+<?php $__env->startSection('styles'); ?>
     <style>
         /* Estilos para el panel de administración */
         .admin-header {
@@ -92,6 +90,67 @@
             margin-top: 15px;
         }
 
+        /* Modo oscuro para el panel de administración */
+        /* === Modo oscuro global para cards === */
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .admin-card,
+        [data-theme="dark"] .card-body {
+          background-color: #2b2b2b !important;
+          color: #e0e0e0 !important;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important;
+        }
+
+        /* Ajusta color de cabecera de las cards */
+        [data-theme="dark"] .card-header,
+        [data-theme="dark"] .admin-card .card-header {
+          background-color: #333333 !important;
+          color: #ffffff !important;
+        }
+
+        /* === Modo oscuro global para tablas === */
+        [data-theme="dark"] .table,
+        [data-theme="dark"] .admin-table,
+        [data-theme="dark"] .table-responsive {
+          background-color: #2b2b2b;
+          color: #e0e0e0;
+        }
+
+        /* Encabezados de tabla */
+        [data-theme="dark"] .table thead th {
+          background-color: #333333;
+          color: #ffffff;
+          border-color: #444444;
+        }
+
+        /* Filas y celdas */
+        [data-theme="dark"] .table tbody td,
+        [data-theme="dark"] .table tbody tr {
+          border-color: #3a3a3a;
+          color: #e0e0e0;
+          background-color: #2b2b2b;
+        }
+
+        /* Hover en filas */
+        [data-theme="dark"] .table-hover tbody tr:hover {
+          background-color: rgba(255,255,255,0.05);
+        }
+
+        /* Si usas badges, botones o enlaces dentro de tablas/cards: */
+        [data-theme="dark"] .badge,
+        [data-theme="dark"] .btn-outline-secondary,
+        [data-theme="dark"] a {
+          color: #f1f1f1;
+        }
+
+        /* Optional: scrollbars oscuros en contenedores con overflow */
+        [data-theme="dark"] .table-responsive::-webkit-scrollbar {
+          width: 8px;
+        }
+        [data-theme="dark"] .table-responsive::-webkit-scrollbar-thumb {
+          background-color: #555;
+          border-radius: 4px;
+        }
+
          /* Estilos para el buscador en modo claro */
          .input-group .form-control {
             border-radius: 0.25rem 0 0 0.25rem;
@@ -99,6 +158,45 @@
 
         .input-group-append .btn {
             border-radius: 0 0.25rem 0.25rem 0;
+        }
+
+        /* Estilos para el buscador en modo oscuro */
+        [data-theme="dark"] .input-group .form-control {
+            background-color: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .input-group-append .btn {
+            background-color: #444;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .input-group-append .btn:hover {
+            background-color: #555;
+            border-color: #666;
+        }
+
+        [data-theme="dark"] ::placeholder {
+            color: #999;
+            opacity: 1;
+        }
+
+        /* Estilos para paginación en modo oscuro */
+        [data-theme="dark"] .pagination .page-link {
+            background-color: #333;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .pagination .page-item.active .page-link {
+            background-color: #4a90e2;
+            border-color: #357abd;
+        }
+
+        [data-theme="dark"] .pagination .page-link:hover {
+            background-color: #444;
         }
 
         /* Integración con la plantilla Tabler/Bootstrap */
@@ -120,45 +218,9 @@
         .row{
             padding-block-start: 1rem;
         }
-
-        /* Estilos para los btn-group sin bordes redondeados y separados */
-        .btn-group {
-            gap: 8px; /* Separación entre botones */
-        }
-        
-        .btn-group .btn {
-            border-radius: 0 !important; /* Eliminar bordes redondeados */
-            margin-right: 0 !important; /* Eliminar margen derecho predeterminado */
-        }
-        
-        /* Eliminar el borde entre botones en los grupos */
-        .btn-group > .btn:not(:first-child),
-        .btn-group > .btn-group:not(:first-child) {
-            margin-left: 0;
-            border-left: none;
-        }
-        
-        /* Estilos específicos para los botones de acciones */
-        .action-buttons .btn {
-            border-radius: 0 !important;
-            margin: 0 4px;
-        }
-
-        /* Badges sin bordes redondeados */
-        .badge {
-            border-radius: 0 !important;
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 600;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            display: inline-block;
-        }
     </style>
-@stop
-@section('content')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <!-- Usuarios -->
@@ -167,10 +229,10 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Usuarios</span>
                     <div class="btn-group" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-outline-danger">
+                        <a href="<?php echo e(route('admin.deleted-users')); ?>" class="btn btn-sm btn-outline-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
                     </div>
@@ -180,72 +242,75 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
+                                    <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                    <th><i class="bi bi-tag me-1"></i> Rol</th>
+                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($usuarios as $usuario)
-                                <tr class="{{ $usuario->trashed() ? 'table-secondary' : '' }}">
+                                <?php $__empty_1 = true; $__currentLoopData = $usuarios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $usuario): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="<?php echo e($usuario->trashed() ? 'table-secondary' : ''); ?>">
                                     <td>
-                                        {{ $usuario->name }}
-                                        @if($usuario->trashed())
+                                        <?php echo e($usuario->name); ?>
+
+                                        <?php if($usuario->trashed()): ?>
                                             <span class="badge bg-secondary ms-1">Eliminado</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
-                                    <td>{{ $usuario->email }}</td>
-                                    <td>{{ ucfirst($usuario->usertype) }}</td>
+                                    <td><?php echo e($usuario->email); ?></td>
+                                    <td><?php echo e(ucfirst($usuario->usertype)); ?></td>
                                     <td>
-                                        @if($usuario->trashed())
+                                        <?php if($usuario->trashed()): ?>
                                             <span class="badge bg-secondary">Eliminado</span>
-                                        @else
-                                            <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
+                                        <?php else: ?>
+                                            <span class="badge <?php echo e($usuario->is_approved ? 'bg-success' : 'bg-warning'); ?>">
+                                                <?php echo e($usuario->is_approved ? 'Aprobado' : 'Pendiente'); ?>
+
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                                            <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-info">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             
-                                            @if($usuario->usertype !== 'admin')
-                                                @if($usuario->trashed())
+                                            <?php if($usuario->usertype !== 'admin'): ?>
+                                                <?php if($usuario->trashed()): ?>
                                                     <!-- Botón para restaurar usuario -->
                                                     <button type="button" class="btn btn-sm btn-success" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#restoreUserModal"
-                                                            data-user-id="{{ $usuario->id }}"
-                                                            data-user-name="{{ $usuario->name }}">
+                                                            data-user-id="<?php echo e($usuario->id); ?>"
+                                                            data-user-name="<?php echo e($usuario->name); ?>">
                                                         <i class="bi bi-arrow-clockwise"></i>
                                                     </button>
-                                                @else
+                                                <?php else: ?>
                                                     <!-- Botón para eliminar usuario -->
                                                     <button type="button" class="btn btn-sm btn-danger" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#deleteUserModal"
-                                                            data-user-id="{{ $usuario->id }}"
-                                                            data-user-name="{{ $usuario->name }}">
+                                                            data-user-id="<?php echo e($usuario->id); ?>"
+                                                            data-user-name="<?php echo e($usuario->name); ?>">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
-                                                @endif
-                                            @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="5" class="text-center">No hay usuarios registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $usuarios->links() }}
+                            <?php echo e($usuarios->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -257,7 +322,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Proyectos</span>
-                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -266,33 +331,34 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Responsable</th>
-                                    <th>Miembros</th>
-                                    <th>Acciones</th>
+                                    <th><i class="bi bi-person me-1"></i>Nombre</th>
+                                    <th><i class="bi bi-person-badge"></i>Responsable</th>
+                                    <th><i class="bi bi-people-fill"></i>Miembros</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($proyectos as $proyecto)
+                                <?php $__empty_1 = true; $__currentLoopData = $proyectos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proyecto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $proyecto->name }}</td>
-                                    <td>{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
-                                    <td>{{ $proyecto->users->count() }}</td>
+                                    <td><?php echo e($proyecto->name); ?></td>
+                                    <td><?php echo e($proyecto->creator->name ?? 'Sin responsable'); ?></td>
+                                    <td><?php echo e($proyecto->users->count()); ?></td>
                                     <td>
-                                        <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info">
+                                        <a href="<?php echo e(route('tableros.show', $proyecto->id)); ?>" class="btn btn-sm btn-info">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="4" class="text-center">No hay proyectos registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $proyectos->links() }}
+                            <?php echo e($proyectos->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -304,7 +370,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Historial de Cambios</span>
-                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="<?php echo e(route('historial.index')); ?>" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
@@ -313,27 +379,28 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Usuario</th>
-                                    <th>Acciones</th>
-                                    <th>Fecha</th>
+                                    <th><i class="bi bi-person me-1"></i> Usuario</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                    <th><i class="bi bi-calendar me-1"></i> Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($historial as $item)
+                                <?php $__empty_1 = true; $__currentLoopData = $historial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $item->usuario }}</td>
-                                    <td>{{ $item->accion }}</td>
-                                    <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                    <td><?php echo e($item->usuario); ?></td>
+                                    <td><?php echo e($item->accion); ?></td>
+                                    <td><?php echo e($item->created_at->format('d/m/Y H:i')); ?></td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="3" class="text-center">No hay historial registrado</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $historial->links() }}
+                            <?php echo e($historial->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -354,20 +421,21 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Proyecto</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
+                                    <th><i class="bi bi-tag me-1"></i> Proyecto</th>
+                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
+                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($sprints as $sprint)
+                                <?php $__empty_1 = true; $__currentLoopData = $sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $sprint->nombre }}</td>
-                                    <td>{{ $sprint->proyecto->name ?? 'N/A' }}</td>
+                                    <td><?php echo e($sprint->nombre); ?></td>
+                                    <td><?php echo e($sprint->proyecto->name ?? 'N/A'); ?></td>
                                     <td>
-                                        <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
-                                            {{ ucfirst($sprint->estado) }}
+                                        <span class="badge <?php echo e($sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning')); ?>">
+                                            <?php echo e(ucfirst($sprint->estado)); ?>
+
                                         </span>
                                     </td>
                                     <td>
@@ -376,15 +444,16 @@
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="4" class="text-center">No hay sprints registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $sprints->links() }}
+                            <?php echo e($sprints->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -396,38 +465,28 @@
 <!-- Modal para confirmar eliminación de usuario -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header border-bottom-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
-                <div class="mb-4">
-                    <h5 class="modal-title text-danger" id="deleteUserModalLabel">Confirmar Eliminación</h5>
-                    <h5 class="modal-title text-danger">¿Deseas eliminar este usuario?</h5>
-                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                    <div class="alert alert-danger d-flex align-items-center mt-3">
-                        <i class="bi bi-exclamation-circle-fill me-2"></i>
-                        <div>
-                            "<strong><span id="deleteUserName"></span></strong>" será eliminado permanentemente.
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <form id="deleteUserForm" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            Eliminar
-                        </button>
-                    </form>
-                </div>
+            <div class="modal-body">
+                <p>¿Está seguro de que desea eliminar al usuario <strong id="deleteUserName"></strong>?</p>
+                <p class="text-muted small">Este usuario será eliminado de forma segura y podrá ser restaurado más tarde.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteUserForm" method="POST" class="d-inline">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('DELETE'); ?>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Eliminar Usuario
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-
 
 <!-- Modal para confirmar restauración de usuario -->
 <div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
@@ -444,7 +503,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="restoreUserForm" method="POST" class="d-inline">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-arrow-clockwise me-1"></i> Restaurar Usuario
                     </button>
@@ -454,9 +513,9 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // JavaScript para manejar modales de eliminación y restauración de usuarios
@@ -663,4 +722,5 @@
             );
         });
     </script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/users/admin/homeadmin.blade.php ENDPATH**/ ?>

@@ -190,10 +190,10 @@
                                         <th class="w-1 text-center">
                                             <input class="form-check-input" type="checkbox" id="selectAll">
                                         </th>
-                                        <th><i class="bi bi-person me-1"></i> Usuario</th>
-                                        <th><i class="bi bi-calendar me-1"></i> Fecha de registro</th>
-                                        <th><i class="bi bi-clipboard-check-fill me-1"></i> Estado</th>
-                                        <th class="text-end"><i class="bi bi-gear me-1"></i> Acciones</th>
+                                        <th>Usuario</th>
+                                        <th>Fecha de registro</th>
+                                        <th>Estado</th>
+                                        <th class="text-end">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -1,48 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'Agile-Desk') }}</title>
-    <script>
-        // Detectar y aplicar el modo oscuro antes de renderizar
-        (function() {
-            const DARK_MODE_KEY = 'agiledesk-darkMode';
-            const html = document.documentElement;
-            const body = document.body;
-            
-            // 1. Añadir clase preload inmediatamente
-            html.classList.add('dark-mode-preload');
-            
-            // 2. Determinar el modo preferido
-            let darkMode = false;
-            const saved = localStorage.getItem(DARK_MODE_KEY);
-            
-            if (saved === 'enabled') {
-                darkMode = true;
-            } else if (saved === 'disabled') {
-                darkMode = false;
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                darkMode = true;
-            }
-            
-            // 3. Aplicar el modo oscuro ANTES de que se renderice la página
-            if (darkMode) {
-                html.classList.add('dark-mode');
-                body.classList.add('dark-mode');
-                html.style.backgroundColor = '#121218';
-            } else {
-                // Asegurar que en modo claro el fondo sea claro
-                html.style.backgroundColor = '#f8f9fa';
-                body.style.backgroundColor = '#f8f9fa';
-            }
-            
-            // 4. Guardar el estado inicial para sincronización
-            window.initialDarkModeState = darkMode;
-        })();
-    </script>
+    <title><?php echo e(config('app.name', 'Agile-Desk')); ?></title>
 
     <!-- Bootstrap CSS (solo una versión) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -54,24 +17,19 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    <link rel="icon" href="<?php echo e(asset('img/agiledesk.png')); ?>" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
     <!-- Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
-    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/light-mode-bootstrap.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/dark-mode.css')); ?>">
 
     <style>
+    /* Reset CSS para eliminar espacios por defecto */
     * {
         margin: 0;
         padding: 0;
@@ -221,7 +179,7 @@
     }
 
     :root {
-        --sidebar-width: 250px;
+        --sidebar-width: 280px;
         --sidebar-collapsed-width: 56px; /* Más angosto, como AdminLTE */
         --sidebar-bg: #212529;
         --sidebar-hover: #2c3136;
@@ -258,9 +216,10 @@
         flex-direction: column;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
     }
-        scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Para Firefox */
-    }
+         /* Para Firefox */
+
 
     /* Personalizar scrollbar del sidebar para Webkit */
     #sidebar-wrapper::-webkit-scrollbar {
@@ -281,17 +240,22 @@
     }
     /* Reducir el padding vertical de la clase container */
     .sidebar-heading {
-        padding: 1.5rem 1rem;
-        font-size: 1.5rem;
+        padding: clamp(1.25rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 3rem;
     }
 
     .list-group-item {
-        padding: 0.75rem 1.25rem;
+        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
         border: none;
         border-radius: 0 !important;
         font-weight: 500;
         transition: all 0.2s ease;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
     }
 
     .list-group-item:hover {
@@ -395,6 +359,20 @@
         transition: transform 0.2s ease;
     }
 
+    /* Asegurar que el navbar no tape el botón */
+    .navbar {
+        z-index: 1000;
+        position: relative;
+    }
+
+    /* Ajustar el icono cuando el sidebar está abierto */
+    #mobile-sidebar-toggle i.bi-list {
+        transition: transform 0.3s ease;
+    }
+
+    body:not(.sidebar-collapsed) #mobile-sidebar-toggle i.bi-list {
+        transform: rotate(90deg);
+    }
     /* Collapsed sidebar styles */
     body.sidebar-collapsed #sidebar-wrapper {
         width: var(--sidebar-collapsed-width);
@@ -432,7 +410,7 @@
             display: none;
         }
     }
-    
+
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -464,7 +442,6 @@
 
     /* User dropdown in sidebar */
     .user-dropdown {
-        position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: auto;
     }
@@ -488,48 +465,17 @@
     }
 
     .user-avatar {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
+        width: clamp(32px, 5vw, 40px);
+        height: clamp(32px, 5vw, 40px);
+        min-width: clamp(32px, 5vw, 40px); /* Evita que se encoja */
         border-radius: 50%;
-        background: linear-gradient(135deg, #0d6efd 60%, #6c63ff 100%);
-        color: #fff;
-        font-size: 1.25rem;
-        font-weight: 700;
+        background-color: #0d6efd;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-        transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-        border: 2px solid #fff2;
-    }
-
-    .user-info.user-dropdown-btn {
-        border-radius: 0.5rem;
-        transition: background 0.2s, box-shadow 0.2s;
-        box-shadow: none;
-        background: rgba(255,255,255,0.03);
-    }
-
-    .user-info.user-dropdown-btn:hover, .user-info.user-dropdown-btn:focus {
-        background: rgba(13,110,253,0.08);
-        box-shadow: 0 2px 8px rgba(13,110,253,0.10);
-    }
-
-    /* Centrar avatar y ocultar texto cuando sidebar está colapsado */
-    body.sidebar-collapsed .user-info.user-dropdown-btn {
-        justify-content: center !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    body.sidebar-collapsed .user-avatar {
-        margin: 0 auto !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-    }
-    body.sidebar-collapsed .user-info .sidebar-text {
-        display: none !important;
+        margin-right: 0.75rem;
+        font-weight: bold;
+        font-size: clamp(0.875rem, 2vw, 1rem);
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -551,7 +497,7 @@
         transform: none !important;
         margin-bottom: 0.5rem;
         min-width: 200px;
-        z-index: 9999 !important;
+        z-index: 1050;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -721,8 +667,39 @@
         }
 
         body.sidebar-collapsed #sidebar-wrapper {
-            transform: translateX(0); /* Mostrar al estar collapsed/abierto */
+            transform: translateX(-100%); /* Mantener oculto cuando está colapsado */
             width: var(--sidebar-collapsed-width) !important;
+        }
+
+        /* Mostrar sidebar cuando NO está colapsado (expandido) */
+        body:not(.sidebar-collapsed) #sidebar-wrapper {
+            transform: translateX(0) !important; /* Mostrar cuando está expandido */
+            width: var(--sidebar-width) !important;
+        }
+
+        /* Mostrar overlay cuando sidebar está expandido (visible) en móviles */
+        body:not(.sidebar-collapsed) .overlay {
+            display: block;
+        }
+
+        /* Indicador visual para swipe en móviles */
+        body.sidebar-collapsed::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 50%;
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to right, transparent, rgba(0, 123, 255, 0.5));
+            border-radius: 0 3px 3px 0;
+            transform: translateY(-50%);
+            z-index: 1002;
+            animation: swipeHint 3s ease-in-out infinite;
+        }
+
+        @keyframes swipeHint {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         #page-content-wrapper {
@@ -1084,46 +1061,13 @@
             font-weight: 600;
         }
     }
-    
-/* Ajustes optimizados para alineación perfecta */
-.sidebar-heading {
-    width: 100%;
-    padding: 0.75rem var(--navbar-padding-x); /* Usa la misma variable de padding */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0; /* Elimina márgenes inconsistentes */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 64px; /* Altura consistente con navbar */
-}
-
-/* Asegura que el ancho del sidebar coincida exactamente */
-#sidebar-wrapper {
-    width: calc(var(--sidebar-width) - 1px); /* Compensa el borde del navbar */
-    left: 0;
-    top: 0;
-    transform: none !important; /* Anula transformaciones conflictivas */
-    border-right: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con navbar */
-}
-
-/* Corrección para el estado colapsado */
-.sidebar-collapsed #sidebar-wrapper {
-    width: calc(var(--sidebar-collapsed-width) - 1px);
-}
-
-/* Ajuste fino para el navbar */
-.navbar-optimized {
-    padding-left: var(--navbar-padding-x);
-    padding-right: var(--navbar-padding-x);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con sidebar */
-    height: 64px; /* Altura fija para alineación vertical */
-}
-
 </style>
-    @yield('styles')
+
+    <!-- Estilos adicionales de las secciones -->
+    <?php echo $__env->yieldContent('styles'); ?>
+
 </head>
-
-
+<body class="font-sans antialiased">
     <!-- Overlay for mobile -->
     <div class="overlay" onclick="toggleSidebar()"></div>
 
@@ -1131,35 +1075,49 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between py-3 px-4"> 
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center w-100 justify-content-between">
                         <span>
-                            <i class="bi bi-columns-gap"></i>
+                            <i class="bi bi-code-slash me-2"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
                         </span>
+                        <button class="sidebar-toggle-btn ms-2" onclick="toggleSidebar()" aria-label="Colapsar sidebar">
+                            <i class="bi bi-chevron-left" id="sidebar-toggle-icon"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Inicio">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="list-group-item list-group-item-action text-white <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Inicio">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
                     </a>
-                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
+                     <a href="<?php echo e(route('projects.my')); ?>" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
+
+
+
+
                      </a>
 
-                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
-                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                    
+
+
+                    <?php if(isset($currentProject) && $currentProject instanceof \App\Models\Project): ?>
+                        <a href="<?php echo e(route('backlog.index', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
                             <span class="sidebar-text">Backlog</span>
                         </a>
 
-                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                        <a href="<?php echo e(route('tableros.show', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
-                    @endif
+                    <?php endif; ?>
 
+
+                    <!-- -->
 
                     <!-- otros botones comentados por ahora -->
 
@@ -1180,26 +1138,27 @@
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
                     <div class="dropdown dropup">
-                        <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
+                        <button class="user-info btn btn-link text-white p-0 w-100 text-start"
                                 type="button"
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 id="userDropdown">
-                            <div class="user-avatar d-flex align-items-center justify-content-center">
-                                {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                            <div class="user-avatar">
+                                <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
+
                             </div>
-                            <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
-                                <div class="fw-semibold" style="font-size:1rem; line-height:1.1;">{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-                                <small class="text-muted" style="font-size:0.85rem;">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                            <div class="sidebar-text">
+                                <div><?php echo e(Auth::check() ? Auth::user()->name : 'Usuario'); ?></div>
+                                <small class="text-muted"><?php echo e(Auth::check() ? Auth::user()->email : 'usuario@example.com'); ?></small>
                             </div>
                         </button>
                         <!-- Dropdown menu -->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
+                            <li><a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person me-2"></i> Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item">
                                         <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                                     </button>
@@ -1213,24 +1172,43 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            @include('layouts.navigation')
+            <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
                 <main>
-                    @if (session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            @if (session('message'))
-                                <p>{{ session('message') }}</p>
-                            @endif
+                            <strong><?php echo e(session('error')); ?></strong>
+                            <?php if(session('message')): ?>
+                                <p><?php echo e(session('message')); ?></p>
+                            <?php endif; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="ps-3">
-                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                         <?php if (isset($component)) { $__componentOriginal360d002b1b676b6f84d43220f22129e2 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal360d002b1b676b6f84d43220f22129e2 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.breadcrumbs','data' => ['breadcrumbs' => $breadcrumbs ?? []]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('breadcrumbs'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($breadcrumbs ?? [])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $attributes = $__attributesOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__attributesOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $component = $__componentOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__componentOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
                     </div>
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                 </main>
             </div>
         </div>
@@ -1243,37 +1221,40 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-        
+
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-        
+
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-        
+
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             const mobileIcon = document.getElementById('mobile-sidebar-icon');
-            const overlay = document.querySelector('.overlay');
 
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
                 if (toggleIcon) {
-                    toggleIcon.classList.remove('bi-chevron-left');
-                    toggleIcon.classList.add('bi-chevron-right');
+                    // Lógica del ícono según el tamaño de pantalla
+                    if (window.innerWidth < 992) {
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    } else {
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    }
                 }
+                // Actualizar icono móvil
                 if (mobileIcon) {
                     mobileIcon.classList.remove('bi-x');
                     mobileIcon.classList.add('bi-list');
-                }
-                if (window.innerWidth < 992 && overlay) {
-                    overlay.style.display = 'none';
                 }
             } else {
                 body.classList.remove('sidebar-collapsed');
@@ -1281,31 +1262,171 @@
                     toggleIcon.classList.remove('bi-chevron-right');
                     toggleIcon.classList.add('bi-chevron-left');
                 }
+                // Actualizar icono móvil
                 if (mobileIcon) {
                     mobileIcon.classList.remove('bi-list');
                     mobileIcon.classList.add('bi-x');
                 }
-                if (window.innerWidth < 992 && overlay) {
-                    overlay.style.display = 'block';
+            }
+        }
+
+        // Sidebar toggle functionality mejorada
+        function toggleSidebar() {
+        const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
+        const newState = !isCurrentlyCollapsed;
+        const overlay = document.querySelector('.overlay');
+        const mobileIcon = document.getElementById('mobile-sidebar-icon');
+
+        // Aplicar el nuevo estado
+        document.body.classList.toggle('sidebar-collapsed', newState);
+        saveSidebarState(newState);
+
+        // Actualizar icono
+        if (mobileIcon) {
+            if (newState) {
+                mobileIcon.classList.remove('bi-x');
+                mobileIcon.classList.add('bi-list');
+            } else {
+                mobileIcon.classList.remove('bi-list');
+                mobileIcon.classList.add('bi-x');
+            }
+        }
+
+        // Manejar overlay en móviles
+        if (window.innerWidth < 992) {
+            if (overlay) {
+                overlay.style.display = newState ? 'none' : 'block';
+            }
+            
+            // Forzar scroll al top para evitar problemas
+            window.scrollTo(0, 0);
+        }
+    }
+        // Función para inicializar el sidebar con el estado guardado
+        function initializeSidebar() {
+            const savedState = getSavedSidebarState();
+            applySidebarState(savedState);
+            
+            // Inicializar overlay correctamente en móviles
+            if (window.innerWidth < 992) {
+                const overlay = document.querySelector('.overlay');
+                if (overlay) {
+                    // Mostrar overlay cuando sidebar está expandido (no colapsado)
+                    overlay.style.display = savedState ? 'none' : 'block';
+                }
+                
+                // Inicializar icono móvil
+                const mobileIcon = document.getElementById('mobile-sidebar-icon');
+                if (mobileIcon) {
+                    if (savedState) {
+                        mobileIcon.classList.remove('bi-x');
+                        mobileIcon.classList.add('bi-list');
+                    } else {
+                        mobileIcon.classList.remove('bi-list');
+                        mobileIcon.classList.add('bi-x');
+                    }
                 }
             }
         }
-        
-        // Sidebar toggle functionality mejorada
-        function toggleSidebar() {
-            const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-            const newState = !isCurrentlyCollapsed;
-            applySidebarState(newState);
-            saveSidebarState(newState);
-        }
 
-        // Inicializar el sidebar con el estado guardado al cargar la página
+        // Detectar cambios en el tamaño de la ventana
+        window.addEventListener('resize', function() {
+            // Mantener el estado guardado pero actualizar los íconos
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            const mobileIcon = document.getElementById('mobile-sidebar-icon');
+
+            if (toggleIcon) {
+                if (window.innerWidth >= 992) {
+                    // En pantallas grandes
+                    if (isCollapsed) {
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    } else {
+                        toggleIcon.classList.remove('bi-chevron-right');
+                        toggleIcon.classList.add('bi-chevron-left');
+                    }
+                } else {
+                    // En pantallas pequeñas
+                    if (isCollapsed) {
+                        toggleIcon.classList.remove('bi-chevron-left');
+                        toggleIcon.classList.add('bi-chevron-right');
+                    } else {
+                        toggleIcon.classList.remove('bi-chevron-right');
+                        toggleIcon.classList.add('bi-chevron-left');
+                    }
+                }
+            }
+            
+            // Actualizar icono móvil
+            if (mobileIcon && window.innerWidth < 992) {
+                if (isCollapsed) {
+                    mobileIcon.classList.remove('bi-x');
+                    mobileIcon.classList.add('bi-list');
+                } else {
+                    mobileIcon.classList.remove('bi-list');
+                    mobileIcon.classList.add('bi-x');
+                }
+            }
+        });
+
+        // Inicializar cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar sidebar
-            const savedState = getSavedSidebarState();
-            applySidebarState(savedState);
+            // Inicializar el sidebar con el estado guardado
+            initializeSidebar();
 
-            // Cerrar alerts automáticamente
+            // Inicializar dropdowns de Bootstrap
+            if (typeof bootstrap !== 'undefined') {
+                console.log('Bootstrap está cargado correctamente');
+
+                // Inicializar todos los dropdowns
+                var dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+                console.log('Elementos dropdown encontrados:', dropdownElements.length);
+
+                dropdownElements.forEach(function(element, index) {
+                    try {
+                        var dropdown = new bootstrap.Dropdown(element);
+                        console.log('Dropdown inicializado:', index, element);
+
+                    } catch (error) {
+                        console.error('Error inicializando dropdown:', error, element);
+                    }
+                });
+
+            } else {
+                console.error('Bootstrap no está cargado. Verifica que bootstrap.bundle.min.js esté incluido.');
+
+                // Fallback manual completo si Bootstrap no está disponible
+                const userDropdown = document.querySelector('#userDropdown');
+                const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
+
+                if (userDropdown && dropdownMenu) {
+                    userDropdown.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const isOpen = dropdownMenu.classList.contains('show');
+
+                        if (isOpen) {
+                            dropdownMenu.classList.remove('show');
+                            this.setAttribute('aria-expanded', 'false');
+                        } else {
+                            dropdownMenu.classList.add('show');
+                            this.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+
+                    // Cerrar dropdown al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                            userDropdown.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                }
+            }
+
+            // Close alerts automatically after 5 seconds
             const alerts = document.querySelectorAll('.alert-dismissible');
             alerts.forEach(function(alert) {
                 setTimeout(function() {
@@ -1315,24 +1436,30 @@
                     }
                 }, 5000);
             });
-
-            // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
-            window.addEventListener('resize', function() {
-                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                applySidebarState(isCollapsed);
-            });
-
-            // Cerrar sidebar al hacer clic en overlay en móvil
-            const overlay = document.querySelector('.overlay');
-            if (overlay) {
-                overlay.addEventListener('click', function() {
-                    if (window.innerWidth < 992) {
-                        applySidebarState(true);
-                        saveSidebarState(true);
-                    }
-                });
-            }
         });
+
+        // Función opcional para limpiar el estado guardado (por si necesitas resetear)
+        function resetSidebarState() {
+            localStorage.removeItem(SIDEBAR_STATE_KEY);
+            applySidebarState(false); // Estado por defecto: expandido
+        }
+
+        // Función opcional para verificar si hay soporte para localStorage
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__localStorage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch(e) {
+                return false;
+            }
+        }
+
+        // Verificar soporte de localStorage al cargar
+        if (!isLocalStorageAvailable()) {
+            console.warn('LocalStorage no está disponible. El estado del sidebar no se guardará.');
+        }
 
         // Submenu toggle
         function toggleSubmenu(event, submenuId) {
@@ -1343,41 +1470,70 @@
             }
         }
 
+        // Cerrar sidebar al hacer clic en overlay en móvil
+        const overlay = document.querySelector('.overlay');
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    // Colapsar sidebar (ocultarlo) al hacer clic en overlay
+                    applySidebarState(true);
+                    saveSidebarState(true);
+                }
+            });
+        }
+
         // Soporte para gestos de swipe en móviles mejorado
         let touchStartX = 0;
         let touchEndX = 0;
         let touchStartY = 0;
         let touchEndY = 0;
         let isSwipeGesture = false;
+        
         function handleSwipeGesture() {
-            if (window.innerWidth >= 992) return;
-            const threshold = 80;
+            if (window.innerWidth >= 992) return; // Solo en móviles
+            
+            const threshold = 80; // Distancia mínima para considerar un swipe
             const swipeDistanceX = touchEndX - touchStartX;
             const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-            if (swipeDistanceY > 100) return;
-            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            
+            // Verificar que es un swipe horizontal (no vertical)
+            if (swipeDistanceY > 100) return; // Si hay mucho movimiento vertical, no es un swipe horizontal
+            
             if (Math.abs(swipeDistanceX) > threshold && isSwipeGesture) {
+                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                
                 if (swipeDistanceX > 0 && touchStartX < 30 && isCollapsed) {
+                    // Swipe hacia la derecha desde el borde izquierdo - abrir sidebar
                     applySidebarState(false);
                     saveSidebarState(false);
+                    console.log('📱 Sidebar abierto por swipe');
                 } else if (swipeDistanceX < -50 && !isCollapsed && touchStartX < 250) {
+                    // Swipe hacia la izquierda desde el sidebar - cerrar sidebar
                     applySidebarState(true);
                     saveSidebarState(true);
+                    console.log('📱 Sidebar cerrado por swipe');
                 }
             }
         }
+        
+        // Agregar event listeners para touch events
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
             isSwipeGesture = true;
         });
+        
         document.addEventListener('touchmove', function(e) {
+            // Si hay mucho movimiento, podría no ser un swipe intencional
+            const currentX = e.changedTouches[0].screenX;
             const currentY = e.changedTouches[0].screenY;
             const deltaY = Math.abs(currentY - touchStartY);
+            
             if (deltaY > 50) {
-                isSwipeGesture = false;
+                isSwipeGesture = false; // Cancelar si hay mucho movimiento vertical
             }
         });
+        
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
@@ -1386,6 +1542,55 @@
         });
     </script>
 
+    <!-- Debug Script para Dropdown -->
+    <script>
+        // Script de debugging específico para el dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DEBUGGING DROPDOWN ===');
+
+            // Verificar elementos
+            const userDropdown = document.querySelector('.user-info[data-bs-toggle="dropdown"]');
+            const dropdownMenu = document.querySelector('.user-dropdown .dropdown-menu');
+            const dropupContainer = document.querySelector('.user-dropdown .dropup');
+
+
+            console.log('User dropdown element:', userDropdown);
+            console.log('Dropdown menu element:', dropdownMenu);
+            console.log('Dropup container:', dropupContainer);
+
+            if (userDropdown && dropdownMenu) {
+                console.log('✅ Elementos encontrados correctamente');
+
+                // Agregar click handler manual como fallback
+                userDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+
+                    console.log('Click en dropdown detectado');
+
+                    // Toggle del dropdown menu
+                    const isOpen = dropdownMenu.classList.contains('show');
+
+                    if (isOpen) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                    } else {
+                        dropdownMenu.classList.add('show');
+                        userDropdown.setAttribute('aria-expanded', 'true');
+                    }
+                });
+
+                // Cerrar al hacer click fuera
+                document.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                        userDropdown.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        });
+    </script>
 
     <!-- Sistema operativo y escalado automático -->
     <script>
@@ -1464,9 +1669,8 @@
     </script>
 
     <!-- Scripts adicionales de las secciones -->
-    @yield('scripts')
-    <script src="bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/dark-mode.js') }}"></script>
-
+    <?php echo $__env->yieldContent('scripts'); ?>
+    <script src="<?php echo e(asset('js/dark-mode.js')); ?>"></script>
 </body>
 </html>
+<?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>

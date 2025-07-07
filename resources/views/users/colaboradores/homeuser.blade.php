@@ -11,6 +11,13 @@
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
             --shadow-lg: 0 8px 16px rgba(0,0,0,0.14);
+            --github-bg: #0d1117;
+            --github-border: #30363d;
+            --github-text: #f0f6fc;
+            --github-text-secondary: #8b949e;
+            --github-green: #238636;
+            --github-green-light: #2ea043;
+            --github-card-bg: #161b22;
         }
 
         /* Hero section y parallax */
@@ -124,6 +131,205 @@
             color: #555;
         }
 
+        /* Estadísticas estilo GitHub */
+        .github-stats-section {
+            background: var(--github-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--github-border);
+        }
+
+        .github-stats-title {
+            color: var(--github-text);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .user-card {
+            background: var(--github-card-bg);
+            border: 1px solid var(--github-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            border-color: var(--github-green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--github-green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            border: 2px solid var(--github-border);
+        }
+
+        .user-info h4 {
+            color: var(--github-text);
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .user-info .user-email {
+            color: var(--github-text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stats-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--github-text);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--github-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Gráfico de contribuciones estilo GitHub */
+        .contribution-graph {
+            margin-top: 1rem;
+        }
+
+        .contribution-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .contribution-day {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            background: #21262d;
+            border: 1px solid var(--github-border);
+        }
+
+        .contribution-day.level-1 { background: #0e4429; }
+        .contribution-day.level-2 { background: #006d32; }
+        .contribution-day.level-3 { background: #26a641; }
+        .contribution-day.level-4 { background: #39d353; }
+
+        /* Barras de progreso mejoradas */
+        .progress-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .progress-label {
+            color: var(--github-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .progress-value {
+            color: var(--github-text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .progress-bar-custom {
+            width: 100%;
+            height: 6px;
+            background: #21262d;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.pendiente { background: #656d76; }
+        .progress-fill.progreso { background: #d29922; }
+        .progress-fill.listo { background: var(--github-green); }
+
+        /* Resumen general */
+        .overall-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            border: 1px solid var(--github-border);
+        }
+
+        .overall-stat {
+            text-align: center;
+        }
+
+        .overall-stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--github-green-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .overall-stat-label {
+            color: var(--github-text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* Media queries */
         @media (max-width: 768px) {
             .hero-section {
@@ -140,6 +346,14 @@
             
             .section-title {
                 font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overall-stats {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -166,6 +380,28 @@
     <div class="container main-content">
         <h2 class="section-title text-center">Agile Desk Para Usuarios</h2>
 
+        {{-- Selector visual de proyecto --}}
+        @auth
+        @if(isset($proyectos_usuario) && $proyectos_usuario->count())
+        <form method="GET" action="" class="mb-4" id="selector-proyecto-form">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-auto">
+                    <label for="selector-proyecto" class="form-label fw-semibold mb-0">Proyecto actual:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="project_id" id="selector-proyecto" class="form-select" onchange="this.form.submit()">
+                        @foreach($proyectos_usuario as $proy)
+                            <option value="{{ $proy->id }}" @if(isset($proyecto_actual) && $proyecto_actual && $proy->id == $proyecto_actual->id) selected @endif>
+                                {{ $proy->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </form>
+        @endif
+        @endauth
+
         <div class="carousel-wrapper">
             <div id="carouselAgileDesk" class="carousel slide carousel-fade" data-bs-ride="carousel">
                 <div class="carousel-inner">
@@ -191,6 +427,117 @@
             Tu tablero digital para organizar Sprints de manera eficiente y colaborativa. 
             Optimiza tu proceso de desarrollo con herramientas ágiles diseñadas para equipos modernos.
         </p>
+
+        @auth
+        @if($estadisticas->count())
+        <div class="github-stats-section">
+            <h3 class="github-stats-title">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Estadísticas de Participación del Equipo
+            </h3>
+
+            <!-- Resumen general -->
+            <div class="overall-stats">
+                <div class="overall-stat">
+                    <span class="overall-stat-number">{{ $estadisticas->sum('total') }}</span>
+                    <span class="overall-stat-label">Total Historias</span>
+                </div>
+                <div class="overall-stat">
+                    <span class="overall-stat-number">{{ $estadisticas->sum('listo') }}</span>
+                    <span class="overall-stat-label">Completadas</span>
+                </div>
+                <div class="overall-stat">
+                    <span class="overall-stat-number">{{ $estadisticas->sum('progreso') }}</span>
+                    <span class="overall-stat-label">En Progreso</span>
+                </div>
+                <div class="overall-stat">
+                    <span class="overall-stat-number">{{ $estadisticas->count() }}</span>
+                    <span class="overall-stat-label">Colaboradores</span>
+                </div>
+            </div>
+
+            <!-- Grid de usuarios -->
+            <div class="stats-grid">
+                @foreach($estadisticas as $stat)
+                    <div class="user-card">
+                        <div class="user-header">
+                            <div class="user-avatar">
+                                {{ strtoupper(substr($stat['usuario']->name,0,1)) }}
+                            </div>
+                            <div class="user-info">
+                                <h4>{{ $stat['usuario']->name }}</h4>
+                                <p class="user-email">{{ $stat['usuario']->email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="stats-summary">
+                            <div class="stat-item">
+                                <span class="stat-number">{{ $stat['total'] }}</span>
+                                <span class="stat-label">Total</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ $stat['listo'] }}</span>
+                                <span class="stat-label">Listo</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ $stat['total'] ? round(($stat['listo']/$stat['total'])*100) : 0 }}%</span>
+                                <span class="stat-label">Completado</span>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Pendiente</span>
+                                <span class="progress-value">{{ $stat['pendientes'] }}</span>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill pendiente" style="width: {{ $stat['total'] ? ($stat['pendientes']/$stat['total'])*100 : 0 }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">En Progreso</span>
+                                <span class="progress-value">{{ $stat['progreso'] }}</span>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill progreso" style="width: {{ $stat['total'] ? ($stat['progreso']/$stat['total'])*100 : 0 }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Completado</span>
+                                <span class="progress-value">{{ $stat['listo'] }}</span>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill listo" style="width: {{ $stat['total'] ? ($stat['listo']/$stat['total'])*100 : 0 }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de contribuciones simulado -->
+                        <div class="contribution-graph">
+                            <div class="contribution-grid">
+                                @for($i = 0; $i < 35; $i++)
+                                    @php
+                                        $level = 0;
+                                        if($stat['total'] > 0) {
+                                            $activity = rand(0, 4);
+                                            if($activity > 0) $level = min(4, $activity);
+                                        }
+                                    @endphp
+                                    <div class="contribution-day {{ $level > 0 ? 'level-'.$level : '' }}"></div>
+                                @endfor
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+        @endauth
     </div>
 @stop
 
@@ -257,6 +604,23 @@
                     });
                 }
             }
+
+            // Animación de las barras de progreso
+            const progressBars = document.querySelectorAll('.progress-fill');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bar = entry.target;
+                        const width = bar.style.width;
+                        bar.style.width = '0%';
+                        setTimeout(() => {
+                            bar.style.width = width;
+                        }, 100);
+                    }
+                });
+            });
+
+            progressBars.forEach(bar => observer.observe(bar));
         });
     </script>
 @stop

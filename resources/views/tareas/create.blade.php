@@ -7,33 +7,33 @@
 @section('styles')
 <style>
     body {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
-        color: #fff;
+        background-color: #ffffff;
+        color: #000000;
         font-family: 'Segoe UI', sans-serif;
     }
 
     .card {
-        background-color: rgba(255, 255, 255, 0.05);
-        border: none;
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        padding: 20px;
     }
 
     .form-label,
     .fw-bold {
-        color: #fff;
+        color: #000000;
     }
 
     .form-control {
-        background-color: rgba(255, 255, 255, 0.03);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #cccccc;
     }
 
     .form-control:focus {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: #fff;
+        background-color: #ffffff;
+        color: #000000;
+        border-color: #999999;
     }
 
     .is-invalid {
@@ -41,7 +41,7 @@
     }
 
     .invalid-feedback {
-        color: #ffc107;
+        color: #dc3545;
     }
 
     .alert {
@@ -49,27 +49,24 @@
     }
 
     .btn {
-        transition: all 0.3s ease-in-out;
-    }
-
-    .btn:hover {
-        transform: scale(1.05);
+        transition: all 0.2s ease-in-out;
     }
 
     .btn-secondary {
-        background-color: #fff;
-        color: #000;
-        border: none;
+        background-color: #e0e0e0;
+        color: #000000;
+        border: 1px solid #999999;
     }
 
     .btn-primary {
-        background-color: #00adb5;
-        border-color: #00adb5;
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #ffffff;
     }
 
     .btn-primary:hover {
-        background-color: #009fa6;
-        border-color: #009fa6;
+        background-color: #0056b3;
+        border-color: #004b9a;
     }
 </style>
 @endsection
@@ -126,11 +123,11 @@
             </div>
 
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad"
                         class="form-control @error('actividad') is-invalid @enderror" required>
                     <option value="">Seleccione una actividad</option>
-                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño'] as $opcion)
+                    @foreach(['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo'] as $opcion)
                         <option value="{{ $opcion }}" {{ old('actividad') == $opcion ? 'selected' : '' }}>
                             {{ $opcion }}
                         </option>

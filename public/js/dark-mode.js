@@ -1,30 +1,26 @@
-// dark-mode.js - Optimizado
+// dark-mode.js - Versión corregida con almacenamiento persistente
 (function() {
-    const DARK_MODE_KEY = 'darkMode';
+    const DARK_MODE_KEY = 'agiledesk-darkMode'; // Misma clave única
+    const html = document.documentElement;
     const body = document.body;
     const toggleBtnId = 'dark-mode-toggle-btn';
-    const TRANSITION_DURATION = 300; // ms
     
     function setDarkMode(enabled) {
-        // Añadir clase de transición
-        body.classList.add('theme-transition');
-        
         if (enabled) {
+            // Aplicar a ambos elementos
+            html.classList.add('dark-mode');
             body.classList.add('dark-mode');
-            document.documentElement.style.backgroundColor = '#121218';
+            html.style.backgroundColor = '#121218';
             localStorage.setItem(DARK_MODE_KEY, 'enabled');
         } else {
+            // Remover de ambos elementos
+            html.classList.remove('dark-mode');
             body.classList.remove('dark-mode');
-            document.documentElement.style.backgroundColor = '';
+            html.style.backgroundColor = '';
             localStorage.setItem(DARK_MODE_KEY, 'disabled');
         }
         
         updateButtonIcon();
-        
-        // Eliminar clase de transición después de la animación
-        setTimeout(() => {
-            body.classList.remove('theme-transition');
-        }, TRANSITION_DURATION);
     }
 
     function updateButtonIcon() {
@@ -34,14 +30,13 @@
         const modeText = btn.querySelector('.mode-text');
         const icon = btn.querySelector('i');
         
+        // Verificar si el modo oscuro está activo
         if (body.classList.contains('dark-mode')) {
             if (icon) icon.className = 'bi bi-sun';
             if (modeText) modeText.textContent = 'Modo Claro';
-            else btn.innerHTML = '<i class="bi bi-sun"></i> <span class="mode-text">Modo Claro</span>';
         } else {
             if (icon) icon.className = 'bi bi-moon';
             if (modeText) modeText.textContent = 'Modo Oscuro';
-            else btn.innerHTML = '<i class="bi bi-moon"></i> <span class="mode-text">Modo Oscuro</span>';
         }
     }
 
@@ -49,44 +44,45 @@
         setDarkMode(!body.classList.contains('dark-mode'));
     }
 
-    // Detectar preferencia del sistema
-    function getSystemPreference() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    // Expose for global use
     window.toggleDarkMode = toggleDarkMode;
-    window.setDarkMode = setDarkMode;    // On load, set mode from localStorage or system preference
+    
     document.addEventListener('DOMContentLoaded', function() {
-        // Aplicar inmediatamente para evitar flash de tema incorrecto
-        const saved = localStorage.getItem(DARK_MODE_KEY);
-        
-        if (saved === null) {
-            // Si no hay preferencia guardada, usar la del sistema
-            setDarkMode(getSystemPreference());
+        // Sincronizar con el estado inicial
+        if (typeof window.initialDarkModeState !== 'undefined') {
+            setDarkMode(window.initialDarkModeState);
         } else {
-            setDarkMode(saved === 'enabled');
+            // Si no hay estado inicial, verificar localStorage
+            const saved = localStorage.getItem(DARK_MODE_KEY);
+            if (saved === 'enabled') {
+                setDarkMode(true);
+            } else if (saved === 'disabled') {
+                setDarkMode(false);
+            }
         }
         
-        // Remover la clase preload
+        // Remover clase preload después de la carga
         setTimeout(() => {
-            document.documentElement.classList.remove('dark-mode-preload');
+            html.classList.remove('dark-mode-preload');
         }, 100);
         
-        // Attach event if button exists
+        // Configurar botón toggle si existe
         const btn = document.getElementById(toggleBtnId);
         if (btn) {
             btn.addEventListener('click', toggleDarkMode);
+            updateButtonIcon();
         }
-          // Escuchar cambios en la preferencia del sistema
+        
+        // Escuchar cambios en la preferencia del sistema
         if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)')
-                .addEventListener('change', e => {
-                    // Solo cambiar si no hay preferencia guardada por el usuario
-                    if (localStorage.getItem(DARK_MODE_KEY) === null) {
-                        setDarkMode(e.matches);
-                    }
-                });
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            const handleSystemPreferenceChange = (e) => {
+                if (!localStorage.getItem(DARK_MODE_KEY)) {
+                    setDarkMode(e.matches);
+                }
+            };
+            
+            darkModeMediaQuery.addEventListener('change', handleSystemPreferenceChange);
         }
     });
 })();
