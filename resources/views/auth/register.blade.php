@@ -48,7 +48,7 @@
         <!-- Name -->
         <div class="form-group">
             <label for="name">Nombre</label>
-            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Ingresa tu nombre completo" />
+            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Ingresa tu nombre completo" maxlength="50" />
             @error('name')
                 <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
             @enderror
@@ -57,7 +57,7 @@
         <!-- Email Address -->
         <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="Ingresa @unah.hn o @unah.edu.hn email" />
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="Ingresa @unah.hn o @unah.edu.hn email" maxlength="50" />
             @error('email')
                 <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
             @enderror
@@ -67,7 +67,7 @@
         <div class="form-group">
             <label for="password">Contraseña</label>
             <div class="password-container">
-                <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="••••••••" maxlength="50"/>
                 <i class="fa-regular fa-eye toggle-password"></i>
             </div>
             @error('password')
@@ -79,7 +79,7 @@
         <div class="form-group">
             <label for="password_confirmation">Confirmar Contraseña</label>
             <div class="password-container">
-                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" />
+                <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••" maxlength="50"/>
                 <i class="fa-regular fa-eye toggle-password"></i>
             </div>
             @error('password_confirmation')
