@@ -50,9 +50,13 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar-sm me-3">
-                                                        <div class="avatar-title bg-danger rounded-circle">
-                                                            {{ strtoupper(substr($user->name, 0, 2)) }}
-                                                        </div>
+                                                        @if ($user->photo)
+                                                            <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto de perfil" class="rounded-circle" style="width: 2.5rem; height: 2.5rem; object-fit: cover; border: 2px solid #dc3545;">
+                                                        @else
+                                                            <div class="avatar-title bg-danger rounded-circle">
+                                                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0 text-muted">{{ $user->name }}</h6>
