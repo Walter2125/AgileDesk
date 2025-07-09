@@ -431,7 +431,6 @@
         </div>
 
         <!-- Modal para editar nombre de columna -->
-        <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="formEditarColumna" method="POST" action="">

@@ -184,10 +184,10 @@ private function compartirContextoDesdeColumna(Columna $columna)
      */
     public function show(Historia $historia)
     {
-        // Cargamos también la relación con el proyecto
+
         $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+
         $currentProject = $historia->columna->tablero->project
             ?? $historia->proyecto;
 
