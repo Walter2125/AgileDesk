@@ -54,16 +54,14 @@
                     </button>
                 </div>
 
-
-
-
-
                 @if($tablero->sprints && $tablero->sprints->count())
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
+                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
+                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
                         @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                {{ $sprint->nombre }}
+                            </option>
                         @endforeach
                     </select>
                 @endif
@@ -95,7 +93,7 @@
 
                         @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
-                                 style="{{ $widthStyle }} min-height: 520px; max-height: 520px;">
+                                 style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
 
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
@@ -433,7 +431,6 @@
         </div>
 
         <!-- Modal para editar nombre de columna -->
-        <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="formEditarColumna" method="POST" action="">
@@ -465,19 +462,8 @@
             </div>
         </div>
 
-
-
-
-
         <script>
-            /*setTimeout(function() {
-                const alert = document.getElementById('success-alert');
-                if (alert) {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000);*/
+
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".editable-title").forEach(input => {
@@ -710,8 +696,18 @@
             }
         </script>
 
+                <script>
+                    function seleccionarSprint(select) {
+                        const sprintId = select.value;
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
+                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
+                    }
+                </script>
 
-        <style>
+
+
+                <style>
             .menu-wrapper {
                 position: relative;
                 display: inline-block;
