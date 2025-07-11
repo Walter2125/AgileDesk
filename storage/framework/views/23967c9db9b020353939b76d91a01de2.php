@@ -1,540 +1,855 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            <!-- Izquierda: Sidebar y mensaje -->
-            <div class="flex items-center space-x-4">
-                <!-- Botón Hamburguesa para Móvil/Tablet - CORREGIDO -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <!-- Incluir Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --hover-bg: #f8f9fa;
+            --active-bg: #e9ecef;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+            --border-radius: 8px;
+            --transition: all 0.2s ease-in-out;
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 56px;
+        }
+
+        /* Escalado de fuentes SOLO para la navbar, no global */
+        .navbar-optimized.font-scale-sm { font-size: 14px !important; }
+        .navbar-optimized.font-scale-md { font-size: 16px !important; }
+        .navbar-optimized.font-scale-lg { font-size: 18px !important; }
+        .navbar-optimized.font-scale-xl { font-size: 20px !important; }
+
+        /* Navbar optimizada */
+        .navbar-optimized {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            padding: 0.5rem 0;
+            font-size: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .navbar-optimized .container-fluid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Botones optimizados - Base */
+        .navbar-optimized .btn-optimized {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius);
+            border: 1px solid transparent;
+            font-weight: 500;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+            white-space: nowrap;
+            min-height: 38px;
+        }
+
+        .navbar-optimized .btn-optimized:focus {
+            outline-offset: 2px;
+        }
+
+        .navbar-optimized .btn-optimized:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Botón sidebar toggle - Mejorado */
+        .navbar-optimized .btn-sidebar-toggle {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            color: var(--dark-color);
+            min-width: 40px;
+            padding: 0.5rem;
+        }
+
+        .navbar-optimized .btn-sidebar-toggle:hover {
+            background: var(--hover-bg);
+            border-color: var(--secondary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-optimized .btn-sidebar-toggle:active {
+            transform: translateY(0);
+            background: var(--active-bg);
+        }
+
+        .navbar-optimized .btn-sidebar-toggle i {
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .navbar-optimized .btn-sidebar-toggle:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Botón escalado - Mejorado */
+        .navbar-optimized .btn-scale-toggle {
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--dark-color);
+            position: relative;
+        }
+
+        .navbar-optimized .btn-scale-toggle:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-optimized .btn-scale-toggle:active {
+            transform: translateY(0);
+        }
+
+        .navbar-optimized .btn-scale-toggle.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .navbar-optimized .btn-scale-toggle .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 50px;
+        }
+
+        .navbar-optimized .btn-scale-toggle.active .badge {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Botón dark mode - Mejorado */
+        .navbar-optimized .btn-theme-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #57b0eb 100%);
+            border: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar-optimized .btn-theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .navbar-optimized .btn-theme-toggle:hover::before {
+            left: 100%;
+        }
+
+        .navbar-optimized .btn-theme-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .navbar-optimized .btn-theme-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-optimized .btn-theme-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown mejorado */
+        .navbar-optimized .dropdown-optimized {
+            position: relative;
+            display: inline-block;
+        }
+
+        .navbar-optimized .dropdown-menu-optimized {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 1040;
+            min-width: 280px;
+            padding: 0.5rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.2s ease-out;
+        }
+
+        .navbar-optimized .dropdown-menu-optimized.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .navbar-optimized .dropdown-header-optimized {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-optimized .dropdown-item-optimized {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.25rem;
+            background: transparent;
+            border: none;
+            border-radius: calc(var(--border-radius) - 2px);
+            color: var(--dark-color);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .navbar-optimized .dropdown-item-optimized:hover {
+            background: var(--hover-bg);
+            transform: translateX(4px);
+        }
+
+        .navbar-optimized .dropdown-item-optimized.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .navbar-optimized .dropdown-item-optimized.reset {
+            color: var(--danger-color);
+            border-top: 1px solid var(--border-color);
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+        }
+
+        .navbar-optimized .dropdown-item-optimized.reset:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Indicadores visuales */
+        .navbar-optimized .scale-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+            padding: 0.125rem 0.375rem;
+            background: var(--light-color);
+            border-radius: 12px;
+        }
+
+        .navbar-optimized .scale-size {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+        }
+
+        /* Notificaciones */
+        .navbar-optimized .notification-optimized {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1050;
+            min-width: 300px;
+            max-width: 400px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 1rem;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .navbar-optimized .btn-optimized .d-none.d-md-inline {
+                display: none !important;
+            }
+            
+            .navbar-optimized .btn-optimized {
+                min-width: 40px;
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            body.sidebar-collapsed #sidebar-wrapper {
+                transform: translateX(-100%) !important; /* Oculta completamente */
+                width: 0 !important;
+            }
+
+            /* Asegura que el contenido principal ocupe todo el espacio */
+            body.sidebar-collapsed #page-content-wrapper {
+                margin-left: 0 !important;
+            }
+        }
+        /* Clases de utilidad SOLO dentro de navbar-optimized */
+        .navbar-optimized .d-flex {
+            display: flex !important;
+        }
+        
+        .navbar-optimized .align-items-center {
+            align-items: center !important;
+        }
+        
+        .navbar-optimized .gap-2 {
+            gap: 0.5rem !important;
+        }
+        
+        .navbar-optimized .gap-3 {
+            gap: 1rem !important;
+        }
+        
+        .navbar-optimized .d-none {
+            display: none !important;
+        }
+        
+        .navbar-optimized .d-sm-block {
+            display: block !important;
+        }
+        
+        .navbar-optimized .d-lg-none {
+            display: none !important;
+        }
+        
+        .navbar-optimized .d-lg-flex {
+            display: flex !important;
+        }
+        
+        .navbar-optimized .d-xl-inline {
+            display: inline !important;
+        }
+        
+        @media (min-width: 992px) {
+            .navbar-optimized .d-lg-none {
+                display: none !important;
+            }
+        }
+
+        /* Animaciones adicionales */
+        .navbar-optimized .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .navbar-optimized .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .navbar-optimized .flex-grow-1 {
+            flex-grow: 1;
+        }
+
+        .navbar-optimized .fw-semibold {
+            font-weight: 600;
+        }
+
+        .navbar-optimized .text-muted {
+            color: var(--secondary-color);
+        }
+
+        .navbar-optimized .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+        }
+
+        .navbar-optimized .btn-close:hover {
+            background: var(--hover-bg);
+        }
+
+        .navbar-optimized .fs-4 {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-optimized">
+        <div class="container-fluid">
+            <!-- Sección izquierda -->
+            <div class="d-flex align-items-center gap-3">
+                <!-- Botón sidebar móvil -->
                 <button id="mobile-sidebar-toggle" 
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-500 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out lg:hidden"
+                        class="btn-optimized btn-sidebar-toggle d-lg-none"
                         onclick="toggleSidebar()"
-                        aria-label="Toggle sidebar">
-                    <i class="bi bi-list text-2xl" id="mobile-sidebar-icon"></i>
+                        aria-label="Toggle sidebar"
+                        title="Abrir/cerrar menú">
+                    <i class="bi bi-list" id="mobile-sidebar-icon"></i>
                 </button>
-                <!-- Botón Sidebar para Desktop - CORREGIDO -->
-                <button class="btn btn-sm btn-light border d-none d-lg-block sidebar-toggle-desktop" 
+
+                <!-- Botón sidebar desktop -->
+                <button class="btn-optimized btn-sidebar-toggle d-none d-lg-flex" 
                         onclick="toggleSidebar()"
-                        aria-label="Toggle sidebar">
+                        aria-label="Toggle sidebar"
+                        title="Contraer/expandir sidebar">
                     <i class="bi bi-layout-sidebar"></i>
+                    <span class="d-none d-xl-inline">Menú</span>
                 </button>
                 
                 <!-- Mensaje personalizado -->
                 <div class="d-none d-sm-block">
-                    <div class="text-dark text-truncate fw-bold" style="max-width: 250px; font-size: 1rem;">
-                        <?php echo $__env->yieldContent('mensaje-superior'); ?>
+                    <div class="text-dark fw-bold text-truncate" style="max-width: 250px;">
+                        Dashboard Principal
                     </div>
                 </div>
             </div>
 
-            <!-- Derecha: Enlaces + Dropdown -->
-            <div class="flex items-center space-x-6">
-
-                <!-- Selector de Escalado -->
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" 
-                            type="button" 
-                            id="fontScaleDropdown" 
-                            onclick="toggleFontScaleDropdown(event)"
-                            aria-expanded="false"
-                            title="Ajustar tamaño de fuente">
-                        <i class="bi bi-zoom-in me-1"></i>
-                        <span class="d-none d-md-inline">Escalado</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" 
-                        id="fontScaleDropdownMenu" 
-                        aria-labelledby="fontScaleDropdown"
-                        style="display: none;">
-                        <li><h6 class="dropdown-header"><i class="bi bi-display me-1"></i>Tamaño de Interfaz</h6></li>
-                        <li>
-                            <button class="dropdown-item d-flex justify-content-between align-items-center" 
-                                    onclick="setFontScale('small')" 
-                                    data-scale="small">
-                                <span><i class="bi bi-type me-2"></i>Pequeño</span>
-                                <small class="text-muted">14px</small>
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item d-flex justify-content-between align-items-center" 
-                                    onclick="setFontScale('normal')" 
-                                    data-scale="normal">
-                                <span><i class="bi bi-type me-2"></i>Normal</span>
-                                <small class="text-muted">16px</small>
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item d-flex justify-content-between align-items-center" 
-                                    onclick="setFontScale('large')" 
-                                    data-scale="large">
-                                <span><i class="bi bi-type me-2"></i>Grande</span>
-                                <small class="text-muted">18px</small>
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item d-flex justify-content-between align-items-center" 
-                                    onclick="setFontScale('extra-large')" 
-                                    data-scale="extra-large">
-                                <span><i class="bi bi-type me-2"></i>Extra Grande</span>
-                                <small class="text-muted">20px</small>
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item text-danger d-flex align-items-center" 
-                                    onclick="resetFontScale()">
-                                <i class="bi bi-arrow-clockwise me-2"></i>Restablecer
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Dark Mode Toggle -->
-                <button id="dark-mode-toggle-btn" class="btn btn-sm btn-outline-secondary" type="button" title="Alternar modo oscuro">
-                    <i class="bi bi-moon"></i> <span class="d-none d-md-inline">Modo Oscuro</span>
+            <!-- Sección derecha -->
+            <div class="d-flex align-items-center gap-2">
+                
+        <div class="dropdown-optimized">
+            <button class="btn-optimized btn-scale-toggle" 
+                    type="button" 
+                    id="fontScaleDropdown" 
+                    onclick="toggleFontScaleDropdown(event)"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    title="Ajustar tamaño de interfaz">
+                <i class="bi bi-zoom-in"></i>
+                <span class="d-none d-md-inline">Tamaño</span>
+                <span class="badge" id="scale-badge">M</span>
+            </button>
+        </div>
+                <!-- Botón tema optimizado -->
+                <button id="dark-mode-toggle-btn" 
+                        class="btn-optimized btn-theme-toggle"
+                        onclick="toggleTheme()"
+                        title="Cambiar tema">
+                    <i class="bi bi-moon-fill" id="theme-icon"></i>
+                    <span class="d-none d-lg-inline" id="theme-text">Oscuro</span>
                 </button>
+            </div>
+            <!-- Menú de escalado flotante -->
+            <div class="dropdown-menu-optimized" id="fontScaleDropdownMenu">
+                <div class="scale-menu-wrapper">
+                    <div class="scale-menu">
+                        <div class="scale-menu-header d-flex align-items-center gap-2 mb-2 fw-semibold text-muted">
+                            <i class="bi bi-display"></i>
+                            <span>Tamaño de Interfaz</span>
+                        </div>
 
-                <!-- Información del usuario (opciones en sidebar) -->
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <div class="text-sm text-gray-600">
-                        <?php echo e(Auth::user()->name); ?>
+                        <button class="dropdown-item-optimized" data-scale="small" onclick="setFontScale('small')">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-circle-fill" style="font-size: 8px; color: var(--primary-color);"></i>
+                                <span>Pequeño</span>
+                            </div>
+                            <div class="scale-indicator">
+                                <div class="scale-size" style="width: 6px; height: 6px;"></div>
+                                <span>14px</span>
+                            </div>
+                        </button>
 
+                        <button class="dropdown-item-optimized active" data-scale="normal" onclick="setFontScale('normal')">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-circle-fill" style="font-size: 10px; color: var(--primary-color);"></i>
+                                <span>Normal</span>
+                            </div>
+                            <div class="scale-indicator">
+                                <div class="scale-size" style="width: 8px; height: 8px;"></div>
+                                <span>16px</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item-optimized" data-scale="large" onclick="setFontScale('large')">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-circle-fill" style="font-size: 12px; color: var(--primary-color);"></i>
+                                <span>Grande</span>
+                            </div>
+                            <div class="scale-indicator">
+                                <div class="scale-size" style="width: 10px; height: 10px;"></div>
+                                <span>18px</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item-optimized" data-scale="extra-large" onclick="setFontScale('extra-large')">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-circle-fill" style="font-size: 14px; color: var(--primary-color);"></i>
+                                <span>Extra Grande</span>
+                            </div>
+                            <div class="scale-indicator">
+                                <div class="scale-size" style="width: 12px; height: 12px;"></div>
+                                <span>20px</span>
+                            </div>
+                        </button>
+
+                        <button class="dropdown-item-optimized reset" onclick="resetFontScale()">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <span>Restablecer</span>
+                            </div>
+                        </button>
                     </div>
                 </div>
-
             </div>
         </div>
-    </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <?php if (isset($component)) { $__componentOriginald69b52d99510f1e7cd3d80070b28ca18 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald69b52d99510f1e7cd3d80070b28ca18 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.responsive-nav-link','data' => ['href' => route('dashboard'),'active' => request()->routeIs('dashboard')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('responsive-nav-link'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('dashboard')),'active' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request()->routeIs('dashboard'))]); ?>
-                Dashboard
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald69b52d99510f1e7cd3d80070b28ca18)): ?>
-<?php $attributes = $__attributesOriginald69b52d99510f1e7cd3d80070b28ca18; ?>
-<?php unset($__attributesOriginald69b52d99510f1e7cd3d80070b28ca18); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald69b52d99510f1e7cd3d80070b28ca18)): ?>
-<?php $component = $__componentOriginald69b52d99510f1e7cd3d80070b28ca18; ?>
-<?php unset($__componentOriginald69b52d99510f1e7cd3d80070b28ca18); ?>
-<?php endif; ?>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800"><?php echo e(Auth::user()->name); ?></div>
-                <div class="font-medium text-sm text-gray-500"><?php echo e(Auth::user()->email); ?></div>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<style>
-/* Estilos para el dropdown personalizado */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 1000;
-    min-width: 200px;
-    padding: 0.5rem 0;
-    margin: 0.125rem 0 0;
-    font-size: 0.875rem;
-    color: #212529;
-    text-align: left;
-    list-style: none;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 0.375rem;
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
-}
-
-.dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 0.375rem 1rem;
-    clear: both;
-    font-weight: 400;
-    color: #212529;
-    text-decoration: none;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0;
-    cursor: pointer;
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-    color: #1e2125;
-    background-color: #e9ecef;
-}
-
-.dropdown-header {
-    display: block;
-    padding: 0.5rem 1rem;
-    margin-bottom: 0;
-    font-size: 0.75rem;
-    color: #6c757d;
-    white-space: nowrap;
-}
-
-.dropdown-item.active {
-    background-color: #0d6efd !important;
-    color: white !important;
-}
-/* Estilos para el botón de hamburguesa móvil */
-#mobile-sidebar-toggle {
-    display: inline-flex !important; /* Forzar visibilidad */
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: #212529;
-    z-index: 1001;
-    position: relative;
-    margin-right: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-/* Ocultar en desktop */
-@media (min-width: 1024px) {
-    #mobile-sidebar-toggle {
-        display: none !important;
-    }
-}
-
-/* Mostrar solo en móviles/tablets */
-@media (max-width: 1023.98px) {
-    #mobile-sidebar-toggle {
-        display: inline-flex !important;
-    }
-    
-    .sidebar-toggle-desktop {
-        display: none !important;
-    }
-}
-/* Estilos para corregir el desplazamiento del botón toggleSidebar */
-.navbar {
-    transition: all var(--transition-speed, 0.3s) ease !important;
-}
-
-/* Botón sidebar toggle - transición suave */
-.btn[onclick*="toggleSidebar"] {
-    transition: transform var(--transition-speed, 0.3s) ease !important;
-}
-
-/* Compensación para diferentes escalados cuando sidebar está colapsado */
-body.sidebar-collapsed .btn[onclick*="toggleSidebar"] {
-    transform: translateX(calc((var(--sidebar-width, 280px) - var(--sidebar-collapsed-width, 56px)) * -0.7)) !important;
-}
-
-/* Compensación específica para escalado pequeño */
-body.font-scale-small.sidebar-collapsed .btn[onclick*="toggleSidebar"],
-body.sidebar-collapsed .btn[onclick*="toggleSidebar"][data-font-scale="small"] {
-    transform: translateX(calc((var(--sidebar-width, 280px) - var(--sidebar-collapsed-width, 56px)) * -0.8)) !important;
-}
-
-/* Compensación para escalado extra grande */
-body.font-scale-extra-large.sidebar-collapsed .btn[onclick*="toggleSidebar"],
-body.sidebar-collapsed .btn[onclick*="toggleSidebar"][data-font-scale="extra-large"] {
-    transform: translateX(calc((var(--sidebar-width, 280px) - var(--sidebar-collapsed-width, 56px)) * -0.6)) !important;
-}
-</style>
-
-<script>
-// Sistema de Escalado (se mantiene igual)
-const FONT_SCALE_KEY = 'agiledesk_font_scale';
-    
-const SCALE_CONFIGS = {
-    'small': {
-        name: 'Pequeño',
-        fontSize: '14px',
-        sidebarHeading: '1.4rem',
-        listItem: '0.875rem',
-        userAvatar: '36px'
-    },
-    'normal': {
-        name: 'Normal',
-        fontSize: '16px',
-        sidebarHeading: '1.5rem',
-        listItem: '1rem',
-        userAvatar: '40px'
-    },
-    'large': {
-        name: 'Grande',
-        fontSize: '18px',
-        sidebarHeading: '1.6rem',
-        listItem: '1.1rem',
-        userAvatar: '44px'
-    },
-    'extra-large': {
-        name: 'Extra Grande',
-        fontSize: '20px',
-        sidebarHeading: '1.75rem',
-        listItem: '1.2rem',
-        userAvatar: '48px'
-    }
-};
-
-function getSavedFontScale() {
-    return localStorage.getItem(FONT_SCALE_KEY) || 'normal';
-}
-
-function saveFontScale(scale) {
-    localStorage.setItem(FONT_SCALE_KEY, scale);
-}
-
-function applyFontScale(scale) {
-    if (!SCALE_CONFIGS[scale]) {
-        console.warn('Escala no válida:', scale);
-        scale = 'normal';
-    }
-    
-    const config = SCALE_CONFIGS[scale];
-    
-    const existingStyle = document.getElementById('dynamic-font-scale');
-    if (existingStyle) {
-        existingStyle.remove();
-    }
-    
-    const style = document.createElement('style');
-    style.id = 'dynamic-font-scale';
-    style.textContent = `
-        /* Escalado dinámico - ${config.name} */
-        html {
-            font-size: ${config.fontSize} !important;
-        }
+    </nav>
+    <script>
+        // Configuración unificada de escalado
+        const FONT_SCALE_KEY = 'agiledesk_font_scale';
+        const THEME_KEY = 'agiledesk_theme';
         
-        .sidebar-heading {
-            font-size: ${config.sidebarHeading} !important;
-        }
-        
-        .list-group-item {
-            font-size: ${config.listItem} !important;
-        }
-        
-        .user-avatar {
-            width: ${config.userAvatar} !important;
-            height: ${config.userAvatar} !important;
-            min-width: ${config.userAvatar} !important;
-        }
-        
-        /* Ajustes adicionales para el escalado */
-        .navbar {
-            min-height: calc(3.5rem * (${config.fontSize.replace('px', '')} / 16)) !important;
-        }
-        
-        .sidebar-toggle-btn {
-            min-width: calc(32px * (${config.fontSize.replace('px', '')} / 16)) !important;
-            min-height: calc(32px * (${config.fontSize.replace('px', '')} / 16)) !important;
-        }
-    `;
-    
-    document.head.appendChild(style);
-    updateScaleIndicator(scale);
-    
-    document.body.setAttribute('data-font-scale', scale);
-    document.body.className = document.body.className.replace(/font-scale-\w+/g, '');
-    document.body.classList.add(`font-scale-${scale}`);
-    
-    const sidebarToggleBtn = document.querySelector('.btn[onclick*="toggleSidebar"]');
-    if (sidebarToggleBtn) {
-        sidebarToggleBtn.setAttribute('data-font-scale', scale);
-        sidebarToggleBtn.className = sidebarToggleBtn.className.replace(/font-scale-\w+/g, '');
-        sidebarToggleBtn.classList.add(`font-scale-${scale}`);
-    }
-}
+        const SCALE_CONFIGS = {
+            small: { 
+                name: 'Pequeño', 
+                fontSize: '14px', 
+                class: 'font-scale-sm',
+                badge: 'S' 
+            },
+            normal: { 
+                name: 'Normal', 
+                fontSize: '16px', 
+                class: 'font-scale-md',
+                badge: 'M' 
+            },
+            large: { 
+                name: 'Grande', 
+                fontSize: '18px', 
+                class: 'font-scale-lg',
+                badge: 'L' 
+            },
+            'extra-large': { 
+                name: 'Extra Grande', 
+                fontSize: '20px', 
+                class: 'font-scale-xl',
+                badge: 'XL' 
+            }
+        };
 
-function updateScaleIndicator(currentScale) {
-    document.querySelectorAll('[data-scale]').forEach(item => {
-        item.classList.remove('active', 'fw-bold');
-        const icon = item.querySelector('i.bi-type');
-        if (icon) {
-            icon.classList.remove('bi-check-lg');
-            icon.classList.add('bi-type');
-        }
-    });
-    
-    const currentItem = document.querySelector(`[data-scale="${currentScale}"]`);
-    if (currentItem) {
-        currentItem.classList.add('active', 'fw-bold');
-        const icon = currentItem.querySelector('i.bi-type');
-        if (icon) {
-            icon.classList.remove('bi-type');
-            icon.classList.add('bi-check-lg');
-        }
-    }
-}
+        // Variable para controlar el estado del dropdown
+        let currentDropdown = null;
 
-function toggleFontScaleDropdown(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const dropdownMenu = document.getElementById('fontScaleDropdownMenu');
-    const button = document.getElementById('fontScaleDropdown');
-    
-    if (dropdownMenu && button) {
-        const isVisible = dropdownMenu.style.display === 'block';
-        
-        closeAllDropdowns();
-        
-        if (!isVisible) {
-            dropdownMenu.style.display = 'block';
-            button.setAttribute('aria-expanded', 'true');
+        // Obtener la escala guardada
+        function getSavedFontScale() {
+            return localStorage.getItem(FONT_SCALE_KEY) || 'normal';
+        }
+
+        // Guardar la escala seleccionada
+        function saveFontScale(scale) {
+            localStorage.setItem(FONT_SCALE_KEY, scale);
+        }
+
+        // Aplicar la escala al documento
+        function applyFontScale(scale) {
+            const config = SCALE_CONFIGS[scale] || SCALE_CONFIGS.normal;
             
-            const buttonRect = button.getBoundingClientRect();
-            dropdownMenu.style.position = 'fixed';
-            dropdownMenu.style.top = (buttonRect.bottom + 5) + 'px';
-            dropdownMenu.style.right = (window.innerWidth - buttonRect.right) + 'px';
-            dropdownMenu.style.zIndex = '9999';
-        } else {
-            dropdownMenu.style.display = 'none';
-            button.setAttribute('aria-expanded', 'false');
+            // Limpiar clases anteriores del body
+            document.body.className = document.body.className
+                .replace(/font-scale-\w+/g, '');
+            
+            // Aplicar nueva clase al body
+            document.body.classList.add(config.class);
+            
+            // Aplicar tamaño de fuente al html (afecta a todas las unidades rem)
+            document.documentElement.style.fontSize = config.fontSize;
+            
+            // Actualizar badge visual
+            updateScaleIndicator(scale);
+            
+            // Guardar configuración
+            saveFontScale(scale);
+            
+            console.log(`Escalado aplicado: ${scale} (${config.fontSize})`);
         }
-    }
-}
 
-function closeAllDropdowns() {
-    const dropdowns = document.querySelectorAll('.dropdown-menu');
-    dropdowns.forEach(dropdown => {
-        dropdown.style.display = 'none';
-    });
-    
-    const buttons = document.querySelectorAll('[aria-expanded]');
-    buttons.forEach(button => {
-        button.setAttribute('aria-expanded', 'false');
-    });
-}
-
-function setFontScale(scale) {
-    applyFontScale(scale);
-    saveFontScale(scale);
-    closeAllDropdowns();
-    showScaleNotification(SCALE_CONFIGS[scale].name);
-}
-
-function resetFontScale() {
-    setFontScale('normal');
-    showScaleNotification('Escalado restablecido a Normal');
-    closeAllDropdowns();
-}
-
-function showScaleNotification(message, subtitle = '') {
-    const notification = document.createElement('div');
-    notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
-    notification.style.cssText = `
-        top: 70px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 250px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    `;
-    
-    notification.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="bi bi-zoom-in me-2"></i>
-            <div>
-                <strong>${message}</strong>
-                ${subtitle ? `<br><small class="text-muted">${subtitle}</small>` : ''}
-            </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
+        // Actualizar indicadores visuales
+        function updateScaleIndicator(currentScale) {
+            // Actualizar badge en el botón
+            const badge = document.getElementById('scale-badge');
+            if (badge) {
+                badge.textContent = SCALE_CONFIGS[currentScale]?.badge || 'M';
+            }
+            
+            // Actualizar estado activo en el dropdown
+            document.querySelectorAll('[data-scale]').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-scale') === currentScale) {
+                    item.classList.add('active');
+                }
+            });
         }
-    }, 3000);
-}
 
-// Funciones para el sidebar (NUEVAS)
-function toggleSidebar() {
-    const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-    const newState = !isCurrentlyCollapsed;
-    const overlay = document.querySelector('.overlay');
-    const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
-    document.body.classList.toggle('sidebar-collapsed', newState);
-    localStorage.setItem('agiledesk_sidebar_collapsed', newState.toString());
-
-    if (mobileIcon) {
-        if (newState) {
-            mobileIcon.classList.remove('bi-x');
-            mobileIcon.classList.add('bi-list');
-        } else {
-            mobileIcon.classList.remove('bi-list');
-            mobileIcon.classList.add('bi-x');
+        // Establecer nueva escala
+        function setFontScale(scale) {
+            const button = document.getElementById('fontScaleDropdown');
+            if (button) button.classList.add('loading');
+            
+            setTimeout(() => {
+                applyFontScale(scale);
+                closeAllDropdowns();
+                showOptimizedNotification(`Tamaño cambiado a ${SCALE_CONFIGS[scale].name}`, 'success');
+                if (button) button.classList.remove('loading');
+            }, 100);
         }
-    }
 
-    if (window.innerWidth < 992 && overlay) {
-        overlay.style.display = newState ? 'none' : 'block';
-    }
-}
-
-function initializeSidebar() {
-    const savedState = localStorage.getItem('agiledesk_sidebar_collapsed') === 'true';
-    const mobileIcon = document.getElementById('mobile-sidebar-icon');
-
-    document.body.classList.toggle('sidebar-collapsed', savedState);
-    
-    if (mobileIcon) {
-        mobileIcon.className = savedState ? 'bi bi-list' : 'bi bi-x';
-    }
-
-    if (window.innerWidth < 992) {
-        const overlay = document.querySelector('.overlay');
-        if (overlay) {
-            overlay.style.display = savedState ? 'none' : 'block';
+        // Restablecer escala predeterminada
+        function resetFontScale() {
+            setFontScale('normal');
+            showOptimizedNotification('Tamaño restablecido', 'info');
         }
-    }
-}
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', function() {
-    initializeSidebar();
-    
-    // Aplicar escala guardada
-    const savedScale = getSavedFontScale();
-    applyFontScale(savedScale);
-    
-    window.addEventListener('resize', function() {
-        initializeSidebar();
-    });
-});
+        // Función corregida para toggle del dropdown
+        function toggleFontScaleDropdown(event) {
+            event.stopPropagation(); // Evitar que el evento llegue al document.click
+            const dropdownMenu = document.getElementById('fontScaleDropdownMenu');
+            const button = document.getElementById('fontScaleDropdown');
+            
+            if (!dropdownMenu || !button) {
+                console.error('Elementos del dropdown no encontrados');
+                return;
+            }
 
-// Cerrar dropdown al hacer clic fuera
-document.addEventListener('click', function(event) {
-    const fontScaleDropdown = document.getElementById('fontScaleDropdown');
-    const fontScaleDropdownMenu = document.getElementById('fontScaleDropdownMenu');
-    
-    if (fontScaleDropdown && fontScaleDropdownMenu) {
-        if (!fontScaleDropdown.contains(event.target) && !fontScaleDropdownMenu.contains(event.target)) {
-            fontScaleDropdownMenu.style.display = 'none';
-            fontScaleDropdown.setAttribute('aria-expanded', 'false');
+            // Si ya está abierto, cerrarlo
+            if (currentDropdown === 'fontScale') {
+                closeAllDropdowns();
+                return;
+            }
+            
+            // Cerrar otros dropdowns primero
+            closeAllDropdowns();
+            
+            // Abrir este dropdown
+            dropdownMenu.classList.add('show');
+            button.setAttribute('aria-expanded', 'true');
+            button.classList.add('active');
+            currentDropdown = 'fontScale';
+            
+            // Focus en el primer elemento para accesibilidad
+            const firstItem = dropdownMenu.querySelector('.dropdown-item-optimized');
+            if (firstItem) {
+                setTimeout(() => firstItem.focus(), 100);
+            }
         }
-    }
-});
 
-// Exponer funciones globales
-window.setFontScale = setFontScale;
-window.resetFontScale = resetFontScale;
-window.toggleFontScaleDropdown = toggleFontScaleDropdown;
-window.toggleSidebar = toggleSidebar;
-</script><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>
+        // Función para alternar tema oscuro/claro
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem(THEME_KEY, newTheme);
+            
+            // Actualizar icono y texto
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (icon) {
+                icon.className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+            if (text) {
+                text.textContent = newTheme === 'dark' ? 'Claro' : 'Oscuro';
+            }
+            
+            showOptimizedNotification(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
+        }
+
+        // Cerrar todos los dropdowns
+        function closeAllDropdowns() {
+            const dropdowns = document.querySelectorAll('.dropdown-menu-optimized');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+            
+            const buttons = document.querySelectorAll('[aria-expanded="true"]');
+            buttons.forEach(button => {
+                button.setAttribute('aria-expanded', 'false');
+                button.classList.remove('active');
+            });
+            
+            currentDropdown = null;
+        }
+
+        // Función de sidebar mejorada
+        function toggleSidebar() {
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            
+            // Actualizar ícono móvil
+            const mobileIcon = document.getElementById('mobile-sidebar-icon');
+            if (mobileIcon) {
+                mobileIcon.className = isCollapsed ? 'bi bi-x' : 'bi bi-list';
+            }
+            
+            // Guardar estado
+            localStorage.setItem('agiledesk_sidebar_collapsed', (!isCollapsed).toString());
+        }
+
+        // Notificaciones optimizadas
+        function showOptimizedNotification(message, type = 'info') {
+            // Remover notificaciones existentes
+            const existingNotifications = document.querySelectorAll('.notification-optimized');
+            existingNotifications.forEach(notif => notif.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification-optimized';
+            
+            const icons = {
+                success: 'bi-check-circle-fill text-success',
+                error: 'bi-x-circle-fill text-danger',
+                warning: 'bi-exclamation-triangle-fill text-warning',
+                info: 'bi-info-circle-fill text-info'
+            };
+            
+            notification.innerHTML = `
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi ${icons[type]} fs-4"></i>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">${message}</div>
+                        <small class="text-muted">Configuración actualizada</small>
+                    </div>
+                    <button type="button" class="btn-close" onclick="this.closest('.notification-optimized').remove()">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove después de 4 segundos
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando navbar...');
+            
+            // Cargar configuraciones guardadas
+            const savedScale = getSavedFontScale();
+            applyFontScale(savedScale);
+            
+            // Cargar tema guardado o detectar preferencia del sistema
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-bs-theme', initialTheme);
+            
+            // Configurar tema inicial
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (icon) {
+                icon.className = initialTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            }
+            if (text) {
+                text.textContent = initialTheme === 'dark' ? 'Claro' : 'Oscuro';
+            }
+            
+            // Configurar evento para cerrar dropdowns al hacer clic fuera
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.dropdown-optimized')) {
+                    closeAllDropdowns();
+                }
+            });
+            
+            // Eventos de teclado para cerrar dropdown con Escape
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeAllDropdowns();
+                }
+                
+                // Shortcuts de teclado
+                if (event.ctrlKey && event.key === 'k') {
+                    event.preventDefault();
+                    document.getElementById('fontScaleDropdown').click();
+                }
+                if (event.ctrlKey && event.key === 't') {
+                    event.preventDefault();
+                    toggleTheme();
+                }
+            });
+            
+            console.log('Navbar inicializada correctamente');
+        });
+
+        // Verificar que las funciones estén disponibles globalmente
+        window.toggleFontScaleDropdown = toggleFontScaleDropdown;
+        window.setFontScale = setFontScale;
+        window.resetFontScale = resetFontScale;
+        window.toggleSidebar = toggleSidebar;
+        window.toggleTheme = toggleTheme;
+    </script>
+</body>
+</html><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>

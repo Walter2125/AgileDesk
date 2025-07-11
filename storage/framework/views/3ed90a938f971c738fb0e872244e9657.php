@@ -3,10 +3,11 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <div class="container mt-4">
+    <div class="container-fluid mt-4 px-4">
 
 
-        <!-- Filtro por sprint -->
+
+    <!-- Filtro por sprint -->
         <form method="GET" class="mb-3 d-flex gap-2 align-items-center">
             <select name="sprint_id" class="form-select" style="max-height: 38px; height: 38px; max-width: 250px;" onchange="this.form.submit()">
 
@@ -22,11 +23,11 @@
             <a href="<?php echo e(route('historias.create', ['proyecto' => $proyecto->id])); ?>" class="btn btn-primary" style="height: 38px; display: flex; align-items: center;">
                 Agregar Historia
             </a>
-            
+
             <!-- Botón para exportar a PDF (solo para administradores) -->
             <?php if(auth()->user()->usertype === 'admin'): ?>
-                <a href="<?php echo e(route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId])); ?>" 
-                   class="btn btn-secondary" 
+                <a href="<?php echo e(route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId])); ?>"
+                   class="btn btn-secondary"
                    style="height: 38px; display: flex; align-items: center;"
                    title="Exportar a PDF">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Exportar a PDF

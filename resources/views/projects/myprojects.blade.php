@@ -269,15 +269,73 @@ h1.page-title {
             <p class="text-muted">No hay proyectos recientes aún.</p>
         @endforelse
     </div>
+    <!-- Botón de opciones -->
+    <div x-data="{ open: false }" class="absolute top-2 right-2">
+        <button @click="open = !open" class="text-gray-700 hover:text-black">
+            &#x22EE;
+        </button>
 
-    {{-- Todos los proyectos --}}
-    <h2 class="page-title mt-5">Todos los proyectos</h2>
-    <div class="row">
-        @forelse($allProjects as $project)
-            @include('projects.project-card', ['project' => $project])
-        @empty
-            <p class="text-muted">No hay proyectos para mostrar.</p>
-        @endforelse
+        <!-- Menú desplegable con selector de color -->
+        <div x-show="open" @click.away="open = false"
+             class="absolute right-0 mt-2 w-52 bg-white border rounded shadow z-50 p-3">
+            <form method="POST" action="{{ route('proyectos.cambiarColor', $proyecto->id) }}">
+                @csrf
+                @method('PUT')
+                <label class="block text-sm mb-1">Seleccionar color:</label>
+                <input type="color" name="color" value="{{ $proyecto->color ?? '#ffffff' }}"
+                       class="w-full h-10 border rounded cursor-pointer">
+                <button type="submit"
+                        class="mt-3 w-full bg-blue-500 text-white py-1 rounded hover:bg-blue-600">
+                    Aplicar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="page-title mt-5">Proyectos</h2>
+    <div class="list-group">
+    @forelse($allProjects as $project)
+        <div class="mb-3 p-3 border rounded shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1 text-blanck">{{ $project->name }}</h5>
+                    <small class="text-muted">
+                        {{ $project->created_at->format('d/m/Y') }}
+                        @if($project->category)
+                            | {{ $project->category->name }}
+                        @endif
+                    </small>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    @if (auth()->check() && auth()->user()->usertype == 'admin')
+                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+            @if($project->descripcion)
+                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ $project->id }}">
+                    Mostrar descripción
+                </button>
+                <div class="collapse mt-2" id="desc-{{ $project->id }}">
+                    <p class="mb-0 text-muted">{{ $project->descripcion }}</p>
+                </div>
+            @endif
+        </div>
+    @empty
+        <p class="text-muted">No hay proyectos para mostrar.</p>
+    @endforelse
     </div>
 </div>
 @endsection

@@ -102,8 +102,8 @@
             <?php echo csrf_field(); ?>
 
             <div class="mb-4">
-                <label for="nombre" class="form-label fw-bold">Nombre de la Tarea <span class="text-danger">*</span></label>
-                <input type="text" name="nombre" id="nombre"
+                <label for="nombre" class="form-label fw-bold" >Nombre de la Tarea <span class="text-danger">*</span></label>
+                <input type="text" name="nombre" id="nombre" maxlength="100"
                        class="form-control <?php $__errorArgs = ['nombre'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -150,7 +150,7 @@ unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="mb-4">
-                <label for="actividad" class="form-label fw-bold">Actividad <span class="text-danger">*</span></label>
+                <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
                 <select name="actividad" id="actividad"
                         class="form-control <?php $__errorArgs = ['actividad'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -161,7 +161,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                     <option value="">Seleccione una actividad</option>
-                    <?php $__currentLoopData = ['Configuracion', 'Desarrollo', 'Prueba', 'Diseño']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opcion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = ['Configuracion', 'Desarrollo', 'Prueba', 'Diseño', 'OtroTipo']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $opcion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($opcion); ?>" <?php echo e(old('actividad') == $opcion ? 'selected' : ''); ?>>
                             <?php echo e($opcion); ?>
 
@@ -181,10 +181,10 @@ unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="<?php echo e(route('tareas.show', $historia->id)); ?>" class="btn btn-secondary">
+                <a href="<?php echo e(route('tareas.show', $historia->id)); ?>" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
                     Cancelar
                 </a>
-                <button type="submit" class="btn btn-primary">Crear Tarea</button>
+                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar </button>
             </div>
         </form>
     </div>

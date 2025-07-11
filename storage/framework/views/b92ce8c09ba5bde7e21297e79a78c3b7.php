@@ -1,24 +1,22 @@
    
 <?php $__env->startSection('styles'); ?>
-<!-- Tabler Core CSS (Admin Template) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css">
-    <!-- Bootstrap CSS -->
-    <link rel="styleshee            // Actualiza la acción del formulario
-            rejectUserForm.action = baseUrl + selectedUserId;
-
-            // Habilita o deshabilita el botón de envío
-            rejectSubmitBtn.disabled = !userId || userId === "0";"<?php echo e(asset('css/bootstrap.min.css')); ?>">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
-
-    <!-- Vite -->
-    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 <style>
+    /* Estilos consistentes con homeadmin.blade.php */
+    .admin-card {
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .admin-card .card-header {
+        background-color: #f8f9fa !important;
+        font-weight: bold;
+    }
+
+    .admin-table th {
+        background-color: #f8f9fa !important;
+    }
+
     .btn-icon {
         width: 36px;
         height: 36px;
@@ -27,17 +25,119 @@
         align-items: center;
         justify-content: center;
     }
+
     .alert-flash {
         border-left: 4px solid;
         animation: fadeInOut 5s ease-in-out;
     }
-    .alert-flash.alert-success { border-left-color: #28a745; }
+    
+    .alert-flash.alert-success { 
+        border-left-color: #28a745; 
+    }
+    
     @keyframes fadeInOut {
         0% { opacity: 0; }
         10% { opacity: 1; }
         90% { opacity: 1; }
         100% { opacity: 0; }
     }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4a90e2, #357abd);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .search-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .search-container .bi-search {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #df1305;
+        z-index: 2;
+    }
+
+    .search-input {
+        padding-left: 35px !important;
+    }
+
+    /* Paginación */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .row {
+        padding-block-start: 1rem;
+    }
+
+    /* Efectos de hover mejorados */
+    .btn-group .btn {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Animación de carga para botones */
+    .btn.loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn.loading::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Modal personalizado */
+    .modal-content {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #efeae9;
+        padding: 1.5rem;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #efe9e9;
+        padding: 1.5rem;
+    }
+    
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -52,11 +152,11 @@
                 </div>
             <?php endif; ?>
 
-            <div class="card mb-4">
+            <div class="card admin-card mb-4">
                 <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <div>
                         <h3 class="card-title mb-2 mb-md-0">
-                            <i class="bi bi-hourglass-split me-2"></i> Usuarios pendientes
+                            <i class="bi bi-hourglass-split me-2"></i> Usuarios Pendientes
                         </h3>
                         <p class="text-muted mb-0">Gestiona las solicitudes de colaboradores para acceder a la plataforma</p>
                     </div>
@@ -65,9 +165,12 @@
                             <i class="bi bi-search"></i>
                             <input type="text" id="searchUsers" class="form-control form-control-sm search-input" placeholder="Buscar usuarios...">
                         </div>
-                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                            <i class="bi bi-arrow-clockwise me-1"></i><span>Actualizar</span>
+                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                            <i class="bi bi-people me-1"></i><span>Ver Todos</span>
                         </a>
+                        <button onclick="location.reload()" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+                            <i class="bi bi-arrow-clockwise me-1"></i><span>Actualizar</span>
+                        </button>
                     </div>
                 </div>
 
@@ -80,8 +183,8 @@
                         </div>
                     <?php else: ?>
                         <div class="table-responsive">
-                            <table id="pendingUsersTable" class="table table-striped table-hover table-bordered align-middle mb-0">
-                                <thead class="table-light">
+                            <table id="pendingUsersTable" class="table table-hover admin-table align-middle mb-0">
+                                <thead>
                                     <tr>
                                         <th class="w-1 text-center">
                                             <input class="form-check-input" type="checkbox" id="selectAll">
@@ -119,23 +222,27 @@
                                             </td>
                                             <td class="text-end">
                                                 <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-outline-secondary action-btn btn-icon" 
+                                                    <button type="button" class="btn btn-sm btn-info btn-icon" 
                                                             data-bs-toggle="modal" data-bs-target="#userDetailModal" 
-                                                            data-user-id="<?php echo e($user->id); ?>">
+                                                            data-user-id="<?php echo e($user->id); ?>"
+                                                            title="Ver detalles">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
                                                     
-                                                    <form action="<?php echo e(route('admin.users.approve', $user->id)); ?>" method="POST" class="d-inline">
-                                                        <?php echo csrf_field(); ?>
-                                                        <button type="submit" class="btn btn-success action-btn btn-icon">
-                                                            <i class="bi bi-check-lg"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-success btn-icon"
+                                                            data-bs-toggle="modal" data-bs-target="#approveModal"
+                                                            data-user-id="<?php echo e($user->id); ?>"
+                                                            data-user-name="<?php echo e($user->name); ?>"
+                                                            data-user-email="<?php echo e($user->email); ?>"
+                                                            title="Aprobar">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
 
-                                                    <button type="button" class="btn btn-danger action-btn btn-icon"
+                                                    <button type="button" class="btn btn-sm btn-danger btn-icon"
                                                             data-bs-toggle="modal" data-bs-target="#rejectModal"
                                                             data-user-id="<?php echo e($user->id); ?>"
-                                                            data-user-name="<?php echo e($user->name); ?>">
+                                                            data-user-name="<?php echo e($user->name); ?>"
+                                                            title="Rechazar">
                                                         <i class="bi bi-x-lg"></i>
                                                     </button>
                                                 </div>
@@ -145,6 +252,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                     <?php endif; ?>
                 </div>
             </div>
@@ -152,42 +260,150 @@
     </div>
 </div>
 
-<!-- Modal de Rechazo -->
-<div class="modal fade" id="rejectModal" tabindex="-1">
+<!-- Modal de Aprobación -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Rechazar usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="approveModalLabel">
+                    <i class="bi bi-check-circle text-success me-2"></i>Aprobar usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" id="rejectUserForm" action="<?php echo e(route('admin.users.reject', 0)); ?>">
+            <form method="POST" id="approveUserForm" action="<?php echo e(route('admin.users.approve', 0)); ?>">
                 <?php echo csrf_field(); ?>
                 <div class="modal-body">
-                    <p>¿Confirmas que deseas rechazar a <strong id="modalUserName"></strong>?</p>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="user-avatar me-3" id="approveModalUserAvatar"></div>
+                        <div>
+                            <h6 class="mb-1" id="approveModalUserName"></h6>
+                            <small class="text-muted" id="approveModalUserEmail"></small>
+                        </div>
+                    </div>
+                    <div class="alert alert-info d-flex align-items-start">
+                        <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                        <div>
+                            <strong>¿Confirmas que deseas aprobar este usuario?</strong>
+                            <p class="mb-0 mt-1">El usuario recibirá acceso completo a la plataforma y podrá colaborar en proyectos.</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" id="rejectSubmitBtn" class="btn btn-danger">Rechazar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" id="approveSubmitBtn" class="btn btn-success">
+                        <i class="bi bi-check-lg me-1"></i>Aprobar Usuario
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!-- Modal de Detalle -->
-<div class="modal fade" id="userDetailModal" tabindex="-1">
+
+<!-- Modal de Rechazo -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Detalles del usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="rejectModalLabel">
+                    <i class="bi bi-x-circle text-danger me-2"></i>Rechazar usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="rejectUserForm" action="<?php echo e(route('admin.users.reject', 0)); ?>">
+                <?php echo csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="user-avatar me-3" id="rejectModalUserAvatar"></div>
+                        <div>
+                            <h6 class="mb-1" id="rejectModalUserName"></h6>
+                            <small class="text-muted" id="rejectModalUserEmail"></small>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning d-flex align-items-start">
+                        <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+                        <div>
+                            <strong>¿Confirmas que deseas rechazar este usuario?</strong>
+                            <p class="mb-0 mt-1">Esta acción eliminará permanentemente la solicitud del usuario.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" id="rejectSubmitBtn" class="btn btn-danger">
+                        <i class="bi bi-x-lg me-1"></i>Rechazar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalle -->
+<div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailModalLabel">
+                    <i class="bi bi-person-circle me-2"></i>Detalles del usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h4 id="detailModalUserName"></h4>
-                <p id="detailModalUserEmail"></p>
-                <p id="detailModalUserCreated"></p>
+                <div class="d-flex align-items-center mb-4">
+                    <div class="user-avatar me-3" id="detailModalUserAvatar" style="width: 60px; height: 60px; font-size: 24px;"></div>
+                    <div>
+                        <h4 class="mb-1" id="detailModalUserName"></h4>
+                        <p class="text-muted mb-0" id="detailModalUserEmail"></p>
+                        <small class="text-success">
+                            <i class="bi bi-clock me-1"></i>Solicitud pendiente
+                        </small>
+                    </div>
+                </div>
+                <hr>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-calendar-event text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted">Fecha de registro</small>
+                                        <div class="fw-semibold" id="detailModalUserCreated"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-hourglass-split text-warning me-2"></i>
+                                    <div>
+                                        <small class="text-muted">Tiempo esperando</small>
+                                        <div class="fw-semibold" id="detailModalUserWaiting"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Cerrar
+                </button>
+                <button type="button" class="btn btn-success" id="detailApproveBtn">
+                    <i class="bi bi-check-lg me-1"></i>Aprobar
+                </button>
+                <button type="button" class="btn btn-danger" id="detailRejectBtn">
+                    <i class="bi bi-x-lg me-1"></i>Rechazar
+                </button>
             </div>
         </div>
     </div>
@@ -196,43 +412,155 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
-<script src="<?php echo e(asset('js/bootstrap.bundle.min.js')); ?>"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Búsqueda
+    // Variables globales para los modales
+    let currentUserId = null;
+    let currentUserData = {};
+
+    // Búsqueda en tiempo real
     const searchInput = document.getElementById('searchUsers');
     if (searchInput) {
+        let typingTimer;
+        
         searchInput.addEventListener('keyup', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }, 300);
+        });
+
+        searchInput.addEventListener('keydown', function() {
+            clearTimeout(typingTimer);
         });
     }
 
-    // Seleccionar todos
+    // Seleccionar todos los checkboxes
     const selectAllCheckbox = document.getElementById('selectAll');
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('.user-checkbox');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
         });
     }
 
-    // Modal de detalle
+    // Manejar checkboxes individuales
+    const individualCheckboxes = document.querySelectorAll('.user-checkbox');
+    individualCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(individualCheckboxes).every(cb => cb.checked);
+            const someChecked = Array.from(individualCheckboxes).some(cb => cb.checked);
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            }
+        });
+    });
+
+    // Función para obtener datos del usuario desde la fila
+    function getUserDataFromRow(userId) {
+        const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+        if (!row) return null;
+
+        return {
+            id: userId,
+            name: row.querySelector('.fw-medium').textContent,
+            email: row.querySelector('.text-muted').textContent,
+            created: row.querySelector('td:nth-child(3)').textContent.trim(),
+            waiting: row.querySelector('td:nth-child(3) small').textContent,
+            initial: row.querySelector('.fw-medium').textContent.charAt(0).toUpperCase()
+        };
+    }
+
+    // Modal de detalle del usuario
     const userDetailModal = document.getElementById('userDetailModal');
     if (userDetailModal) {
         userDetailModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
-            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+            const userData = getUserDataFromRow(userId);
             
-            document.getElementById('detailModalUserName').textContent = row.querySelector('.fw-medium').textContent;
-            document.getElementById('detailModalUserEmail').textContent = row.querySelector('.text-muted').textContent;
-            document.getElementById('detailModalUserCreated').textContent = row.querySelector('td:nth-child(3)').textContent;
+            if (userData) {
+                currentUserId = userId;
+                currentUserData = userData;
+
+                document.getElementById('detailModalUserName').textContent = userData.name;
+                document.getElementById('detailModalUserEmail').textContent = userData.email;
+                document.getElementById('detailModalUserCreated').textContent = userData.created;
+                document.getElementById('detailModalUserWaiting').textContent = userData.waiting;
+                document.getElementById('detailModalUserAvatar').textContent = userData.initial;
+            }
+        });
+    }
+
+    // Botones de acción en el modal de detalle
+    const detailApproveBtn = document.getElementById('detailApproveBtn');
+    const detailRejectBtn = document.getElementById('detailRejectBtn');
+
+    if (detailApproveBtn) {
+        detailApproveBtn.addEventListener('click', function() {
+            bootstrap.Modal.getInstance(userDetailModal).hide();
+            setTimeout(() => {
+                const approveModal = new bootstrap.Modal(document.getElementById('approveModal'));
+                // Simular click en el botón de aprobar
+                const approveButton = document.querySelector(`button[data-bs-target="#approveModal"][data-user-id="${currentUserId}"]`);
+                if (approveButton) {
+                    approveButton.click();
+                }
+            }, 300);
+        });
+    }
+
+    if (detailRejectBtn) {
+        detailRejectBtn.addEventListener('click', function() {
+            bootstrap.Modal.getInstance(userDetailModal).hide();
+            setTimeout(() => {
+                const rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
+                // Simular click en el botón de rechazar
+                const rejectButton = document.querySelector(`button[data-bs-target="#rejectModal"][data-user-id="${currentUserId}"]`);
+                if (rejectButton) {
+                    rejectButton.click();
+                }
+            }, 300);
+        });
+    }
+
+    // Modal de aprobación
+    const approveModal = document.getElementById('approveModal');
+    const approveUserForm = document.getElementById('approveUserForm');
+    const approveSubmitBtn = document.getElementById('approveSubmitBtn');
+
+    if (approveModal) {
+        approveModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            const userEmail = button.getAttribute('data-user-email');
+            const userInitial = userName.charAt(0).toUpperCase();
+
+            // Actualizar contenido del modal
+            document.getElementById('approveModalUserName').textContent = userName;
+            document.getElementById('approveModalUserEmail').textContent = userEmail;
+            document.getElementById('approveModalUserAvatar').textContent = userInitial;
+
+            // Actualizar la acción del formulario
+            if (approveUserForm) {
+                approveUserForm.action = `/admin/users/${userId}/approve`;
+            }
+
+            // Habilitar botón de envío
+            if (approveSubmitBtn) {
+                approveSubmitBtn.disabled = !userId || userId === "0";
+            }
         });
     }
 
@@ -246,15 +574,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
+            const userEmail = button.dataset.userEmail || 
+                             document.querySelector(`tr[data-user-id="${userId}"] .text-muted`).textContent;
+            const userInitial = userName.charAt(0).toUpperCase();
 
-            // Actualiza el nombre del usuario en el modal
-            document.getElementById('modalUserName').textContent = userName;
+            // Actualizar contenido del modal
+            document.getElementById('rejectModalUserName').textContent = userName;
+            document.getElementById('rejectModalUserEmail').textContent = userEmail;
+            document.getElementById('rejectModalUserAvatar').textContent = userInitial;
 
-            // Actualiza la acción del formulario
-            rejectUserForm.action = `/admin/users/${userId}/reject`;
+            // Actualizar la acción del formulario
+            if (rejectUserForm) {
+                rejectUserForm.action = `/admin/users/${userId}/reject`;
+            }
 
-            // Habilita o deshabilita el botón de envío
-            rejectSubmitBtn.disabled = !userId || userId === "0";
+            // Habilitar botón de envío
+            if (rejectSubmitBtn) {
+                rejectSubmitBtn.disabled = !userId || userId === "0";
+            }
+        });
+    }
+
+    // Validación de formularios
+    if (approveUserForm) {
+        approveUserForm.addEventListener('submit', function(e) {
+            if (this.action.endsWith('/0/approve')) {
+                e.preventDefault();
+                alert('No se puede aprobar: usuario inválido.');
+                return false;
+            }
+            
+            // Agregar indicador de carga
+            if (approveSubmitBtn) {
+                approveSubmitBtn.classList.add('loading');
+                approveSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Aprobando...';
+                approveSubmitBtn.disabled = true;
+            }
         });
     }
 
@@ -263,17 +618,55 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.action.endsWith('/0/reject')) {
                 e.preventDefault();
                 alert('No se puede rechazar: usuario inválido.');
+                return false;
+            }
+            
+            // Agregar indicador de carga
+            if (rejectSubmitBtn) {
+                rejectSubmitBtn.classList.add('loading');
+                rejectSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Rechazando...';
+                rejectSubmitBtn.disabled = true;
             }
         });
     }
 
-    // Alertas temporales-flash
+    // Alertas temporales con auto-hide
     const flashAlerts = document.querySelectorAll('.alert-flash');
     if (flashAlerts.length) {
         setTimeout(() => {
-            flashAlerts.forEach(alert => alert.remove());
+            flashAlerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.3s ease-in-out';
+                setTimeout(() => alert.remove(), 300);
+            });
         }, 5000);
     }
+
+    // Limpiar formularios al cerrar modales
+    [approveModal, rejectModal].forEach(modal => {
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Resetear botones de envío
+                const submitBtn = modal.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    
+                    if (submitBtn.id === 'approveSubmitBtn') {
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Aprobar Usuario';
+                    } else if (submitBtn.id === 'rejectSubmitBtn') {
+                        submitBtn.innerHTML = '<i class="bi bi-x-lg me-1"></i>Rechazar Usuario';
+                    }
+                }
+                
+                // Limpiar formularios
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            });
+        }
+    });
 });
 </script>
 <?php $__env->stopSection(); ?>

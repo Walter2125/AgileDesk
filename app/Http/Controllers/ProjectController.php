@@ -31,9 +31,25 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name|max:30',
-            'codigo' => 'required|string|max:10|unique:nuevo_proyecto,codigo',
-            'descripcion' => 'nullable|string|max:255',
+            'name' => [
+        'required',
+        'unique:nuevo_proyecto,name',
+        'max:30',
+        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
+    ],
+            'codigo' => [
+        'required',
+        'string',
+        'max:6',
+        'unique:nuevo_proyecto,codigo',
+        'regex:/^[a-zA-Z0-9]+$/'
+    ],
+    'descripcion' => [
+        'nullable',
+        'string',
+        'max:255',
+        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,;:()\-]+$/'
+    ],
             'fecha_inicio' => 'required|date',
             'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
             'selected_users' => 'required|array|min:1',
@@ -154,9 +170,24 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|max:30|unique:nuevo_proyecto,name,' . $id,
-            'codigo' => 'required|max:10|unique:nuevo_proyecto,codigo,' . $project->id,
-            'descripcion' => 'nullable|string|max:255',
+            'name' => [
+        'required',
+        'max:30',
+        'unique:nuevo_proyecto,name,' . $id,
+        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
+    ],
+             'codigo' => [
+        'required',
+        'max:6',
+        'unique:nuevo_proyecto,codigo,' . $project->id,
+        'regex:/^[a-zA-Z0-9]+$/'
+    ],
+           'descripcion' => [     
+        'nullable',
+        'string',
+        'max:255',
+        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,;:()\-]+$/'
+    ],
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'users' => 'required|array|min:1', 
@@ -256,5 +287,16 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
+    public function cambiarColor(Request $request, $id)
+    {
+    $request->validate([
+        'color' => 'required|string|max:7' // Validar color HEX
+    ]);
 
+    $proyecto = Project::findOrFail($id);
+    $proyecto->color = $request->input('color');
+    $proyecto->save();
+
+    return back()->with('success', 'Color actualizado.');
+    }
 }

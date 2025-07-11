@@ -37,7 +37,7 @@
                 <!-- Nombre -->
                 <div class="form-group mb-3">
                     <label for="name">Nombre del Proyecto</label>
-                    <input id="name" type="text"
+                    <input id="name" type="text" maxlength="50"
                         class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -173,8 +173,8 @@ unset($__errorArgs, $__bag); ?>
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
-                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar Proyecto</button>
+                    <a href="<?php echo e(route('projects.my')); ?>" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Cancelar</a>
                 </div>
             </form>
         </div>

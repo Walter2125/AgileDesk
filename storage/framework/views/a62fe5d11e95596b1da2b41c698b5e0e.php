@@ -270,15 +270,75 @@ h1.page-title {
             <p class="text-muted">No hay proyectos recientes aún.</p>
         <?php endif; ?>
     </div>
+    <!-- Botón de opciones -->
+    <div x-data="{ open: false }" class="absolute top-2 right-2">
+        <button @click="open = !open" class="text-gray-700 hover:text-black">
+            &#x22EE;
+        </button>
 
-    
-    <h2 class="page-title mt-5">Todos los proyectos</h2>
-    <div class="row">
-        <?php $__empty_1 = true; $__currentLoopData = $allProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-            <?php echo $__env->make('projects.project-card', ['project' => $project], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-            <p class="text-muted">No hay proyectos para mostrar.</p>
-        <?php endif; ?>
+        <!-- Menú desplegable con selector de color -->
+        <div x-show="open" @click.away="open = false"
+             class="absolute right-0 mt-2 w-52 bg-white border rounded shadow z-50 p-3">
+            <form method="POST" action="<?php echo e(route('proyectos.cambiarColor', $proyecto->id)); ?>">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
+                <label class="block text-sm mb-1">Seleccionar color:</label>
+                <input type="color" name="color" value="<?php echo e($proyecto->color ?? '#ffffff'); ?>"
+                       class="w-full h-10 border rounded cursor-pointer">
+                <button type="submit"
+                        class="mt-3 w-full bg-blue-500 text-white py-1 rounded hover:bg-blue-600">
+                    Aplicar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="page-title mt-5">Proyectos</h2>
+    <div class="list-group">
+    <?php $__empty_1 = true; $__currentLoopData = $allProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+        <div class="mb-3 p-3 border rounded shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1 text-blanck"><?php echo e($project->name); ?></h5>
+                    <small class="text-muted">
+                        <?php echo e($project->created_at->format('d/m/Y')); ?>
+
+                        <?php if($project->category): ?>
+                            | <?php echo e($project->category->name); ?>
+
+                        <?php endif; ?>
+                    </small>
+                </div>
+                <div class="action-buttons">
+                    <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <?php if(auth()->check() && auth()->user()->usertype == 'admin'): ?>
+                        <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if($project->descripcion): ?>
+                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-<?php echo e($project->id); ?>">
+                    Mostrar descripción
+                </button>
+                <div class="collapse mt-2" id="desc-<?php echo e($project->id); ?>">
+                    <p class="mb-0 text-muted"><?php echo e($project->descripcion); ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+        <p class="text-muted">No hay proyectos para mostrar.</p>
+    <?php endif; ?>
     </div>
 </div>
 <?php $__env->stopSection(); ?>

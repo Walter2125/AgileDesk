@@ -122,7 +122,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
-                    <th>Tipo</th>
+                    <th>Tipo de Actividad</th>
                     <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>
@@ -132,9 +132,9 @@
                     <tr>
                         <td class="text-center">
                             <input type="checkbox"
-                                   class="form-check-input tarea-checkbox"
-                                   data-id="<?php echo e($tarea->id); ?>"
-                                   <?php echo e($tarea->completada ? 'checked' : ''); ?>>
+                                class="form-check-input tarea-checkbox"
+                                data-id="<?php echo e($tarea->id); ?>"
+                                <?php echo e($tarea->completada ? 'checked' : ''); ?>>
                         </td>
                         <td><?php echo e($tarea->id); ?></td>
                         <td><?php echo e($tarea->nombre); ?></td>
@@ -143,38 +143,13 @@
                         <td><?php echo e($tarea->created_at->format('d/m/Y H:i')); ?></td>
                         <td class="text-center">
                             <a href="<?php echo e(route('tareas.edit', [$historia->id, $tarea->id])); ?>"
-                               class="btn btn-outline-warning btn-sm" title="Editar">
+                                class="btn btn-outline-warning btn-sm" title="Editar">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal<?php echo e($tarea->id); ?>" title="Eliminar">
+                                data-bs-target="#deleteModal<?php echo e($tarea->id); ?>" title="Eliminar">
                                 <i class="bi bi-trash3"></i>
                             </button>
-
-                            <div class="modal fade" id="deleteModal<?php echo e($tarea->id); ?>" tabindex="-1"
-                                 aria-labelledby="deleteModalLabel<?php echo e($tarea->id); ?>" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content rounded shadow">
-                                        <div class="modal-header bg-info text-white">
-                                            <h5 class="modal-title">¿Eliminar tarea?</h5>
-                                            <button type="button" class="btn-close btn-close-white"
-                                                    data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            ¿Seguro que deseas eliminar <strong><?php echo e($tarea->nombre); ?></strong>?
-                                            <p class="text-muted small">Esta acción no se puede deshacer.</p>
-                                        </div>
-                                        <div class="modal-footer bg-light">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <form action="<?php echo e(route('tareas.destroy', [$historia->id, $tarea->id])); ?>" method="POST" class="d-inline">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="btn btn-info text-white">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -185,22 +160,56 @@
             </tbody>
         </table>
 
-        <div class="d-flex justify-content-center mt-4">
-            <?php echo e($tareas->links()); ?>
+                    <div class="d-flex justify-content-center mt-4">
+                        <?php echo e($tareas->links()); ?>
 
-        </div>
+                    </div>
 
-        <div class="d-flex justify-content-between mt-4">
-            <a href="<?php echo e(route('historias.show', ['historia' => $historia->id])); ?>"
-               class="btn btn-light text-primary border border-primary rounded-pill px-4 py-2 shadow-sm">
-                ⬅️ Cancelar
-            </a>
-            <a href="<?php echo e(route('tareas.index', $historia->id)); ?>"
-               class="btn btn-light text-primary border border-primary rounded-pill px-4 py-2 shadow-sm">
-                ➕ Nueva Tarea
-            </a>
-        </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="<?php echo e(route('historias.show', ['historia' => $historia->id])); ?>"
+                    class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
+                    Atras
+                    </a>
+                    <a href="<?php echo e(route('tareas.index', $historia->id)); ?>" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Nueva Tarea</a>
+                </div>
     </div>
+    
+                    <?php $__currentLoopData = $tareas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tarea): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="modal fade" id="deleteModal<?php echo e($tarea->id); ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo e($tarea->id); ?>" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content rounded-4 shadow">
+                                    <div class="modal-header border-bottom-0">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+
+                                    <div class="modal-body text-center">
+                                        <div class="mb-4">
+                                            <h5 class="modal-title text-danger" id="deleteModalLabel<?php echo e($tarea->id); ?>">Confirmar Eliminación</h5>
+                                            <h5 class="modal-title text-danger">¿Deseas eliminar esta tarea?</h5>
+
+                                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+
+                                            <div class="alert alert-danger d-flex align-items-center mt-3">
+                                                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                                <div>
+                                                    "<strong><?php echo e($tarea->nombre); ?></strong>" será eliminada permanentemente.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                            <form action="<?php echo e(route('tareas.destroy', [$historia->id, $tarea->id])); ?>" method="POST" class="d-inline">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 </div>
 
 <script>

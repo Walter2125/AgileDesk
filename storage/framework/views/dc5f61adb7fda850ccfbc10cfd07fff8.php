@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <?php
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
@@ -55,15 +54,16 @@
                     </button>
                 </div>
 
+
+
+
+
                 <?php if($tablero->sprints && $tablero->sprints->count()): ?>
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
-                        <option disabled <?php echo e(empty($sprintSeleccionado) ? 'selected' : ''); ?>>Selecciona un sprint</option>
+                            style="min-width: 200px; max-width: 240px;">
+                        <option selected disabled>Selecciona un sprint</option>
                         <?php $__currentLoopData = $tablero->sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($sprint->id); ?>" <?php echo e((isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : ''); ?>>
-                                <?php echo e($sprint->nombre); ?>
-
-                            </option>
+                            <option value="<?php echo e($sprint->id); ?>"><?php echo e($sprint->nombre); ?></option>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 <?php endif; ?>
@@ -141,10 +141,10 @@
                                                 <div style="flex: 1; min-width: 0;">
                                                     <a href="<?php echo e(route('historias.show', $historia->id)); ?>" class="text-decoration-none text-dark d-block">
 
-                                                        <strong class="d-block text-truncate"
-                                                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                                                            title="<?php echo e($historia->nombre); ?>">
-                                                            <?php echo e($historia->codigo); ?> <?php echo e($historia->nombre); ?>
+                                                        <strong class="d-block"
+                                                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block;"
+                                                                title="<?php echo e($historia->nombre); ?>">
+                                                            H<?php echo e($historia->numero); ?> <?php echo e($historia->nombre); ?>
 
                                                         </strong>
 
@@ -243,7 +243,7 @@
                                 return;
                             }
 
-                            fetch(/historias/${historiaId}/mover, {
+                            fetch(`/historias/${historiaId}/mover`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -420,7 +420,7 @@
                         <div class="modal-body">
                             <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
                         </div>
-                        <div class="modal-footer d-flex justify-content-between">
+                        <div class="modal-footer justify-content-end gap-2">
                             <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
                                 Borrar columna y sus historias
                             </button>
@@ -467,8 +467,19 @@
             </div>
         </div>
 
-        <script>
 
+
+
+
+        <script>
+            /*setTimeout(function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);*/
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".editable-title").forEach(input => {
@@ -481,7 +492,7 @@
                             return;
                         }
 
-                        fetch(/columnas/${columnId}, {
+                        fetch(`/columnas/${columnId}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -580,7 +591,7 @@
 
                 // Asegurar que la URL comience con "/" para que sea una ruta absoluta
                 // y agregar el prefijo de administrador para acceder a la ruta correcta
-                form.action = /admin/columnas/${columnaId};
+                form.action = `/admin/columnas/${columnaId}`;
 
                 // Resetea el input modo por si acaso
                 document.getElementById('modoEliminar').value = '';
@@ -693,7 +704,7 @@
                 const form = document.getElementById('formEditarColumna');
                 const input = document.getElementById('inputNombreColumna');
 
-                form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
+                form.action = `/columnas/${id}`; // Asegúrate que esta ruta está definida
                 input.value = nombre;
 
                 const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));
@@ -701,18 +712,8 @@
             }
         </script>
 
-                <script>
-                    function seleccionarSprint(select) {
-                        const sprintId = select.value;
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
-                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
-                    }
-                </script>
 
-
-
-                <style>
+        <style>
             .menu-wrapper {
                 position: relative;
                 display: inline-block;
