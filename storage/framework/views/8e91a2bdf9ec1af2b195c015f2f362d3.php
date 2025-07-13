@@ -1,5 +1,33 @@
 <div class="col-md-6 col-lg-4 mb-4">
-    <div class="project-card card h-100">
+    <div class="project-card card h-100 position-relative" style="background-color: <?php echo e($project->color ?? '#ffffff'); ?>;">
+        <!-- Botón de opciones (tres puntitos) -->
+        <div x-data="{ open: false }" class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+            <button @click="open = !open" class="btn btn-sm btn-light border-0">
+                &#x22EE;
+            </button>
+
+            <!-- Menú desplegable -->
+            <div x-show="open"
+                 @click.away="open = false"
+                 x-transition
+                 x-cloak
+                 class="position-absolute end-0 mt-2 bg-white border rounded shadow p-3"
+                 style="z-index: 20; width: 220px;">
+                <form method="POST" action="<?php echo e(route('projects.cambiarColor', $project->id)); ?>">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
+                    <div class="mb-2">
+                        <label class="form-label">Seleccionar color:</label>
+                        <input type="color" name="color" value="<?php echo e($project->color ?? '#ffffff'); ?>"
+                               class="form-control form-control-color" style="width: 100%;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Aplicar</button>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Cuerpo de la tarjeta -->
         <div class="card-body">
             <div class="project-header">
                 <div class="project-title-wrapper">
@@ -51,4 +79,6 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
 <?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/project-card.blade.php ENDPATH**/ ?>

@@ -287,16 +287,16 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    public function cambiarColor(Request $request, $id)
-    {
-    $request->validate([
-        'color' => 'required|string|max:7' // Validar color HEX
-    ]);
-
-    $proyecto = Project::findOrFail($id);
-    $proyecto->color = $request->input('color');
-    $proyecto->save();
-
-    return back()->with('success', 'Color actualizado.');
-    }
+    
+    // En tu controlador, añade un debug temporal
+public function cambiarColor(Request $request, $id)
+{
+    $project = Project::findOrFail($id);
+    $project->color = $request->input('color');
+    $project->save();
+    
+    \Log::info('Color actualizado', ['project_id' => $id, 'color' => $project->color]);
+    
+    return redirect()->route('projects.my')->with('success', 'Color actualizado correctamente.');
+}
 }

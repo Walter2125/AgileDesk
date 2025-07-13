@@ -270,28 +270,7 @@ h1.page-title {
             <p class="text-muted">No hay proyectos recientes aún.</p>
         <?php endif; ?>
     </div>
-    <!-- Botón de opciones -->
-    <div x-data="{ open: false }" class="absolute top-2 right-2">
-        <button @click="open = !open" class="text-gray-700 hover:text-black">
-            &#x22EE;
-        </button>
-
-        <!-- Menú desplegable con selector de color -->
-        <div x-show="open" @click.away="open = false"
-             class="absolute right-0 mt-2 w-52 bg-white border rounded shadow z-50 p-3">
-            <form method="POST" action="<?php echo e(route('proyectos.cambiarColor', $proyecto->id)); ?>">
-                <?php echo csrf_field(); ?>
-                <?php echo method_field('PUT'); ?>
-                <label class="block text-sm mb-1">Seleccionar color:</label>
-                <input type="color" name="color" value="<?php echo e($proyecto->color ?? '#ffffff'); ?>"
-                       class="w-full h-10 border rounded cursor-pointer">
-                <button type="submit"
-                        class="mt-3 w-full bg-blue-500 text-white py-1 rounded hover:bg-blue-600">
-                    Aplicar
-                </button>
-            </form>
-        </div>
-    </div>
+    
 
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">

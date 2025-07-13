@@ -135,7 +135,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
-        Route::put('/proyectos/{id}/cambiar-color', [ProyectoController::class, 'cambiarColor'])->name('proyectos.cambiarColor');
+        Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
 
 
         // Crud de Sprints
