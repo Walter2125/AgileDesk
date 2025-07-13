@@ -312,24 +312,46 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table align-middle">
                             <thead>
                                 <tr>
                                     <th>Usuario</th>
-                                    <th>Acciones</th>
+                                    <th>Acción</th>
+                                    <th>Detalles</th>
+                                    <!-- <th>Sprint</th> -->
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $__empty_1 = true; $__currentLoopData = $historial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td><?php echo e($item->usuario); ?></td>
-                                    <td><?php echo e($item->accion); ?></td>
-                                    <td><?php echo e($item->created_at->format('d/m/Y H:i')); ?></td>
+                                    <td>
+                                        <span class="fw-semibold"><?php echo e($item->usuario); ?></span>
+                                    </td>
+                                    <td>
+                                        <?php echo e($item->accion); ?>
+
+                                    </td>
+                                    <td>
+                                        <span title="<?php echo e(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles)); ?>"><?php echo e(\Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40)); ?></span>
+                                    </td>
+                                    <!-- <td>
+                                        <?php if($item->sprint): ?>
+                                            <span class="badge bg-info text-dark">#<?php echo e($item->sprint); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-muted">N/A</span>
+                                        <?php endif; ?>
+                                    </td> -->
+                                    <td>
+                                        <span title="<?php echo e($item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s')); ?>">
+                                            <?php echo e($item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans()); ?>
+
+                                        </span>
+                                    </td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="3" class="text-center">No hay historial registrado</td>
+                                    <td colspan="5" class="text-center">No hay historial registrado</td>
                                 </tr>
                                 <?php endif; ?>
                             </tbody>

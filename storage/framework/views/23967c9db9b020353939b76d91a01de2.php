@@ -25,6 +25,7 @@
             --transition: all 0.2s ease-in-out;
             --sidebar-width: 250px;
             --sidebar-collapsed-width: 56px;
+            --navbar-padding-x: 1rem;
         }
 
         /* Escalado de fuentes SOLO para la navbar, no global */
@@ -40,8 +41,10 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             transition: var(--transition);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 900;
             padding: 0.5rem 0;
             font-size: 1rem;
@@ -443,13 +446,36 @@
         .navbar-optimized .fs-4 {
             font-size: 1.25rem;
         }
+            .navbar-optimized .btn-scale-toggle {
+            overflow: visible; /* ← para permitir que el badge sobresalga */
+            padding-top: 0.75rem; /* ← o aumentá si querés más separación */
+        }
+        .navbar-optimized .btn-scale-toggle .badge {
+            top: -4px;
+        }
+
     </style>
 </head>
 <body>
     <nav class="navbar navbar-optimized">
         <div class="container-fluid">
-            <!-- Sección izquierda -->
-            <div class="d-flex align-items-center gap-3">
+            <!-- Botón sidebar y mensaje personalizado pegados al sidebar -->
+            <div class="d-flex align-items-center gap-3 navbar-sidebar-header" style="min-width: 0;">
+        <style>
+        /* Ajuste dinámico del header según el estado del sidebar */
+        .navbar-sidebar-header {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s;
+        }
+        body.sidebar-collapsed .navbar-sidebar-header {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        @media (max-width: 991.98px) {
+            .navbar-sidebar-header {
+                margin-left: 0 !important;
+            }
+        }
+        </style>
                 <!-- Botón sidebar móvil -->
                 <button id="mobile-sidebar-toggle" 
                         class="btn-optimized btn-sidebar-toggle d-lg-none"
@@ -458,7 +484,6 @@
                         title="Abrir/cerrar menú">
                     <i class="bi bi-list" id="mobile-sidebar-icon"></i>
                 </button>
-
                 <!-- Botón sidebar desktop -->
                 <button class="btn-optimized btn-sidebar-toggle d-none d-lg-flex" 
                         onclick="toggleSidebar()"
@@ -467,17 +492,14 @@
                     <i class="bi bi-layout-sidebar"></i>
                     <span class="d-none d-xl-inline">Menú</span>
                 </button>
-                
                 <!-- Mensaje personalizado -->
-                <div class="d-none d-sm-block">
+                <div class="d-none d-sm-block" style="min-width: 0;">
                     <div class="text-dark fw-bold text-truncate" style="max-width: 250px;">
-                        Dashboard Principal
+                        <?php echo $__env->yieldContent('mensaje-superior'); ?>
                     </div>
                 </div>
             </div>
-
-            <!-- Sección derecha -->
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
                 
         <div class="dropdown-optimized">
             <button class="btn-optimized btn-scale-toggle" 

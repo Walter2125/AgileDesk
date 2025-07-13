@@ -338,7 +338,7 @@
     }
 
     .content-wrapper {
-        padding: 0rem;
+        padding: 64px 0 0 0;
         transition: all var(--transition-speed) ease;
         overflow-x: hidden; /* Evitar scroll horizontal */
     }
@@ -360,7 +360,7 @@
     }
 
     .content-wrapper {
-        padding: 0rem;
+        padding: 64px 0 0 0;
         transition: all var(--transition-speed) ease;
     }
 
@@ -1086,15 +1086,18 @@
     }
     
 /* Ajustes optimizados para alineación perfecta */
+
 .sidebar-heading {
     width: 100%;
-    padding: 0.75rem var(--navbar-padding-x); /* Usa la misma variable de padding */
+    padding: 0 var(--navbar-padding-x);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0; /* Elimina márgenes inconsistentes */
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 64px; /* Altura consistente con navbar */
+    height: 4rem;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 /* Asegura que el ancho del sidebar coincida exactamente */
@@ -1115,8 +1118,10 @@
 .navbar-optimized {
     padding-left: var(--navbar-padding-x);
     padding-right: var(--navbar-padding-x);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con sidebar */
-    height: 64px; /* Altura fija para alineación vertical */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    height: 4rem;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 </style>
@@ -1185,10 +1190,14 @@
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 id="userDropdown">
-                            <div class="user-avatar d-flex align-items-center justify-content-center">
-                                <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
+                            <?php if(Auth::check() && Auth::user()->photo): ?>
+                                <img src="<?php echo e(asset('storage/' . Auth::user()->photo)); ?>" alt="Foto de perfil" class="user-avatar" style="object-fit:cover; border-radius:50%; border:2px solid #fff2; width:40px; height:40px; min-width:40px;">
+                            <?php else: ?>
+                                <div class="user-avatar d-flex align-items-center justify-content-center">
+                                    <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
 
-                            </div>
+                                </div>
+                            <?php endif; ?>
                             <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
                                 <div class="fw-semibold" style="font-size:1rem; line-height:1.1;"><?php echo e(Auth::check() ? Auth::user()->name : 'Usuario'); ?></div>
                                 <small class="text-muted" style="font-size:0.85rem;"><?php echo e(Auth::check() ? Auth::user()->email : 'usuario@example.com'); ?></small>

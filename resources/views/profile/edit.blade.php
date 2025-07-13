@@ -1,13 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Perfil de Usuario')
-
+@section('mensaje-superior')
+            Perfil de Usuario
+        @endsection
 @section('content')
-    <div class="page-title">
-        <h2>Profile</h2>
-    </div>
 
-    <div class="py-4">
+    <div class="py-2">
         <div class="row g-4">
             <div class="col-12">
                 <div class="card shadow-sm">
