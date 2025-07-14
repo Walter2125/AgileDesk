@@ -1,17 +1,15 @@
 @extends('layouts.app')
 
-       @section('title')
-        @section('mensaje-superior')
-        Detalle de la Historia
-        @endsection
+       @section('title','Detalle de Historia')
+         @section('mensaje-superior')
+        <div class="mt-4 text-lg font-semibold text-blue-600">
+            <h1 class="titulo-historia">Detalle de la Historia</h1>
+        </div>
     @endsection
+            
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 
     <div class="container-fluid-m-2 mi-container m-2">
 
@@ -21,15 +19,17 @@
                 </div>
 
                 <script>
-                    setTimeout(function() {
-                        const alert = document.getElementById('success-alert');
-                        if (alert) {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
-                        }
-                    }, 3000);
-                </script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const alert = document.getElementById('success-alert');
+        if (alert) {
+            setTimeout(function() {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }, 3000);
+        }
+    });
+</script>
             @endif
 
  <div class="historia-header">
@@ -139,12 +139,72 @@
                                     </div>
                                 </div>
                             </div>
-
                             
+{{-- Acordeón simple sin Bootstrap JS --}}
+<div class="mt-5">
+    <div class="border rounded">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" type="button">
+            Tareas relacionadas
+        </button>
+        <div class="p-3 contenido-acordeon" style="display: none;">
+            @if($tareas->isEmpty())
+                <div class="alert alert-warning">No hay tareas registradas para esta historia.</div>
+            @else
+                <div class="accordion" id="accordionListaTareas">
+                    @foreach($tareas as $tarea)
+                        <div class="accordion-item mb-3 shadow-sm border rounded">
+                            <button class="accordion-button collapsed w-100 text-start" type="button"
+                                    onclick="toggleTarea(this)">
+                                <input type="checkbox"
+                                       class="form-check-input me-2 tarea-checkbox"
+                                       data-id="{{ $tarea->id }}"
+                                       {{ $tarea->completada ? 'checked' : '' }}
+                                       onclick="event.stopPropagation();">
+                                <span class="fw-bold me-2">{{ $tarea->nombre }}</span>
+                                <span class="badge bg-secondary ms-auto">{{ $tarea->actividad }}</span>
+                            </button>
+                            <div class="contenido-tarea p-3" style="display: none;">
+                                <p><strong>Descripción:</strong> {{ $tarea->descripcion }}</p>
+                                <p><strong>Fecha de creación:</strong> {{ $tarea->created_at->format('d/m/Y H:i') }}</p>
+                                <div class="d-flex justify-content-end gap-2 mt-3">
+                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                        <i class="bi bi-trash3"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-            </div>
+            @endif
+        </div>
     </div>
+</div>
 
+{{-- Script al final del blade o en section scripts --}}
+<script>
+    // Mostrar/ocultar el acordeón principal
+    document.querySelector('.toggle-btn').addEventListener('click', function () {
+        const content = document.querySelector('.contenido-acordeon');
+        content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
+    });
+
+    // Controla que solo una tarea se muestre a la vez
+    function toggleTarea(button) {
+        const allContents = document.querySelectorAll('.contenido-tarea');
+        allContents.forEach(c => c.style.display = 'none');
+
+        const content = button.nextElementSibling;
+        if (content.style.display === 'block') {
+            content.style.display = 'none';
+        } else {
+            content.style.display = 'block';
+        }
+    }
+</script>
+        
 
         <!-- 🔽 NUEVA SECCIÓN: Comentarios Modernizados -->
         <div class="card mt-5 shadow border-0 rounded-4">

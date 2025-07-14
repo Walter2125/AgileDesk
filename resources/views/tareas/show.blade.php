@@ -212,6 +212,68 @@
                     @endforeach
 </div>
 
+{{-- Acordeón principal CORREGIDO Y FUNCIONAL --}}
+            <div class="mt-5">
+                <div class="accordion" id="accordionGeneral">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTareas">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTareas" aria-expanded="false" aria-controls="collapseTareas">
+                                Tareas relacionadas
+                            </button>
+                        </h2>
+                        <div id="collapseTareas" class="accordion-collapse collapse" aria-labelledby="headingTareas" data-bs-parent="#accordionGeneral">
+                            <div class="accordion-body">
+                                @if($tareas->isEmpty())
+                                    <div class="alert alert-warning">No hay tareas registradas para esta historia.</div>
+                                @else
+                                    <div class="accordion" id="accordionTareas">
+                                        @foreach($tareas as $tarea)
+                                            <div class="accordion-item mb-3 shadow-sm border rounded">
+                                                <div class="d-flex align-items-center gap-3 p-2 bg-light">
+                                                    <input type="checkbox"
+                                                           class="form-check-input tarea-checkbox me-2"
+                                                           data-id="{{ $tarea->id }}"
+                                                           {{ $tarea->completada ? 'checked' : '' }}
+                                                           onclick="event.stopPropagation()">
+                                                    <h2 class="accordion-header flex-grow-1 m-0" id="heading{{ $tarea->id }}">
+                                                        <button class="accordion-button collapsed p-1 bg-transparent shadow-none" type="button" 
+                                                                data-bs-toggle="collapse" 
+                                                                data-bs-target="#collapse{{ $tarea->id }}"
+                                                                aria-expanded="false" 
+                                                                aria-controls="collapse{{ $tarea->id }}">
+                                                            <div class="d-flex w-100 align-items-center">
+                                                                <span class="fw-bold">{{ $tarea->nombre }}</span>
+                                                                <span class="badge bg-secondary ms-auto">{{ $tarea->actividad }}</span>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                </div>
+                                                <div id="collapse{{ $tarea->id }}" class="accordion-collapse collapse" 
+                                                     aria-labelledby="heading{{ $tarea->id }}"
+                                                     data-bs-parent="#accordionTareas">
+                                                    <div class="accordion-body pt-2">
+                                                        <p><strong>Descripción:</strong> {{ $tarea->descripcion }}</p>
+                                                        <p><strong>Fecha de creación:</strong> {{ $tarea->created_at->format('d/m/Y H:i') }}</p>
+                                                        <div class="d-flex justify-content-end gap-2 mt-3">
+                                                            <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                                                <i class="bi bi-pencil-square"></i> Editar
+                                                            </a>
+                                                            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                                                <i class="bi bi-trash3"></i> Eliminar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
 <script>
     function actualizarBarraProgreso() {
         const checkboxes = document.querySelectorAll('.tarea-checkbox');
