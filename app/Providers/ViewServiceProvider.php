@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use App\Models\Historia;
+use App\Models\Project;
+use App\Models\Columna;
+use App\Models\Tablero;
+use Illuminate\Support\Facades\Log;
+
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -38,9 +43,13 @@ class ViewServiceProvider extends ServiceProvider
 
             // Si $historia es un ID, lo buscamos como modelo con sus relaciones
             if (is_numeric($historiaParam)) {
-                $historia = Historia::with('columna.tablero')->find($historiaParam);
+                try {
+                    $historia = Historia::with(['columna.tablero.proyecto'])->find($historiaParam);
+                } catch (\Exception $e) {
+                    Log::error('Error cargando historia: ' . $e->getMessage());
+                }
             } elseif ($historiaParam instanceof Historia) {
-                $historia = $historiaParam->load('columna.tablero');
+                $historia = $historiaParam->load('columna.tablero.proyecto');
             }
 
             // Si tenemos historia cargada y su columna tiene tablero
@@ -53,10 +62,26 @@ class ViewServiceProvider extends ServiceProvider
             // Si estamos en la ruta del tablero directamente
             if ($route === 'tableros.show') {
                 $tableroParam = $currentRoute->parameter('tablero');
-                if ($tableroParam instanceof \App\Models\Tablero) {
-                    $tablero = $tableroParam;
+                $projectParam = $currentRoute->parameter('project');
+                
+                if ($tableroParam instanceof Tablero) {
+                    $tablero = $tableroParam->load('proyecto');
                 } elseif (is_numeric($tableroParam)) {
-                    $tablero = \App\Models\Tablero::with('proyecto')->find($tableroParam);
+                    try {
+                        $tablero = Tablero::with('proyecto')->find($tableroParam);
+                    } catch (\Exception $e) {
+                        Log::error('Error cargando tablero: ' . $e->getMessage());
+                    }
+                } elseif ($projectParam) {
+                    // Si no hay tablero pero sí proyecto, buscar por proyecto
+                    $project = is_numeric($projectParam) ? Project::find($projectParam) : $projectParam;
+                    if ($project) {
+                        try {
+                            $tablero = Tablero::with('proyecto')->where('proyecto_id', $project->id)->first();
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando tablero por proyecto: ' . $e->getMessage());
+                        }
+                    }
                 }
 
                 if ($tablero) {
@@ -112,14 +137,18 @@ class ViewServiceProvider extends ServiceProvider
                     $columna = null;
 
                     if (is_numeric($columnaParam)) {
-                        $columna = \App\Models\Columna::with('tablero.proyecto')->find($columnaParam);
-                    } elseif ($columnaParam instanceof \App\Models\Columna) {
+                        try {
+                            $columna = Columna::with('tablero.proyecto')->find($columnaParam);
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando columna: ' . $e->getMessage());
+                        }
+                    } elseif ($columnaParam instanceof Columna) {
                         $columna = $columnaParam->load('tablero.proyecto');
                     }
 
                     $tablero = $columna?->tablero;
 
-                    if (!$tablero) {
+                    if (!$tablero || !$tablero->proyecto) {
                         return [
                             ['label' => 'Inicio', 'url' => route('dashboard')],
                             ['label' => 'Mis proyectos', 'url' => route('projects.my')],
@@ -130,28 +159,47 @@ class ViewServiceProvider extends ServiceProvider
                     return [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto_id])],
+                        ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])],
                         ['label' => 'Nueva historia'],
                     ];
                 },
 
                 'historias.store' => 'historias.index',
                 'historias.show' => function() use ($tablero, $historia) {
-                    return [
+                    $breadcrumbs = [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
-                        ['label' => 'Ver historia'],
                     ];
+
+                    if ($tablero && $tablero->proyecto) {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])];
+                    } else {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> '#'];
+                    }
+
+                    $breadcrumbs[] = ['label' => 'Ver historia'];
+                    return $breadcrumbs;
                 },
                 'historias.edit' => function() use ($tablero, $historia) {
-                    return [
+                    $breadcrumbs = [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
-                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
-                        ['label' => 'Editar historia'],
                     ];
+
+                    if ($tablero && $tablero->proyecto) {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])];
+                    } else {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> '#'];
+                    }
+
+                    if ($historia) {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> route('historias.show',$historia->id)];
+                    } else {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> '#'];
+                    }
+
+                    $breadcrumbs[] = ['label' => 'Editar historia'];
+                    return $breadcrumbs;
                 },
 
                 'historias.update' => 'historias.edit',
@@ -203,42 +251,78 @@ class ViewServiceProvider extends ServiceProvider
                         ];
                     }
 
-                    $project = $currentRoute->parameter('project');
+                    $projectParam = $currentRoute->parameter('project');
                     
                     // Si no hay proyecto, retornar breadcrumb básico
-                    if (!$project) {
+                    if (!$projectParam) {
                         return [
                             ['label' => 'Inicio', 'url' => route('dashboard')],
                             ['label' => 'Backlog']
                         ];
                     }
 
+                    $project = null;
+                    
                     // Cargar la relación tablero si no está cargada
-                    if (is_numeric($project)) {
-                        $project = Project::with('tablero')->find($project);
-                    } elseif (is_object($project) && !$project->relationLoaded('tablero')) {
-                        $project->load('tablero');
+                    if (is_numeric($projectParam)) {
+                        try {
+                            $project = Project::with('tablero')->find($projectParam);
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando proyecto para backlog: ' . $e->getMessage());
+                        }
+                    } elseif (is_object($projectParam)) {
+                        $project = $projectParam;
+                        if (!$project->relationLoaded('tablero')) {
+                            $project->load('tablero');
+                        }
+                    }
+
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                    ];
+
+                    if ($project && $project->tablero) {
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => route('tableros.show', ['project' => $project->id])];
+                    } else {
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => '#'];
+                    }
+
+                    $breadcrumbs[] = ['label' => 'Backlog'];
+                    return $breadcrumbs;
+                },
+                
+                // Tableros y columnas
+                'tableros.show' => function() {
+                    $currentRoute = Route::current();
+                    
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Tablero'],
+                        ];
+                    }
+
+                    $projectParam = $currentRoute->parameter('project');
+                    $project = null;
+
+                    if (is_numeric($projectParam)) {
+                        try {
+                            $project = Project::find($projectParam);
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando proyecto para tablero: ' . $e->getMessage());
+                        }
+                    } elseif (is_object($projectParam)) {
+                        $project = $projectParam;
                     }
 
                     return [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        [
-                            'label' => 'Tablero', 
-                            'url' => $project->tablero 
-                                ? route('tableros.show', ['project' => $project->id]) 
-                                : '#'
-                        ],
-                        ['label' => 'Backlog']
+                        ['label' => 'Tablero' . ($project ? ' - ' . $project->name : '')],
                     ];
                 },
-                
-                // Tableros y columnas
-                'tableros.show'     => [
-                    ['label' => 'Inicio',      'url' => route('dashboard')],
-                    ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                    ['label' => 'Tablero'],
-                ],
                 'columnas.store'     => 'tableros.show',
                 'columnas.update'    => 'tableros.show',
 
@@ -255,58 +339,80 @@ class ViewServiceProvider extends ServiceProvider
 
                 // Tareas
                 'tareas.index' => function() use ($tablero, $historia) {
-                    if (!$tablero || !$historia) {
-                        return [
-                            ['label'=>'Inicio','url'=>route('dashboard')],
-                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                            ['label'=>'Crear tarea'],
-                        ];
-                    }
-
-                    return [
+                    $breadcrumbs = [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
-                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
-                        ['label'=>'Lista de tareas','url'=> $historia ? route('tareas.show',$historia->id) : '#'],
-                        ['label'=>'Crear tarea'],
                     ];
+
+                    if ($tablero && $tablero->proyecto) {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])];
+                    } else {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> '#'];
+                    }
+
+                    if ($historia) {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> route('historias.show',$historia->id)];
+                        $breadcrumbs[] = ['label'=>'Lista de tareas','url'=> route('tareas.show',$historia->id)];
+                    } else {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> '#'];
+                        $breadcrumbs[] = ['label'=>'Lista de tareas','url'=> '#'];
+                    }
+
+                    $breadcrumbs[] = ['label'=>'Crear tarea'];
+                    return $breadcrumbs;
                 },
                 'tareas.store'=> 'tareas.index',
                 'tareas.edit' => function() use ($tablero, $historia) {
-                    if (!$tablero || !$historia) {
-                        return [
-                            ['label'=>'Inicio','url'=>route('dashboard')],
-                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                            ['label'=>'Editar tarea'],
-                        ];
-                    }
-                    return [
+                    $breadcrumbs = [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
-                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
-                        ['label'=>'Lista de tareas','url'=> $historia ? route('tareas.show',$historia->id) : '#'],
-                        ['label'=>'Editar tarea'],
                     ];
+
+                    if ($tablero && $tablero->proyecto) {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])];
+                    } else {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> '#'];
+                    }
+
+                    if ($historia) {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> route('historias.show',$historia->id)];
+                        $breadcrumbs[] = ['label'=>'Lista de tareas','url'=> route('tareas.show',$historia->id)];
+                    } else {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> '#'];
+                        $breadcrumbs[] = ['label'=>'Lista de tareas','url'=> '#'];
+                    }
+
+                    $breadcrumbs[] = ['label'=>'Editar tarea'];
+                    return $breadcrumbs;
                 },
                 'tareas.update'  => 'tareas.edit',
-                'tareas.destroy' => 'tareas.index','tareas.show' => function() use ($tablero, $historia) {
-                    if (!$tablero || !$historia) {
-                        return [
-                            ['label'=>'Inicio','url'=>route('dashboard')],
-                            ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                            ['label'=>'Lista de tareas'],
-                        ];
-                    }
-                    return [
+                'tareas.destroy' => 'tareas.index',
+                'tareas.show' => function() use ($tablero, $historia) {
+                    $breadcrumbs = [
                         ['label'=>'Inicio','url'=>route('dashboard')],
                         ['label'=>'Mis proyectos','url'=>route('projects.my')],
-                        ['label'=> 'Tablero', 'url'=> $tablero ? route('tableros.show', ['project' => $tablero->proyecto_id]) : '#'],
-                        ['label'=>'Historias','url'=> $historia ? route('historias.show',$historia->id) : '#'],
-                        ['label'=>'Lista de tareas'],
                     ];
+
+                    if ($tablero && $tablero->proyecto) {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> route('tableros.show', ['project' => $tablero->proyecto->id])];
+                    } else {
+                        $breadcrumbs[] = ['label'=> 'Tablero', 'url'=> '#'];
+                    }
+
+                    if ($historia) {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> route('historias.show',$historia->id)];
+                    } else {
+                        $breadcrumbs[] = ['label'=>'Historia','url'=> '#'];
+                    }
+
+                    $breadcrumbs[] = ['label'=>'Lista de tareas'];
+                    return $breadcrumbs;
                 },
+
+                // Sprints
+                'sprints.store' => 'tableros.show',
+                'sprints.update' => 'tableros.show',
+                'sprints.destroy' => 'tableros.show',
             ];
 
             // Normalizar atajos de rutas
@@ -321,7 +427,20 @@ class ViewServiceProvider extends ServiceProvider
 
             // Si es una función, evaluarla para obtener las migas de pan
             if ($breadcrumbs instanceof \Closure) {
-                $breadcrumbs = $breadcrumbs();
+                try {
+                    $breadcrumbs = $breadcrumbs();
+                } catch (\Exception $e) {
+                    Log::error('Error generando breadcrumbs para ruta ' . $route . ': ' . $e->getMessage());
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Error en navegación'],
+                    ];
+                }
+            }
+
+            // Asegurar que breadcrumbs sea un array
+            if (!is_array($breadcrumbs)) {
+                $breadcrumbs = [];
             }
 
             // Compartir migas con la vista
