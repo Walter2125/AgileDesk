@@ -536,6 +536,39 @@
                                 @endfor
                             </div>
                         </div>
+                        @if($proyecto_actual && $historial->count())
+<div class="historial-section mt-5">
+    <h3 class="text-center">🕒 Historial de Cambios Recientes</h3>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Acción</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($historial as $item)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($item->fecha)->format('Y-m-d H:i') }}</td>
+                    <td>{{ $item->usuario }}</td>
+                    <td>{{ $item->accion }}</td>
+                    <td>{{ $item->detalles }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a href="{{ route('usuarios.historial', $proyecto_actual->id) }}" class="btn btn-outline-primary">
+            Ver todo el historial
+        </a>
+    </div>
+</div>
+@endif
+
                     </div>
                 @endforeach
             </div>

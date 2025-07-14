@@ -32,4 +32,16 @@ class HistorialCambioController extends Controller
 
         return view('historial.index', compact('historial'));
     }
+    public function porProyecto($id)
+{
+    // Solo mostramos historial del proyecto que le corresponde
+    $historial = HistorialCambio::where('proyecto_id', $id)
+        ->orderBy('fecha', 'desc')
+        ->paginate(10);
+
+    $proyecto = Project::findOrFail($id);
+
+    return view('usuarios.historial', compact('historial', 'proyecto'));
+}
+    
 }

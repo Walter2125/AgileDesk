@@ -103,6 +103,9 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         Route::put('/{comentario}', [ComentarioController::class, 'update'])->name('update');
         Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy');
     });
+    // Historial por proyecto (para usuarios)
+    Route::get('/proyectos/{id}/historial', [HistorialCambioController::class, 'porProyecto'])->name('usuarios.historial');
+
 });
 
 // Panel de administración — solo administradores

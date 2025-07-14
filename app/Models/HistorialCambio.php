@@ -14,7 +14,13 @@ class HistorialCambio extends Model
         'accion',
         'detalles',
         'sprint',
+        'proyecto_id',
     ];
 
     public $timestamps = true;
+
+    public function proyecto()
+{
+    return $this->belongsTo(Project::class, 'proyecto_id');
+}
 }

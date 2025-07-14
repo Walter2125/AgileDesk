@@ -1,10 +1,8 @@
        <?php $__env->startSection('title'); ?>
-         <?php $__env->startSection('mensaje-superior'); ?>
-        <div class="mt-4 text-lg font-semibold text-blue-600">
-            <h1 class="titulo-historia">Detalle de la Historia</h1>
-        </div>
+        <?php $__env->startSection('mensaje-superior'); ?>
+        Detalle de la Historia
+        <?php $__env->stopSection(); ?>
     <?php $__env->stopSection(); ?>
-            <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('accion'); // Columna para el tipo de acción (Creación, Edición, Eliminación)
             $table->text('detalles'); // Columna para detalles sobre el cambio
             $table->unsignedBigInteger('sprint')->nullable();
+            $table->unsignedBigInteger('proyecto_id')->nullable(); // ID del proyecto relacionado
             $table->timestamps();
         });
     }
