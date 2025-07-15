@@ -140,17 +140,19 @@
                                 </div>
                             </div>
                             
-{{-- Acordeón simple sin Bootstrap JS --}}
+{{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
 <div class="mt-5">
-    <div class="border rounded">
-        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" type="button">
+
+    {{-- BOTÓN: TAREAS RELACIONADAS --}}
+    <div class="mb-3 border rounded">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button">
             Tareas relacionadas
         </button>
-        <div class="p-3 contenido-acordeon" style="display: none;">
+        <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
             @if($tareas->isEmpty())
-                <div class="alert alert-warning">No hay tareas registradas para esta historia.</div>
+                <div class="alert alert-warning m-3">No hay tareas registradas para esta historia.</div>
             @else
-                <div class="accordion" id="accordionListaTareas">
+                <div class="accordion m-3" id="accordionListaTareas">
                     @foreach($tareas as $tarea)
                         <div class="accordion-item mb-3 shadow-sm border rounded">
                             <button class="accordion-button collapsed w-100 text-start" type="button"
@@ -179,34 +181,32 @@
                     @endforeach
                 </div>
             @endif
+
+            {{-- Botones finales --}}
+            <div class="ms-3 mb-3">
+                <a href="{{ route('tareas.index', $historia->id) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 text-blue-600 border border-blue-600 rounded-full bg-white hover:bg-blue-100 transition duration-300"
+                   title="Ver tareas">
+                    <span class="text-2xl font-bold">+</span>
+                </a>
+
+                <a href="{{ route('tareas.show', $historia->id) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-100 transition duration-300 ms-2"
+                   title="Ver lista de tareas">
+                    <i class="bi bi-eye text-xl"></i>
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-{{-- Script al final del blade o en section scripts --}}
-<script>
-    // Mostrar/ocultar el acordeón principal
-    document.querySelector('.toggle-btn').addEventListener('click', function () {
-        const content = document.querySelector('.contenido-acordeon');
-        content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
-    });
-
-    // Controla que solo una tarea se muestre a la vez
-    function toggleTarea(button) {
-        const allContents = document.querySelectorAll('.contenido-tarea');
-        allContents.forEach(c => c.style.display = 'none');
-
-        const content = button.nextElementSibling;
-        if (content.style.display === 'block') {
-            content.style.display = 'none';
-        } else {
-            content.style.display = 'block';
-        }
-    }
-</script>
-        
-
-        <!-- 🔽 NUEVA SECCIÓN: Comentarios Modernizados -->
+    {{-- BOTÓN: COMENTARIOS --}}
+    <div class="mb-3 border rounded">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
+            Comentarios
+        </button>
+        <div id="comentarios-acordeon" class="contenido-acordeon" style="display: none;">
+            {{-- Aquí pego todo tu bloque completo de comentarios --}}
+            <!-- 🔽 NUEVA SECCIÓN: Comentarios Modernizados -->
         <div class="card mt-5 shadow border-0 rounded-4">
             <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center px-4 py-3">
                 <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
@@ -494,5 +494,43 @@
         </form>
     </div>
 </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.toggle-btn');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = btn.getAttribute('data-target');
+                const target = document.getElementById(targetId);
+
+                // Cierra todos los acordeones excepto el seleccionado
+                document.querySelectorAll('.contenido-acordeon').forEach(section => {
+                    if (section.id !== targetId) {
+                        section.style.display = 'none';
+                    }
+                });
+
+                // Alternar el visibilidad del actual
+                target.style.display = (target.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+
+        // Manejo de tareas: solo una abierta a la vez
+        window.toggleTarea = function (button) {
+            const allContents = document.querySelectorAll('.contenido-tarea');
+            allContents.forEach(c => c.style.display = 'none');
+
+            const content = button.nextElementSibling;
+            if (content && content.classList.contains('contenido-tarea')) {
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            }
+        };
+    });
+</script>
 
 @endsection
