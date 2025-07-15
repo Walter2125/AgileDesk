@@ -172,7 +172,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return null;
     }
 
-
     /**
      * Display the specified resource.
      */

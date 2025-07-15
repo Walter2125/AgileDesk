@@ -66,6 +66,7 @@
                                 <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
                             </div>
                             <div class="detail-item">
+
                                 <span class="detail-label">Sprint:</span>
                                 <span class="detail-value">{{ $historia->sprint ?->nombre ?? 'No asignado' }}</span>
                             </div>
