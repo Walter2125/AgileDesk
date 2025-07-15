@@ -184,7 +184,9 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $currentProject = $historia->columna->tablero->project
             ?? $historia->proyecto;
 
-        return view('historias.show', compact('historia', 'currentProject'));
+                $tareas = $historia->tareas()->with('user')->get(); // <- AGREGADO
+
+        return view('historias.show', compact('historia', 'currentProject', 'tareas'));
     }
 
 
@@ -406,6 +408,15 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'message' => 'Error al mover la historia: ' . $e->getMessage()
         ], 500);
     }
+}
+
+public function showDetalle(Historia $historia)
+{
+    // Cargar las tareas relacionadas
+    $tareas = $historia->tareas()->with('user')->get();
+
+    // Retornar la vista con las dos variables
+    return view('historias.detalle', compact('historia', 'tareas'));
 }
 
 }

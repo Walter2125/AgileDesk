@@ -112,6 +112,9 @@ body *::after {
 .dark-mode .card,
 .dark-mode .menu,
 .dark-mode .modal-content,
+.dark-mode .modal-container,
+.dark-mode .story-item,
+.dark-mode .accordion-toggle,
 .dark-mode .dropdown-menu,
 .dark-mode .modal-footer{
     background-color: var(--dark-bg-secondary);
@@ -178,7 +181,10 @@ body *::after {
 /* Estilos optimizados para tablas en admin */
 .dark-mode .table,
 .dark-mode .table-bordered,
-.dark-mode .table-striped {
+.dark-mode .table-striped,
+.dark-mode .summary-grid,
+.dark-mode .contributors-ranking,
+.dark-mode .chart-container{
     color: var(--dark-text-primary) !important;
     background-color: var(--dark-bg-secondary) !important;
     border-color: var(--dark-border-primary) !important;
@@ -660,7 +666,9 @@ body *::after {
 .dark-mode .section-title {
     color: var(--dark-text-primary);
 }
-
+.dark-mode .projectSelect {
+    color: var(--dark-text-primary);
+}
 .dark-mode .detail-label {
     color: var(--dark-text-secondary);
 }
@@ -874,4 +882,9 @@ body *::after {
 
 .dark-mode .historia-container-fluid .btn-primary:hover {
     background-color: var(--dark-accent-hover);
+}
+.dark-mode .contributor-stats,
+.dark-mode .contributor-stats .contributor-contributions,
+.dark-mode .contributor-stats .contributor-badge {
+    color: var(--dark-text-primary) !important;
 }

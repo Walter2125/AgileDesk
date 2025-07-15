@@ -212,6 +212,7 @@
                     @endforeach
 </div>
 
+
 <script>
     function actualizarBarraProgreso() {
         const checkboxes = document.querySelectorAll('.tarea-checkbox');

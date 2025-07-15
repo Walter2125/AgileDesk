@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @php
@@ -53,9 +54,6 @@
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
-
-
-
 
 
                 @if($tablero->sprints && $tablero->sprints->count())
@@ -264,7 +262,6 @@
                                     }
                                     console.log('Movimiento exitoso:', data);
                                     // Opcional: Mostrar notificación
-                                    showNotification('success', data.message);
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
@@ -432,7 +429,6 @@
             </div>
         </div>
 
-        <!-- Modal para editar nombre de columna -->
         <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -605,9 +601,6 @@
                 document.getElementById('formEliminarColumna').submit();
             }
         </script>
-
-
-
 
 
 
