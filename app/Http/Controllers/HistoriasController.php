@@ -171,16 +171,15 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return null;
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(Historia $historia)
     {
-        // Cargamos también la relación con el proyecto
+
         $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+
         $currentProject = $historia->columna->tablero->project
             ?? $historia->proyecto;
 
@@ -410,13 +409,4 @@ private function compartirContextoDesdeColumna(Columna $columna)
     }
 }
 
-public function showDetalle(Historia $historia)
-{
-    // Cargar las tareas relacionadas
-    $tareas = $historia->tareas()->with('user')->get();
 
-    // Retornar la vista con las dos variables
-    return view('historias.detalle', compact('historia', 'tareas'));
-}
-
-}

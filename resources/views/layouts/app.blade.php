@@ -12,14 +12,14 @@
             const DARK_MODE_KEY = 'agiledesk-darkMode';
             const html = document.documentElement;
             const body = document.body;
-            
+
             // 1. Añadir clase preload inmediatamente
             html.classList.add('dark-mode-preload');
-            
+
             // 2. Determinar el modo preferido
             let darkMode = false;
             const saved = localStorage.getItem(DARK_MODE_KEY);
-            
+
             if (saved === 'enabled') {
                 darkMode = true;
             } else if (saved === 'disabled') {
@@ -27,7 +27,7 @@
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 darkMode = true;
             }
-            
+
             // 3. Aplicar el modo oscuro ANTES de que se renderice la página
             if (darkMode) {
                 html.classList.add('dark-mode');
@@ -37,7 +37,7 @@
                 // Asegurar que en modo claro el fondo sea claro
                 html.style.backgroundColor = '#f8f9fa';
             }
-            
+
             // 4. Guardar el estado inicial para sincronización
             window.initialDarkModeState = darkMode;
         })();
@@ -431,7 +431,7 @@
             display: none;
         }
     }
-    
+
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -766,13 +766,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-        
+
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -784,7 +784,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-        
+
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1077,7 +1077,7 @@
             font-weight: 600;
         }
     }
-    
+
 /* Ajustes optimizados para alineación perfecta */
 
 .sidebar-heading {
@@ -1129,7 +1129,9 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
+
                 <div class="sidebar-heading text-white d-flex align-items-center justify-content-between"> 
+
                         <span>
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
@@ -1156,6 +1158,12 @@
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
+
+                        <a href="{{ route('sprints.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                            <i class="bi bi-calendar-range"></i>
+                            <span class="sidebar-text">Sprints</span>
+                        </a>
+
                     @endif
 
 
@@ -1245,18 +1253,18 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-        
+
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-        
+
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-        
+
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
@@ -1292,7 +1300,7 @@
                 }
             }
         }
-        
+
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
             const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');

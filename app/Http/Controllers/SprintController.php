@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class SprintController extends Controller
 {
+    public function index($projectId)
+    {
+
+
+        $proyecto = Project::with('sprints')->findOrFail($projectId);
+        return view('users.admin.sprint', compact('proyecto'));
+    }
+
     /**
      * Almacena un nuevo sprint asociado a un proyecto y tablero.
      */
@@ -46,6 +54,29 @@ class SprintController extends Controller
 
         return redirect()->route('tableros.show', $projectId)->with('success', 'Sprint creado correctamente.');
     }
+
+    public function edit(Sprint $sprint)
+    {
+        $currentProject = $sprint->proyecto; // la relación debe estar definida
+        return view('users.admin.edit_sprint', compact('sprint', 'currentProject'));
+    }
+
+
+    public function update(Request $request, Sprint $sprint)
+    {
+        $request->validate([
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after:fecha_inicio',
+        ]);
+
+        $sprint->update([
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_fin' => $request->fecha_fin,
+        ]);
+
+        return redirect()->route('sprints.index', $sprint->proyecto_id)->with('success', 'Sprint actualizado correctamente.');
+    }
+
 
 
     /**

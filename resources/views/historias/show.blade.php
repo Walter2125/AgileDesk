@@ -66,8 +66,9 @@
                                 <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
                             </div>
                             <div class="detail-item">
+
                                 <span class="detail-label">Sprint:</span>
-                                <span class="detail-value">{{ $historia->sprint ?? 'No asignado' }}</span>
+                                <span class="detail-value">{{ $historia->sprint ?->nombre ?? 'No asignado' }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Fecha creación:</span>
@@ -139,6 +140,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             
 {{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
 <div class="mt-5">
@@ -179,6 +181,7 @@
                             </div>
                         </div>
                     @endforeach
+
                 </div>
             @endif
 
@@ -495,6 +498,9 @@
     </div>
 </div>
 
+
+@endsection
+
         </div>
     </div>
 </div>
@@ -534,3 +540,4 @@
 </script>
 
 @endsection
+

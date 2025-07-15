@@ -4,7 +4,6 @@
     Tablero de {{ $project->name }}
 @endsection
 
-
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -23,8 +22,6 @@
     <div class="container-fluid px-3 py-0">
         <div class="container-fluid px-3 py-0">
 
-
-
             @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
@@ -41,8 +38,6 @@
                 </script>
             @endif
 
-
-
             <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
                 <div class="input-group">
@@ -58,10 +53,12 @@
 
                 @if($tablero->sprints && $tablero->sprints->count())
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;">
-                        <option selected disabled>Selecciona un sprint</option>
+                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
+                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
                         @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}">{{ $sprint->nombre }}</option>
+                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                {{ $sprint->nombre }}
+                            </option>
                         @endforeach
                     </select>
                 @endif
@@ -83,7 +80,6 @@
                 </div>
             </div>
 
-
             <div class="w-100 mt-3">
 
                 <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
@@ -93,7 +89,7 @@
 
                         @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
-                                 style="{{ $widthStyle }} min-height: 520px; max-height: 520px;">
+                                 style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
 
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
@@ -174,6 +170,7 @@
                                                 </div>
                                             </div>
 
+                                           {{-- paneles retractiles pata columnas en movil para que se vean una debajo de la otra  -- }}
                                             {{-- Modal Confirmación --}}
                                             <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
                                                  aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
@@ -215,8 +212,6 @@
                         @endforeach
                     </div>
                 </div>
-
-
 
         {{-- Scripts existentes --}}
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -461,19 +456,8 @@
             </div>
         </div>
 
-
-
-
-
         <script>
-            /*setTimeout(function() {
-                const alert = document.getElementById('success-alert');
-                if (alert) {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000);*/
+
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".editable-title").forEach(input => {
@@ -703,8 +687,18 @@
             }
         </script>
 
+                <script>
+                    function seleccionarSprint(select) {
+                        const sprintId = select.value;
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
+                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
+                    }
+                </script>
 
-        <style>
+
+
+                <style>
             .menu-wrapper {
                 position: relative;
                 display: inline-block;
