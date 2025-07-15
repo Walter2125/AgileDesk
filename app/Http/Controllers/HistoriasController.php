@@ -89,13 +89,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
         return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas', 'currentProject'));
 
-
-
     }
-
-
-
-
 
 
     /**

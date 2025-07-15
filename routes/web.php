@@ -137,8 +137,12 @@ Route::middleware(['auth', 'role:admin'])
 
         // Crud de Sprints
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');
-        Route::post('/projects/{project}/tablero/sprints', [SprintController::class, 'store'])->name('sprints.store');// Crear un sprint para el proyecto
-        Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');// Eliminar un sprint (sin necesidad de pasar por tablero)
+        Route::post('/projects/{project}/tablero/sprints', [SprintController::class, 'store'])->name('sprints.store');
+        Route::get('/sprints/{sprint}/edit', [SprintController::class, 'edit'])->name('sprints.edit');
+        Route::put('/sprints/{sprint}', [SprintController::class, 'update'])->name('sprints.update');
+        Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
+
+
 
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');

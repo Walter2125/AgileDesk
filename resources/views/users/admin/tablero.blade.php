@@ -4,7 +4,6 @@
     Tablero de {{ $project->name }}
 @endsection
 
-
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -22,8 +21,6 @@
     <div class="container-fluid px-3 py-0">
         <div class="container-fluid px-3 py-0">
 
-
-
             @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
@@ -39,8 +36,6 @@
                     }, 3000);
                 </script>
             @endif
-
-
 
             <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
@@ -82,7 +77,6 @@
                     </button>
                 </div>
             </div>
-
 
             <div class="w-100 mt-3">
 
@@ -174,6 +168,7 @@
                                                 </div>
                                             </div>
 
+                                           {{-- paneles retractiles pata columnas en movil para que se vean una debajo de la otra  -- }}
                                             {{-- Modal Confirmación --}}
                                             <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
                                                  aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
@@ -215,8 +210,6 @@
                         @endforeach
                     </div>
                 </div>
-
-
 
         {{-- Scripts existentes --}}
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
