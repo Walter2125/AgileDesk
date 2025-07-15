@@ -755,7 +755,6 @@
                 text.textContent = newTheme === 'dark' ? 'Claro' : 'Oscuro';
             }
             
-            showOptimizedNotification(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
         }
 
         // Cerrar todos los dropdowns
