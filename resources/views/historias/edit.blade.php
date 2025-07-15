@@ -9,6 +9,7 @@
 
 <div class="container-fluid mi-container">
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         @if ($errors->any())
         <div class="alert alert-danger mt-2">
@@ -21,8 +22,9 @@
 
         @endif
 
+    <div id="ajax-messages"></div>
 
-    <form action="{{ route('historias.update',$historia->id) }}" method="POST">
+    <form id="editHistoriaForm" action="{{ route('historias.update',$historia->id) }}" method="POST">
         @csrf
         @method('PATCH')
 
@@ -33,7 +35,7 @@
 
 
         <div class="mb-3">
-            <label for="trabajo_estimado" class="form-label">Horas de trabajo estimado*</label>
+            <label for="trabajo_estimado" class="form-label">Horas de trabajo estimadas*</label>
             <input type="number" name="trabajo_estimado" id="trabajo_estimado" class="form-control rounded " min="0" value="{{ $historia->trabajo_estimado }}" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
         </div>
 
@@ -108,5 +110,6 @@
         </div>
     </form>
 </div>
+
 
 @endsection
