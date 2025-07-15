@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="auth-header">
-        <h2>Log in</h2>
+        <label for="name">Log in</label>
         <div class="auth-header-links">
             <a href="{{ route('login') }}" class="active">Login</a>
             <a href="{{ route('register') }}">Registro</a>

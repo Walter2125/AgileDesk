@@ -191,6 +191,10 @@
                 color: white;
             }
 
+            .auth-header label {
+                color: rgba(255, 255, 255, 0.7);
+            }
+            
             .auth-form label {
                 display: block;
                 text-transform: uppercase;
