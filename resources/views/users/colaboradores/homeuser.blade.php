@@ -1024,13 +1024,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para crear el avatar del usuario
     function createUserAvatar(user, size = 80) {
-        if (user.photo) {
-            return `<img src="${user.photo}" alt="${user.name}" style="width:${size}px;height:${size}px;border-radius:50%;border:3px solid var(--github-border);">`;
-        }
-        return `<div class="contributor-avatar-placeholder" style="width:${size}px;height:${size}px;font-size:${size/2.5}rem;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--github-green);color:white;font-weight:700;">
+    const baseStyle = `
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        border: 3px solid var(--github-border);
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--github-green);
+        color: white;
+        font-weight: 700;
+        font-size: ${size/2.5}px;
+        overflow: hidden;
+    `;
+    
+    if (user.photo) {
+        return `
+            <div style="${baseStyle}">
+                <img src="${user.photo}" 
+                     alt="${user.name}" 
+                     style="width:100%; height:100%; object-fit:cover;">
+            </div>`;
+    }
+    
+    return `
+        <div style="${baseStyle}">
             ${user.name.charAt(0).toUpperCase()}
         </div>`;
-    }
+}
     
     // Función para crear el contenido de tareas con acordeón
     function createTasksAccordion(story) {
