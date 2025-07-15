@@ -53,6 +53,9 @@ Route::post('/historias/{id}/mover', [HistoriasController::class, 'mover'])->nam
 // Rutas para usuarios autenticados y aprobados
 Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/homeuser', [UserController::class, 'index'])->name('homeuser');
+    Route::get('/homeuser/project/{projectId}', [UserController::class, 'index'])->name('homeuser.project');
+    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
