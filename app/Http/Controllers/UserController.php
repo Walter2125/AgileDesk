@@ -8,9 +8,6 @@ use App\Models\Historia;
 use App\Models\Columna;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
-use App\Models\HistorialCambio;
-use App\Models\Tarea;
-
 
 class UserController extends Controller
 {
@@ -78,108 +75,107 @@ class UserController extends Controller
                 'total_contribuciones_proyecto' => 0
             ]);
         }
-    }
 
-    if ($projectId) {
-        session(['selected_project_id' => $projectId]);
-    }
+        // Calcular estadísticas
+        $estadisticas = $usuarios->map(function($usuario) use ($projectId) {
+            $historiasValidas = $usuario->historias
+                ->where('proyecto_id', $projectId)
+                ->where('columna', '!=', null)
+                ->unique('id');
 
-    if (!$projectId) {
+            $porColumna = [
+                'Pendiente' => 0,
+                'En progreso' => 0,
+                'Listo' => 0,
+            ];
+
+            foreach ($historiasValidas as $historia) {
+                $nombreColumna = $historia->columna->nombre;
+                if (isset($porColumna[$nombreColumna])) {
+                    $porColumna[$nombreColumna]++;
+                }
+            }
+
+            $totalTareas = $historiasValidas->sum(fn($h) => $h->tareas->count());
+
+            return [
+                'usuario' => $usuario,
+                'total_historias' => $historiasValidas->count(),
+                'total_tareas' => $totalTareas,
+                'total_contribuciones' => $historiasValidas->count() + $totalTareas,
+                'pendientes' => $porColumna['Pendiente'],
+                'progreso' => $porColumna['En progreso'],
+                'listo' => $porColumna['Listo'],
+            ];
+        });
+
+        // Preparar datos para el modal
+        $userContributions = [];
+        foreach ($usuarios as $usuario) {
+            $historiasValidas = $usuario->historias
+                ->where('proyecto_id', $projectId)
+                ->where('columna', '!=', null)
+                ->unique('id');
+
+            $userContributions[$usuario->id] = [
+                'user' => [
+                    'id' => $usuario->id,
+                    'name' => $usuario->name,
+                    'email' => $usuario->email,
+                    'photo' => $usuario->photo ? asset('storage/'.$usuario->photo) : null
+                ],
+                'stories' => $historiasValidas->map(function($historia) {
+                    return [
+                        'id' => $historia->id,
+                        'nombre' => $historia->nombre,
+                        'descripcion' => $historia->descripcion,
+                        'columna' => [
+                            'id' => $historia->columna->id,
+                            'nombre' => $historia->columna->nombre
+                        ],
+                        'tareas' => $historia->tareas->map(function($tarea) {
+                            // Verificar si la tarea tiene usuario asignado
+                            $tareaData = [
+                                'id' => $tarea->id,
+                                'nombre' => $tarea->nombre,
+                                'completada' => $tarea->completada,
+                                'user' => null // Por defecto null
+                            ];
+                            
+                            // Solo agregar datos del usuario si existe
+                            if ($tarea->user) {
+                                $tareaData['user'] = [
+                                    'id' => $tarea->user->id,
+                                    'name' => $tarea->user->name,
+                                    'photo' => $tarea->user->photo ? asset('storage/'.$tarea->user->photo) : null
+                                ];
+                            }
+                            
+                            return $tareaData;
+                        })
+                    ];
+                })
+            ];
+        }
+
+        // Calcular totales del proyecto
+        $totalHistoriasProyecto = $estadisticas->sum('total_historias');
+        $totalTareasProyecto = $estadisticas->sum('total_tareas');
+        $totalListo = $estadisticas->sum('listo');
+        $totalProgreso = $estadisticas->sum('progreso');
+        $totalPendientes = $estadisticas->sum('pendientes');
+
         return view('users.colaboradores.homeuser', [
-            'estadisticas' => collect(),
-            'proyectos_usuario' => Auth::check() ? Auth::user()->projects : collect(),
-            'proyecto_actual' => null,
-            'historial' => collect(), // 👈 importante
-        ]);
-    }
-
-    $project = Project::with('users')->find($projectId);
-
-    if (!$project) {
-        return view('users.colaboradores.homeuser', [
-            'estadisticas' => collect(),
-            'proyectos_usuario' => Auth::check() ? Auth::user()->projects : collect(),
-            'proyecto_actual' => null,
-            'historial' => collect(), // 👈 importante
-        ]);
-    }
-
-    $usuarios = $project->users->where('usertype', '!=', 'admin');
-
-    if (!Auth::check() || !$usuarios->pluck('id')->contains(Auth::id())) {
-        return view('users.colaboradores.homeuser', [
-            'estadisticas' => collect(),
+            'estadisticas' => $estadisticas,
             'proyectos_usuario' => Auth::user()->projects,
             'proyecto_actual' => $project,
-            'historial' => collect(), // 👈 importante
+            'user_contributions' => $userContributions,
+            'total_historias_proyecto' => $totalHistoriasProyecto,
+            'total_tareas_proyecto' => $totalTareasProyecto,
+            'total_listo' => $totalListo,
+            'total_progreso' => $totalProgreso,
+            'total_pendientes' => $totalPendientes,
+            'total_contribuciones_proyecto' => $totalHistoriasProyecto + $totalTareasProyecto
         ]);
     }
-
-    $usuarios = $usuarios->load(['historias' => function($q) use ($projectId) {
-        $q->where('proyecto_id', $projectId)->with('columna');
-    }]);
-
-    $estadisticas = $usuarios->map(function($usuario) {
-        $total = $usuario->historias->count();
-        $porColumna = [
-            'Pendiente' => 0,
-            'En progreso' => 0,
-            'Listo' => 0,
-        ];
-        foreach ($usuario->historias as $historia) {
-            $columna = $historia->columna ? $historia->columna->nombre : null;
-            if ($columna && isset($porColumna[$columna])) {
-                $porColumna[$columna]++;
-            }
-        }
-        return [
-            'usuario' => $usuario,
-            'total' => $total,
-            'pendientes' => $porColumna['Pendiente'],
-            'progreso' => $porColumna['En progreso'],
-            'listo' => $porColumna['Listo'],
-            'total_contribuciones' => $total,
-        ];
-    });
-
-    // ✅ CARGAMOS EL HISTORIAL SOLO SI HAY PROYECTO
-    $historial = HistorialCambio::where('proyecto_id', $project->id)
-        ->orderBy('fecha', 'desc')
-        ->take(10)
-        ->get();
-
-    $total_historias_proyecto = Historia::where('proyecto_id', $projectId)->count();
-    $total_contribuciones_proyecto = Historia::where('proyecto_id', $projectId)->count();
-    $total_tareas_proyecto = Tarea::where('proyecto_id', $projectId)->count();
-
-
-    $total_listo = Historia::where('proyecto_id', $projectId)
-    ->whereHas('columna', function ($q) {
-        $q->where('nombre', 'Listo');
-    })->count();
-
-    $total_progreso = Historia::where('proyecto_id', $projectId)
-    ->whereHas('columna', function ($q) {
-        $q->where('nombre', 'En progreso');
-    })->count();
-
-    $total_pendientes = Historia::where('proyecto_id', $projectId)
-    ->whereHas('columna', function ($q) {
-        $q->where('nombre', 'Pendiente');
-    })->count();
-
-
-    return view('users.colaboradores.homeuser', [
-        'estadisticas' => $estadisticas,
-        'proyectos_usuario' => Auth::user()->projects,
-        'proyecto_actual' => $project,
-        'total_historias_proyecto' => $total_historias_proyecto,
-        'total_listo' => $total_listo,
-        'total_progreso' => $total_progreso,
-        'total_pendientes' => $total_pendientes,
-        'total_tareas_proyecto' => $total_tareas_proyecto,
-        'total_contribuciones_proyecto' => $total_contribuciones_proyecto,
-        'historial' => $historial
-    ]);
-}
 }
