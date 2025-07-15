@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
-
+use App\Models\HistorialCambio;
 
 
 class HistoriasController extends Controller
@@ -69,9 +69,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
         $columnas = collect(); // columnas también
         $currentProject = $proyecto;
 
-
-
-
         if ($request->has('proyecto')) {
             $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
 
@@ -89,78 +86,74 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
         return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas', 'currentProject'));
 
-
-
     }
-
-
-
-
 
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request -> validate([
-            'nombre' => ['required','string','min:3','max:100',
-                Rule::unique('historias')->where(function ($query) use ($request) {
-                    return $query->where('proyecto_id', $request->proyecto_id);
-                }),
-            ],
-            'trabajo_estimado' => 'nullable|integer|min:0',
-            'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:5000',
-             'proyecto_id' => 'required|exists:nuevo_proyecto,id',
-            'columna_id' => 'nullable|exists:columnas,id',
-
-            'tablero_id' => 'exists:tableros,id',
-               'usuario_id' => 'nullable|exists:users,id',
-            'sprint_id' => 'nullable|exists:sprints,id',
-
+{
+    $request->validate([
+        'nombre' => [
+            'required', 'string', 'min:3', 'max:100',
+            Rule::unique('historias')->where(function ($query) use ($request) {
+                return $query->where('proyecto_id', $request->proyecto_id);
+            }),
         ],
-[   'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
-             'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+        'trabajo_estimado' => 'nullable|integer|min:0',
+        'prioridad' => 'required|in:Alta,Media,Baja',
+        'descripcion' => 'nullable|string|max:5000',
+        'proyecto_id' => 'required|exists:nuevo_proyecto,id',
+        'columna_id' => 'nullable|exists:columnas,id',
+        'tablero_id' => 'exists:tableros,id',
+        'usuario_id' => 'nullable|exists:users,id',
+        'sprint_id' => 'nullable|exists:sprints,id',
+    ], [
+        'nombre.required' => 'El nombre es obligatorio.',
+        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+        'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+        'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+        'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+        'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+        'prioridad.required' => 'Debe seleccionar una prioridad.',
+        'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+    ]);
 
-            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
-            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+    $columna = null;
+    if ($request->columna_id) {
+        $columna = Columna::with('tablero')->findOrFail($request->columna_id);
+    }
 
-            'prioridad.required' => 'Debe seleccionar una prioridad.',
-            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+    $historia = new Historia();
+    $historia->nombre = $request->nombre;
+    $historia->trabajo_estimado = $request->trabajo_estimado;
+    $historia->prioridad = $request->prioridad;
+    $historia->descripcion = $request->descripcion;
+    $historia->proyecto_id = $request->proyecto_id;
+    $historia->columna_id = $request->columna_id;
+    $historia->tablero_id = $request->tablero_id;
+    $historia->usuario_id = $request->usuario_id;
+    $historia->sprint_id = $request->sprint_id;
 
+    // Solución: Generar un código único
+    $historia->codigo = 'H-' . uniqid();
 
+    $historia->save();
 
-        ]);
-
-
-
-        // Verificar si se proporciona una columna válida
-        $columna = null;
-        if ($request->columna_id) {
-            $columna = Columna::with('tablero')->findOrFail($request->columna_id);
-        }
-
-        $historia = new Historia();
-        $historia->nombre = $request->nombre;
-        $historia->trabajo_estimado = $request->trabajo_estimado;
-        $historia->prioridad = $request->prioridad;
-        $historia->descripcion = $request->descripcion;
-        $historia->proyecto_id = $request->proyecto_id;
-        $historia->columna_id = $request->columna_id;
-
-        $historia->tablero_id = $request->tablero_id;
-       $historia->usuario_id = $request->usuario_id;
-        $historia->sprint_id = $request->sprint_id;
-
-        $historia->save();
-
+    HistorialCambio::create([
+        'fecha' => now(),
+        'usuario' => auth()->user()->name,
+        'accion' => 'Creación de Historia',
+        'detalles' => 'Historia "' . $historia->nombre . '" creada',
+        'sprint' => $historia->sprint_id,
+        'proyecto_id' => $historia->proyecto_id
+    ]);
 
     return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
                      ->with('success', 'Historia creada con éxito');
-    }
+}
+
 
     protected function obtenerProjectIdDeOtraForma(Historia $historia)
     {
@@ -228,54 +221,124 @@ private function compartirContextoDesdeColumna(Columna $columna)
      * Update the specified resource in storage.
      */
     public function update(Request $request, Historia $historia)
-    {
-        $request->validate([
-            'nombre' => [ 'required','string','min:3','max:255',
-                    Rule::unique('historias')
-                        ->where(function ($query) use ($request) {
-                            return $query->where('proyecto_id', $request->proyecto_id);
-                        })
-                        ->ignore($historia->id),
-                ],
-            'trabajo_estimado' => 'nullable|integer|min:0',
-            'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:5000',
-            'usuario_id' => 'nullable|exists:users,id',
-            'sprint_id' => 'nullable|exists:sprints,id',
-            'columna_id' => 'nullable|exists:columnas,id',
-        ], [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
-            'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
-            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
-            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
-            'prioridad.required' => 'Debe seleccionar una prioridad.',
-            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
-            'columna_id.exists' => 'La columna seleccionada no existe.',
-        ]);
+{
+    // Guardar valores antiguos para el historial
+    $valoresAntiguos = [
+        'nombre' => $historia->nombre,
+        'trabajo_estimado' => $historia->trabajo_estimado,
+        'prioridad' => $historia->prioridad,
+        'descripcion' => $historia->descripcion,
+        'usuario_id' => $historia->usuario_id,
+        'sprint_id' => $historia->sprint_id,
+        'columna_id' => $historia->columna_id
+    ];
 
-        $historia->update([
+    $request->validate([
+        'nombre' => ['required','string','min:3','max:255',
+            Rule::unique('historias')
+                ->where(function ($query) use ($request) {
+                    return $query->where('proyecto_id', $request->proyecto_id);
+                })
+                ->ignore($historia->id),
+        ],
+        'trabajo_estimado' => 'nullable|integer|min:0',
+        'prioridad' => 'required|in:Alta,Media,Baja',
+        'descripcion' => 'nullable|string|max:5000',
+        'usuario_id' => 'nullable|exists:users,id',
+        'sprint_id' => 'nullable|exists:sprints,id',
+        'columna_id' => 'nullable|exists:columnas,id',
+    ], [
+        // ... (mensajes de validación existentes)
+    ]);
+
+    // Actualizar la historia
+    $historia->update([
+        'nombre' => $request->nombre,
+        'trabajo_estimado' => $request->trabajo_estimado,
+        'prioridad' => $request->prioridad,
+        'descripcion' => $request->descripcion,
+        'usuario_id' => $request->usuario_id,
+        'sprint_id' => $request->sprint_id,
+        'columna_id' => $request->columna_id,
+    ]);
+
+    // Obtener nombres de usuarios y columnas para el historial
+    $usuarioAntiguo = $valoresAntiguos['usuario_id'] ? User::find($valoresAntiguos['usuario_id'])->name : 'Sin asignar';
+    $usuarioNuevo = $request->usuario_id ? User::find($request->usuario_id)->name : 'Sin asignar';
+    $columnaAntigua = Columna::find($valoresAntiguos['columna_id'])->nombre;
+    $columnaNueva = Columna::find($request->columna_id)->nombre;
+
+    // Registrar en el historial
+    HistorialCambio::create([
+        'fecha' => now(),
+        'usuario' => auth()->user()->name,
+        'accion' => 'Edición de Historia',
+        'detalles' => $this->generarDetallesCambios([
+            'nombre' => $valoresAntiguos['nombre'],
+            'trabajo_estimado' => $valoresAntiguos['trabajo_estimado'],
+            'prioridad' => $valoresAntiguos['prioridad'],
+            'usuario' => $usuarioAntiguo,
+            'columna' => $columnaAntigua
+        ], [
             'nombre' => $request->nombre,
             'trabajo_estimado' => $request->trabajo_estimado,
             'prioridad' => $request->prioridad,
-            'descripcion' => $request->descripcion,
-            'usuario_id' => $request->usuario_id,
-            'sprint_id' => $request->sprint_id,
-            'columna_id' => $request->columna_id, // ← TAMBIÉN FALTABA ESTO
-        ]);
+            'usuario' => $usuarioNuevo,
+            'columna' => $columnaNueva
+        ]),
+        'sprint' => $historia->sprint_id,
+        'proyecto_id' => $historia->proyecto_id
+    ]);
 
-        return redirect()->route('historias.show', $historia->id)
-            ->with('success', 'Historia editada con éxito');
+    return redirect()->route('historias.show', $historia->id)
+        ->with('success', 'Historia editada con éxito');
+}
+    private function generarDetallesCambios($antes, $despues)
+{
+    $cambios = [];
+    
+    if ($antes['nombre'] != $despues['nombre']) {
+        $cambios[] = sprintf('Nombre: "%s" → "%s"', $antes['nombre'], $despues['nombre']);
     }
+    
+    if ($antes['trabajo_estimado'] != $despues['trabajo_estimado']) {
+        $cambios[] = sprintf('Trabajo estimado: %d → %d', 
+            $antes['trabajo_estimado'] ?? 0, 
+            $despues['trabajo_estimado'] ?? 0);
+    }
+    
+    if ($antes['prioridad'] != $despues['prioridad']) {
+        $cambios[] = sprintf('Prioridad: %s → %s', $antes['prioridad'], $despues['prioridad']);
+    }
+    
+    if ($antes['usuario'] != $despues['usuario']) {
+        $cambios[] = sprintf('Asignado: %s → %s', $antes['usuario'], $despues['usuario']);
+    }
+    
+    if ($antes['columna'] != $despues['columna']) {
+        $cambios[] = sprintf('Columna: %s → %s', $antes['columna'], $despues['columna']);
+    }
+    
+    return $cambios ? implode(', ', $cambios) : 'Sin cambios detectados';
+}
 
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
    public function destroy(Historia $historia)
         {
+            HistorialCambio::create([
+                'fecha' => now(),
+                'usuario' => auth()->user()->name,
+                'accion' => 'Eliminación de Historia',
+                'detalles' => sprintf(
+                'Historia "%s" (ID: %d) eliminada por %s',
+            $historia->nombre,
+            $historia->id,
+            auth()->user()->name
+            ),
+                'sprint' => $historia->sprint_id,
+                'proyecto_id' => $historia->proyecto_id
+            ]);
+
             $proyectoId = $historia->proyecto_id; // Guardas el ID antes de eliminar
 
             $historia->delete(); // Eliminas la historia
@@ -303,6 +366,21 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 'message' => 'No puedes mover historias entre tableros diferentes'
             ], 403);
         }
+
+        // Registrar en el historial antes de mover
+        HistorialCambio::create([
+            'fecha' => now(),
+            'usuario' => auth()->user()->name,
+            'accion' => 'Movimiento de Historia',
+            'detalles' => sprintf(
+                'Historia "%s" movida de %s a %s',
+                $historia->nombre,
+                $columnaOrigen->nombre,
+                $columnaDestino->nombre
+            ),
+            'sprint' => $historia->sprint_id,
+            'proyecto_id' => $historia->proyecto_id
+        ]);
 
         // Actualizar y guardar
         $historia->columna_id = $validated['columna_id'];

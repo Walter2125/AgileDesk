@@ -108,6 +108,18 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         Route::put('/{comentario}', [ComentarioController::class, 'update'])->name('update');
         Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy');
     });
+    // Historial por proyecto (para usuarios)
+    Route::get('/colaboradores/proyectos/{project}/historial', 
+        [HistorialCambioController::class, 'porProyecto'])
+        ->name('users.colaboradores.historial')
+        ->where('project', '[0-9]+');
+
+    // Ruta correcta para cambiar el color
+    Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])
+        ->name('projects.cambiarColor');
+
+
+
 });
 
 // Panel de administración — solo administradores
@@ -139,6 +151,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
+        Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
+
 
         // Crud de Sprints
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');

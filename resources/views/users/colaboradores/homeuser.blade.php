@@ -845,34 +845,38 @@
 @stop
 
 @section('content')
-<div class="main-container">
-    <h1 style="font-size:2.2rem;font-weight:700;margin-bottom:0.7rem;letter-spacing:0.5px;">Agile Desk</h1>
-    
-    @auth
-        @if(isset($proyecto_actual))
-            <!-- Selector de proyecto -->
-            <div class="project-selector">
-                <h1>Proyecto:</h1>
-                <select id="projectSelect" onchange="window.location.href = this.value">
-                    @forelse($proyectos_usuario as $project)
-                        <option value="{{ route('homeuser.project', $project->id) }}" 
-                            @selected($proyecto_actual && $project->id == $proyecto_actual->id)>
-                            {{ $project->name }} ({{ $project->codigo }})
-                        </option>
-                    @empty
-                        <option value="">No hay proyectos disponibles</option>
-                    @endforelse
-                </select>
-            </div>
-            
-            <h2 class="current-project-title">
-                <svg viewBox="0 0 16 16" fill="currentColor">
-                    <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/>
-                </svg>
-                {{ $proyecto_actual->name }}
-            </h2>
-            
-            @if($estadisticas->count())
+    <div class="main-container">
+        <h1 style="font-size:2.2rem;font-weight:700;margin-bottom:0.7rem;letter-spacing:0.5px;">Agile Desk</h1>
+        @auth
+@endauth
+        
+        @auth
+            @if(isset($proyecto_actual))
+                <!-- Selector de proyecto -->
+                <div class="project-selector">
+                    <label for="projectSelect">Proyecto:</label>
+                    <select id="projectSelect" onchange="window.location.href = '/homeuser/' + this.value">
+                        @foreach($proyectos_usuario as $project)
+                            <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
+                                {{ $project->name }} ({{ $project->codigo }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <!-- Botón de historial -->
+                    <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
+                       class="btn btn-outline-primary me-2">
+                         Ver Historial de Cambios
+                    </a>
+                </div>
+                
+                <h2 class="current-project-title">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"/>
+                    </svg>
+                    {{ $proyecto_actual->name }}
+                </h2>
+                
+                @if($estadisticas->count())
                 <div class="">
                     <h3 class="github-stats-title">
                         <svg class="stats-icon" viewBox="0 0 16 16">

@@ -1,9 +1,9 @@
-@extends('layouts.app') 
-@section('mensaje-superior')
+ 
+<?php $__env->startSection('mensaje-superior'); ?>
     Proyectos
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -241,80 +241,85 @@ h1.page-title {
 }
 
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container projects-container">
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
+            <?php echo e(session('success')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    {{-- Proyectos más recientes --}}
+    
     <h1 class="page-title">
         Proyectos más recientes
-        @if (auth()->check() && auth()->user()->usertype == 'admin')
-            <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
+        <?php if(auth()->check() && auth()->user()->usertype == 'admin'): ?>
+            <a href="<?php echo e(route('projects.create')); ?>" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
-        @endif
+        <?php endif; ?>
     </h1>
     <div class="row">
-        @forelse($recentProjects as $project)
-            @include('projects.project-card', ['project' => $project])
-        @empty
+        <?php $__empty_1 = true; $__currentLoopData = $recentProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php echo $__env->make('projects.project-card', ['project' => $project], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <p class="text-muted">No hay proyectos recientes aún.</p>
-        @endforelse
+        <?php endif; ?>
     </div>
     
 
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">
-    @forelse($allProjects as $project)
+    <?php $__empty_1 = true; $__currentLoopData = $allProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
         <div class="mb-3 p-3 border rounded shadow-sm bg-white">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="mb-1 text-blanck">{{ $project->name }}</h5>
+                    <h5 class="mb-1 text-blanck"><?php echo e($project->name); ?></h5>
                     <small class="text-muted">
-                        {{ $project->created_at->format('d/m/Y') }}
-                        @if($project->category)
-                            | {{ $project->category->name }}
-                        @endif
+                        <?php echo e($project->created_at->format('d/m/Y')); ?>
+
+                        <?php if($project->category): ?>
+                            | <?php echo e($project->category->name); ?>
+
+                        <?php endif; ?>
                     </small>
                 </div>
                 <div class="action-buttons">
-                    <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                    <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
                         <i class="fas fa-eye"></i>
                     </a>
-                    @if (auth()->check() && auth()->user()->usertype == 'admin')
-                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                    <?php if(auth()->check() && auth()->user()->usertype == 'admin'): ?>
+                        <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
+                        <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
-            @if($project->descripcion)
-                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ $project->id }}">
+            <?php if($project->descripcion): ?>
+                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-<?php echo e($project->id); ?>">
                     Mostrar descripción
                 </button>
-                <div class="collapse mt-2" id="desc-{{ $project->id }}">
-                    <p class="mb-0 text-muted">{{ $project->descripcion }}</p>
+                <div class="collapse mt-2" id="desc-<?php echo e($project->id); ?>">
+                    <p class="mb-0 text-muted"><?php echo e($project->descripcion); ?></p>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
-    @empty
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
         <p class="text-muted">No hay proyectos para mostrar.</p>
-    @endforelse
+    <?php endif; ?>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/myprojects.blade.php ENDPATH**/ ?>
