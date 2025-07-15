@@ -123,36 +123,18 @@
         .btn-group {
             gap: 8px; /* Separación entre botones */
         }
-        
+
+        /* Quitar el borde entre los botones del grupo para que se vean como btn-info independientes */
         .btn-group .btn {
-            border-radius: 0 !important; /* Eliminar bordes redondeados */
-            margin-right: 0 !important; /* Eliminar margen derecho predeterminado */
-        }
-        
-        /* Eliminar el borde entre botones en los grupos */
-        .btn-group > .btn:not(:first-child),
-        .btn-group > .btn-group:not(:first-child) {
-            margin-left: 0;
-            border-left: none;
-        }
-        
-        /* Estilos específicos para los botones de acciones */
-        .action-buttons .btn {
-            border-radius: 0 !important;
-            margin: 0 4px;
+            border-radius: 6px !important;
+            margin-right: 0;
+            border: none !important;
+            box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
         }
 
-        /* Badges sin bordes redondeados */
-        .badge {
-            border-radius: 0 !important;
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 600;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            display: inline-block;
+        .btn-group .btn:focus, .btn-group .btn:active {
+            outline: none;
+            box-shadow: 0 0 0 0.15rem rgba(74,144,226,0.25);
         }
     </style>
 <?php $__env->stopSection(); ?>
@@ -165,10 +147,10 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Usuarios</span>
                     <div class="btn-group" role="group">
-                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-outline-primary">
+                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-info">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="<?php echo e(route('admin.deleted-users')); ?>" class="btn btn-sm btn-outline-danger">
+                        <a href="<?php echo e(route('admin.deleted-users')); ?>" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
                     </div>
@@ -212,7 +194,6 @@
                                             <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-info">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            
                                             <?php if($usuario->usertype !== 'admin'): ?>
                                                 <?php if($usuario->trashed()): ?>
                                                     <!-- Botón para restaurar usuario -->
@@ -258,7 +239,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Proyectos</span>
-                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-sm btn-outline-primary">
+                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-sm btn-info">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -306,7 +287,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Historial de Cambios</span>
-                    <a href="<?php echo e(route('historial.index')); ?>" class="btn btn-sm btn-outline-primary">
+                    <a href="<?php echo e(route('historial.index')); ?>" class="btn btn-sm btn-info">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
@@ -370,7 +351,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Sprints</span>
-                    <a href="#" class="btn btn-sm btn-outline-primary">
+                    <a href="#" class="btn btn-sm btn-info">
                         <i class="bi bi-flag"></i> Ver Todos
                     </a>
                 </div>

@@ -36,7 +36,6 @@
             } else {
                 // Asegurar que en modo claro el fondo sea claro
                 html.style.backgroundColor = '#f8f9fa';
-                body.style.backgroundColor = '#f8f9fa';
             }
             
             // 4. Guardar el estado inicial para sincronización
@@ -1136,7 +1135,7 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between py-3 px-4"> 
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between"> 
                         <span>
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
@@ -1494,7 +1493,7 @@
 
     <!-- Scripts adicionales de las secciones -->
     <?php echo $__env->yieldContent('scripts'); ?>
-    <script src="bootstrap.bundle.min.js"></script>
+    <!-- <script src="bootstrap.bundle.min.js"></script> -->
     <script src="<?php echo e(asset('js/dark-mode.js')); ?>"></script>
 
 </body>

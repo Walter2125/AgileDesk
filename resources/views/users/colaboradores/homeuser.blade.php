@@ -870,6 +870,8 @@
 @section('content')
     <div class="main-container">
         <h1 style="font-size:2.2rem;font-weight:700;margin-bottom:0.7rem;letter-spacing:0.5px;">Agile Desk</h1>
+        @auth
+@endauth
         
         @auth
             @if(isset($proyecto_actual))
@@ -883,6 +885,11 @@
                             </option>
                         @endforeach
                     </select>
+                    <!-- Botón de historial -->
+                    <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
+                       class="btn btn-outline-primary me-2">
+                         Ver Historial de Cambios
+                    </a>
                 </div>
                 
                 <h2 class="current-project-title">
@@ -1028,39 +1035,6 @@
                         <div class="chart-wrapper">
                             <canvas id="contributionsChart"></canvas>
                         </div>
-                        @if($proyecto_actual && $historial->count())
-<div class="historial-section mt-5">
-    <h3 class="text-center">🕒 Historial de Cambios Recientes</h3>
-
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Usuario</th>
-                <th>Acción</th>
-                <th>Detalles</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($historial as $item)
-                <tr>
-                    <td>{{ \Carbon\Carbon::parse($item->fecha)->format('Y-m-d H:i') }}</td>
-                    <td>{{ $item->usuario }}</td>
-                    <td>{{ $item->accion }}</td>
-                    <td>{{ $item->detalles }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <div class="text-center mt-3">
-        <a href="{{ route('usuarios.historial', $proyecto_actual->id) }}" class="btn btn-outline-primary">
-            Ver todo el historial
-        </a>
-    </div>
-</div>
-@endif
-
                     </div>
                 </div>
                 @endif

@@ -203,7 +203,11 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="user-avatar me-3"><?php echo e(strtoupper(substr($user->name, 0, 1))); ?></div>
+                                                    <?php if($user->photo): ?>
+                                                        <img src="<?php echo e(asset('storage/' . $user->photo)); ?>" alt="Foto de perfil" class="user-avatar me-3" style="object-fit:cover; border-radius:50%; width:40px; height:40px; min-width:40px;">
+                                                    <?php else: ?>
+                                                        <div class="user-avatar me-3"><?php echo e(strtoupper(substr($user->name, 0, 1))); ?></div>
+                                                    <?php endif; ?>
                                                     <div>
                                                         <div class="fw-medium"><?php echo e($user->name); ?></div>
                                                         <small class="text-muted"><?php echo e($user->email); ?></small>

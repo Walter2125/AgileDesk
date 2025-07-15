@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HistorialCambio;
 use Illuminate\Http\Request;
+use App\Models\Project; 
 
 class HistorialCambioController extends Controller
 {
@@ -32,16 +33,22 @@ class HistorialCambioController extends Controller
 
         return view('historial.index', compact('historial'));
     }
-    public function porProyecto($id)
+    
+    public function porProyecto(Project $project)
 {
-    // Solo mostramos historial del proyecto que le corresponde
-    $historial = HistorialCambio::where('proyecto_id', $id)
+    // Verificar que el usuario pertenece al proyecto
+    if (!auth()->user()->projects->contains($project->id)) {
+        abort(403, 'No tienes acceso a este proyecto');
+    }
+
+    $historial = HistorialCambio::where('proyecto_id', $project->id)
         ->orderBy('fecha', 'desc')
         ->paginate(10);
 
-    $proyecto = Project::findOrFail($id);
-
-    return view('usuarios.historial', compact('historial', 'proyecto'));
+    return view('users.colaboradores.historial', [
+        'historial' => $historial,
+        'project' => $project
+    ]);
 }
     
 }

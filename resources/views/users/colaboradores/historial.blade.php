@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Historial de Cambios del Proyecto: <strong>{{ $proyecto->nombre }}</strong></h2>
+    <h2>Historial de Cambios del Proyecto: <strong>{{ $project->nombre }}</strong></h2>
 
     <table class="table table-bordered mt-4">
         <thead>

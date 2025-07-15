@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -27,77 +28,80 @@ class ProjectController extends Controller
         return view('projects.create', compact('users', 'selectedUsers'));
     }
 
-
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => [
-        'required',
-        'unique:nuevo_proyecto,name',
-        'max:30',
-        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
-    ],
-            'codigo' => [
-        'required',
-        'string',
-        'max:6',
-        'unique:nuevo_proyecto,codigo',
-        'regex:/^[a-zA-Z0-9]+$/'
-    ],
-    'descripcion' => [
-        'nullable',
-        'string',
-        'max:255',
-        'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,;:()\-]+$/'
-    ],
-            'fecha_inicio' => 'required|date',
-            'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
-            'selected_users' => 'required|array|min:1',
+{
+    $request->validate([
+        'name' => [
+            'required',
+            'unique:nuevo_proyecto,name',
+            'max:30',
+            'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
+        ],
+        'codigo' => [
+            'required',
+            'string',
+            'max:6',
+            'unique:nuevo_proyecto,codigo',
+            'regex:/^[a-zA-Z0-9]+$/'
+        ],
+        'descripcion' => [
+            'nullable',
+            'string',
+            'max:255',
+            'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,;:()\-]+$/'
+        ],
+        'fecha_inicio' => 'required|date',
+        'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
+        'selected_users' => 'required|array|min:1',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        // Crear el proyecto
+        $project = Project::create([
+            'name' => $request->name,
+            'codigo' => $request->codigo,
+            'descripcion' => $request->descripcion,
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_fin' => $request->fecha_fin,
+            'user_id' => Auth::id(),
         ]);
 
-        try {
-            DB::beginTransaction();
-
-            $project = Project::create([
-                'name' => $request->name,
-                'codigo' => $request->codigo,
-                'descripcion'  => $request->descripcion,
-                'fecha_inicio' => $request->fecha_inicio,
-                'fecha_fin'    => $request->fecha_fin,
-                'user_id'      => Auth::id(),
-            ]);
-
-
-            $project->users()->sync(array_unique(array_merge(
-                [Auth::id()],
+        // Asociar usuarios (incluyendo al creador)
+        $project->users()->sync(array_unique(array_merge(
+            [Auth::id()],
             $request->input('selected_users', [])
-            )));
+        )));
 
-            $tablero = Tablero::create([
-                'proyecto_id' => $project->id,
-            ]);
+        // Crear tablero y columnas iniciales
+        $tablero = Tablero::create([
+            'proyecto_id' => $project->id,
+        ]);
 
-            $tablero->columnas()->create([
+        $tablero->columnas()->createMany([
+            [
                 'nombre' => 'Pendiente',
                 'posicion' => 1,
                 'es_backlog' => true,
-            ]);
-
-            $tablero->columnas()->create([
+            ],
+            [
                 'nombre' => 'Backlog',
-                'posicion' => 1,
+                'posicion' => 2,
                 'es_backlog' => true,
-            ]);
+            ]
+        ]);
 
-            DB::commit();
+        DB::commit();
 
-            return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
-        }
+        return redirect()->route('projects.my')->with('success', 'Proyecto creado exitosamente.');
 
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
     }
+}
+ 
 
     public function searchUsers(Request $request)
     {
@@ -287,16 +291,24 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    
-    // En tu controlador, añade un debug temporal
-public function cambiarColor(Request $request, $id)
+    public function cambiarColor(Request $request, $id)
 {
+    Log::info("Entró a cambiarColor para proyecto $id", ['color' => $request->input('color')]);
+    // o puedes hacer:
+    // dd($request->all());
+
     $project = Project::findOrFail($id);
-    $project->color = $request->input('color');
+
+    $color = $request->input('color') ?? json_decode($request->getContent(), true)['color'] ?? '#ffffff';
+
+    $project->color = $color;
     $project->save();
-    
-    \Log::info('Color actualizado', ['project_id' => $id, 'color' => $project->color]);
-    
-    return redirect()->route('projects.my')->with('success', 'Color actualizado correctamente.');
+
+    return response()->json([
+        'success' => true,
+        'color' => $color
+    ]);
 }
+
+
 }

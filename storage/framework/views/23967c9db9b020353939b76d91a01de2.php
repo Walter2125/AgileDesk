@@ -54,7 +54,7 @@
         .navbar-optimized .container-fluid {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: stretch;
             padding: 0 1rem;
             width: 100%;
             margin: 0 auto;
@@ -63,7 +63,7 @@
         /* Botones optimizados - Base */
         .navbar-optimized .btn-optimized {
             position: relative;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
@@ -79,6 +79,7 @@
             user-select: none;
             white-space: nowrap;
             min-height: 38px;
+            height: 100%;
         }
 
         .navbar-optimized .btn-optimized:focus {
@@ -127,6 +128,8 @@
             border: 1px solid var(--border-color);
             color: var(--dark-color);
             position: relative;
+            height: 100%;
+            overflow: visible; /* Asegura que el badge nunca se corte */
         }
 
         .navbar-optimized .btn-scale-toggle:hover {
@@ -156,11 +159,18 @@
             font-size: 0.65rem;
             padding: 0.2rem 0.4rem;
             border-radius: 50px;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            pointer-events: none;
         }
 
-        .navbar-optimized .btn-scale-toggle.active .badge {
-            background: white;
-            color: var(--primary-color);
+        @media (max-width: 575.98px) {
+          .navbar-optimized .btn-scale-toggle .badge {
+            right: -4px;
+            top: -4px;
+            font-size: 0.7rem;
+            padding: 0.18rem 0.32rem;
+          }
         }
 
         /* Botón dark mode - Mejorado */
@@ -170,6 +180,7 @@
             color: white;
             position: relative;
             overflow: hidden;
+            height: 100%;
         }
 
         .navbar-optimized .btn-theme-toggle::before {
@@ -446,12 +457,14 @@
         .navbar-optimized .fs-4 {
             font-size: 1.25rem;
         }
-            .navbar-optimized .btn-scale-toggle {
-            overflow: visible; /* ← para permitir que el badge sobresalga */
-            padding-top: 0.75rem; /* ← o aumentá si querés más separación */
+        .navbar-optimized .btn-scale-toggle {
+            overflow: visible;
+            padding-top: 1rem; /* Mayor espacio para que el badge no se corte */
+            position: relative; /* Asegura el posicionamiento del badge */
         }
+
         .navbar-optimized .btn-scale-toggle .badge {
-            top: -4px;
+            top: -2px;
         }
 
     </style>
@@ -499,7 +512,7 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
+            <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end h-100" style="min-height:0;">
                 
         <div class="dropdown-optimized">
             <button class="btn-optimized btn-scale-toggle" 
