@@ -55,9 +55,6 @@
                 </div>
 
 
-
-
-
                 @if($tablero->sprints && $tablero->sprints->count())
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
                             style="min-width: 200px; max-width: 240px;">
@@ -264,7 +261,6 @@
                                     }
                                     console.log('Movimiento exitoso:', data);
                                     // Opcional: Mostrar notificación
-                                    showNotification('success', data.message);
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
@@ -432,7 +428,6 @@
             </div>
         </div>
 
-        <!-- Modal para editar nombre de columna -->
         <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -605,9 +600,6 @@
                 document.getElementById('formEliminarColumna').submit();
             }
         </script>
-
-
-
 
 
 
