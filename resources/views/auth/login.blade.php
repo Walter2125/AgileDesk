@@ -19,7 +19,7 @@
         <!-- Email Address -->
         <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="Sólo correos electrónicos @unah.hn" />
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="Sólo correos electrónicos @unah.hn" maxlength="50"/>
             @error('email')
                 <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
             @enderror
@@ -29,7 +29,7 @@
         <div class="form-group">
             <label for="password">Contraseña</label>
             <div class="password-container" style="position: relative;">
-                <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+                <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" maxlength="50" />
                 <i class="fa-regular fa-eye toggle-password"></i>
             </div>
             @error('password')

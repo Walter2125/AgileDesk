@@ -55,9 +55,6 @@
                 </div>
 
 
-
-
-
                 @if($tablero->sprints && $tablero->sprints->count())
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
                             style="min-width: 200px; max-width: 240px;">
@@ -605,12 +602,6 @@
                 document.getElementById('formEliminarColumna').submit();
             }
         </script>
-
-
-
-
-
-
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');

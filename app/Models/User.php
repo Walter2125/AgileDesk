@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    // Agregar campo photo a los fillable
     use HasFactory, Notifiable, SoftDeletes;
 
     
@@ -27,6 +28,7 @@ class User extends Authenticatable
         'usertype',    // nuevo campo para rol
         'is_approved', // nuevo campo para aprobación
         'is_rejected', // Asegúrate de incluir este campo
+        'photo',
     ];
 
     /**
@@ -67,7 +69,13 @@ class User extends Authenticatable
         return $this->usertype === 'admin';
     }
 
-    
+    /**
+     * Relación: un usuario tiene muchas historias (por usuario_id)
+     */
+    public function historias()
+    {
+        return $this->hasMany(\App\Models\Historia::class, 'usuario_id');
+    }
 
   public function projects()
 {

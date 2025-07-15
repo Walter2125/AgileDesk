@@ -1,14 +1,17 @@
-@extends('layouts.app')
-     @section('mensaje-superior')
-        Proyectos
-    @endsection
+@extends('layouts.app') 
+@section('mensaje-superior')
+    Proyectos
+@endsection
+
 @section('styles')
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-    /* Project Card Styling */
     .projects-container {
         margin-top: 2rem;
     }
-    
+
     .project-card {
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
@@ -20,20 +23,19 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .project-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
     }
-    
+
     .project-card .card-body {
         padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
-    
-    /* Project Header  */
+
     .project-header {
         display: flex;
         justify-content: space-between;
@@ -41,12 +43,12 @@
         margin-bottom: 0.8rem;
         width: 100%;
     }
-    
+
     .project-title-wrapper {
         flex: 1;
         text-align: left;
     }
-    
+
     .project-title {
         color: #2c3e50;
         font-weight: 700;
@@ -58,27 +60,26 @@
         justify-content: flex-start;
         width: 100%;
     }
-    
+
     .project-title i {
         color: #3498db;
         font-size: 1.1rem;
         flex-shrink: 0;
     }
-    
+
     .project-code {
         font-size: 0.82rem;
         color: #6c757d;
         text-align: left;
     }
-    
-    /* Project Dates */
+
     .date-info {
-    display: flex;
-    justify-content: space-between; 
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    color: #5d6778;
-    font-size: 0.82rem;
+        display: flex;
+        justify-content: space-between; 
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        color: #5d6778;
+        font-size: 0.82rem;
     }
 
     .date-block {
@@ -90,13 +91,12 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .date-block i {
         color: #6c757d;
         font-size: 0.75rem;
     }
-    
-    /* Project Description */
+
     .project-description {
         margin: 0.5rem 0;
         font-size: 0.92rem;
@@ -105,67 +105,67 @@
         text-align: left;
         line-height: 1.5;
     }
-    
-    /* Action Buttons */
+
     .action-buttons {
         display: flex;
         gap: 0.6rem;
         margin-top: 1.2rem;
     }
-    
+
     .action-buttons .btn {
         flex: 1;
         min-width: 0;
         border-radius: 50px;
-        padding: 0.5rem;
-        font-size: 0.82rem;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         transition: all 0.2s ease;
-        font-weight: 500;
+        font-weight: 600;
         white-space: nowrap;
-        height: 38px; /* Altura fija */
+        height: 40px;
+        text-align: center;
     }
-    
+
     .btn-view {
         background-color: #00bcd4;
         border-color: #00bcd4;
         color: white;
     }
-    
+
     .btn-edit {
         background-color: #ffc107;
         border-color: #ffc107;
         color: #212529;
     }
-    
+
     .btn-delete {
         background-color: #dc3545;
         border-color: #dc3545;
         color: white;
     }
-    
-    /* Asegurar que el formulario no afecte el tamaño del botón */
+
     .action-buttons form {
         flex: 1;
         display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    
+
     .action-buttons form .btn {
         width: 100%;
     }
-    
+
     .btn-view:hover, .btn-edit:hover, .btn-delete:hover {
         transform: translateY(-2px);
     }
-    
-    /* Dropdown Options */
+
     .dropdown-card-options {
         margin-left: auto;
     }
-    
+
     .dropdown-card-options .dropdown-toggle {
         padding: 0.2rem 0.5rem;
         font-size: 0.9rem;
@@ -173,51 +173,73 @@
         background: transparent;
         border: none;
     }
-    
-    /* Resto de estilos */
-    .create-project-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        border: 2px dashed #adb5bd;
-        text-align: center;
-        padding: 2.5rem 1.5rem;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    
+
     .page-title {
-        color: #2c3e50;
-        font-weight: 800;
-        margin-bottom: 2rem;
-        font-size: 2.2rem;
-        border-left: 5px solid #3498db;
-        padding-left: 1rem;
-    }
+    color: #2c3e50;
+    font-weight: 800;
     
-    /* Responsive */
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    
+}
+
+.page-title::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    margin-top: 0.6rem;
+    background: linear-gradient(to right,rgb(6, 95, 164),rgb(35, 181, 200));
+    border-radius: 2px;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    z-index: 0;
+}
+
+.page-title a {
+    margin-left: 1rem;
+    z-index: 1;
+}
+
+
     @media (max-width: 767.98px) {
         .date-info {
             flex-direction: column;
             gap: 0.5rem;
         }
-        
+
         .action-buttons {
             flex-direction: column;
         }
-        
+
         .action-buttons .btn {
             width: 100%;
         }
-        
+
         .project-code {
             margin-left: 0;
         }
     }
+
+ .page-title {
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+.page-title::before {
+    content: none !important;
+    display: none !important;
+}
+
+h1.page-title {
+    border-bottom: none !important;
+    outline: none !important;
+}
+
 </style>
 @endsection
 
@@ -231,161 +253,31 @@
         </div>
     @endif
 
-    @if (auth()->user()->usertype == 'admin')
-        <div class="row mb-5">
-            <div class="col-md-4 mb-4">
-                <div class="create-project-card">
-                    <p class="card-text">Comienza un nuevo proyecto colaborativo</p>
-                    <a href="{{ route('projects.create') }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
-                        <i class="fas fa-plus mr-2"></i> Crear Proyecto
-                    </a>
-                </div>
-            </div>
-        </div>
-    @endif
+    {{-- Proyectos más recientes --}}
+    <h1 class="page-title">
+        Proyectos más recientes
+        @if (auth()->check() && auth()->user()->usertype == 'admin')
+            <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
+                <i class="fas fa-plus fa-lg text-primary"></i>
+            </a>
+        @endif
+    </h1>
+    <div class="row">
+        @forelse($recentProjects as $project)
+            @include('projects.project-card', ['project' => $project])
+        @empty
+            <p class="text-muted">No hay proyectos recientes aún.</p>
+        @endforelse
+    </div>
 
-    <h1 class="page-title">Proyectos más recientes</h1>
-
-    @if(count($projects) > 0)
-        <div class="row">
-            @foreach($projects as $project)
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="project-card card h-100">
-                        <div class="card-body">
-                            <div class="project-header">
-                                <div class="project-title-wrapper">
-                                    <h3 class="project-title">
-                                        <i class="fas fa-project-diagram"></i> 
-                                        <span>{{ $project->name }}</span>
-                                    </h3>
-                                    <div class="project-code">
-                                        <strong>Código:</strong> {{ $project->codigo }}
-                                    </div>
-                                </div>
-
-                                <div class="dropdown-card-options dropdown">
-                                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton{{ $project->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
-                                        <li>
-                                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalIntegrantes{{ $project->id }}">
-                                                Ver integrantes
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="date-info">
-                                <div class="date-block">
-                                    <i class="fas fa-calendar-alt"></i> 
-                                    <span>{{ $project->fecha_inicio }}</span>
-                                </div>
-                                <div class="date-block">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>{{ $project->fecha_fin }}</span>
-                                </div>
-                            </div>
-
-                            <div class=" mb-4 project-description">
-                                {{ Str::limit($project->descripcion, 100) }}
-                            </div>
-
-                            <div class="mt-4">
-                                <a href="{{ route('tableros.show', $project->id) }}" class="inline-block bg-indigo-400 border border-indigo-300 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-indigo-600 mr-3 normal-case">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                               
-                                @if(auth()->id() === $project->user_id)
-                                    <a href="{{ route('projects.edit', $project->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    
-                                <button type="button" class="inline-block bg-red-500 border border-red-400 rounded-full font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-700 mr-3 normal-case" data-bs-toggle="modal" data-bs-target="#deleteProjectModal{{ $project->id }}">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <div class="modal fade" id="deleteProjectModal{{ $project->id }}" tabindex="-1" aria-labelledby="deleteProjectModalLabel{{ $project->id }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content rounded-4 shadow">
-                                <div class="modal-header border-bottom-0">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                </div>
-
-                                <div class="modal-body text-center">
-                                    <div class="mb-4">
-                                        <h5 class="modal-title text-danger" id="deleteProjectModalLabel{{ $project->id }}">Confirmar Eliminación</h5>
-                                        <h5 class="modal-title text-danger">¿Deseas eliminar este proyecto?</h5>
-
-                                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-
-                                        <div class="alert alert-danger d-flex align-items-center mt-3">
-                                            <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                            <div>
-                                                El proyecto <strong>"{{ $project->name }}"</strong> será eliminado permanentemente.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                <!-- Modal de Integrantes -->
-                <div class="modal fade" id="modalIntegrantes{{ $project->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $project->id }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel{{ $project->id }}">Integrantes del proyecto: {{ $project->name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                @if($project->users && $project->users->count() > 0)
-                                    <ul class="list-group">
-                                        @foreach($project->users as $user)
-                                            <li class="list-group-item">
-                                                <strong>{{ $user->name }}</strong> <br>
-                                                <small>{{ $user->email }}</small>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @else
-                                    <p>No hay integrantes registrados en este proyecto.</p>
-                                @endif
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case" data-bs-dismiss="modal">Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    @else
-        <div class="empty-state">
-            <i class="fas fa-folder-open"></i>
-            <h3>No hay proyectos disponibles</h3>
-            <p>Cuando se creen nuevos proyectos, aparecerán aquí.</p>
-            @if (auth()->user()->usertype == 'admin')
-                <a href="{{ route('projects.create') }}" class="btn btn-primary">
-                    Crear Proyecto
-                </a>
-            @endif
-        </div>
-    @endif
+    {{-- Todos los proyectos --}}
+    <h2 class="page-title mt-5">Todos los proyectos</h2>
+    <div class="row">
+        @forelse($allProjects as $project)
+            @include('projects.project-card', ['project' => $project])
+        @empty
+            <p class="text-muted">No hay proyectos para mostrar.</p>
+        @endforelse
+    </div>
 </div>
 @endsection

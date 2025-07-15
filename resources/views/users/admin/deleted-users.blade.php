@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" style="padding: 1rem;">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">                    
                     <h4 class="mb-0">
-                        <i class="bi bi-trash3 me-2"></i>
                         Usuarios Eliminados
                     </h4>                    
                     <a href="{{ route('homeadmin') }}" class="btn btn-secondary">
@@ -38,11 +37,11 @@
                             <table class="table table-hover align-middle">
                                 <thead class="table-dark">                                    
                                     <tr>                                        
-                                        <th><i class="bi bi-person me-1"></i> Usuario</th>
-                                        <th><i class="bi bi-envelope me-1"></i> Email</th>
-                                        <th><i class="bi bi-tag me-1"></i> Rol</th>
-                                        <th><i class="bi bi-calendar me-1"></i> Eliminado En</th>
-                                        <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                        <th>Usuario</th>
+                                        <th>Email</th>
+                                        <th>Rol</th>
+                                        <th>Eliminado En</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -51,9 +50,13 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar-sm me-3">
-                                                        <div class="avatar-title bg-danger rounded-circle">
-                                                            {{ strtoupper(substr($user->name, 0, 2)) }}
-                                                        </div>
+                                                        @if ($user->photo)
+                                                            <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto de perfil" class="rounded-circle" style="width: 2.5rem; height: 2.5rem; object-fit: cover; border: 2px solid #dc3545;">
+                                                        @else
+                                                            <div class="avatar-title bg-danger rounded-circle">
+                                                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0 text-muted">{{ $user->name }}</h6>
@@ -149,7 +152,7 @@
                     <small class="text-muted">El usuario volverá a estar activo en el sistema.</small>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-end gap-2">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x me-1"></i>
                     Cancelar
@@ -191,7 +194,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-end gap-2">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x me-1"></i>
                     Cancelar
@@ -201,7 +204,7 @@
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3 me-1"></i>
-                        Sí, Eliminar Permanentemente
+                        Eliminar Permanentemente
                     </button>
                 </form>
             </div>

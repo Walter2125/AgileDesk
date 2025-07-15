@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
-
     public function create(Request $request)
     {
         $users = User::where('usertype', '!=', 'admin')
@@ -32,7 +31,8 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:nuevo_proyecto,name|max:50',
+            'name' => 'required|unique:nuevo_proyecto,name|max:30',
+            'codigo' => 'required|string|max:10|unique:nuevo_proyecto,codigo',
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
@@ -42,13 +42,9 @@ class ProjectController extends Controller
         try {
             DB::beginTransaction();
 
-            // Generar código único de 5 caracteres
-            $codigo = Project::generarCodigo(5);
-
-            // Crear proyecto
             $project = Project::create([
                 'name' => $request->name,
-                'codigo' => $codigo,
+                'codigo' => $request->codigo,
                 'descripcion'  => $request->descripcion,
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin'    => $request->fecha_fin,
@@ -61,21 +57,15 @@ class ProjectController extends Controller
             $request->input('selected_users', [])
             )));
 
-            //creacion de proyecto
             $tablero = Tablero::create([
                 'proyecto_id' => $project->id,
             ]);
 
-            // Crear columna Backlog vinculada al tablero
             $tablero->columnas()->create([
                 'nombre' => 'Pendiente',
                 'posicion' => 1,
                 'es_backlog' => true,
             ]);
-
-            $tablero = Tablero::create([
-            'proyecto_id' => $project->id,
-           ]);
 
             $tablero->columnas()->create([
                 'nombre' => 'Backlog',
@@ -115,12 +105,27 @@ class ProjectController extends Controller
         return view('projects.create', compact('nuevo_proyecto'));
     }
 
-    public function myProjects()
-    {
-        $user = Auth::user();
-        $projects = $user->projects->sortByDesc('created_at');
-        return view('projects.myprojects', compact('projects'));
-    }
+   public function myProjects()
+{
+    $user = Auth::user();
+
+    $projects = $user->projects()->with(['tareas', 'historias', 'sprints'])->get();
+
+    $sorted = $projects->sortByDesc(function ($project) {
+        return max([
+            optional($project->tareas->max('updated_at')),
+            optional($project->historias->max('updated_at')),
+            optional($project->sprints->max('updated_at')),
+            $project->updated_at,
+        ]);
+    });
+
+    $recentProjects = $sorted->take(3);
+    $allProjects = $sorted;
+
+    return view('projects.myprojects', compact('recentProjects', 'allProjects'));
+}
+
 
 
     public function edit($id)
@@ -146,45 +151,41 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validación de datos
+        $project = Project::findOrFail($id);
+
         $request->validate([
             'name' => 'required|max:30|unique:nuevo_proyecto,name,' . $id,
+            'codigo' => 'required|max:10|unique:nuevo_proyecto,codigo,' . $project->id,
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'users' => 'required|array|min:1', 
-            'users.*' => 'exists:users,id', // Aseguramos que todos los usuarios seleccionados existen
+            'users.*' => 'exists:users,id', 
         ]);
 
-        // Buscar el proyecto a actualizar
-        $project = Project::findOrFail($id);
-
-        // Verificar si el usuario logueado es el propietario del proyecto
+        
         if (Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        // Actualizar el proyecto
+        
         $project->update([
             'name' => $request->name,
+            'codigo' => $request->codigo,
             'descripcion' => $request->descripcion,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
 
-        // Agregar el creador del proyecto a la lista de usuarios, si no está ya en la lista
         $users = $request->users;
         if (!in_array($project->user_id, $users)) {
-            $users[] = $project->user_id; // Aseguramos que el creador siempre esté incluido
+            $users[] = $project->user_id; 
         }
 
-        // Sincronizar los usuarios asignados al proyecto, asegurando que el creador siempre esté incluido
         $project->users()->sync($users);
 
         return redirect()->route('projects.my')->with('success', 'Proyecto actualizado exitosamente.');
     }
-
-
 
     public function removeUser($projectId, $userId)
     {
@@ -235,7 +236,7 @@ class ProjectController extends Controller
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
-            ->withPath(route('projects.listUsers')); // <--- Esto es clave
+            ->withPath(route('projects.listUsers')); 
 
         $selectedUsers = $request->input('selected_users', []);
 

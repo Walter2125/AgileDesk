@@ -190,10 +190,10 @@
                                         <th class="w-1 text-center">
                                             <input class="form-check-input" type="checkbox" id="selectAll">
                                         </th>
-                                        <th><i class="bi bi-person me-1"></i> Usuario</th>
-                                        <th><i class="bi bi-calendar me-1"></i> Fecha de registro</th>
-                                        <th><i class="bi bi-clipboard-check-fill me-1"></i> Estado</th>
-                                        <th class="text-end"><i class="bi bi-gear me-1"></i> Acciones</th>
+                                        <th>Usuario</th>
+                                        <th>Fecha de registro</th>
+                                        <th>Estado</th>
+                                        <th class="text-end">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -204,7 +204,11 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="user-avatar me-3">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                                                    @if ($user->photo)
+                                                        <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto de perfil" class="user-avatar me-3" style="object-fit:cover; border-radius:50%; width:40px; height:40px; min-width:40px;">
+                                                    @else
+                                                        <div class="user-avatar me-3">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                                                    @endif
                                                     <div>
                                                         <div class="fw-medium">{{ $user->name }}</div>
                                                         <small class="text-muted">{{ $user->email }}</small>

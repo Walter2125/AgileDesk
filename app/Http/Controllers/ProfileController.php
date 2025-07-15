@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -27,7 +28,20 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = Auth::user();
-        $user->fill($request->validated());
+        $data = $request->validated();
+
+        // Manejar la subida de la foto de perfil
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $path = $photo->store('profile-photos', 'public');
+            // Eliminar foto anterior si existe y es diferente
+            if ($user->photo && $user->photo !== $path && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $data['photo'] = $path;
+        }
+
+        $user->fill($data);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;

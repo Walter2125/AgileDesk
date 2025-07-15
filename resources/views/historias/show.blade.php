@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-       @section('title')
+       @section('title','Detalle de Historia')
          @section('mensaje-superior')
         <div class="mt-4 text-lg font-semibold text-blue-300">
             <h1 class="titulo-historia">Detalle de la Historia</h1>
         </div>
     @endsection
-            @endsection
+            
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
@@ -16,19 +16,25 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
   @if (session('success'))
+
+    <div class="container-fluid-m-2 mi-container m-2">
+
+            @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
                 </div>
 
                 <script>
-                    setTimeout(function() {
+                    document.addEventListener("DOMContentLoaded", function () {
                         const alert = document.getElementById('success-alert');
                         if (alert) {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
+                            setTimeout(function() {
+                                alert.style.transition = "opacity 0.5s ease";
+                                alert.style.opacity = 0;
+                                setTimeout(() => alert.remove(), 500);
+                            }, 3000);
                         }
-                    }, 3000);
+                    });
                 </script>
             @endif
 
@@ -145,9 +151,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            
-                
             
 
 
@@ -160,6 +163,135 @@
                         <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
                         <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
                             <i class="bi bi-chat-left-text me-1"></i> Comentar
+{{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
+<div class="mt-5">
+
+    {{-- BOTÓN: TAREAS RELACIONADAS --}}
+    <div class="mb-3 border rounded">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button">
+            Tareas relacionadas
+        </button>
+        <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
+            @if($tareas->isEmpty())
+                <div class="alert alert-warning m-3">No hay tareas registradas para esta historia.</div>
+            @else
+                <div class="accordion m-3" id="accordionListaTareas">
+                    @foreach($tareas as $tarea)
+                        <div class="accordion-item mb-3 shadow-sm border rounded">
+                            <button class="accordion-button collapsed w-100 text-start" type="button"
+                                    onclick="toggleTarea(this)">
+                                <input type="checkbox"
+                                       class="form-check-input me-2 tarea-checkbox"
+                                       data-id="{{ $tarea->id }}"
+                                       {{ $tarea->completada ? 'checked' : '' }}
+                                       onclick="event.stopPropagation();">
+                                <span class="fw-bold me-2">{{ $tarea->nombre }}</span>
+                                <span class="badge bg-secondary ms-auto">{{ $tarea->actividad }}</span>
+                            </button>
+                            <div class="contenido-tarea p-3" style="display: none;">
+                                <p><strong>Descripción:</strong> {{ $tarea->descripcion }}</p>
+                                <p><strong>Fecha de creación:</strong> {{ $tarea->created_at->format('d/m/Y H:i') }}</p>
+                                <div class="d-flex justify-content-end gap-2 mt-3">
+                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                        <i class="bi bi-trash3"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+            {{-- Botones finales --}}
+            <div class="ms-3 mb-3">
+                <a href="{{ route('tareas.index', $historia->id) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 text-blue-600 border border-blue-600 rounded-full bg-white hover:bg-blue-100 transition duration-300"
+                   title="Ver tareas">
+                    <span class="text-2xl font-bold">+</span>
+                </a>
+
+                <a href="{{ route('tareas.show', $historia->id) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-100 transition duration-300 ms-2"
+                   title="Ver lista de tareas">
+                    <i class="bi bi-eye text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{-- BOTÓN: COMENTARIOS --}}
+    <div class="mb-3 border rounded">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
+            Comentarios
+        </button>
+        <div id="comentarios-acordeon" class="contenido-acordeon" style="display: none;">
+            {{-- Aquí pego todo tu bloque completo de comentarios --}}
+            <!-- 🔽 NUEVA SECCIÓN: Comentarios Modernizados -->
+        <div class="card mt-5 shadow border-0 rounded-4">
+            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center px-4 py-3">
+                <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
+                <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
+                    <i class="bi bi-chat-left-text me-1"></i> Comentar
+                </button>
+            </div>
+
+            <div class="card-body bg-light p-4">
+                @if($historia->comentarios->count())
+                @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
+                    <div class="border rounded-4 p-4 mb-4 bg-white shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong class="text-dark fs-6">{{ optional($comentario->user)->name ?? 'Usuario eliminado' }}</strong>
+                                <small class="text-muted ms-2">{{ $comentario->created_at->diffForHumans() }}</small>
+                            </div>
+                            @if(Auth::id() === $comentario->user_id)
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
+                                        <i class="bi bi-pencil-square fs-5"></i>
+                                    </button>
+                                    <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" onsubmit="return confirm('¿Deseas eliminar este comentario?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
+                                            <i class="bi bi-trash fs-5"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                            <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1" aria-labelledby="modalLabelComentario{{ $comentario->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content rounded-4 shadow">
+                                        <div class="modal-header border-bottom-0">
+                                            <h5 class="modal-title text-danger" id="modalLabelComentario{{ $comentario->id }}">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                            <p class="mt-3">¿Estás seguro de que deseas eliminar este comentario?</p>
+                                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
+
+                        <button class="btn btn-sm btn-outline-info" onclick="document.getElementById('responderComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
+                            <i class="bi bi-reply-fill me-1"></i> Responder
+>>>>>>> main
                         </button>
                     </div>
 
@@ -446,5 +578,43 @@
 </div> 
 </div>
 </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.toggle-btn');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = btn.getAttribute('data-target');
+                const target = document.getElementById(targetId);
+
+                // Cierra todos los acordeones excepto el seleccionado
+                document.querySelectorAll('.contenido-acordeon').forEach(section => {
+                    if (section.id !== targetId) {
+                        section.style.display = 'none';
+                    }
+                });
+
+                // Alternar el visibilidad del actual
+                target.style.display = (target.style.display === 'block') ? 'none' : 'block';
+            });
+        });
+
+        // Manejo de tareas: solo una abierta a la vez
+        window.toggleTarea = function (button) {
+            const allContents = document.querySelectorAll('.contenido-tarea');
+            allContents.forEach(c => c.style.display = 'none');
+
+            const content = button.nextElementSibling;
+            if (content && content.classList.contains('contenido-tarea')) {
+                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+            }
+        };
+    });
+</script>
 
 @endsection

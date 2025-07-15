@@ -2,6 +2,29 @@
     @section('mensaje-superior')
         Editar Proyecto: {{ $project->name }}
     @endsection
+
+<style>
+    .search-container {
+        position: relative;
+    }
+
+    #searchResults {
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    /* ✅ Estilo global para campos redondeados */
+    .form-control {
+        border-radius: 15px !important;
+    }
+</style>
 @section('content')
 
 
@@ -16,13 +39,19 @@
                     @csrf
                     @method('PUT')
 
-                    <!-- Nombre -->
                     <div class="form-group mb-3">
                         <label for="name">Nombre del Proyecto</label>
-                        <input id="name" type="text" class="form-control" name="name" maxlength="50"
-                               value="{{ old('name', $project->name) }}" required autocomplete="off">
+                        <input id="name" type="text" class="form-control" name="name"
+                               value="{{ old('name', $project->name) }}" required maxlength="30">
                     </div>
-                    <!-- Descripción -->
+
+                    <div class="mb-3">
+                        <label for="codigo" class="form-label">Código del Proyecto</label>
+                        <input type="text" name="codigo" id="codigo" class="form-control"
+                            value="{{ old('codigo', $project->codigo) }}" required maxlength="10">
+                        <small class="form-text text-muted">Debe ser un código único (por ejemplo: PRJ001).</small>
+                    </div>
+
                     <div class="form-group mb-3">
                         <label for="descripcion">{{ __('Descripción') }}</label>
                         <textarea id="descripcion" 
@@ -34,7 +63,6 @@
                         @enderror
                     </div>
 
-                    <!-- Fechas -->
                     <div class="form-group mb-3">
                         <label for="fecha_inicio">Fecha de Inicio</label>
                         <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
@@ -47,7 +75,6 @@
                                value="{{ old('fecha_fin', $project->fecha_fin) }}" required>
                     </div>
 
-                    <!-- Administrador del Proyecto -->
                     <div class="mb-3">
                         <label class="form-label">Administrador del Proyecto</label>
                         <div class="form-check">
@@ -57,7 +84,6 @@
                         </div>
                     </div>
 
-                    <!-- Buscador y tabla -->
                     <div class="form-group mb-3">
                         <label>Buscar Usuarios</label>
                         <div class="search-container mb-3">
@@ -77,14 +103,12 @@
                         </div>
                     </div>
 
-                    <!-- Campo oculto con usuarios seleccionados -->
                     <div id="selectedUsersInputs">
                         @foreach($selectedUsers as $id)
                             <input type="hidden" name="users[]" value="{{ $id }}">
                         @endforeach
                     </div>
 
-                    <!-- Botones -->
                     <div class="form-group mt-4">
                         <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Actualizar Proyecto</button>
                         <a href="{{ route('projects.my') }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Cancelar</a>

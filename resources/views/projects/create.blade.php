@@ -2,6 +2,32 @@
     @section('mensaje-superior')
         Crear Nuevo Proyecto
     @endsection
+
+@section('styles')
+<style>
+    .search-container {
+        position: relative;
+    }
+
+    #searchResults {
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    /* ✅ Estilo global para campos redondeados */
+    .form-control {
+        border-radius: 15px !important;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="container-fluid p-0">
     <div class="row m-0">
@@ -16,7 +42,7 @@
                         class="form-control @error('name') is-invalid @enderror"
                         name="name"
                         value="{{ old('name') }}"
-                        required autocomplete="off" autofocus>
+                        required maxlength="30" autofocus>
                     @error('name')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -32,6 +58,12 @@
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
                 </div>
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Código del Proyecto</label>
+                    <input type="text" name="codigo" id="codigo" class="form-control" required maxlength="10">
+                    <small class="form-text text-muted">Debe ser un código único (por ejemplo: PRJ001).</small>
+                </div>
+
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
                     <label for="fecha_inicio">Fecha de Inicio</label>
@@ -118,13 +150,11 @@ $(function () {
         fecha_fin: $('#fecha_fin').val()
     };
 
-    // Restaurar valores del formulario
     $('#name').val(formData.name);
     $('#descripcion').val(formData.descripcion);
     $('#fecha_inicio').val(formData.fecha_inicio);
     $('#fecha_fin').val(formData.fecha_fin);
 
-    // Función para guardar el estado actual
     function saveFormState() {
         sessionStorage.setItem('projectFormData', JSON.stringify({
             name: $('#name').val(),
@@ -135,7 +165,6 @@ $(function () {
         }));
     }
 
-    // Guardar estado cuando cambien los campos
     $('#name, #descripcion, #fecha_inicio, #fecha_fin').on('change input', saveFormState);
 
     function applySelections() {
@@ -184,8 +213,6 @@ $(function () {
             }
         });
     });
-
-
 
     // Buscador (sin cambios)
     $('#userSearch').on('input', function() {

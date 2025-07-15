@@ -92,67 +92,6 @@
             margin-top: 15px;
         }
 
-        /* Modo oscuro para el panel de administración */
-        /* === Modo oscuro global para cards === */
-        [data-theme="dark"] .card,
-        [data-theme="dark"] .admin-card,
-        [data-theme="dark"] .card-body {
-          background-color: #2b2b2b !important;
-          color: #e0e0e0 !important;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important;
-        }
-
-        /* Ajusta color de cabecera de las cards */
-        [data-theme="dark"] .card-header,
-        [data-theme="dark"] .admin-card .card-header {
-          background-color: #333333 !important;
-          color: #ffffff !important;
-        }
-
-        /* === Modo oscuro global para tablas === */
-        [data-theme="dark"] .table,
-        [data-theme="dark"] .admin-table,
-        [data-theme="dark"] .table-responsive {
-          background-color: #2b2b2b;
-          color: #e0e0e0;
-        }
-
-        /* Encabezados de tabla */
-        [data-theme="dark"] .table thead th {
-          background-color: #333333;
-          color: #ffffff;
-          border-color: #444444;
-        }
-
-        /* Filas y celdas */
-        [data-theme="dark"] .table tbody td,
-        [data-theme="dark"] .table tbody tr {
-          border-color: #3a3a3a;
-          color: #e0e0e0;
-          background-color: #2b2b2b;
-        }
-
-        /* Hover en filas */
-        [data-theme="dark"] .table-hover tbody tr:hover {
-          background-color: rgba(255,255,255,0.05);
-        }
-
-        /* Si usas badges, botones o enlaces dentro de tablas/cards: */
-        [data-theme="dark"] .badge,
-        [data-theme="dark"] .btn-outline-secondary,
-        [data-theme="dark"] a {
-          color: #f1f1f1;
-        }
-
-        /* Optional: scrollbars oscuros en contenedores con overflow */
-        [data-theme="dark"] .table-responsive::-webkit-scrollbar {
-          width: 8px;
-        }
-        [data-theme="dark"] .table-responsive::-webkit-scrollbar-thumb {
-          background-color: #555;
-          border-radius: 4px;
-        }
-
          /* Estilos para el buscador en modo claro */
          .input-group .form-control {
             border-radius: 0.25rem 0 0 0.25rem;
@@ -160,45 +99,6 @@
 
         .input-group-append .btn {
             border-radius: 0 0.25rem 0.25rem 0;
-        }
-
-        /* Estilos para el buscador en modo oscuro */
-        [data-theme="dark"] .input-group .form-control {
-            background-color: #333;
-            border-color: #444;
-            color: #e0e0e0;
-        }
-
-        [data-theme="dark"] .input-group-append .btn {
-            background-color: #444;
-            border-color: #555;
-            color: #e0e0e0;
-        }
-
-        [data-theme="dark"] .input-group-append .btn:hover {
-            background-color: #555;
-            border-color: #666;
-        }
-
-        [data-theme="dark"] ::placeholder {
-            color: #999;
-            opacity: 1;
-        }
-
-        /* Estilos para paginación en modo oscuro */
-        [data-theme="dark"] .pagination .page-link {
-            background-color: #333;
-            border-color: #444;
-            color: #e0e0e0;
-        }
-
-        [data-theme="dark"] .pagination .page-item.active .page-link {
-            background-color: #4a90e2;
-            border-color: #357abd;
-        }
-
-        [data-theme="dark"] .pagination .page-link:hover {
-            background-color: #444;
         }
 
         /* Integración con la plantilla Tabler/Bootstrap */
@@ -220,6 +120,24 @@
         .row{
             padding-block-start: 1rem;
         }
+
+        /* Estilos para los btn-group sin bordes redondeados y separados */
+        .btn-group {
+            gap: 8px; /* Separación entre botones */
+        }
+
+        /* Quitar el borde entre los botones del grupo para que se vean como btn-info independientes */
+        .btn-group .btn {
+            border-radius: 6px !important;
+            margin-right: 0;
+            border: none !important;
+            box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
+        }
+
+        .btn-group .btn:focus, .btn-group .btn:active {
+            outline: none;
+            box-shadow: 0 0 0 0.15rem rgba(74,144,226,0.25);
+        }
     </style>
 @stop
 @section('content')
@@ -231,10 +149,10 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Usuarios</span>
                     <div class="btn-group" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-outline-danger">
+                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
                     </div>
@@ -244,11 +162,11 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
-                                    <th><i class="bi bi-envelope me-1"></i>Email</th>
-                                    <th><i class="bi bi-tag me-1"></i> Rol</th>
-                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
-                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -276,7 +194,6 @@
                                             <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            
                                             @if($usuario->usertype !== 'admin')
                                                 @if($usuario->trashed())
                                                     <!-- Botón para restaurar usuario -->
@@ -321,7 +238,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Proyectos</span>
-                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-info">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -330,10 +247,10 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-person me-1"></i>Nombre</th>
-                                    <th><i class="bi bi-person-badge"></i>Responsable</th>
-                                    <th><i class="bi bi-people-fill"></i>Miembros</th>
-                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                    <th>Nombre</th>
+                                    <th>Responsable</th>
+                                    <th>Miembros</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -368,30 +285,50 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Historial de Cambios</span>
-                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-info">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table align-middle">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-person me-1"></i> Usuario</th>
-                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
-                                    <th><i class="bi bi-calendar me-1"></i> Fecha</th>
+                                    <th>Usuario</th>
+                                    <th>Acción</th>
+                                    <th>Detalles</th>
+                                    <!-- <th>Sprint</th> -->
+                                    <th>Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($historial as $item)
                                 <tr>
-                                    <td>{{ $item->usuario }}</td>
-                                    <td>{{ $item->accion }}</td>
-                                    <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <span class="fw-semibold">{{ $item->usuario }}</span>
+                                    </td>
+                                    <td>
+                                        {{ $item->accion }}
+                                    </td>
+                                    <td>
+                                        <span title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
+                                    </td>
+                                    <!-- <td>
+                                        @if($item->sprint)
+                                            <span class="badge bg-info text-dark">#{{ $item->sprint }}</span>
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
+                                    </td> -->
+                                    <td>
+                                        <span title="{{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s') }}">
+                                            {{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans() }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">No hay historial registrado</td>
+                                    <td colspan="5" class="text-center">No hay historial registrado</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -409,7 +346,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Sprints</span>
-                    <a href="#" class="btn btn-sm btn-outline-primary">
+                    <a href="#" class="btn btn-sm btn-info">
                         <i class="bi bi-flag"></i> Ver Todos
                     </a>
                 </div>
@@ -418,10 +355,10 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-person me-1"></i> Nombre</th>
-                                    <th><i class="bi bi-tag me-1"></i> Proyecto</th>
-                                    <th><i class="bi bi-clipboard-check-fill"></i>Estado</th>
-                                    <th><i class="bi bi-gear me-1"></i> Acciones</th>
+                                    <th>Nombre</th>
+                                    <th>Proyecto</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>

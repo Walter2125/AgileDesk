@@ -89,6 +89,8 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
     Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
     Route::post('/tareas/{tarea}/completar', [TareaController::class, 'toggleCompletada'])->name('tareas.toggleCompletada');
+    Route::get('/historias/{historia}/detalle', [HistoriasController::class, 'showDetalle'])->name('historias.detalle');
+
 
     // Ruta para el listado AJAX de usuarios
     Route::get('/projects/users/list', [ProjectController::class, 'list'])->name('projects.list');
@@ -123,8 +125,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
 
         //historial de cambios
-        Route::get('
-        ', [HistorialCambioController::class, 'index'])->name('historial.index');
+        Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 
         // CRUD de proyectos
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
