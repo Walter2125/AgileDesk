@@ -295,29 +295,29 @@ private function compartirContextoDesdeColumna(Columna $columna)
     private function generarDetallesCambios($antes, $despues)
 {
     $cambios = [];
-    
+
     if ($antes['nombre'] != $despues['nombre']) {
         $cambios[] = sprintf('Nombre: "%s" → "%s"', $antes['nombre'], $despues['nombre']);
     }
-    
+
     if ($antes['trabajo_estimado'] != $despues['trabajo_estimado']) {
-        $cambios[] = sprintf('Trabajo estimado: %d → %d', 
-            $antes['trabajo_estimado'] ?? 0, 
+        $cambios[] = sprintf('Trabajo estimado: %d → %d',
+            $antes['trabajo_estimado'] ?? 0,
             $despues['trabajo_estimado'] ?? 0);
     }
-    
+
     if ($antes['prioridad'] != $despues['prioridad']) {
         $cambios[] = sprintf('Prioridad: %s → %s', $antes['prioridad'], $despues['prioridad']);
     }
-    
+
     if ($antes['usuario'] != $despues['usuario']) {
         $cambios[] = sprintf('Asignado: %s → %s', $antes['usuario'], $despues['usuario']);
     }
-    
+
     if ($antes['columna'] != $despues['columna']) {
         $cambios[] = sprintf('Columna: %s → %s', $antes['columna'], $despues['columna']);
     }
-    
+
     return $cambios ? implode(', ', $cambios) : 'Sin cambios detectados';
 }
 
@@ -367,7 +367,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
         }
 
         // Registrar en el historial antes de mover
-        HistorialCambio::create([
+       /* HistorialCambio::create([
             'fecha' => now(),
             'usuario' => auth()->user()->name,
             'accion' => 'Movimiento de Historia',
@@ -379,7 +379,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             ),
             'sprint' => $historia->sprint_id,
             'proyecto_id' => $historia->proyecto_id
-        ]);
+        ]);*/
 
         // Actualizar y guardar
         $historia->columna_id = $validated['columna_id'];
@@ -407,6 +407,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             'message' => 'Error al mover la historia: ' . $e->getMessage()
         ], 500);
     }
+}
 }
 
 

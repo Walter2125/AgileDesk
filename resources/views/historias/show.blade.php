@@ -6,7 +6,7 @@
             <h1 class="titulo-historia">Detalle de la Historia</h1>
         </div>
     @endsection
-            
+
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
@@ -141,7 +141,7 @@
                                 </div>
                             </div>
 
-                            
+
 {{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
 <div class="mt-5">
 
@@ -497,47 +497,48 @@
         </form>
     </div>
 </div>
-
-
-@endsection
-
         </div>
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const buttons = document.querySelectorAll('.toggle-btn');
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const buttons = document.querySelectorAll('.toggle-btn');
 
-        buttons.forEach(btn => {
-            btn.addEventListener('click', function () {
-                const targetId = btn.getAttribute('data-target');
-                const target = document.getElementById(targetId);
+                                buttons.forEach(btn => {
+                                    btn.addEventListener('click', function () {
+                                        const targetId = btn.getAttribute('data-target');
+                                        const target = document.getElementById(targetId);
 
-                // Cierra todos los acordeones excepto el seleccionado
-                document.querySelectorAll('.contenido-acordeon').forEach(section => {
-                    if (section.id !== targetId) {
-                        section.style.display = 'none';
-                    }
-                });
+                                        // Cierra todos los acordeones excepto el seleccionado
+                                        document.querySelectorAll('.contenido-acordeon').forEach(section => {
+                                            if (section.id !== targetId) {
+                                                section.style.display = 'none';
+                                            }
+                                        });
 
-                // Alternar el visibilidad del actual
-                target.style.display = (target.style.display === 'block') ? 'none' : 'block';
-            });
-        });
+                                        // Alternar el visibilidad del actual
+                                        target.style.display = (target.style.display === 'block') ? 'none' : 'block';
+                                    });
+                                });
 
-        // Manejo de tareas: solo una abierta a la vez
-        window.toggleTarea = function (button) {
-            const allContents = document.querySelectorAll('.contenido-tarea');
-            allContents.forEach(c => c.style.display = 'none');
+                                // Manejo de tareas: solo una abierta a la vez
+                                window.toggleTarea = function (button) {
+                                    const allContents = document.querySelectorAll('.contenido-tarea');
+                                    allContents.forEach(c => c.style.display = 'none');
 
-            const content = button.nextElementSibling;
-            if (content && content.classList.contains('contenido-tarea')) {
-                content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-            }
-        };
-    });
-</script>
+                                    const content = button.nextElementSibling;
+                                    if (content && content.classList.contains('contenido-tarea')) {
+                                        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+                                    }
+                                };
+                            });
+                        </script>
+
+
+
 
 @endsection
+
+
 
