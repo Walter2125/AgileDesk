@@ -53,6 +53,9 @@ Route::post('/historias/{id}/mover', [HistoriasController::class, 'mover'])->nam
 // Rutas para usuarios autenticados y aprobados
 Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/homeuser', [UserController::class, 'index'])->name('homeuser');
+    Route::get('/homeuser/project/{projectId}', [UserController::class, 'index'])->name('homeuser.project');
+    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -89,6 +92,8 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::delete('historias/{historia}/tareas/{tarea}', [TareaController::class, 'destroy'])->name('tareas.destroy');
     Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
     Route::post('/tareas/{tarea}/completar', [TareaController::class, 'toggleCompletada'])->name('tareas.toggleCompletada');
+    Route::get('/historias/{historia}/detalle', [HistoriasController::class, 'showDetalle'])->name('historias.detalle');
+
 
     // Ruta para el listado AJAX de usuarios
     Route::get('/projects/users/list', [ProjectController::class, 'list'])->name('projects.list');
@@ -103,6 +108,18 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         Route::put('/{comentario}', [ComentarioController::class, 'update'])->name('update');
         Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy');
     });
+    // Historial por proyecto (para usuarios)
+    Route::get('/colaboradores/proyectos/{project}/historial', 
+        [HistorialCambioController::class, 'porProyecto'])
+        ->name('users.colaboradores.historial')
+        ->where('project', '[0-9]+');
+
+    // Ruta correcta para cambiar el color
+    Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])
+        ->name('projects.cambiarColor');
+
+
+
 });
 
 // Panel de administración — solo administradores
@@ -134,6 +151,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/projects/{project}/remove-user/{user}', [ProjectController::class, 'removeUser'])->name('projects.removeUser');
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
+        Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
+
 
         // Crud de Sprints
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');

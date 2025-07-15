@@ -73,6 +73,10 @@ class Project extends Model
 public function sprint() {
     return $this->hasMany(Sprint::class, 'proyecto_id');
 }
+    public function proyecto()
+{
+    return $this->belongsTo(Project::class, 'proyecto_id');
+}
 
 
 }

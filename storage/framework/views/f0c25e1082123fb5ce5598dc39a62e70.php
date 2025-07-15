@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'Agile-Desk') }}</title>
+    <title><?php echo e(config('app.name', 'Agile-Desk')); ?></title>
     <script>
         // Detectar y aplicar el modo oscuro antes de renderizar
         (function() {
             const DARK_MODE_KEY = 'agiledesk-darkMode';
             const html = document.documentElement;
             const body = document.body;
-
+            
             // 1. Añadir clase preload inmediatamente
             html.classList.add('dark-mode-preload');
-
+            
             // 2. Determinar el modo preferido
             let darkMode = false;
             const saved = localStorage.getItem(DARK_MODE_KEY);
-
+            
             if (saved === 'enabled') {
                 darkMode = true;
             } else if (saved === 'disabled') {
@@ -27,7 +27,7 @@
             } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 darkMode = true;
             }
-
+            
             // 3. Aplicar el modo oscuro ANTES de que se renderice la página
             if (darkMode) {
                 html.classList.add('dark-mode');
@@ -37,7 +37,7 @@
                 // Asegurar que en modo claro el fondo sea claro
                 html.style.backgroundColor = '#f8f9fa';
             }
-
+            
             // 4. Guardar el estado inicial para sincronización
             window.initialDarkModeState = darkMode;
         })();
@@ -53,22 +53,22 @@
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
+    <link rel="icon" href="<?php echo e(asset('img/agiledesk.png')); ?>" type="image/x-icon">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <!-- Vite -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
-    <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/light-mode-bootstrap.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/dark-mode.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/light-mode-bootstrap.css')); ?>">
 
     <style>
     * {
@@ -431,7 +431,7 @@
             display: none;
         }
     }
-
+    
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
@@ -479,6 +479,12 @@
         text-decoration: none !important;
     }
 
+    .user-info:hover,
+    .user-info:focus {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        text-decoration: none !important;
+    }
 
     .user-avatar {
         width: 40px;
@@ -766,13 +772,13 @@
             transform: translateX(-100%);
             width: var(--sidebar-width) !important;
         }
-
+        
         /* Sidebar expandido (visible) */
         body:not(.sidebar-collapsed) #sidebar-wrapper {
             transform: translateX(0) !important;
             width: var(--sidebar-width) !important;
         }
-
+        
         /* Sidebar colapsado (oculto en tablets) */
         body.sidebar-collapsed #sidebar-wrapper {
             transform: translateX(-100%) !important;
@@ -784,7 +790,7 @@
         body.sidebar-collapsed .overlay {
             display: none; /* Ocultar overlay cuando sidebar está colapsado */
         }
-
+        
         /* Mostrar overlay cuando sidebar está expandido en tablets */
         body:not(.sidebar-collapsed) .overlay {
             display: block;
@@ -1077,7 +1083,7 @@
             font-weight: 600;
         }
     }
-
+    
 /* Ajustes optimizados para alineación perfecta */
 
 .sidebar-heading {
@@ -1118,7 +1124,7 @@
 }
 
 </style>
-    @yield('styles')
+    <?php echo $__env->yieldContent('styles'); ?>
 </head>
 
 
@@ -1129,9 +1135,7 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
-
                 <div class="sidebar-heading text-white d-flex align-items-center justify-content-between"> 
-
                         <span>
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text app-name">Agile-Desk</span>
@@ -1139,32 +1143,26 @@
                 </div>
 
                 <div class="list-group list-group-flush mb-auto">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" title="Inicio">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="list-group-item list-group-item-action text-white <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" title="Inicio">
                         <i class="bi bi-speedometer2"></i>
                         <span class="sidebar-text">Inicio</span>
                     </a>
-                     <a href="{{ route('projects.my') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
+                     <a href="<?php echo e(route('projects.my')); ?>" class="list-group-item list-group-item-action text-white" title="Proyectos">
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
                      </a>
 
-                    @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
-                        <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                    <?php if(isset($currentProject) && $currentProject instanceof \App\Models\Project): ?>
+                        <a href="<?php echo e(route('backlog.index', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-list-task"></i>
                             <span class="sidebar-text">Backlog</span>
                         </a>
 
-                        <a href="{{ route('tableros.show', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                        <a href="<?php echo e(route('tableros.show', ['project' => $currentProject->id])); ?>" class="list-group-item list-group-item-action text-white">
                             <i class="bi bi-columns-gap"></i>
                             <span class="sidebar-text">Tablero</span>
                         </a>
-
-                        <a href="{{ route('sprints.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
-                            <i class="bi bi-calendar-range"></i>
-                            <span class="sidebar-text">Sprints</span>
-                        </a>
-
-                    @endif
+                    <?php endif; ?>
 
 
                     <!-- otros botones comentados por ahora -->
@@ -1191,25 +1189,26 @@
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 id="userDropdown">
-                            @if (Auth::check() && Auth::user()->photo)
-                                <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Foto de perfil" class="user-avatar" style="object-fit:cover; border-radius:50%; border:2px solid #fff2; width:40px; height:40px; min-width:40px;">
-                            @else
+                            <?php if(Auth::check() && Auth::user()->photo): ?>
+                                <img src="<?php echo e(asset('storage/' . Auth::user()->photo)); ?>" alt="Foto de perfil" class="user-avatar" style="object-fit:cover; border-radius:50%; border:2px solid #fff2; width:40px; height:40px; min-width:40px;">
+                            <?php else: ?>
                                 <div class="user-avatar d-flex align-items-center justify-content-center">
-                                    {{ Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U' }}
+                                    <?php echo e(Auth::check() ? substr(Auth::user()->name, 0, 1) : 'U'); ?>
+
                                 </div>
-                            @endif
+                            <?php endif; ?>
                             <div class="sidebar-text flex-grow-1 d-flex flex-column justify-content-center ms-2">
-                                <div class="fw-semibold" style="font-size:1rem; line-height:1.1;">{{ Auth::check() ? Auth::user()->name : 'Usuario' }}</div>
-                                <small class="text-muted" style="font-size:0.85rem;">{{ Auth::check() ? Auth::user()->email : 'usuario@example.com' }}</small>
+                                <div class="fw-semibold" style="font-size:1rem; line-height:1.1;"><?php echo e(Auth::check() ? Auth::user()->name : 'Usuario'); ?></div>
+                                <small class="text-muted" style="font-size:0.85rem;"><?php echo e(Auth::check() ? Auth::user()->email : 'usuario@example.com'); ?></small>
                             </div>
                         </button>
                         <!-- Dropdown menu -->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2"></i> Perfil</a></li>
+                            <li><a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>"><i class="bi bi-person me-2"></i> Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item">
                                         <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
                                     </button>
@@ -1223,24 +1222,43 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            @include('layouts.navigation')
+            <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
                 <main>
-                    @if (session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            @if (session('message'))
-                                <p>{{ session('message') }}</p>
-                            @endif
+                            <strong><?php echo e(session('error')); ?></strong>
+                            <?php if(session('message')): ?>
+                                <p><?php echo e(session('message')); ?></p>
+                            <?php endif; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
-                    @endif
+                    <?php endif; ?>
                     <div class="ps-3">
-                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                         <?php if (isset($component)) { $__componentOriginal360d002b1b676b6f84d43220f22129e2 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal360d002b1b676b6f84d43220f22129e2 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.breadcrumbs','data' => ['breadcrumbs' => $breadcrumbs ?? []]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('breadcrumbs'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($breadcrumbs ?? [])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $attributes = $__attributesOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__attributesOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal360d002b1b676b6f84d43220f22129e2)): ?>
+<?php $component = $__componentOriginal360d002b1b676b6f84d43220f22129e2; ?>
+<?php unset($__componentOriginal360d002b1b676b6f84d43220f22129e2); ?>
+<?php endif; ?>
                     </div>
-                    @yield('content')
+                    <?php echo $__env->yieldContent('content'); ?>
                 </main>
             </div>
         </div>
@@ -1253,18 +1271,18 @@
     <script>
         // Constantes para localStorage
         const SIDEBAR_STATE_KEY = 'agiledesk_sidebar_collapsed';
-
+        
         // Función para obtener el estado guardado del sidebar
         function getSavedSidebarState() {
             const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
             return saved === 'true';
         }
-
+        
         // Función para guardar el estado del sidebar
         function saveSidebarState(isCollapsed) {
             localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed.toString());
         }
-
+        
         // Función para aplicar el estado del sidebar
         function applySidebarState(isCollapsed) {
             const body = document.body;
@@ -1300,7 +1318,7 @@
                 }
             }
         }
-
+        
         // Sidebar toggle functionality mejorada
         function toggleSidebar() {
             const isCurrentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
@@ -1474,9 +1492,10 @@
     </script>
 
     <!-- Scripts adicionales de las secciones -->
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
     <!-- <script src="bootstrap.bundle.min.js"></script> -->
-    <script src="{{ asset('js/dark-mode.js') }}"></script>
+    <script src="<?php echo e(asset('js/dark-mode.js')); ?>"></script>
 
 </body>
 </html>
+<?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/layouts/app.blade.php ENDPATH**/ ?>

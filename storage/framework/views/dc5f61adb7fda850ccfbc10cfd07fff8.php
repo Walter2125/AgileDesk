@@ -1,30 +1,32 @@
-@extends('layouts.app')
+<?php $__env->startSection('mensaje-superior'); ?>
+    Tablero de <?php echo e($project->name); ?>
 
-@section('mensaje-superior')
-    Tablero de {{ $project->name }}
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
-    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+
+<?php $__env->startSection('content'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/historias.css')); ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    @php
+    <?php
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
             ? 'flex: 1 1 0; max-width: none;'
             : 'width: 300px; flex-shrink: 0;';
 
-    @endphp
+    ?>
 
     <div class="container-fluid px-3 py-0">
         <div class="container-fluid px-3 py-0">
 
-            @if (session('success'))
+
+
+            <?php if(session('success')): ?>
                 <div class="alert alert-success mt-2" id="success-alert">
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                 </div>
                 <script>
                     setTimeout(function () {
@@ -36,7 +38,9 @@
                         }
                     }, 3000);
                 </script>
-            @endif
+            <?php endif; ?>
+
+
 
             <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
@@ -51,17 +55,18 @@
                 </div>
 
 
-                @if($tablero->sprints && $tablero->sprints->count())
+
+
+
+                <?php if($tablero->sprints && $tablero->sprints->count()): ?>
                     <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
-                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
-                                {{ $sprint->nombre }}
-                            </option>
-                        @endforeach
+                            style="min-width: 200px; max-width: 240px;">
+                        <option selected disabled>Selecciona un sprint</option>
+                        <?php $__currentLoopData = $tablero->sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($sprint->id); ?>"><?php echo e($sprint->nombre); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
-                @endif
+                <?php endif; ?>
 
 
                 <div class="d-flex gap-2 ms-auto">
@@ -80,6 +85,7 @@
                 </div>
             </div>
 
+
             <div class="w-100 mt-3">
 
                 <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
@@ -87,15 +93,15 @@
                     <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
 
-                        @foreach($tablero->columnas as $columna)
+                        <?php $__currentLoopData = $tablero->columnas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $columna): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
-                                 style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
+                                 style="<?php echo e($widthStyle); ?> min-height: 520px; max-height: 520px;">
 
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
-                                    <strong>{{ $columna->nombre }}</strong>
+                                    <strong><?php echo e($columna->nombre); ?></strong>
 
                                     <div class="menu-wrapper">
-                                        <input type="checkbox" class="toggler" id="toggle-{{ $columna->id }}" />
+                                        <input type="checkbox" class="toggler" id="toggle-<?php echo e($columna->id); ?>" />
                                         <div class="dots">
                                             <div></div>
                                         </div>
@@ -104,12 +110,12 @@
                                                 <li><span class="link disabled"><strong>Acciones</strong></span></li>
                                                 <li>
                                                     <a href="#" class="link"
-                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                       onclick="abrirModalEditarColumna(<?php echo e($columna->id); ?>, '<?php echo e(addslashes($columna->nombre)); ?>')">
                                                         Editar nombre
                                                     </a>
 
                                                 </li>
-                                                <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
+                                                <li><a href="#" class="link" onclick="abrirModalEliminarColumna(<?php echo e($columna->id); ?>)">Eliminar columna</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -117,51 +123,53 @@
 
 
                                 <div class="p-2 border-bottom flex-shrink-0">
-                                    <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                                    <a href="<?php echo e(route('historias.create.fromColumna', ['columna' => $columna->id])); ?>"
                                        class="btn btn-sm btn-primary w-100">
                                         Agregar historias
                                     </a>
                                 </div>
 
 
-                                <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
-                                    @foreach ($columna->historias as $historia)
+                                <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="<?php echo e($columna->id); ?>">
+                                    <?php $__currentLoopData = $columna->historias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $historia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="card mb-4 p-2 text-dark position-relative"
                                              style="width: 100%; word-break: break-word; overflow-wrap: break-word; max-width: 100%;"
-                                             data-historia-id="{{ $historia->id }}">
+                                             data-historia-id="<?php echo e($historia->id); ?>">
 
                                             <div class="d-flex justify-content-between align-items-start">
-                                                {{-- Columna 1: Contenido --}}
+                                                
                                                 <div style="flex: 1; min-width: 0;">
-                                                    <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
+                                                    <a href="<?php echo e(route('historias.show', $historia->id)); ?>" class="text-decoration-none text-dark d-block">
 
                                                         <strong class="d-block"
                                                                 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block;"
-                                                                title="{{ $historia->nombre }}">
-                                                            H{{ $historia->numero }} {{ $historia->nombre }}
+                                                                title="<?php echo e($historia->nombre); ?>">
+                                                            H<?php echo e($historia->numero); ?> <?php echo e($historia->nombre); ?>
+
                                                         </strong>
 
-                                                        @if ($historia->descripcion)
+                                                        <?php if($historia->descripcion): ?>
                                                             <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
-                                                                Descripción: {{ $historia->descripcion }}
+                                                                Descripción: <?php echo e($historia->descripcion); ?>
+
                                                             </div>
-                                                        @endif
+                                                        <?php endif; ?>
 
                                                     </a>
                                                 </div>
 
-                                                {{-- Columna 2: Menú --}}
+                                                
                                                 <div class="ms-2">
                                                     <div class="dropdown">
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            &#x22EE; {{-- ⋮ --}}
+                                                            &#x22EE; 
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a></li>
+                                                            <li><a class="dropdown-item" href="<?php echo e(route('historias.edit', $historia->id)); ?>">Editar</a></li>
                                                             <li>
                                                                 <button type="button" class="dropdown-item text-danger"
                                                                         data-bs-toggle="modal"
-                                                                        data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                                        data-bs-target="#confirmDeleteModal<?php echo e($historia->id); ?>">
                                                                     Eliminar
                                                                 </button>
                                                             </li>
@@ -170,10 +178,9 @@
                                                 </div>
                                             </div>
 
-                                           {{-- paneles retractiles pata columnas en movil para que se vean una debajo de la otra  -- }}
-                                            {{-- Modal Confirmación --}}
-                                            <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
-                                                 aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
+                                            
+                                            <div class="modal fade" id="confirmDeleteModal<?php echo e($historia->id); ?>" tabindex="-1"
+                                                 aria-labelledby="confirmDeleteLabel<?php echo e($historia->id); ?>" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content rounded-4 shadow">
                                                         <div class="modal-header border-bottom-0">
@@ -181,19 +188,19 @@
                                                         </div>
                                                         <div class="modal-body text-center">
                                                             <div class="mb-4">
-                                                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
+                                                                <h5 class="modal-title text-danger" id="confirmDeleteLabel<?php echo e($historia->id); ?>">Confirmar Eliminación</h5>
                                                                 <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
                                                                 <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
                                                                 <div class="alert alert-danger d-flex align-items-center mt-3">
                                                                     <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                                                    <div>"<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.</div>
+                                                                    <div>"<strong><?php echo e($historia->nombre); ?></strong>" será eliminada permanentemente.</div>
                                                                 </div>
                                                             </div>
                                                             <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
                                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('historias.destroy', $historia->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger">Eliminar</button>
                                                                 </form>
                                                             </div>
@@ -203,17 +210,19 @@
                                             </div>
                                         </div>
 
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
 
                                 <!-- fin-->
 
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
 
-        {{-- Scripts existentes --}}
+
+
+        
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
         <script>
@@ -257,6 +266,7 @@
                                     }
                                     console.log('Movimiento exitoso:', data);
                                     // Opcional: Mostrar notificación
+                                    showNotification('success', data.message);
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
@@ -343,8 +353,8 @@
         <!-- Modal Bootstrap para agregar columna -->
         <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('columnas.store', $tablero->id)); ?>" class="modal-content">
+                    <?php echo csrf_field(); ?>
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalLabel">Agregar nueva columna</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -366,9 +376,9 @@
         <!-- Modal para crear sprint -->
         <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
-                    @csrf
-                    <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
+                <form id="formCrearSprint" method="POST" action="<?php echo e(route('sprints.store', $project->id)); ?>" class="modal-content">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="tablero_id" value="<?php echo e($tablero->id); ?>">
 
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalCrearSprintLabel">Crear Sprint <span id="numeroSprint"></span></h5>
@@ -399,8 +409,8 @@
         <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="formEliminarColumna" method="POST" action="">
-                    @csrf
-                    @method('DELETE')
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('DELETE'); ?>
                     <input type="hidden" name="modo" id="modoEliminar">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -425,11 +435,12 @@
         </div>
 
         <!-- Modal para editar nombre de columna -->
+        <!-- Modal para editar nombre de columna -->
         <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="formEditarColumna" method="POST" action="">
-                    @csrf
-                    @method('PUT')
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
@@ -456,8 +467,19 @@
             </div>
         </div>
 
-        <script>
 
+
+
+
+        <script>
+            /*setTimeout(function() {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);*/
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".editable-title").forEach(input => {
@@ -504,7 +526,7 @@
                 const numeroSprintSpan = document.getElementById('numeroSprint');
 
                 // Obtén el último número de sprint del backend, o 0 si no hay
-                let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+                let ultimoNumeroSprint = <?php echo json_encode($tablero->sprints->max('numero_sprint') ?? 0, 15, 512) ?>;
 
                 btnAbrirCrearSprint.addEventListener('click', () => {
                     const nuevoNumero = ultimoNumeroSprint + 1;
@@ -588,11 +610,14 @@
 
 
 
+
+
+
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
                 const numeroSprintSpan = document.getElementById('numeroSprint');
-                let ultimoNumeroSprint = @json($tablero->sprints->max('numero_sprint') ?? 0);
+                let ultimoNumeroSprint = <?php echo json_encode($tablero->sprints->max('numero_sprint') ?? 0, 15, 512) ?>;
 
                 btnAbrirCrearSprint.addEventListener('click', () => {
                     const nuevoNumero = ultimoNumeroSprint + 1;
@@ -687,18 +712,8 @@
             }
         </script>
 
-                <script>
-                    function seleccionarSprint(select) {
-                        const sprintId = select.value;
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
-                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
-                    }
-                </script>
 
-
-
-                <style>
+        <style>
             .menu-wrapper {
                 position: relative;
                 display: inline-block;
@@ -816,4 +831,5 @@
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/users/admin/tablero.blade.php ENDPATH**/ ?>

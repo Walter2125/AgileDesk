@@ -508,7 +508,7 @@
                 <!-- Mensaje personalizado -->
                 <div class="d-none d-sm-block" style="min-width: 0;">
                     <div class="text-dark fw-bold text-truncate" style="max-width: 250px;">
-                        @yield('mensaje-superior')
+                        <?php echo $__env->yieldContent('mensaje-superior'); ?>
                     </div>
                 </div>
             </div>
@@ -887,4 +887,4 @@
         window.toggleTheme = toggleTheme;
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>

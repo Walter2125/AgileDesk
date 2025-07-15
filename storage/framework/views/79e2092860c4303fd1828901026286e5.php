@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Administration - Agile Desk'); ?>
 
-@section('title', 'Administration - Agile Desk')
-
-@section('styles')
+<?php $__env->startSection('styles'); ?>
     <style>
         /* Estilos para el panel de administración */
         .admin-header {
@@ -139,8 +137,8 @@
             box-shadow: 0 0 0 0.15rem rgba(74,144,226,0.25);
         }
     </style>
-@stop
-@section('content')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <!-- Usuarios -->
@@ -149,10 +147,10 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Usuarios</span>
                     <div class="btn-group" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                        <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-info">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-danger">
+                        <a href="<?php echo e(route('admin.deleted-users')); ?>" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
                     </div>
@@ -170,63 +168,66 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($usuarios as $usuario)
-                                <tr class="{{ $usuario->trashed() ? 'table-secondary' : '' }}">
+                                <?php $__empty_1 = true; $__currentLoopData = $usuarios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $usuario): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="<?php echo e($usuario->trashed() ? 'table-secondary' : ''); ?>">
                                     <td>
-                                        {{ $usuario->name }}
-                                        @if($usuario->trashed())
+                                        <?php echo e($usuario->name); ?>
+
+                                        <?php if($usuario->trashed()): ?>
                                             <span class="badge bg-secondary ms-1">Eliminado</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
-                                    <td>{{ $usuario->email }}</td>
-                                    <td>{{ ucfirst($usuario->usertype) }}</td>
+                                    <td><?php echo e($usuario->email); ?></td>
+                                    <td><?php echo e(ucfirst($usuario->usertype)); ?></td>
                                     <td>
-                                        @if($usuario->trashed())
+                                        <?php if($usuario->trashed()): ?>
                                             <span class="badge bg-secondary">Eliminado</span>
-                                        @else
-                                            <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
+                                        <?php else: ?>
+                                            <span class="badge <?php echo e($usuario->is_approved ? 'bg-success' : 'bg-warning'); ?>">
+                                                <?php echo e($usuario->is_approved ? 'Aprobado' : 'Pendiente'); ?>
+
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                                            <a href="<?php echo e(route('admin.users')); ?>" class="btn btn-sm btn-info">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            @if($usuario->usertype !== 'admin')
-                                                @if($usuario->trashed())
+                                            <?php if($usuario->usertype !== 'admin'): ?>
+                                                <?php if($usuario->trashed()): ?>
                                                     <!-- Botón para restaurar usuario -->
                                                     <button type="button" class="btn btn-sm btn-success" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#restoreUserModal"
-                                                            data-user-id="{{ $usuario->id }}"
-                                                            data-user-name="{{ $usuario->name }}">
+                                                            data-user-id="<?php echo e($usuario->id); ?>"
+                                                            data-user-name="<?php echo e($usuario->name); ?>">
                                                         <i class="bi bi-arrow-clockwise"></i>
                                                     </button>
-                                                @else
+                                                <?php else: ?>
                                                     <!-- Botón para eliminar usuario -->
                                                     <button type="button" class="btn btn-sm btn-danger" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#deleteUserModal"
-                                                            data-user-id="{{ $usuario->id }}"
-                                                            data-user-name="{{ $usuario->name }}">
+                                                            data-user-id="<?php echo e($usuario->id); ?>"
+                                                            data-user-name="<?php echo e($usuario->name); ?>">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
-                                                @endif
-                                            @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="5" class="text-center">No hay usuarios registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $usuarios->links() }}
+                            <?php echo e($usuarios->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -238,7 +239,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Proyectos</span>
-                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-info">
+                    <a href="<?php echo e(route('projects.my')); ?>" class="btn btn-sm btn-info">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -254,26 +255,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($proyectos as $proyecto)
+                                <?php $__empty_1 = true; $__currentLoopData = $proyectos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $proyecto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $proyecto->name }}</td>
-                                    <td>{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
-                                    <td>{{ $proyecto->users->count() }}</td>
+                                    <td><?php echo e($proyecto->name); ?></td>
+                                    <td><?php echo e($proyecto->creator->name ?? 'Sin responsable'); ?></td>
+                                    <td><?php echo e($proyecto->users->count()); ?></td>
                                     <td>
-                                        <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info">
+                                        <a href="<?php echo e(route('tableros.show', $proyecto->id)); ?>" class="btn btn-sm btn-info">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="4" class="text-center">No hay proyectos registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $proyectos->links() }}
+                            <?php echo e($proyectos->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -285,7 +287,7 @@
             <div class="card admin-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Historial de Cambios</span>
-                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-info">
+                    <a href="<?php echo e(route('historial.index')); ?>" class="btn btn-sm btn-info">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
@@ -302,39 +304,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($historial as $item)
+                                <?php $__empty_1 = true; $__currentLoopData = $historial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
                                     <td>
-                                        <span class="fw-semibold">{{ $item->usuario }}</span>
+                                        <span class="fw-semibold"><?php echo e($item->usuario); ?></span>
                                     </td>
                                     <td>
-                                        {{ $item->accion }}
+                                        <?php echo e($item->accion); ?>
+
                                     </td>
                                     <td>
-                                        <span title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
+                                        <span title="<?php echo e(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles)); ?>"><?php echo e(\Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40)); ?></span>
                                     </td>
                                     <!-- <td>
-                                        @if($item->sprint)
-                                            <span class="badge bg-info text-dark">#{{ $item->sprint }}</span>
-                                        @else
+                                        <?php if($item->sprint): ?>
+                                            <span class="badge bg-info text-dark">#<?php echo e($item->sprint); ?></span>
+                                        <?php else: ?>
                                             <span class="text-muted">N/A</span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td> -->
                                     <td>
-                                        <span title="{{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s') }}">
-                                            {{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans() }}
+                                        <span title="<?php echo e($item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s')); ?>">
+                                            <?php echo e($item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans()); ?>
+
                                         </span>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="5" class="text-center">No hay historial registrado</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $historial->links() }}
+                            <?php echo e($historial->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -362,13 +367,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($sprints as $sprint)
+                                <?php $__empty_1 = true; $__currentLoopData = $sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td>{{ $sprint->nombre }}</td>
-                                    <td>{{ $sprint->proyecto->name ?? 'N/A' }}</td>
+                                    <td><?php echo e($sprint->nombre); ?></td>
+                                    <td><?php echo e($sprint->proyecto->name ?? 'N/A'); ?></td>
                                     <td>
-                                        <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
-                                            {{ ucfirst($sprint->estado) }}
+                                        <span class="badge <?php echo e($sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning')); ?>">
+                                            <?php echo e(ucfirst($sprint->estado)); ?>
+
                                         </span>
                                     </td>
                                     <td>
@@ -377,15 +383,16 @@
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="4" class="text-center">No hay sprints registrados</td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="pagination-container">
-                            {{ $sprints->links() }}
+                            <?php echo e($sprints->links()); ?>
+
                         </div>
                     </div>
                 </div>
@@ -416,8 +423,8 @@
                 <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
                     <form id="deleteUserForm" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
                         <button type="submit" class="btn btn-danger">
                             Eliminar
                         </button>
@@ -445,7 +452,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="restoreUserForm" method="POST" class="d-inline">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-arrow-clockwise me-1"></i> Restaurar Usuario
                     </button>
@@ -455,9 +462,9 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // JavaScript para manejar modales de eliminación y restauración de usuarios
@@ -664,4 +671,5 @@
             );
         });
     </script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/users/admin/homeadmin.blade.php ENDPATH**/ ?>

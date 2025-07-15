@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('historias', function (Blueprint $table) {
-         if (!Schema::hasColumn('historias', 'codigo')) {
-            $table->string('codigo')->nullable()->after('id');
-        }
-    });
+        Schema::table('nuevo_proyecto', function (Blueprint $table) {
+            $table->string('color')->nullable();
+        });
     }
 
     /**
@@ -23,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('historias', function (Blueprint $table) {
+        Schema::table('nuevo_proyecto', function (Blueprint $table) {
             //
         });
     }

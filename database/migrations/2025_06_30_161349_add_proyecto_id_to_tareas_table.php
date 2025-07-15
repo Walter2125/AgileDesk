@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tareas', function (Blueprint $table) {
-        $table->unsignedBigInteger('proyecto_id')->nullable();
+        if (!Schema::hasColumn('tareas', 'proyecto_id')) {
+    $table->unsignedBigInteger('proyecto_id')->nullable();
+}
 
-        $table->foreign('proyecto_id')->references('id')->on('nuevo_proyecto')->onDelete('cascade');
+
+        if (!Schema::hasColumn('tareas', 'proyecto_id')) {
+    $table->foreign('proyecto_id')->references('id')->on('nuevo_proyecto')->onDelete('cascade');
+}
+
     });
     }
 
