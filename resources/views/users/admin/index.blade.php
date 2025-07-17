@@ -138,6 +138,46 @@
         border-top: 1px solid #efe9e9;
         padding: 1.5rem;
     }
+
+    /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
+    .modal {
+        z-index: 9999 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 9998 !important;
+    }
+
+    /* Mejorar centrado de modales */
+    .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 3rem);
+        margin: 1.5rem auto;
+    }
+
+    .modal-content {
+        border-radius: 0.5rem;
+        border: none;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+        max-width: 90vw;
+    }
+
+    /* Responsive para modales */
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin: 1rem;
+            max-width: calc(100% - 2rem);
+            min-height: calc(100vh - 2rem);
+        }
+        
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 1rem;
+        }
+    }
     
 </style>
 @endsection
@@ -266,7 +306,7 @@
 
 <!-- Modal de Aprobación -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">
@@ -307,7 +347,7 @@
 
 <!-- Modal de Rechazo -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">
@@ -349,7 +389,7 @@
 
 <!-- Modal de Detalle -->
 <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="userDetailModalLabel">
@@ -417,39 +457,79 @@
 
 @section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Variables globales para los modales
-    let currentUserId = null;
-    let currentUserData = {};
-
-    // Búsqueda en tiempo real
-    const searchInput = document.getElementById('searchUsers');
-    if (searchInput) {
-        let typingTimer;
-        
-        searchInput.addEventListener('keyup', function() {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                const searchTerm = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(searchTerm) ? '' : 'none';
-                });
-            }, 300);
-        });
-
-        searchInput.addEventListener('keydown', function() {
-            clearTimeout(typingTimer);
-        });
+// Prevenir errores de extensiones del navegador
+window.addEventListener('error', function(e) {
+    if (e.filename && (e.filename.includes('extension') || e.filename.includes('chrome-extension') || e.filename.includes('moz-extension'))) {
+        e.preventDefault();
+        return;
     }
+});
 
-    // Seleccionar todos los checkboxes
-    const selectAllCheckbox = document.getElementById('selectAll');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.user-checkbox');
+window.addEventListener('unhandledrejection', function(e) {
+    if (e.reason && e.reason.message && 
+        (e.reason.message.includes('permission error') || 
+         e.reason.message.includes('extension') ||
+         e.reason.code === 403)) {
+        e.preventDefault();
+        return;
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        // Variables globales para los modales
+        let currentUserId = null;
+        let currentUserData = {};
+
+        // Búsqueda en tiempo real
+        const searchInput = document.getElementById('searchUsers');
+        if (searchInput) {
+            let typingTimer;
+            
+            searchInput.addEventListener('keyup', function() {
+                try {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(() => {
+                        const searchTerm = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
+                        
+                        rows.forEach(row => {
+                            try {
+                                const text = row.textContent.toLowerCase();
+                                row.style.display = text.includes(searchTerm) ? '' : 'none';
+                            } catch (error) {
+                                console.error('Error al filtrar fila:', error);
+                            }
+                        });
+                    }, 300);
+                } catch (error) {
+                    console.error('Error en búsqueda:', error);
+                }
+            });
+
+            searchInput.addEventListener('keydown', function() {
+                try {
+                    clearTimeout(typingTimer);
+                } catch (error) {
+                    console.error('Error en keydown:', error);
+                }
+            });
+        }
+
+        // Seleccionar todos los checkboxes
+        const selectAllCheckbox = document.getElementById('selectAll');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                try {
+                    const checkboxes = document.querySelectorAll('.user-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                } catch (error) {
+                    console.error('Error en selectAll:', error);
+                }
+            });
+        }
             checkboxes.forEach(checkbox => {
                 checkbox.checked = this.checked;
             });
@@ -651,17 +731,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modal) {
             modal.addEventListener('hidden.bs.modal', function() {
                 // Resetear botones de envío
-                const submitBtn = modal.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.classList.remove('loading');
-                    submitBtn.disabled = false;
-                    
-                    if (submitBtn.id === 'approveSubmitBtn') {
-                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Aprobar Usuario';
-                    } else if (submitBtn.id === 'rejectSubmitBtn') {
-                        submitBtn.innerHTML = '<i class="bi bi-x-lg me-1"></i>Rechazar Usuario';
+                    // Limpiar formularios
+                    const form = modal.querySelector('form');
+                    if (form) {
+                        form.reset();
                     }
+                } catch (error) {
+                    console.error('Error al limpiar modal:', error);
                 }
+            });
+        }
+    });
+    } catch (error) {
+        console.error('Error general en DOMContentLoaded:', error);
+    }
+});
+</script>
+@endsection     }
                 
                 // Limpiar formularios
                 const form = modal.querySelector('form');
