@@ -47,9 +47,9 @@
                                 <tbody>
                                     @foreach ($deletedUsers as $user)
                                         <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3">
+                                            <td title="{{ $user->name }}">
+                                                <div class="user-info-container">
+                                                    <div class="avatar-sm flex-shrink-0">
                                                         @if ($user->photo)
                                                             <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto de perfil" class="rounded-circle" style="width: 2.5rem; height: 2.5rem; object-fit: cover; border: 2px solid #dc3545;">
                                                         @else
@@ -58,12 +58,12 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                    <div>
+                                                    <div class="user-name">
                                                         <h6 class="mb-0 text-muted">{{ $user->name }}</h6>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="text-muted">{{ $user->email }}</td>
+                                            <td class="text-muted" title="{{ $user->email }}">{{ $user->email }}</td>
                                             <td>
                                                 <span class="badge bg-secondary">
                                                     {{ ucfirst($user->usertype) }}
@@ -135,7 +135,7 @@
 
 <!-- Modal de Restauración -->
 <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title" id="restoreModalLabel">
@@ -172,7 +172,7 @@
 
 <!-- Modal de Eliminación Permanente -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel">
@@ -250,50 +250,239 @@
 .modal-header.bg-danger .btn-close-white {
     filter: brightness(0) invert(1);
 }
+
+/* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
+.modal {
+    z-index: 9999 !important;
+}
+
+.modal-backdrop {
+    z-index: 9998 !important;
+}
+
+/* Mejorar centrado de modales */
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 3rem);
+    margin: 1.5rem auto;
+}
+
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    max-width: 90vw;
+}
+
+/* SOLUCIONAR DEFORMACIÓN DE TABLA CON TEXTO LARGO */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Truncar texto largo en las celdas de la tabla */
+.table td {
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Anchos específicos para cada columna */
+.table td:nth-child(1) { /* Usuario */
+    max-width: 200px;
+    min-width: 150px;
+}
+
+.table td:nth-child(2) { /* Email */
+    max-width: 250px;
+    min-width: 180px;
+}
+
+.table td:nth-child(3) { /* Rol */
+    max-width: 100px;
+    min-width: 80px;
+    white-space: normal; /* Permitir wrap para badges */
+}
+
+.table td:nth-child(4) { /* Eliminado En */
+    max-width: 150px;
+    min-width: 120px;
+    white-space: normal; /* Permitir wrap para fechas */
+}
+
+.table td:nth-child(5) { /* Acciones */
+    max-width: 120px;
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+/* Tooltips para mostrar texto completo */
+.table td[title] {
+    cursor: help;
+}
+
+/* Estilo para el nombre del usuario con avatar */
+.user-info-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.user-name {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive: ajustar en pantallas pequeñas */
+@media (max-width: 768px) {
+    .table td:nth-child(1) {
+        max-width: 120px;
+        min-width: 100px;
+    }
+    
+    .table td:nth-child(2) {
+        max-width: 150px;
+        min-width: 120px;
+    }
+    
+    .table td:nth-child(4) {
+        max-width: 120px;
+        min-width: 100px;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+        min-height: calc(100vh - 2rem);
+    }
+}
+
+/* Mejorar apariencia del modal en móviles */
+@media (max-width: 576px) {
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
 </style>
 
 <script>
+// Prevenir errores de extensiones del navegador
+window.addEventListener('error', function(e) {
+    if (e.filename && (e.filename.includes('extension') || e.filename.includes('chrome-extension') || e.filename.includes('moz-extension'))) {
+        e.preventDefault();
+        return;
+    }
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+    if (e.reason && e.reason.message && 
+        (e.reason.message.includes('permission error') || 
+         e.reason.message.includes('extension') ||
+         e.reason.code === 403)) {
+        e.preventDefault();
+        return;
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Modal de Restauración
-    const restoreModal = document.getElementById('restoreModal');
-    const restoreForm = document.getElementById('restoreForm');
-    const restoreUserName = document.getElementById('restoreUserName');
-    
-    restoreModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const userId = button.getAttribute('data-user-id');
-        const userName = button.getAttribute('data-user-name');
+    try {
+        // Modal de Restauración
+        const restoreModal = document.getElementById('restoreModal');
+        const restoreForm = document.getElementById('restoreForm');
+        const restoreUserName = document.getElementById('restoreUserName');
         
-        // Actualizar el contenido del modal
-        restoreUserName.textContent = userName;
-        restoreForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/restore`);
-    });
-    
-    // Modal de Eliminación
-    const deleteModal = document.getElementById('deleteModal');
-    const deleteForm = document.getElementById('deleteForm');
-    const deleteUserName = document.getElementById('deleteUserName');
-    
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const userId = button.getAttribute('data-user-id');
-        const userName = button.getAttribute('data-user-name');
+        if (restoreModal) {
+            restoreModal.addEventListener('show.bs.modal', function(event) {
+                try {
+                    const button = event.relatedTarget;
+                    const userId = button?.getAttribute('data-user-id');
+                    const userName = button?.getAttribute('data-user-name');
+                    
+                    // Actualizar el contenido del modal
+                    if (restoreUserName && userName) {
+                        restoreUserName.textContent = userName;
+                    }
+                    if (restoreForm && userId) {
+                        restoreForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/restore`);
+                    }
+                } catch (error) {
+                    console.error('Error en modal de restauración:', error);
+                }
+            });
+        }
         
-        // Actualizar el contenido del modal
-        deleteUserName.textContent = userName;
-        deleteForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/permanent-delete`);
-    });
-    
-    // Opcional: Cerrar modal después del envío exitoso
-    restoreForm.addEventListener('submit', function() {
-        const modal = bootstrap.Modal.getInstance(restoreModal);
-        setTimeout(() => modal.hide(), 100);
-    });
-    
-    deleteForm.addEventListener('submit', function() {
-        const modal = bootstrap.Modal.getInstance(deleteModal);
-        setTimeout(() => modal.hide(), 100);
-    });
+        // Modal de Eliminación
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteUserName = document.getElementById('deleteUserName');
+        
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function(event) {
+                try {
+                    const button = event.relatedTarget;
+                    const userId = button?.getAttribute('data-user-id');
+                    const userName = button?.getAttribute('data-user-name');
+                    
+                    // Actualizar el contenido del modal
+                    if (deleteUserName && userName) {
+                        deleteUserName.textContent = userName;
+                    }
+                    if (deleteForm && userId) {
+                        deleteForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/permanent-delete`);
+                    }
+                } catch (error) {
+                    console.error('Error en modal de eliminación:', error);
+                }
+            });
+        }
+        
+        // Opcional: Cerrar modal después del envío exitoso
+        if (restoreForm) {
+            restoreForm.addEventListener('submit', function() {
+                try {
+                    const modal = bootstrap.Modal.getInstance(restoreModal);
+                    if (modal) {
+                        setTimeout(() => modal.hide(), 100);
+                    }
+                } catch (error) {
+                    console.error('Error al cerrar modal de restauración:', error);
+                }
+            });
+        }
+        
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function() {
+                try {
+                    const modal = bootstrap.Modal.getInstance(deleteModal);
+                    if (modal) {
+                        setTimeout(() => modal.hide(), 100);
+                    }
+                } catch (error) {
+                    console.error('Error al cerrar modal de eliminación:', error);
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error en DOMContentLoaded:', error);
+    }
 });
 </script>
 @endsection

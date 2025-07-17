@@ -1,9 +1,36 @@
-<div class="col-md-6 col-lg-4 mb-4">
-    <div id="project-{{ $project->id }}" class="project-card card h-100 position-relative"
-         style="background-color: {{ $project->color ?? '#ffffff' }};">
+<div class="col-md-6 col-lg-4 mb-4 project-card-container">
+    <div id="project-{{ $project->id }}" class="project-card card h-100 position-relative w-100"
+         style="background-color: {{ $project->color ?? '#ffffff' }}; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 
         <!-- Botón de opciones (tres puntitos) -->
-        <div x-data="{ open: false }" class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+        <div id="color-picker-{{ $project->id }}" 
+             x-data='{ 
+                open: false, 
+                projectColor: "{{ $project->color ?? '#ffffff' }}", 
+                guardarColor() { 
+                    const url = "{{ route('projects.cambiarColor', $project->id) }}";
+                    const data = { color: this.projectColor };
+                    const headers = {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").getAttribute("content")
+                    };
+                    
+                    fetch(url, {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            document.getElementById("project-{{ $project->id }}").style.backgroundColor = this.projectColor;
+                            this.open = false;
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+                }
+             }'
+             class="position-absolute top-0 end-0 p-2" 
+             style="z-index: 10;">
             <button @click="open = !open" class="btn btn-sm btn-light border-0">
                 &#x22EE;
             </button>
@@ -14,13 +41,11 @@
                  x-transition
                  x-cloak
                  class="position-absolute end-0 mt-2 bg-white border rounded shadow p-3"
-                 style="z-index: 20; width: 220px;"
-                 x-data="colorPicker({{ $project->id }}, @json(route('projects.cambiarColor', $project->id)))">
+                 style="z-index: 20; width: 220px;">
 
                 <label class="form-label">Seleccionar color:</label>
                 <input type="color"
-                       x-model="color"
-                       value="{{ $project->color ?? '#ffffff' }}"
+                       x-model="projectColor"
                        class="form-control form-control-color"
                        style="width: 100%;">
 
@@ -82,44 +107,4 @@
         </div>
     </div>
 </div>
-
-<script>
-function colorPicker(projectId, url) {
-    return {
-        color: @json($project->color ?? '#ffffff'),
-        async guardarColor() {
-            console.log('Enviando color:', this.color, 'a', url);
-
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'X-CSRF-TOKEN': token,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ color: this.color })
-                });
-
-                if (response.ok) {
-                    document.querySelector(`#project-${projectId}`).style.backgroundColor = this.color;
-                    alert('Color aplicado exitosamente.');
-                } else {
-                    const data = await response.json().catch(() => ({}));
-                    alert('Error al aplicar el color. ' + (data.message || ''));
-                }
-            } catch (error) {
-                alert('Error de conexión: ' + error.message);
-            }
-        }
-    }
-}
-
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
 

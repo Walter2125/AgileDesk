@@ -382,18 +382,23 @@
     width: 100%;
 }
 
-/* Modal styles */
+/* Modal styles - Optimizado para centrado perfecto */
 .modal-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 9999;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .modal-overlay.active {
@@ -404,44 +409,65 @@
 .modal-container {
     background: white;
     border-radius: var(--border-radius);
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 900px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    transform: translateY(20px);
-    transition: all 0.3s ease;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 .modal-overlay.active .modal-container {
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
 }
 
 .modal-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 2rem 2rem 1rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: #f8fafc;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .modal-title {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
     margin: 0;
     color: var(--github-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
     cursor: pointer;
     color: var(--github-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #e2e8f0;
+    color: var(--github-text);
+    transform: scale(1.05);
 }
 
 .modal-body {
-    padding: 1.5rem;
+    padding: 2rem;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
 }
 
 .contributor-modal-avatar {
@@ -553,7 +579,12 @@
 .user-details-header {
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
 .user-info {
@@ -561,14 +592,16 @@
 }
 
 .user-name {
-    font-size: 1.5rem;
-    margin: 0 0 0.25rem 0;
-    color: #24292e;
+    font-size: 1.75rem;
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+    font-weight: 700;
 }
 
 .user-email {
-    color: #586069;
+    color: #64748b;
     margin: 0;
+    font-size: 1rem;
 }
 
 .stories-container {
@@ -576,37 +609,58 @@
 }
 
 .story-item {
-    background: #f6f8fa;
-    border-radius: 8px;
-    padding: 1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid #e1e4e8;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.story-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
 .story-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 .story-title {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    color: #0366d6;
+    color: #0ea5e9;
     margin: 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    flex: 1;
+}
+
+.story-title:hover {
+    color: #0284c7;
+    text-decoration: underline;
 }
 
 .story-status {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
 .story-description {
-    color: #586069;
-    margin-bottom: 1rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 .tasks-list {
@@ -756,7 +810,7 @@
     animation: loading 1.5s infinite;
 }
 
-/* Responsive design */
+/* Responsive design - MEJORADO */
 @media (max-width: 768px) {
     .hero-section {
         min-height: 35vh;
@@ -811,6 +865,39 @@
     .contributions-grid {
         grid-template-columns: 1fr;
     }
+    
+    /* Modal responsive */
+    .modal-overlay {
+        padding: 10px;
+    }
+    
+    .modal-container {
+        max-width: 100%;
+        width: 100%;
+        max-height: 95vh;
+    }
+    
+    .modal-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .user-details-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .user-details-header > div:last-child {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
@@ -838,7 +925,32 @@
     }
 
     .modal-container {
-        width: 95%;
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .user-details-header > div:last-child {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .story-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .story-status {
+        align-self: flex-end;
     }
 }
     </style>
@@ -854,7 +966,7 @@
             @if(isset($proyecto_actual))
                 <!-- Selector de proyecto -->
                 <div class="project-selector">
-                    <label for="projectSelect">Proyecto:</label>
+                    <label id="projectSelect-label">Proyecto:</label>
                     <select id="projectSelect" onchange="window.location.href = '/homeuser/' + this.value">
                         @foreach($proyectos_usuario as $project)
                             <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
@@ -995,15 +1107,26 @@
     @endauth
 </div>
 
-<!-- Modal de detalles de contribuciones -->
+<!-- Modal de detalles de contribuciones - OPTIMIZADO -->
 <div class="modal-overlay" id="contributorModal">
-    <div class="modal-container" style="max-width: 800px;">
+    <div class="modal-container">
         <div class="modal-header">
-            <h3 class="modal-title">Detalles de Contribuciones</h3>
-            <button class="modal-close" id="closeModal">&times;</button>
+            <h3 class="modal-title">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Detalles de Contribuciones
+            </h3>
+            <button class="modal-close" id="closeModal" aria-label="Cerrar modal">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
         <div class="modal-body">
-            <div id="contributorModalContent"></div>
+            <div id="contributorModalContent">
+                <!-- El contenido se carga dinámicamente aquí -->
+            </div>
         </div>
     </div>
 </div>
@@ -1021,6 +1144,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Datos del servidor
     const userContributions = @json($user_contributions ?? []);
     const projectId = @json($proyecto_actual->id ?? null);
+    
+    // Debug inicial
+    console.log('=== INICIALIZACIÓN ===');
+    console.log('userContributions cargado:', userContributions);
+    console.log('Número de usuarios:', Object.keys(userContributions).length);
+    console.log('projectId:', projectId);
+    console.log('Tipo de userContributions:', typeof userContributions);
+    
+    // Verificar si está vacío
+    if (Object.keys(userContributions).length === 0) {
+        console.warn('⚠️ userContributions está vacío - revisar controlador');
+    }
     
     // Función para crear el avatar del usuario
     function createUserAvatar(user, size = 80) {
@@ -1055,60 +1190,157 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>`;
 }
     
-    // Función para crear el contenido de tareas con acordeón
+    // Función para crear el contenido de tareas con acordeón - MEJORADA
     function createTasksAccordion(story) {
         const accordionId = `accordion-${story.id}`;
-        const taskCount = story.tareas?.length || 0;
+        const tasks = story.tareas || [];
+        const taskCount = tasks.length;
+        const completedTasks = tasks.filter(t => t.completada).length;
         
-        let tasksHtml = '<li>No hay tareas asignadas</li>';
+        let tasksHtml = `
+            <li style="text-align: center; padding: 2rem; color: #64748b; font-style: italic;">
+                <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom: 0.5rem; opacity: 0.5;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <div>No hay tareas asignadas para esta historia</div>
+            </li>
+        `;
+        
         if (taskCount > 0) {
-            tasksHtml = story.tareas.map(task => `<li>${task.nombre}</li>`).join('');
+            tasksHtml = tasks.map((task, index) => {
+                const completedIcon = task.completada 
+                    ? '<svg width="16" height="16" fill="#10b981" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+                    : '<svg width="16" height="16" fill="#6b7280" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
+                
+                const taskStyle = task.completada 
+                    ? 'text-decoration: line-through; color: #9ca3af;'
+                    : 'color: #374151;';
+                
+                const assigneeInfo = task.user 
+                    ? `<span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #6b7280;">
+                         ${task.user.photo ? `<img src="${task.user.photo}" alt="${task.user.name}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">` : `<div style="width: 20px; height: 20px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">${task.user.name.charAt(0)}</div>`}
+                         ${task.user.name}
+                       </span>`
+                    : '<span style="font-size: 0.875rem; color: #9ca3af;">o</span>';
+                
+                return `
+                    <li style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f3f4f6; animation: fadeInUp 0.2s ease ${index * 0.05}s both;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                            ${completedIcon}
+                            <span style="${taskStyle} font-weight: 500;">${task.nombre}</span>
+                        </div>
+                        ${assigneeInfo}
+                    </li>
+                `;
+            }).join('');
         }
         
+        const progressPercentage = taskCount > 0 ? Math.round((completedTasks / taskCount) * 100) : 0;
+        const progressColor = progressPercentage === 100 ? '#10b981' : progressPercentage > 50 ? '#3b82f6' : '#f59e0b';
+        
         return `
-            <div class="tasks-accordion">
-                <button class="accordion-toggle" type="button" data-target="#${accordionId}">
-                    <span>Tareas</span>
-                    <div class="task-counter">
-                        <span class="counter-badge">${taskCount}</span>
-                        <svg class="chevron-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="tasks-accordion" style="margin-top: 1rem;">
+                <button class="accordion-toggle" type="button" data-target="#${accordionId}" style="
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1rem;
+                    background: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                " onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-weight: 600; color: #374151;">Tareas</span>
+                        ${taskCount > 0 ? `
+                        ` : ''}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: ${taskCount > 0 ? '#3b82f6' : '#9ca3af'}; color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; min-width: 24px; text-align: center;">
+                            ${taskCount}
+                        </span>
+                        <svg class="chevron-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: transform 0.2s ease;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </div>
                 </button>
-                <div id="${accordionId}" class="accordion-content">
-                    <ul class="tasks-list">${tasksHtml}</ul>
+                <div id="${accordionId}" class="accordion-content" style="
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.3s ease;
+                    border: 1px solid #e2e8f0;
+                    border-top: none;
+                    border-radius: 0 0 8px 8px;
+                    background: white;
+                ">
+                    <ul style="list-style: none; margin: 0; padding: 1rem;">${tasksHtml}</ul>
                 </div>
             </div>
         `;
     }
     
-    // Función para crear el contenido del modal
+    // Función para crear el contenido del modal - MEJORADA
     function createModalContent(userData) {
-        if (!userData?.user) {
-            return '<div class="alert alert-warning">No se encontraron datos para este usuario.</div>';
+        console.log('Datos del usuario:', userData); // Debug
+        
+        if (!userData || !userData.user) {
+            return `
+                <div class="alert alert-warning" style="margin: 2rem; padding: 1.5rem; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #92400e;">⚠️ Sin datos</h4>
+                    <p style="margin: 0; color: #92400e;">No se encontraron datos para este usuario.</p>
+                </div>
+            `;
         }
         
         const { user, stories = [] } = userData;
-        const userAvatar = createUserAvatar(user);
+        const userAvatar = createUserAvatar(user, 100);
         
-        let storiesHtml = '<p class="no-stories">No hay historias asignadas</p>';
+        console.log('Historias encontradas:', stories.length); // Debug
+        
+        // Estadísticas del usuario
+        const totalHistorias = stories.length;
+        const tareasCompletadas = stories.reduce((total, story) => {
+            return total + (story.tareas?.filter(t => t.completada).length || 0);
+        }, 0);
+        const totalTareas = stories.reduce((total, story) => total + (story.tareas?.length || 0), 0);
+        
+        // Estadísticas por estado
+        const estadoStats = {
+            'Pendiente': stories.filter(s => s.columna?.nombre === 'Pendiente').length,
+            'En progreso': stories.filter(s => s.columna?.nombre === 'En progreso').length,
+            'Listo': stories.filter(s => s.columna?.nombre === 'Listo').length
+        };
+        
+        let storiesHtml = `
+            <div style="text-align: center; padding: 3rem; color: #64748b;">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom: 1rem; opacity: 0.5;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h4 style="margin: 0 0 0.5rem 0;">No hay historias asignadas</h4>
+                <p style="margin: 0;">Este usuario aún no tiene historias asignadas en el proyecto.</p>
+            </div>
+        `;
         
         if (stories.length > 0) {
-            storiesHtml = stories.map(story => {
+            storiesHtml = stories.map((story, index) => {
                 const statusMap = {
-                    'En progreso': { class: 'status-progress', text: 'En progreso' },
-                    'Listo': { class: 'status-ready', text: 'Listo' }
+                    'Pendiente': { class: 'status-pending', text: 'Pendiente', color: '#f59e0b' },
+                    'En progreso': { class: 'status-progress', text: 'En progreso', color: '#3b82f6' },
+                    'Listo': { class: 'status-ready', text: 'Listo', color: '#10b981' }
                 };
-                const status = statusMap[story.columna?.nombre] || { class: 'status-pending', text: 'Pendiente' };
+                const status = statusMap[story.columna?.nombre] || statusMap['Pendiente'];
                 
                 return `
-                    <div class="story-item">
+                    <div class="story-item" style="animation: fadeInUp 0.3s ease ${index * 0.1}s both;">
                         <div class="story-header">
-                            <a href="/historas/${story.id}/show" class="story-title">${story.nombre}</a>
-                            <span class="story-status ${status.class}">${status.text}</span>
+                            <a href="/historas/${story.id}/show" class="story-title" style="text-decoration: none; color: #0ea5e9; font-size: 1.2rem; font-weight: 600; margin: 0; transition: color 0.2s ease; flex: 1;" onmouseover="this.style.color='#0284c7'; this.style.textDecoration='underline'" onmouseout="this.style.color='#0ea5e9'; this.style.textDecoration='none'">${story.nombre || 'Sin título'}</a>
+                            <span class="story-status ${status.class}" style="background: ${status.color}; color: white;">
+                                ${status.text}
+                            </span>
                         </div>
-                        <p class="story-description">${story.descripcion || 'Sin descripción'}</p>
+                        <p class="story-description">${story.descripcion || 'Sin descripción disponible.'}</p>
                         ${createTasksAccordion(story)}
                     </div>
                 `;
@@ -1121,10 +1353,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="user-info gap-3">
                     <h3 class="user-name">${user.name}</h3>
                     <p class="user-email">${user.email}</p>
+                    
+                    <!-- Estadísticas del usuario -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: #f1f5f9; border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #0ea5e9;">${totalHistorias}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Historias</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: #f1f5f9; border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #8b5cf6;">${totalTareas}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Tareas</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div class="stories-container">
-                <h4 class="section-title">Historias Asignadas</h4>
+                <h4 class="section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Historias Asignadas (${stories.length})
+                </h4>
                 ${storiesHtml}
             </div>
         `;
@@ -1211,30 +1461,134 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Event listeners
+    // Event listeners - MEJORADOS CON MEJOR DEBUGGING
     document.addEventListener('click', function(event) {
+        // Manejo del modal de contribuidor
         const contributorItem = event.target.closest('.contributor-item');
         if (contributorItem) {
+            event.preventDefault();
+            
             const userId = contributorItem.dataset.userId;
             const userData = userContributions[userId];
             
-            modalContent.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:200px;"><div class="loading-spinner"></div></div>';
-            modal.classList.add('active');
+            console.log('=== DEBUG MODAL ===');
+            console.log('Usuario seleccionado ID:', userId);
+            console.log('userContributions completo:', userContributions);
+            console.log('Claves disponibles:', Object.keys(userContributions));
+            console.log('Datos del usuario encontrados:', userData);
+            console.log('Tipo de userContributions:', typeof userContributions);
+            console.log('Es array userContributions:', Array.isArray(userContributions));
             
+            // Verificar si los datos existen
+            if (!userData) {
+                console.error('❌ No se encontraron datos para el usuario:', userId);
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                        <h3 style="color: #dc2626; margin-bottom: 1rem;">Error de datos</h3>
+                        <p style="color: #6b7280; margin-bottom: 1rem;">No se encontraron datos para el usuario ID: ${userId}</p>
+                        <details style="text-align: left; background: #f3f4f6; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <summary style="cursor: pointer; font-weight: bold;">Información de debug</summary>
+                            <pre style="font-size: 0.875rem; margin-top: 0.5rem; overflow-x: auto;">
+Datos disponibles: ${JSON.stringify(Object.keys(userContributions), null, 2)}
+userContributions: ${JSON.stringify(userContributions, null, 2)}
+                            </pre>
+                        </details>
+                    </div>
+                `;
+                modal.classList.add('active');
+                return;
+            }
+            
+            // Si hay datos, mostrar loading
+            modalContent.innerHTML = `
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 300px; gap: 1rem;">
+                    <div style="width: 40px; height: 40px; border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <p style="color: #6b7280; margin: 0;">Cargando datos del usuario...</p>
+                    <small style="color: #9ca3af;">Usuario: ${userData.user?.name || 'Desconocido'}</small>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Mostrar contenido real después de un delay más corto
             setTimeout(() => {
-                modalContent.innerHTML = createModalContent(userData);
+                try {
+                    const content = createModalContent(userData);
+                    modalContent.innerHTML = content;
+                    console.log('✅ Modal cargado exitosamente');
+                } catch (error) {
+                    console.error('❌ Error al crear contenido del modal:', error);
+                    modalContent.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                            <h3 style="color: #dc2626; margin-bottom: 1rem;">Error al cargar</h3>
+                            <p style="color: #6b7280;">Error: ${error.message}</p>
+                        </div>
+                    `;
+                }
             }, 300);
+            
+            return;
         }
         
         // Manejo del acordeón
-        handleAccordionToggle(event);
+        const accordionButton = event.target.closest('.accordion-toggle');
+        if (accordionButton) {
+            event.preventDefault();
+            
+            const targetId = accordionButton.getAttribute('data-target');
+            const accordion = document.querySelector(targetId);
+            const chevron = accordionButton.querySelector('.chevron-icon');
+            
+            if (accordion && chevron) {
+                const isActive = accordion.style.maxHeight && accordion.style.maxHeight !== '0px';
+                
+                if (isActive) {
+                    accordion.style.maxHeight = '0px';
+                    chevron.style.transform = 'rotate(0deg)';
+                } else {
+                    accordion.style.maxHeight = accordion.scrollHeight + 'px';
+                    chevron.style.transform = 'rotate(180deg)';
+                }
+            }
+            
+            return;
+        }
     });
     
-    // Cerrar modal
-    const closeModalHandler = () => modal.classList.remove('active');
+    // Cerrar modal - MEJORADO
+    function closeModalHandler() {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar scroll del body
+        
+        // Limpiar contenido después de la animación
+        setTimeout(() => {
+            modalContent.innerHTML = '';
+        }, 300);
+    }
+    
     closeModal.addEventListener('click', closeModalHandler);
+    
+    // Cerrar modal al hacer clic fuera
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModalHandler();
+        if (e.target === modal) {
+            closeModalHandler();
+        }
+    });
+    
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModalHandler();
+        }
     });
     
     // Inicializar gráfico
