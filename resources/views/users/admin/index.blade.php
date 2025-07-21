@@ -726,37 +726,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Limpiar formularios al cerrar modales
-    [approveModal, rejectModal].forEach(modal => {
-        if (modal) {
-            modal.addEventListener('hidden.bs.modal', function() {
-                // Resetear botones de envío
-                    // Limpiar formularios
-                    const form = modal.querySelector('form');
-                    if (form) {
-                        form.reset();
-                    }
-                } catch (error) {
-                    console.error('Error al limpiar modal:', error);
-                }
-            });
-        }
-    });
-    } catch (error) {
-        console.error('Error general en DOMContentLoaded:', error);
-    }
-});
-</script>
-@endsection     }
-                
+   // Limpiar formularios al cerrar modales
+[approveModal, rejectModal].forEach(modal => {
+    if (modal) {
+        modal.addEventListener('hidden.bs.modal', function () {
+            try {
                 // Limpiar formularios
                 const form = modal.querySelector('form');
                 if (form) {
                     form.reset();
                 }
-            });
-        }
-    });
+            } catch (error) {
+                console.error('Error al limpiar modal:', error);
+            }
+        });
+    }
 });
+
+                
 </script>
 @endsection
