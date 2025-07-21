@@ -10,22 +10,21 @@
         </div>
 
         @forelse ($proyecto->sprints as $sprint)
-            <!-- CARD DEL SPRINT -->
+            <!-- CARD DEL SPRINT trabajad4 todo con soft delete -->
             <div class="card mb-2 p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <strong>{{ $sprint->nombre }}</strong><br>
                         <small class="text-muted">Inicio: {{ $sprint->fecha_inicio }} | Fin: {{ $sprint->fecha_fin }}</small>
                     </div>
-                    <!-- <div class="d-flex gap-2">
+                   <div class="d-flex gap-2">
                         <a href="{{ route('sprints.edit', $sprint->id) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i> Editar
+                            <i class="bi bi-pencil"></i>
                         </a>
-                        -->
 
                         <!-- Botón para abrir el modal -->
                         <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarSprint{{ $sprint->id }}">
-                            <i class="bi bi-trash"></i> Eliminar
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -59,7 +58,7 @@
                 </div>
             </div>
         @empty
-            <!-- MENSAJE CUANDO NO HAY SPRINTS -->
+
             <div class="alert alert-info">
                 No hay sprints registrados en este proyecto.
             </div>

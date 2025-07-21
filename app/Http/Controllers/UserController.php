@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\HistorialCambio;
 use App\Models\Tarea;
 
-
 class UserController extends Controller
 {
     public function index(Request $request, $projectId = null)
