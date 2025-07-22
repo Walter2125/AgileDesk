@@ -138,6 +138,152 @@
             outline: none;
             box-shadow: 0 0 0 0.15rem rgba(74,144,226,0.25);
         }
+
+        /* Estilos para truncar texto largo en las tablas */
+        .admin-table td {
+            max-width: 200px; /* Ancho máximo para las celdas */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Columnas específicas con anchos personalizados */
+        .admin-table td:nth-child(1) { /* Columna Nombre */
+            max-width: 150px;
+        }
+
+        .admin-table td:nth-child(2) { /* Columna Email */
+            max-width: 180px;
+        }
+
+        .admin-table td:nth-child(3) { /* Columna Rol */
+            max-width: 100px;
+        }
+
+        .admin-table td:nth-child(4) { /* Columna Estado */
+            max-width: 120px;
+        }
+
+        .admin-table td:nth-child(5) { /* Columna Acciones */
+            max-width: 120px;
+            white-space: nowrap; /* Evitar que los botones se envuelvan */
+        }
+
+        /* Tooltip para mostrar el texto completo al hacer hover */
+        .admin-table td[title] {
+            cursor: help;
+        }
+
+        /* Estilos específicos para nombres de usuario con badges */
+        .user-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 150px;
+        }
+
+        .user-name-text {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+        /* Responsive: ajustar anchos en pantallas pequeñas */
+        @media (max-width: 768px) {
+            .admin-table td:nth-child(1) {
+                max-width: 120px;
+            }
+            
+            .admin-table td:nth-child(2) {
+                max-width: 140px;
+            }
+            
+            .admin-table td:nth-child(3) {
+                max-width: 80px;
+            }
+        }
+
+        /* Configuración específica para cada tabla */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Tabla de historial con columnas específicas */
+        .admin-table.historial-table td:nth-child(1) { /* Usuario */
+            max-width: 130px;
+        }
+
+        .admin-table.historial-table td:nth-child(2) { /* Acción */
+            max-width: 140px;
+        }
+
+        .admin-table.historial-table td:nth-child(3) { /* Detalles */
+            max-width: 200px;
+        }
+
+        .admin-table.historial-table td:nth-child(4) { /* Fecha */
+            max-width: 120px;
+        }
+
+        /* Tabla de proyectos */
+        .admin-table.proyectos-table td:nth-child(1) { /* Nombre */
+            max-width: 180px;
+        }
+
+        .admin-table.proyectos-table td:nth-child(2) { /* Responsable */
+            max-width: 150px;
+        }
+
+        /* Tabla de sprints */
+        .admin-table.sprints-table td:nth-child(1) { /* Nombre */
+            max-width: 160px;
+        }
+
+        .admin-table.sprints-table td:nth-child(2) { /* Proyecto */
+            max-width: 150px;
+        }
+
+        /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
+        .modal {
+            z-index: 9999 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 9998 !important;
+        }
+
+        /* Mejorar centrado de modales */
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 3rem);
+            margin: 1.5rem auto;
+        }
+
+        .modal-content {
+            border-radius: 0.5rem;
+            border: none;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+            max-width: 90vw;
+        }
+
+        /* Responsive para modales */
+        @media (max-width: 576px) {
+            .modal-dialog {
+                margin: 1rem;
+                max-width: calc(100% - 2rem);
+                min-height: calc(100vh - 2rem);
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1rem;
+            }
+        }
     </style>
 @stop
 @section('content')
@@ -172,14 +318,16 @@
                             <tbody>
                                 @forelse($usuarios as $usuario)
                                 <tr class="{{ $usuario->trashed() ? 'table-secondary' : '' }}">
-                                    <td>
-                                        {{ $usuario->name }}
-                                        @if($usuario->trashed())
-                                            <span class="badge bg-secondary ms-1">Eliminado</span>
-                                        @endif
+                                    <td title="{{ $usuario->name }}">
+                                        <div class="user-name-cell">
+                                            <span class="user-name-text">{{ $usuario->name }}</span>
+                                            @if($usuario->trashed())
+                                                <span class="badge bg-secondary ms-1">Eliminado</span>
+                                            @endif
+                                        </div>
                                     </td>
-                                    <td>{{ $usuario->email }}</td>
-                                    <td>{{ ucfirst($usuario->usertype) }}</td>
+                                    <td title="{{ $usuario->email }}">{{ $usuario->email }}</td>
+                                    <td title="{{ ucfirst($usuario->usertype) }}">{{ ucfirst($usuario->usertype) }}</td>
                                     <td>
                                         @if($usuario->trashed())
                                             <span class="badge bg-secondary">Eliminado</span>
@@ -244,7 +392,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table proyectos-table">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -256,8 +404,8 @@
                             <tbody>
                                 @forelse($proyectos as $proyecto)
                                 <tr>
-                                    <td>{{ $proyecto->name }}</td>
-                                    <td>{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
+                                    <td title="{{ $proyecto->name }}">{{ $proyecto->name }}</td>
+                                    <td title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
                                     <td>{{ $proyecto->users->count() }}</td>
                                     <td>
                                         <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info">
@@ -291,7 +439,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table align-middle">
+                        <table class="table table-hover admin-table historial-table align-middle">
                             <thead>
                                 <tr>
                                     <th>Usuario</th>
@@ -304,14 +452,14 @@
                             <tbody>
                                 @forelse($historial as $item)
                                 <tr>
-                                    <td>
+                                    <td title="{{ $item->usuario }}">
                                         <span class="fw-semibold">{{ $item->usuario }}</span>
                                     </td>
-                                    <td>
+                                    <td title="{{ $item->accion }}">
                                         {{ $item->accion }}
                                     </td>
-                                    <td>
-                                        <span title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
+                                    <td title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">
+                                        <span>{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
                                     </td>
                                     <!-- <td>
                                         @if($item->sprint)
@@ -352,7 +500,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table sprints-table">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -364,8 +512,8 @@
                             <tbody>
                                 @forelse($sprints as $sprint)
                                 <tr>
-                                    <td>{{ $sprint->nombre }}</td>
-                                    <td>{{ $sprint->proyecto->name ?? 'N/A' }}</td>
+                                    <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
+                                    <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td>
                                         <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
                                             {{ ucfirst($sprint->estado) }}
@@ -396,7 +544,7 @@
 
 <!-- Modal para confirmar eliminación de usuario -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow">
             <div class="modal-header border-bottom-0">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -432,7 +580,7 @@
 
 <!-- Modal para confirmar restauración de usuario -->
 <div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="restoreUserModalLabel">Confirmar Restauración</h5>
@@ -459,89 +607,153 @@
 
 @section('scripts')
     <script>
+        // Prevenir errores de extensiones del navegador
+        window.addEventListener('error', function(e) {
+            // Silenciar errores de extensiones del navegador
+            if (e.filename && (e.filename.includes('extension') || e.filename.includes('chrome-extension') || e.filename.includes('moz-extension'))) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        // Prevenir errores de promesas rechazadas por extensiones
+        window.addEventListener('unhandledrejection', function(e) {
+            if (e.reason && e.reason.message && 
+                (e.reason.message.includes('permission error') || 
+                 e.reason.message.includes('extension') ||
+                 e.reason.code === 403)) {
+                e.preventDefault();
+                return;
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
-            // JavaScript para manejar modales de eliminación y restauración de usuarios
-            
-            // Modal de eliminación de usuario
-            const deleteUserModal = document.getElementById('deleteUserModal');
-            if (deleteUserModal) {
-                deleteUserModal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget;
-                    const userId = button.getAttribute('data-user-id');
-                    const userName = button.getAttribute('data-user-name');
-                    
-                    // Actualizar el contenido del modal
-                    document.getElementById('deleteUserName').textContent = userName;
-                    
-                    // Actualizar la acción del formulario
-                    const form = document.getElementById('deleteUserForm');
-                    form.action = `/admin/users/${userId}/delete`;
-                });
-            }
-            
-            // Modal de restauración de usuario  
-            const restoreUserModal = document.getElementById('restoreUserModal');
-            if (restoreUserModal) {
-                restoreUserModal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget;
-                    const userId = button.getAttribute('data-user-id');
-                    const userName = button.getAttribute('data-user-name');
-                    
-                    // Actualizar el contenido del modal
-                    document.getElementById('restoreUserName').textContent = userName;
-                    
-                    // Actualizar la acción del formulario
-                    const form = document.getElementById('restoreUserForm');
-                    form.action = `/admin/users/${userId}/restore`;
-                });
-            }
-            
-            // Referencias a los elementos DOM existentes
-            const searchInput = document.getElementById('searchProjects');
-            const searchButton = document.getElementById('btnSearchProjects');
-            const projectRows = document.querySelectorAll('.project-row');
+            try {
+                // JavaScript para manejar modales de eliminación y restauración de usuarios
+                
+                // Modal de eliminación de usuario
+                const deleteUserModal = document.getElementById('deleteUserModal');
+                if (deleteUserModal) {
+                    deleteUserModal.addEventListener('show.bs.modal', function (event) {
+                        try {
+                            const button = event.relatedTarget;
+                            const userId = button.getAttribute('data-user-id');
+                            const userName = button.getAttribute('data-user-name');
+                            
+                            // Actualizar el contenido del modal
+                            const deleteUserNameEl = document.getElementById('deleteUserName');
+                            if (deleteUserNameEl) {
+                                deleteUserNameEl.textContent = userName;
+                            }
+                            
+                            // Actualizar la acción del formulario
+                            const form = document.getElementById('deleteUserForm');
+                            if (form && userId) {
+                                form.action = `/admin/users/${userId}/delete`;
+                            }
+                        } catch (error) {
+                            console.error('Error en modal de eliminación:', error);
+                        }
+                    });
+                }
+                
+                // Modal de restauración de usuario  
+                const restoreUserModal = document.getElementById('restoreUserModal');
+                if (restoreUserModal) {
+                    restoreUserModal.addEventListener('show.bs.modal', function (event) {
+                        try {
+                            const button = event.relatedTarget;
+                            const userId = button.getAttribute('data-user-id');
+                            const userName = button.getAttribute('data-user-name');
+                            
+                            // Actualizar el contenido del modal
+                            const restoreUserNameEl = document.getElementById('restoreUserName');
+                            if (restoreUserNameEl) {
+                                restoreUserNameEl.textContent = userName;
+                            }
+                            
+                            // Actualizar la acción del formulario
+                            const form = document.getElementById('restoreUserForm');
+                            if (form && userId) {
+                                form.action = `/admin/users/${userId}/restore`;
+                            }
+                        } catch (error) {
+                            console.error('Error en modal de restauración:', error);
+                        }
+                    });
+                }
+                
+                // Referencias a los elementos DOM existentes
+                const searchInput = document.getElementById('searchProjects');
+                const searchButton = document.getElementById('btnSearchProjects');
+                const projectRows = document.querySelectorAll('.project-row');
 
-            // Función para filtrar proyectos
-            function filterProjects() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
+                // Función para filtrar proyectos
+                function filterProjects() {
+                    try {
+                        if (!searchInput) return;
+                        
+                        const searchTerm = searchInput.value.toLowerCase().trim();
 
-                projectRows.forEach(row => {
-                    const projectName = row.querySelector('td:first-child').textContent.toLowerCase();
-                    const projectManager = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                        projectRows.forEach(row => {
+                            try {
+                                const projectName = row.querySelector('td:first-child')?.textContent?.toLowerCase() || '';
+                                const projectManager = row.querySelector('td:nth-child(2)')?.textContent?.toLowerCase() || '';
 
-                    // Si el texto de búsqueda está en el nombre del proyecto o en el responsable
-                    if (projectName.includes(searchTerm) || projectManager.includes(searchTerm)) {
-                        row.style.display = ''; // Mostrar la fila
-                    } else {
-                        row.style.display = 'none'; // Ocultar la fila
+                                // Si el texto de búsqueda está en el nombre del proyecto o en el responsable
+                                if (projectName.includes(searchTerm) || projectManager.includes(searchTerm)) {
+                                    row.style.display = ''; // Mostrar la fila
+                                } else {
+                                    row.style.display = 'none'; // Ocultar la fila
+                                }
+                            } catch (error) {
+                                console.error('Error al filtrar fila:', error);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error en filterProjects:', error);
                     }
-                });
-            }
+                }
 
-            // Event listeners
-            if (searchButton) {
-                searchButton.addEventListener('click', filterProjects);
-            }
+                // Event listeners
+                if (searchButton) {
+                    searchButton.addEventListener('click', filterProjects);
+                }
 
-            // También filtrar mientras se escribe (después de un pequeño delay)
-            if (searchInput) {
-                let typingTimer;
-                searchInput.addEventListener('keyup', function() {
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(filterProjects, 500); // Esperar 500ms después de que el usuario deje de escribir
-                });
+                // También filtrar mientras se escribe (después de un pequeño delay)
+                if (searchInput) {
+                    let typingTimer;
+                    searchInput.addEventListener('keyup', function() {
+                        try {
+                            clearTimeout(typingTimer);
+                            typingTimer = setTimeout(filterProjects, 500); // Esperar 500ms después de que el usuario deje de escribir
+                        } catch (error) {
+                            console.error('Error en keyup:', error);
+                        }
+                    });
 
-                // Limpiar el timer si se sigue escribiendo
-                searchInput.addEventListener('keydown', function() {
-                    clearTimeout(typingTimer);
-                });
+                    // Limpiar el timer si se sigue escribiendo
+                    searchInput.addEventListener('keydown', function() {
+                        try {
+                            clearTimeout(typingTimer);
+                        } catch (error) {
+                            console.error('Error en keydown:', error);
+                        }
+                    });
 
-                // Filtrar también al presionar Enter
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        filterProjects();
-                    }
-                });
+                    // Filtrar también al presionar Enter
+                    searchInput.addEventListener('keypress', function(e) {
+                        try {
+                            if (e.key === 'Enter') {
+                                filterProjects();
+                            }
+                        } catch (error) {
+                            console.error('Error en keypress:', error);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en DOMContentLoaded:', error);
             }
         });
     </script>
@@ -549,119 +761,149 @@
     <script>
         // Función de configuración de paginación para cualquier tabla
         function setupTablePagination(tableId, rowSelector, paginationId, rowsPerPage = 5) {
-            const tableBody = document.getElementById(tableId);
-            const pagination = document.getElementById(paginationId);
-            
-            if (!tableBody || !pagination) return;
-            
-            const rows = tableBody.querySelectorAll(rowSelector);
+            try {
+                const tableBody = document.getElementById(tableId);
+                const pagination = document.getElementById(paginationId);
+                
+                if (!tableBody || !pagination) return;
+                
+                const rows = tableBody.querySelectorAll(rowSelector);
 
-            // Calcular número de páginas
-            const pageCount = Math.ceil(rows.length / rowsPerPage);
-            
-            if (pageCount <= 1) {
-                pagination.style.display = 'none';
-                return;
-            }
+                // Calcular número de páginas
+                const pageCount = Math.ceil(rows.length / rowsPerPage);
+                
+                if (pageCount <= 1) {
+                    pagination.style.display = 'none';
+                    return;
+                }
 
-            // Limpiar paginación existente
-            pagination.innerHTML = '';
+                // Limpiar paginación existente
+                pagination.innerHTML = '';
 
-            // Botón Anterior
-            const prevLi = document.createElement('li');
-            prevLi.classList.add('page-item');
-            prevLi.innerHTML = '<a class="page-link" href="#">&laquo;</a>';
-            pagination.appendChild(prevLi);
+                // Botón Anterior
+                const prevLi = document.createElement('li');
+                prevLi.classList.add('page-item');
+                prevLi.innerHTML = '<a class="page-link" href="#">&laquo;</a>';
+                pagination.appendChild(prevLi);
 
-            // Páginas numeradas
-            for (let i = 1; i <= pageCount; i++) {
-                const li = document.createElement('li');
-                li.classList.add('page-item');
-                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                // Páginas numeradas
+                for (let i = 1; i <= pageCount; i++) {
+                    const li = document.createElement('li');
+                    li.classList.add('page-item');
+                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
 
-                if (i === 1) li.classList.add('active');
+                    if (i === 1) li.classList.add('active');
 
-                li.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showTablePage(tableBody, rows, i, rowsPerPage);
+                    li.addEventListener('click', function(e) {
+                        try {
+                            e.preventDefault();
+                            showTablePage(tableBody, rows, i, rowsPerPage);
 
-                    // Actualizar clase activa
-                    const pageItems = pagination.querySelectorAll('.page-item');
-                    pageItems.forEach(item => item.classList.remove('active'));
-                    this.classList.add('active');
+                            // Actualizar clase activa
+                            const pageItems = pagination.querySelectorAll('.page-item');
+                            pageItems.forEach(item => item.classList.remove('active'));
+                            this.classList.add('active');
+                        } catch (error) {
+                            console.error('Error en click de página:', error);
+                        }
+                    });
+
+                    pagination.appendChild(li);
+                }
+
+                // Botón Siguiente
+                const nextLi = document.createElement('li');
+                nextLi.classList.add('page-item');
+                nextLi.innerHTML = '<a class="page-link" href="#">&raquo;</a>';
+                pagination.appendChild(nextLi);
+
+                // Configurar eventos para prev/next
+                prevLi.addEventListener('click', function(e) {
+                    try {
+                        e.preventDefault();
+                        const activeItem = pagination.querySelector('.page-item.active');
+                        if (activeItem && activeItem.previousElementSibling && activeItem.previousElementSibling.classList.contains('page-item')) {
+                            const prevLink = activeItem.previousElementSibling.querySelector('.page-link');
+                            if (prevLink) prevLink.click();
+                        }
+                    } catch (error) {
+                        console.error('Error en botón anterior:', error);
+                    }
                 });
 
-                pagination.appendChild(li);
+                nextLi.addEventListener('click', function(e) {
+                    try {
+                        e.preventDefault();
+                        const activeItem = pagination.querySelector('.page-item.active');
+                        if (activeItem && activeItem.nextElementSibling && activeItem.nextElementSibling.classList.contains('page-item')) {
+                            const nextLink = activeItem.nextElementSibling.querySelector('.page-link');
+                            if (nextLink) nextLink.click();
+                        }
+                    } catch (error) {
+                        console.error('Error en botón siguiente:', error);
+                    }
+                });
+
+                // Mostrar primera página al inicio
+                showTablePage(tableBody, rows, 1, rowsPerPage);
+            } catch (error) {
+                console.error('Error en setupTablePagination:', error);
             }
-
-            // Botón Siguiente
-            const nextLi = document.createElement('li');
-            nextLi.classList.add('page-item');
-            nextLi.innerHTML = '<a class="page-link" href="#">&raquo;</a>';
-            pagination.appendChild(nextLi);
-
-            // Configurar eventos para prev/next
-            prevLi.addEventListener('click', function(e) {
-                e.preventDefault();
-                const activeItem = pagination.querySelector('.page-item.active');
-                if (activeItem && activeItem.previousElementSibling && activeItem.previousElementSibling.classList.contains('page-item')) {
-                    activeItem.previousElementSibling.querySelector('.page-link').click();
-                }
-            });
-
-            nextLi.addEventListener('click', function(e) {
-                e.preventDefault();
-                const activeItem = pagination.querySelector('.page-item.active');
-                if (activeItem && activeItem.nextElementSibling && activeItem.nextElementSibling.classList.contains('page-item')) {
-                    activeItem.nextElementSibling.querySelector('.page-link').click();
-                }
-            });
-
-            // Mostrar primera página al inicio
-            showTablePage(tableBody, rows, 1, rowsPerPage);
         }
 
         // Función para mostrar una página específica
         function showTablePage(tableBody, rows, page, rowsPerPage) {
-            // Ocultar todas las filas
-            rows.forEach(row => {
-                row.style.display = 'none';
-            });
+            try {
+                // Ocultar todas las filas
+                rows.forEach(row => {
+                    if (row && row.style) {
+                        row.style.display = 'none';
+                    }
+                });
 
-            // Calcular rango de filas para la página actual
-            const startIndex = (page - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, rows.length);
+                // Calcular rango de filas para la página actual
+                const startIndex = (page - 1) * rowsPerPage;
+                const endIndex = Math.min(startIndex + rowsPerPage, rows.length);
 
-            // Mostrar filas de la página actual
-            for (let i = startIndex; i < endIndex; i++) {
-                rows[i].style.display = '';
+                // Mostrar filas de la página actual
+                for (let i = startIndex; i < endIndex; i++) {
+                    if (rows[i] && rows[i].style) {
+                        rows[i].style.display = '';
+                    }
+                }
+            } catch (error) {
+                console.error('Error en showTablePage:', error);
             }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Configuración de paginación para la tabla de proyectos
-            setupTablePagination(
-                'projectsTableBody',
-                '.project-row',
-                'projectsPagination',
-                5
-            );
+            try {
+                // Configuración de paginación para la tabla de proyectos
+                setupTablePagination(
+                    'projectsTableBody',
+                    '.project-row',
+                    'projectsPagination',
+                    5
+                );
 
-            // Configuración de paginación para la tabla de historias
-            setupTablePagination(
-                'historiasTableBody',
-                '.historia-row',
-                'historiasPagination',
-                5
-            );
+                // Configuración de paginación para la tabla de historias
+                setupTablePagination(
+                    'historiasTableBody',
+                    '.historia-row',
+                    'historiasPagination',
+                    5
+                );
 
-            // Configuración específica para la tabla de actividad reciente
-            setupTablePagination(
-                'activityTableBody',
-                '.activity-row',
-                'activityPagination',
-                5
-            );
+                // Configuración específica para la tabla de actividad reciente
+                setupTablePagination(
+                    'activityTableBody',
+                    '.activity-row',
+                    'activityPagination',
+                    5
+                );
+            } catch (error) {
+                console.error('Error en configuración de paginación:', error);
+            }
         });
     </script>
 @stop

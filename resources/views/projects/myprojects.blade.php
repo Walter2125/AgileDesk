@@ -10,6 +10,10 @@
 <style>
     .projects-container {
         margin-top: 2rem;
+        /* Remover cualquier padding lateral para usar el del contenedor padre */
+        /* Esto permite que el contenido se alinee con las migas de pan */
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .project-card {
@@ -244,7 +248,7 @@ h1.page-title {
 @endsection
 
 @section('content')
-<div class="container projects-container">
+<div class="projects-container">
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
