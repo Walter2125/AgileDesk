@@ -27,22 +27,6 @@
         justify-content: center;
     }
 
-    .alert-flash {
-        border-left: 4px solid;
-        animation: fadeInOut 5s ease-in-out;
-    }
-    
-    .alert-flash.alert-success { 
-        border-left-color: #28a745; 
-    }
-    
-    @keyframes fadeInOut {
-        0% { opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { opacity: 0; }
-    }
-
     .user-avatar {
         width: 40px;
         height: 40px;
@@ -119,6 +103,14 @@
     }
 
     /* Modal personalizado */
+    .modal {
+        z-index: 1600 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1599 !important;
+    }
+
     .modal-content {
         border-radius: 8px;
         border: none;
@@ -139,15 +131,6 @@
         padding: 1.5rem;
     }
 
-    /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
-    .modal {
-        z-index: 9999 !important;
-    }
-
-    .modal-backdrop {
-        z-index: 9998 !important;
-    }
-
     /* Mejorar centrado de modales */
     .modal-dialog {
         display: flex;
@@ -155,13 +138,6 @@
         justify-content: center;
         min-height: calc(100vh - 3rem);
         margin: 1.5rem auto;
-    }
-
-    .modal-content {
-        border-radius: 0.5rem;
-        border: none;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-        max-width: 90vw;
     }
 
     /* Responsive para modales */
@@ -186,13 +162,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            @if(session('success'))
-                <div class="alert alert-success alert-flash d-flex align-items-center" role="alert">
-                    <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                    <div>{{ session('success') }}</div>
-                </div>
-            @endif
-
             <div class="card admin-card mb-4">
                 <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <div>
@@ -206,12 +175,6 @@
                             <i class="bi bi-search"></i>
                             <input type="text" id="searchUsers" class="form-control form-control-sm search-input" placeholder="Buscar usuarios...">
                         </div>
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
-                            <i class="bi bi-people me-1"></i><span>Ver Todos</span>
-                        </a>
-                        <button onclick="location.reload()" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                            <i class="bi bi-arrow-clockwise me-1"></i><span>Actualizar</span>
-                        </button>
                     </div>
                 </div>
 
@@ -457,79 +420,39 @@
 
 @section('scripts')
 <script>
-// Prevenir errores de extensiones del navegador
-window.addEventListener('error', function(e) {
-    if (e.filename && (e.filename.includes('extension') || e.filename.includes('chrome-extension') || e.filename.includes('moz-extension'))) {
-        e.preventDefault();
-        return;
-    }
-});
-
-window.addEventListener('unhandledrejection', function(e) {
-    if (e.reason && e.reason.message && 
-        (e.reason.message.includes('permission error') || 
-         e.reason.message.includes('extension') ||
-         e.reason.code === 403)) {
-        e.preventDefault();
-        return;
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function() {
-    try {
-        // Variables globales para los modales
-        let currentUserId = null;
-        let currentUserData = {};
+    // Variables globales para los modales
+    let currentUserId = null;
+    let currentUserData = {};
 
-        // Búsqueda en tiempo real
-        const searchInput = document.getElementById('searchUsers');
-        if (searchInput) {
-            let typingTimer;
-            
-            searchInput.addEventListener('keyup', function() {
-                try {
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(() => {
-                        const searchTerm = this.value.toLowerCase();
-                        const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
-                        
-                        rows.forEach(row => {
-                            try {
-                                const text = row.textContent.toLowerCase();
-                                row.style.display = text.includes(searchTerm) ? '' : 'none';
-                            } catch (error) {
-                                console.error('Error al filtrar fila:', error);
-                            }
-                        });
-                    }, 300);
-                } catch (error) {
-                    console.error('Error en búsqueda:', error);
-                }
-            });
+    // Búsqueda en tiempo real
+    const searchInput = document.getElementById('searchUsers');
+    if (searchInput) {
+        let typingTimer;
+        
+        searchInput.addEventListener('keyup', function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            }, 300);
+        });
 
-            searchInput.addEventListener('keydown', function() {
-                try {
-                    clearTimeout(typingTimer);
-                } catch (error) {
-                    console.error('Error en keydown:', error);
-                }
-            });
-        }
+        searchInput.addEventListener('keydown', function() {
+            clearTimeout(typingTimer);
+        });
+    }
 
-        // Seleccionar todos los checkboxes
-        const selectAllCheckbox = document.getElementById('selectAll');
-        if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
-                try {
-                    const checkboxes = document.querySelectorAll('.user-checkbox');
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
-                    });
-                } catch (error) {
-                    console.error('Error en selectAll:', error);
-                }
-            });
-        }
+    // Seleccionar todos los checkboxes
+    const selectAllCheckbox = document.getElementById('selectAll');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.user-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = this.checked;
             });
@@ -714,35 +637,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Alertas temporales con auto-hide
-    const flashAlerts = document.querySelectorAll('.alert-flash');
-    if (flashAlerts.length) {
-        setTimeout(() => {
-            flashAlerts.forEach(alert => {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.3s ease-in-out';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }, 5000);
-    }
-
-   // Limpiar formularios al cerrar modales
-[approveModal, rejectModal].forEach(modal => {
-    if (modal) {
-        modal.addEventListener('hidden.bs.modal', function () {
-            try {
+    // Limpiar formularios al cerrar modales
+    [approveModal, rejectModal].forEach(modal => {
+        if (modal) {
+            modal.addEventListener('hidden.bs.modal', function() {
+                // Resetear botones de envío
+                const submitBtn = modal.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    
+                    if (submitBtn.id === 'approveSubmitBtn') {
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Aprobar Usuario';
+                    } else if (submitBtn.id === 'rejectSubmitBtn') {
+                        submitBtn.innerHTML = '<i class="bi bi-x-lg me-1"></i>Rechazar Usuario';
+                    }
+                }
+                
                 // Limpiar formularios
                 const form = modal.querySelector('form');
                 if (form) {
                     form.reset();
                 }
-            } catch (error) {
-                console.error('Error al limpiar modal:', error);
-            }
-        });
-    }
+            });
+        }
+    });
 });
-
-                
 </script>
 @endsection

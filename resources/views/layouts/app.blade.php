@@ -477,7 +477,7 @@
             margin: 0 !important;
         }
         
-        .breadcrumb-wrapper {
+        .breadcrumb-container {
             padding: 0.25rem 0.5rem !important;
         }
         
@@ -530,7 +530,7 @@
     }
     
     /* Contenedor de migas de pan */
-    .breadcrumb-wrapper {
+    .breadcrumb-container {
         margin-top: 0;
         padding-top: 0.5rem;
     }
@@ -634,7 +634,7 @@
             margin-top: 0 !important;
         }
         
-        .breadcrumb-wrapper {
+        .breadcrumb-container {
             padding-top: 0 !important;
             margin-top: 0.25rem !important;
         }
@@ -679,7 +679,7 @@
             margin-top: 0 !important;
         }
         
-        .breadcrumb-wrapper {
+        .breadcrumb-container {
             padding-top: 0.25rem !important;
             padding-bottom: 0 !important;
         }
@@ -1010,24 +1010,6 @@
 
     .alert p {
         margin: 0.5rem 0 0 0 !important;
-    }
-
-    /* Fix para modales - asegurar que aparezcan por encima del navbar */
-    .modal {
-        z-index: 1600 !important;
-    }
-
-    .modal-backdrop {
-        z-index: 1550 !important;
-    }
-
-    .modal-dialog {
-        z-index: 1650 !important;
-    }
-
-    /* Asegurar que los dropdowns también aparezcan correctamente */
-    .dropdown-menu {
-        z-index: 1500 !important;
     }
 
     /* Dispositivos muy pequeños (menos de 320px) */
