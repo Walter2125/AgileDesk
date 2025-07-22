@@ -96,10 +96,6 @@ class ViewServiceProvider extends ServiceProvider
                 ],
 
                 // Home user / profile
-                'homeuser' => [
-                    ['label' => 'Inicio',      'url' => route('dashboard')],
-                    ['label' => 'Mi tablero',  'url' => route('homeuser')],
-                ],
                 'profile.edit' => [
                     ['label' => 'Inicio',      'url' => route('dashboard')],
                     ['label' => 'Perfil',      'url' => route('profile.edit')],
@@ -320,7 +316,7 @@ class ViewServiceProvider extends ServiceProvider
                     return [
                         ['label' => 'Inicio', 'url' => route('dashboard')],
                         ['label' => 'Mis proyectos', 'url' => route('projects.my')],
-                        ['label' => 'Tablero' . ($project ? ' - ' . $project->name : '')],
+                        ['label' => 'Tablero'],
                     ];
                 },
                 'columnas.store'     => 'tableros.show',
@@ -409,10 +405,98 @@ class ViewServiceProvider extends ServiceProvider
                     return $breadcrumbs;
                 },
 
+                // Administración
+                'homeadmin' => [
+                    ['label' => 'Inicio', 'url' => route('dashboard')],
+                    ['label' => 'Panel de Administración'],
+                ],
+
                 // Sprints
-                'sprints.store' => 'tableros.show',
-                'sprints.update' => 'tableros.show',
-                'sprints.destroy' => 'tableros.show',
+                'sprints.index' => function() {
+                    $currentRoute = Route::current();
+                    
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Sprints'],
+                        ];
+                    }
+
+                    $projectParam = $currentRoute->parameter('project');
+                    $project = null;
+
+                    if (is_numeric($projectParam)) {
+                        try {
+                            $project = Project::find($projectParam);
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando proyecto para sprints: ' . $e->getMessage());
+                        }
+                    } elseif (is_object($projectParam)) {
+                        $project = $projectParam;
+                    }
+
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                    ];
+
+                    if ($project) {
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => route('tableros.show', ['project' => $project->id])];
+                    } else {
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => '#'];
+                    }
+
+                    $breadcrumbs[] = ['label' => 'Sprints'];
+                    return $breadcrumbs;
+                },
+                'sprints.edit' => function() {
+                    $currentRoute = Route::current();
+                    
+                    if (!$currentRoute) {
+                        return [
+                            ['label' => 'Inicio', 'url' => route('dashboard')],
+                            ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                            ['label' => 'Editar Sprint'],
+                        ];
+                    }
+
+                    $sprintParam = $currentRoute->parameter('sprint');
+                    $sprint = null;
+
+                    if (is_numeric($sprintParam)) {
+                        try {
+                            $sprint = \App\Models\Sprint::with('tablero.proyecto')->find($sprintParam);
+                        } catch (\Exception $e) {
+                            Log::error('Error cargando sprint para edición: ' . $e->getMessage());
+                        }
+                    } elseif (is_object($sprintParam)) {
+                        $sprint = $sprintParam;
+                        if (!$sprint->relationLoaded('tablero')) {
+                            $sprint->load('tablero.proyecto');
+                        }
+                    }
+
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                        ['label' => 'Mis proyectos', 'url' => route('projects.my')],
+                    ];
+
+                    if ($sprint && $sprint->tablero && $sprint->tablero->proyecto) {
+                        $project = $sprint->tablero->proyecto;
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => route('tableros.show', ['project' => $project->id])];
+                        $breadcrumbs[] = ['label' => 'Sprints', 'url' => route('sprints.index', ['project' => $project->id])];
+                    } else {
+                        $breadcrumbs[] = ['label' => 'Tablero', 'url' => '#'];
+                        $breadcrumbs[] = ['label' => 'Sprints', 'url' => '#'];
+                    }
+
+                    $breadcrumbs[] = ['label' => 'Editar Sprint'];
+                    return $breadcrumbs;
+                },
+                'sprints.store' => 'sprints.index',
+                'sprints.update' => 'sprints.edit',
+                'sprints.destroy' => 'sprints.index',
             ];
 
             // Normalizar atajos de rutas
