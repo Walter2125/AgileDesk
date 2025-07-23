@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('mensaje-superior')
-    Tablero de {{ $project->name }}
+    {{ $project->name }}
 @endsection
 
 @section('content')

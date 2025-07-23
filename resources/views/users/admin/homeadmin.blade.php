@@ -101,6 +101,116 @@
             border-radius: 0 0.25rem 0.25rem 0;
         }
 
+        /* Estilos para buscadores mejorados */
+        .search-container {
+            margin-bottom: 1rem;
+        }
+
+        .search-container .input-group {
+            max-width: 400px;
+        }
+
+        .search-container .form-control {
+            border: 1px solid #ced4da;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .search-container .form-control:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .search-container .btn-outline-secondary {
+            border-color: #ced4da;
+            color: #6c757d;
+            background-color: #f8f9fa;
+        }
+
+        .search-container .btn-outline-secondary:hover {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            color: white;
+        }
+
+        /* Estilos para buscadores en headers */
+        .card-header .input-group {
+            min-width: 250px;
+        }
+
+        .card-header .form-control-sm {
+            font-size: 0.875rem;
+            border: 1px solid #ced4da;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .card-header .form-control-sm:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 0.1rem rgba(74, 144, 226, 0.25);
+            outline: none;
+        }
+
+        .card-header .btn-outline-secondary {
+            border-color: #ced4da;
+            color: #6c757d;
+            background-color: #fff;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .card-header .btn-outline-secondary:hover,
+        .card-header .btn-outline-secondary:focus {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            color: white;
+        }
+
+        /* Responsive para headers con buscadores */
+        @media (max-width: 768px) {
+            .card-header.flex-wrap {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 1rem !important;
+            }
+            
+            .card-header .d-flex.align-items-center {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
+            }
+            
+            .card-header .input-group {
+                width: 100% !important;
+                min-width: auto;
+            }
+            
+            .card-header .btn-group {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header .d-flex.align-items-center {
+                gap: 0.75rem !important;
+            }
+            
+            .card-header span {
+                font-size: 1rem;
+                font-weight: bold;
+            }
+        }
+
+        /* Resaltar filas filtradas */
+        .highlighted-row {
+            background-color: rgba(74, 144, 226, 0.1) !important;
+        }
+
+        /* Indicador de sin resultados */
+        .no-results-row {
+            text-align: center;
+            font-style: italic;
+            color: #6c757d;
+        }
+
         /* Integración con la plantilla Tabler/Bootstrap */
         .page-header {
             padding-bottom: 1rem;
@@ -292,8 +402,17 @@
         <!-- Usuarios -->
         <div class="col-12 mb-3">
             <div class="card admin-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Usuarios</span>
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <span>Usuarios</span>
+                        <!-- Buscador para usuarios -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" id="searchUsuarios" placeholder="Buscar usuarios...">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchUsuarios">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="btn-group" role="group">
                         <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
                             <i class="bi bi-people"></i> Ver Todos
@@ -315,9 +434,9 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="usuariosTableBody">
                                 @forelse($usuarios as $usuario)
-                                <tr class="{{ $usuario->trashed() ? 'table-secondary' : '' }}">
+                                <tr class="usuario-row {{ $usuario->trashed() ? 'table-secondary' : '' }}">
                                     <td title="{{ $usuario->name }}">
                                         <div class="user-name-cell">
                                             <span class="user-name-text">{{ $usuario->name }}</span>
@@ -384,8 +503,17 @@
         <!-- Proyectos -->
         <div class="col-12 mb-3">
             <div class="card admin-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Proyectos</span>
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <span>Proyectos</span>
+                        <!-- Buscador para proyectos -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" id="searchProyectos" placeholder="Buscar proyectos...">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchProyectos">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
                     <a href="{{ route('projects.my') }}" class="btn btn-sm btn-info">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
@@ -401,9 +529,9 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="proyectosTableBody">
                                 @forelse($proyectos as $proyecto)
-                                <tr>
+                                <tr class="proyecto-row">
                                     <td title="{{ $proyecto->name }}">{{ $proyecto->name }}</td>
                                     <td title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
                                     <td>{{ $proyecto->users->count() }}</td>
@@ -431,8 +559,17 @@
         <!-- Historial -->
         <div class="col-12 mb-3">
             <div class="card admin-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Historial de Cambios</span>
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <span>Historial de Cambios</span>
+                        <!-- Buscador para historial -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" id="searchHistorial" placeholder="Buscar historial...">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchHistorial">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
                     <a href="{{ route('historial.index') }}" class="btn btn-sm btn-info">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
@@ -449,9 +586,9 @@
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="historialTableBody">
                                 @forelse($historial as $item)
-                                <tr>
+                                <tr class="historial-row">
                                     <td title="{{ $item->usuario }}">
                                         <span class="fw-semibold">{{ $item->usuario }}</span>
                                     </td>
@@ -492,8 +629,17 @@
         <!-- Sprints -->
         <div class="col-12 mb-3">
             <div class="card admin-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Sprints</span>
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <span>Sprints</span>
+                        <!-- Buscador para sprints -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" id="searchSprints" placeholder="Buscar sprints...">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchSprints">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
                     <a href="#" class="btn btn-sm btn-info">
                         <i class="bi bi-flag"></i> Ver Todos
                     </a>
@@ -509,9 +655,9 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="sprintsTableBody">
                                 @forelse($sprints as $sprint)
-                                <tr>
+                                <tr class="sprint-row">
                                     <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
                                     <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td>
@@ -683,74 +829,182 @@
                     });
                 }
                 
-                // Referencias a los elementos DOM existentes
-                const searchInput = document.getElementById('searchProjects');
-                const searchButton = document.getElementById('btnSearchProjects');
-                const projectRows = document.querySelectorAll('.project-row');
+                // Referencias a los elementos DOM existentes - Actualizado para múltiples buscadores
+                const searchInputs = {
+                    usuarios: document.getElementById('searchUsuarios'),
+                    proyectos: document.getElementById('searchProyectos'),
+                    historial: document.getElementById('searchHistorial'),
+                    sprints: document.getElementById('searchSprints')
+                };
 
-                // Función para filtrar proyectos
-                function filterProjects() {
+                const searchButtons = {
+                    usuarios: document.getElementById('btnSearchUsuarios'),
+                    proyectos: document.getElementById('btnSearchProyectos'),
+                    historial: document.getElementById('btnSearchHistorial'),
+                    sprints: document.getElementById('btnSearchSprints')
+                };
+
+                const tableRows = {
+                    usuarios: document.querySelectorAll('.usuario-row'),
+                    proyectos: document.querySelectorAll('.proyecto-row'),
+                    historial: document.querySelectorAll('.historial-row'),
+                    sprints: document.querySelectorAll('.sprint-row')
+                };
+
+                // Función genérica para filtrar tablas
+                function filterTable(tableType, searchColumns) {
                     try {
-                        if (!searchInput) return;
+                        const searchInput = searchInputs[tableType];
+                        const rows = tableRows[tableType];
+                        
+                        if (!searchInput || !rows) return;
                         
                         const searchTerm = searchInput.value.toLowerCase().trim();
+                        let visibleRows = 0;
 
-                        projectRows.forEach(row => {
+                        rows.forEach(row => {
                             try {
-                                const projectName = row.querySelector('td:first-child')?.textContent?.toLowerCase() || '';
-                                const projectManager = row.querySelector('td:nth-child(2)')?.textContent?.toLowerCase() || '';
-
-                                // Si el texto de búsqueda está en el nombre del proyecto o en el responsable
-                                if (projectName.includes(searchTerm) || projectManager.includes(searchTerm)) {
-                                    row.style.display = ''; // Mostrar la fila
+                                let shouldShow = false;
+                                
+                                // Si no hay término de búsqueda, mostrar todo
+                                if (searchTerm === '') {
+                                    shouldShow = true;
                                 } else {
-                                    row.style.display = 'none'; // Ocultar la fila
+                                    // Buscar en las columnas especificadas
+                                    for (let columnIndex of searchColumns) {
+                                        const cell = row.querySelector(`td:nth-child(${columnIndex})`);
+                                        if (cell) {
+                                            const cellText = cell.textContent.toLowerCase();
+                                            if (cellText.includes(searchTerm)) {
+                                                shouldShow = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (shouldShow) {
+                                    row.style.display = '';
+                                    row.classList.remove('highlighted-row');
+                                    if (searchTerm !== '') {
+                                        row.classList.add('highlighted-row');
+                                    }
+                                    visibleRows++;
+                                } else {
+                                    row.style.display = 'none';
+                                    row.classList.remove('highlighted-row');
                                 }
                             } catch (error) {
                                 console.error('Error al filtrar fila:', error);
                             }
                         });
+
+                        // Manejar mensaje de "sin resultados"
+                        const tableBody = document.getElementById(`${tableType}TableBody`);
+                        if (tableBody) {
+                            const noResultsRow = tableBody.querySelector('.no-results-message');
+                            
+                            if (visibleRows === 0 && searchTerm !== '') {
+                                if (!noResultsRow) {
+                                    const emptyRow = document.createElement('tr');
+                                    emptyRow.classList.add('no-results-message');
+                                    const columnsCount = tableBody.querySelector('tr')?.children.length || 5;
+                                    emptyRow.innerHTML = `<td colspan="${columnsCount}" class="no-results-row">No se encontraron resultados para "${searchTerm}"</td>`;
+                                    tableBody.appendChild(emptyRow);
+                                }
+                            } else {
+                                if (noResultsRow) {
+                                    noResultsRow.remove();
+                                }
+                            }
+                        }
                     } catch (error) {
-                        console.error('Error en filterProjects:', error);
+                        console.error(`Error en filterTable para ${tableType}:`, error);
                     }
                 }
 
-                // Event listeners
-                if (searchButton) {
-                    searchButton.addEventListener('click', filterProjects);
+                // Función específica para filtrar usuarios (columnas: nombre, email)
+                function filterUsuarios() {
+                    filterTable('usuarios', [1, 2]); // Columnas 1 (nombre) y 2 (email)
                 }
 
-                // También filtrar mientras se escribe (después de un pequeño delay)
-                if (searchInput) {
-                    let typingTimer;
-                    searchInput.addEventListener('keyup', function() {
-                        try {
-                            clearTimeout(typingTimer);
-                            typingTimer = setTimeout(filterProjects, 500); // Esperar 500ms después de que el usuario deje de escribir
-                        } catch (error) {
-                            console.error('Error en keyup:', error);
-                        }
-                    });
+                // Función específica para filtrar proyectos (columnas: nombre, responsable)
+                function filterProyectos() {
+                    filterTable('proyectos', [1, 2]); // Columnas 1 (nombre) y 2 (responsable)
+                }
 
-                    // Limpiar el timer si se sigue escribiendo
-                    searchInput.addEventListener('keydown', function() {
-                        try {
-                            clearTimeout(typingTimer);
-                        } catch (error) {
-                            console.error('Error en keydown:', error);
-                        }
-                    });
+                // Función específica para filtrar historial (columnas: usuario, acción, detalles)
+                function filterHistorial() {
+                    filterTable('historial', [1, 2, 3]); // Columnas 1 (usuario), 2 (acción), 3 (detalles)
+                }
 
-                    // Filtrar también al presionar Enter
-                    searchInput.addEventListener('keypress', function(e) {
-                        try {
-                            if (e.key === 'Enter') {
-                                filterProjects();
+                // Función específica para filtrar sprints (columnas: nombre, proyecto)
+                function filterSprints() {
+                    filterTable('sprints', [1, 2]); // Columnas 1 (nombre) y 2 (proyecto)
+                }
+
+                // Configurar event listeners para todos los buscadores
+                const filterFunctions = {
+                    usuarios: filterUsuarios,
+                    proyectos: filterProyectos,
+                    historial: filterHistorial,
+                    sprints: filterSprints
+                };
+
+                // Configurar eventos para botones de búsqueda
+                Object.keys(searchButtons).forEach(tableType => {
+                    const button = searchButtons[tableType];
+                    const filterFunction = filterFunctions[tableType];
+                    
+                    if (button && filterFunction) {
+                        button.addEventListener('click', filterFunction);
+                    }
+                });
+
+                // Configurar eventos para inputs de búsqueda
+                Object.keys(searchInputs).forEach(tableType => {
+                    const input = searchInputs[tableType];
+                    const filterFunction = filterFunctions[tableType];
+                    
+                    if (input && filterFunction) {
+                        let typingTimer;
+                        
+                        // Filtrar mientras se escribe (con delay)
+                        input.addEventListener('keyup', function() {
+                            try {
+                                clearTimeout(typingTimer);
+                                typingTimer = setTimeout(filterFunction, 300); // Delay de 300ms
+                            } catch (error) {
+                                console.error(`Error en keyup para ${tableType}:`, error);
                             }
-                        } catch (error) {
-                            console.error('Error en keypress:', error);
-                        }
-                    });
+                        });
+
+                        // Limpiar timer al seguir escribiendo
+                        input.addEventListener('keydown', function() {
+                            try {
+                                clearTimeout(typingTimer);
+                            } catch (error) {
+                                console.error(`Error en keydown para ${tableType}:`, error);
+                            }
+                        });
+
+                        // Filtrar al presionar Enter
+                        input.addEventListener('keypress', function(e) {
+                            try {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    filterFunction();
+                                }
+                            } catch (error) {
+                                console.error(`Error en keypress para ${tableType}:`, error);
+                            }
+                        });
+                    }
+                });
+
+                // Función legacy para compatibilidad con código existente
+                function filterProjects() {
+                    filterProyectos();
                 }
             } catch (error) {
                 console.error('Error en DOMContentLoaded:', error);
