@@ -365,21 +365,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
             ], 403);
         }
 
-        // Registrar en el historial antes de mover
-        HistorialCambio::create([
-            'fecha' => now(),
-            'usuario' => auth()->user()->name,
-            'accion' => 'Movimiento de Historia',
-            'detalles' => sprintf(
-                'Historia "%s" movida de %s a %s',
-                $historia->nombre,
-                $columnaOrigen->nombre,
-                $columnaDestino->nombre
-            ),
-            'sprint' => $historia->sprint_id,
-            'proyecto_id' => $historia->proyecto_id
-        ]);
-
+        
         // Actualizar y guardar
         $historia->columna_id = $validated['columna_id'];
         $historia->save();

@@ -34,21 +34,31 @@ class HistorialCambioController extends Controller
         return view('historial.index', compact('historial'));
     }
     
-    public function porProyecto(Project $project)
+
+    public function porProyecto(Project $project, Request $request)
 {
-    // Verificar que el usuario pertenece al proyecto
     if (!auth()->user()->projects->contains($project->id)) {
         abort(403, 'No tienes acceso a este proyecto');
     }
 
-    $historial = HistorialCambio::where('proyecto_id', $project->id)
-        ->orderBy('fecha', 'desc')
-        ->paginate(10);
+    $query = HistorialCambio::where('proyecto_id', $project->id);
 
-    return view('users.colaboradores.historial', [
-        'historial' => $historial,
-        'project' => $project
-    ]);
+    if ($request->filled('busqueda')) {
+        $busqueda = $request->input('busqueda');
+        $query->where(function ($q) use ($busqueda) {
+            $q->where('usuario', 'like', "%{$busqueda}%")
+              ->orWhere('accion', 'like', "%{$busqueda}%")
+              ->orWhere('detalles', 'like', "%{$busqueda}%")
+              ->orWhere('sprint', 'like', "%{$busqueda}%");
+        });
+    }
+
+    $historial = $query->orderBy('fecha', 'desc')->paginate(10);
+    $historial->appends($request->only('busqueda'));
+
+    return view('users.colaboradores.historial', compact('historial', 'project'));
 }
-    
+
+
+
 }
