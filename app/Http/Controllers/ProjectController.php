@@ -291,24 +291,15 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    public function cambiarColor(Request $request, $id)
+    
+    public function cambiarColor(Request $request, Project $project)
 {
-    Log::info("Entró a cambiarColor para proyecto $id", ['color' => $request->input('color')]);
-    // o puedes hacer:
-    // dd($request->all());
-
-    $project = Project::findOrFail($id);
-
-    $color = $request->input('color') ?? json_decode($request->getContent(), true)['color'] ?? '#ffffff';
-
-    $project->color = $color;
-    $project->save();
-
-    return response()->json([
-        'success' => true,
-        'color' => $color
+    $request->validate([
+        'color' => 'required|string|regex:/^#[a-fA-F0-9]{6}$/'
     ]);
+
+    $project->update(['color' => $request->color]);
+
+    return response()->json(['success' => true]);
 }
-
-
 }
