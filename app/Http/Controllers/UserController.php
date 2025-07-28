@@ -14,20 +14,69 @@ use App\Models\Tarea;
 
 class UserController extends Controller
 {
-   public function index(Request $request, $projectId = null)
-{
-    if (!$projectId) {
-        $projectId = $request->query('project_id');
-    }
+    public function index(Request $request, $projectId = null)
+    {
+        // Lógica para obtener el projectId - ACTUALIZADA
+        if (!$projectId) {
+            $projectId = $request->query('project_id');
+        }
+        if (!$projectId) {
+            $projectId = $request->route('projectId'); // Obtener del parámetro de ruta
+        }
+        if (!$projectId) {
+            $projectId = session('selected_project_id');
+        }
+        if (!$projectId && Auth::check()) {
+            $firstProject = Auth::user()->projects()->first();
+            if ($firstProject) {
+                $projectId = $firstProject->id;
+            }
+        }
+        if ($projectId) {
+            session(['selected_project_id' => $projectId]);
+        }
 
-    if (!$projectId) {
-        $projectId = session('selected_project_id');
-    }
+        // Obtener proyecto y validar
+        $project = $projectId ? Project::with('users')->find($projectId) : null;
+        
+        if (!$projectId || !$project) {
+            return view('users.colaboradores.homeuser', [
+                'estadisticas' => collect(),
+                'proyectos_usuario' => Auth::check() ? Auth::user()->projects : collect(),
+                'proyecto_actual' => null,
+                'user_contributions' => [],
+                'total_historias_proyecto' => 0,
+                'total_tareas_proyecto' => 0,
+                'total_listo' => 0,
+                'total_progreso' => 0,
+                'total_pendientes' => 0,
+                'total_contribuciones_proyecto' => 0
+            ]);
+        }
 
-    if (!$projectId && Auth::check()) {
-        $firstProject = Auth::user()->projects()->first();
-        if ($firstProject) {
-            $projectId = $firstProject->id;
+        // Obtener usuarios miembros (no admin)
+        $usuarios = $project->users()
+            ->where('usertype', '!=', 'admin')
+            ->with(['historias' => function($q) use ($projectId) {
+                $q->where('proyecto_id', $projectId)
+                  ->with(['columna', 'tareas.user']);
+            }])
+            ->get();
+
+        // Verificar si el usuario actual es miembro
+        if (!Auth::check() || !$usuarios->pluck('id')->contains(Auth::id())) {
+            return view('users.colaboradores.homeuser', [
+                'estadisticas' => collect(),
+                'proyectos_usuario' => Auth::user()->projects,
+                'proyecto_actual' => $project,
+                'user_contributions' => [],
+                'total_historias_proyecto' => 0,
+                'total_tareas_proyecto' => 0,
+                'total_listo' => 0,
+                'total_progreso' => 0,
+                'total_pendientes' => 0,
+                'total_contribuciones_proyecto' => 0
+            ]);
         }
     }
 
