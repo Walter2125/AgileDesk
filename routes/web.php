@@ -108,6 +108,8 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         [HistorialCambioController::class, 'porProyecto'])
         ->name('users.colaboradores.historial')
         ->where('project', '[0-9]+');
+    
+    
 
     // Ruta correcta para cambiar el color
     Route::post('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])

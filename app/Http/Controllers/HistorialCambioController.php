@@ -41,24 +41,27 @@ class HistorialCambioController extends Controller
         abort(403, 'No tienes acceso a este proyecto');
     }
 
-    $query = HistorialCambio::where('proyecto_id', $project->id);
+    $query = HistorialCambio::where('proyecto_id', $project->id)
+        ->with('proyecto') // Carga la relación para evitar N+1
+        ->orderBy('fecha', 'desc');
 
     if ($request->filled('busqueda')) {
-        $busqueda = $request->input('busqueda');
-        $query->where(function ($q) use ($busqueda) {
-            $q->where('usuario', 'like', "%{$busqueda}%")
-              ->orWhere('accion', 'like', "%{$busqueda}%")
-              ->orWhere('detalles', 'like', "%{$busqueda}%")
-              ->orWhere('sprint', 'like', "%{$busqueda}%");
+        $searchTerm = '%' . $request->input('busqueda') . '%';
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('usuario', 'LIKE', $searchTerm)
+              ->orWhere('accion', 'LIKE', $searchTerm)
+              ->orWhere('detalles', 'LIKE', $searchTerm)
+              ->orWhere('sprint', 'LIKE', $searchTerm)
+              ->orWhereHas('proyecto', function ($q) use ($searchTerm) {
+                  $q->where('name', 'LIKE', $searchTerm);
+              });
         });
     }
 
-    $historial = $query->orderBy('fecha', 'desc')->paginate(10);
-    $historial->appends($request->only('busqueda'));
+    $historial = $query->paginate(10)->appends($request->query());
 
     return view('users.colaboradores.historial', compact('historial', 'project'));
 }
-
 
 
 }

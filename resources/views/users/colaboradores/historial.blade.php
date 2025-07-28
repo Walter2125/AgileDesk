@@ -13,10 +13,19 @@
         <div class="card-body">
            <form method="GET" action="{{ route('users.colaboradores.historial', ['project' => $project->id]) }}" class="mb-4">
     <div class="input-group">
-        <input type="text" name="busqueda" class="form-control" placeholder="Buscar en historial..." value="{{ request('busqueda') }}">
-        <button type="submit" class="btn btn-outline-primary">
+        <input type="text" name="busqueda" class="form-control" 
+               placeholder="Buscar por usuario, acción, detalles o sprint..." 
+               value="{{ request('busqueda') }}"
+               aria-label="Buscar en historial">
+        <button type="submit" class="btn btn-primary">
             <i class="fas fa-search me-1"></i> Buscar
         </button>
+        @if(request('busqueda'))
+            <a href="{{ route('users.colaboradores.historial', ['project' => $project->id]) }}" 
+               class="btn btn-outline-secondary">
+                <i class="fas fa-times me-1"></i> Limpiar
+            </a>
+        @endif
     </div>
 </form>
 
