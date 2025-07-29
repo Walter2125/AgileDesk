@@ -429,8 +429,8 @@
                     </div>
                     <textarea name="contenido" class="form-control rounded-4 border-0 shadow-sm p-3 w-full mb-4" rows="5" required>{{ $comentario->contenido }}</textarea>
                     <div class="flex justify-end gap-2">
-                      <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
-                      <button type="submit" class="btn btn-primary text-white">
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='{{ route('historias.show', $historia->id) }}'"> CancelarS</button>  
+                    <button type="submit" class="btn btn-primary text-white">
                         <i class="bi bi-save-fill me-1"></i> Actualizar
                       </button>
                     </div>
