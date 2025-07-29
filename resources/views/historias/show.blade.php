@@ -9,104 +9,180 @@
             
 
 @section('content')
+
+    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-
-    <div class="container-fluid-m-2 mi-container m-2">
-
-             @if (session('success'))
-                <div class="alert alert-success mt-2" id="success-alert">
-                    {{ session('success') }}
-                </div>
-
-                <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(function() {
-                alert.style.transition = "opacity 0.5s ease";
-                alert.style.opacity = 0;
-                setTimeout(() => alert.remove(), 500);
-            }, 3000);
-        }
-    });
-</script>
-            @endif
-
-     
-        <div class="card-body">
-               <div class="mb-4 d-flex justify-content-between align-items-center">
-                
-                    <h2 class="historia-title mb-0"
-                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 1200px;"
-                        title="{{ $historia->nombre }}">
-                        H{{ $historia->numero }} {{ $historia->nombre }}
-                    </h2>
-
-                   
-                    <div class="d-flex align-items-center">
-                       
-                        <div class="dropdown me-3">
-                            <button class="btn btn-light" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                <li> <a href="{{ route('historias.edit', $historia->id) }}"class="dropdown-item">Editar</a></li>
-                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item"> Atrás</a></li>
-                                <li> <form action="{{ route('historias.destroy', $historia->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button"class="dropdown-item"data-bs-toggle="modal"data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></form></li>
-                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item" data-bs-toggle="tooltip" title="Crea una Tarea"><i class="bi bi-plus-lg"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Asignado a:</label>
-                        <input type="text" class="form-control rounded" value="{{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estado</label>
-                        <input type="text" class="form-control rounded" 
-                            value="{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}" 
-                            readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Prioridad</label>
-                        <input type="text" class="form-control rounded" 
-                            value="{{ $historia->prioridad }}" 
-                            readonly>
-                    </div>
-                </div>
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
     
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Horas de trabajo estimadas*</label>
-                        <input type="number" class="form-control form-control-sm rounded" value="{{ $historia->trabajo_estimado }}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Sprint</label>
-                        <input type="text" class="form-control form-control-sm rounded" value="{{ $historia->sprint ?? 'No asignado' }}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Última modificación</label>
-                        <input type="text" class="form-control form-control-sm rounded" 
-                            value="{{ $historia->updated_at ? $historia->updated_at->format('d/m/Y - H:i') : 'No disponible' }}" readonly>
+    @if (session('success'))
+        <div class="alert alert-success mt-2" id="success-alert">
+            {{ session('success') }}
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+       
+
+<div class="container-fluid-m-2 mi-container m-2">
+   
+        <div class="card-body">
+
+            {{-- Título --}}
+            <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                <h2 class="historia-title mb-0 rounded"
+                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 1200px;"
+                    title="{{ $historia->nombre }}">
+                    H{{ $historia->numero }} {{ $historia->nombre }}
+                </h2>
+
+                {{-- Botones --}}
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                            <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                            <li>
+                                <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button>
+                                </form>
+                            </li>
+                            <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Nueva Tarea</a></li>
+                        </ul>
                     </div>
                 </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Descripción</label>
-                    <textarea class="form-control border rounded  " rows="4" readonly> {{ $historia->descripcion }}</textarea>
-                </div>
-
-
             </div>
+
+
+            {{-- Formulario --}}
+            <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST">
+    @csrf
+    @method('PATCH')
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label rounded">Nombre</label>
+                <input type="text" class="form-control rounded" name="nombre" value="{{ old('nombre', $historia->nombre) }}" data-editable="true" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Asignado a</label>
+                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">-- Seleccionar usuario --</option>
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                            {{ $usuario->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Estado</label>
+                <select name="columna_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">Sin Estado</option>
+                    @foreach ($columnas as $columna)
+                        <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                            {{ $columna->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Prioridad</label>
+                <select name="prioridad" class="form-control rounded" data-editable="true" disabled>
+                    <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                    <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                    <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label rounded">Horas estimadas</label>
+                <input type="number" class="form-control rounded" name="trabajo_estimado" value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}" data-editable="true" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Sprint</label>
+                <select name="sprint_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">Ningún Sprint</option>
+                    @foreach ($sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Última modificación</label>
+                <input type="text" class="form-control rounded" value="{{ $historia->updated_at->format('d/m/Y - H:i') }}" readonly>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-control" name="descripcion" data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+    </div>
+
+    {{-- Botón Guardar --}}
+    <div class="d-flex justify-content-end mb-3">
+        <button id="btnGuardar" type="submit" class="btn btn-success d-none">Actualizareeeeeeeeeee</button>
+    </div>
+</form>
+
+        </div>
+    </div>
+</div>
+
+{{-- Script para manejar edición --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const btnEditar = document.getElementById('btnEditar');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const editableFields = document.querySelectorAll('[data-editable="true"]');
+
+    btnEditar.addEventListener('click', function () {
+        editableFields.forEach(field => {
+            field.removeAttribute('readonly');
+            field.removeAttribute('disabled');
+        });
+        btnGuardar.classList.remove('d-none');
+        btnEditar.disabled = true;
+    });
+});
+</script>
+
+
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
