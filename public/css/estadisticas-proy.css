@@ -1,0 +1,1271 @@
+ /* Variables personalizadas */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --hover-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    --github-bg: #0d1117;
+    --github-border: #21262d;
+    --github-card-bg: #ffffff;
+    --github-text: #111111;
+    --github-text-secondary: #444444;
+    --github-green: #679def;
+    --github-green-light: #679def;
+    --github-orange: #fb8500;
+    --github-red: #da3633;
+    --github-blue: #1f6feb;
+    --contribution-level-0: #161b22;
+    --contribution-level-1: #0e4429;
+    --contribution-level-2: #006d32;
+    --contribution-level-3: #26a641;
+    --contribution-level-4: #39d353;
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hero section */
+.hero-section {
+    background: var(--primary-gradient);
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 3rem;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 800px;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #fff, #e2e8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Contenedor principal */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Sección de estadísticas */
+.github-stats-section {
+    background: var(--github-bg);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid var(--github-border);
+    box-shadow: var(--shadow-lg);
+}
+
+.github-stats-title {
+    color: var(--github-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.stats-icon {
+    width: 20px;
+    height: 20px;
+    fill: var(--github-green);
+}
+
+/* Selector de proyecto */
+.project-selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.project-selector label {
+    font-weight: 600;
+    color: var(--github-text);
+    white-space: nowrap;
+}
+
+.project-selector select {
+    flex: 1;
+    max-width: 300px;
+    min-width: 200px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--github-border);
+    background: var(--github-card-bg);
+    color: var(--github-text);
+    font-size: 1rem;
+}
+
+.project-selector .btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.current-project-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--github-text);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.current-project-title svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--github-green);
+}
+
+.no-project-message {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    margin: 2rem 0;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Resumen general */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--github-card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--github-border);
+}
+
+.summary-item {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    transition: var(--transition);
+}
+
+.summary-item:hover {
+    background: rgba(255,255,255,0.05);
+    transform: translateY(-2px);
+}
+
+.summary-number {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--github-green-light);
+    margin-bottom: 0.5rem;
+}
+
+.summary-label {
+    color: var(--github-text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Ranking de contribuidores */
+.contributors-ranking {
+    background: var(--github-card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--github-border);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.ranking-header {
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--github-border);
+}
+
+.ranking-title {
+    color: var(--github-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contributor-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--github-border);
+    transition: var(--transition);
+    position: relative;
+    cursor: pointer;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.contributor-item:last-child {
+    border-bottom: none;
+}
+
+.contributor-item:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+.contributor-item:nth-child(2) { animation-delay: 0.1s; }
+.contributor-item:nth-child(3) { animation-delay: 0.2s; }
+.contributor-item:nth-child(4) { animation-delay: 0.3s; }
+.contributor-item:nth-child(5) { animation-delay: 0.4s; }
+
+.contributor-rank {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--github-text-secondary);
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.contributor-rank.top-1 { color: #ffd700; }
+.contributor-rank.top-2 { color: #c0c0c0; }
+.contributor-rank.top-3 { color: #cd7f32; }
+
+.contributor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin: 0 1rem;
+    border: 2px solid var(--github-border);
+    transition: var(--transition);
+    overflow: hidden;
+    position: relative;
+}
+
+.contributor-avatar:hover {
+    border-color: var(--github-green);
+    transform: scale(1.05);
+}
+
+.contributor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.contributor-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--github-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.contributor-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.contributor-name {
+    color: var(--github-text);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.contributor-email {
+    color: var(--github-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.contributor-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.contributor-contributions {
+    color: var(--github-text);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.contributor-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-active {
+    background: var(--github-green);
+    color: white;
+}
+
+.badge-moderate {
+    background: var(--github-orange);
+    color: white;
+}
+
+.badge-inactive {
+    background: var(--github-red);
+    color: white;
+}
+
+.badge-new {
+    background: var(--github-blue);
+    color: white;
+}
+
+/* Gráfico de contribuciones */
+.chart-container {
+    background: var(--github-card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--github-border);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-title {
+    color: var(--github-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Estilos específicos para Chart.js */
+.chart-wrapper canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Mejorar legibilidad de etiquetas en móviles */
+@media (max-width: 768px) {
+    .chart-wrapper {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-wrapper {
+        height: 200px;
+    }
+}
+
+/* Modal styles - Optimizado para centrado perfecto */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: white;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-overlay.active .modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    padding: 2rem 2rem 1rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--github-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.modal-close {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--github-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #e2e8f0;
+    color: var(--github-text);
+    transform: scale(1.05);
+}
+
+.modal-body {
+    padding: 2rem;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.contributor-modal-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: block;
+    border: 3px solid var(--github-border);
+}
+
+.contributor-modal-name {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--github-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.contributor-modal-email {
+    text-align: center;
+    color: var(--github-text-secondary);
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.contributions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.contribution-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.contribution-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--github-green);
+    margin-bottom: 0.5rem;
+}
+
+.contribution-label {
+    font-size: 0.9rem;
+    color: var(--github-text-secondary);
+}
+
+.contribution-details {
+    margin-top: 1.5rem;
+}
+
+.contribution-details-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--github-text);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.contribution-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contribution-list-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.contribution-list-item:last-child {
+    border-bottom: none;
+}
+
+.contribution-task {
+    font-weight: 500;
+    color: var(--github-text);
+}
+
+.contribution-status {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.status-ready {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-progress {
+    background: #bfdbfe;
+    color: #1e40af;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Estilos específicos para el estado de las historias */
+.story-status.status-pendiente,
+.story-status.status-Pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.story-status.status-progreso,
+.story-status.status-En.progreso,
+.story-status[title*="progreso"] {
+    background: #bfdbfe;
+    color: #1e40af;
+}
+
+.story-status.status-listo,
+.story-status.status-Listo {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Modal mejorado */
+.user-details-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.user-name {
+    font-size: 1.75rem;
+    margin: 0 0 0.5rem 0;
+    color: #1e293b;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.user-email {
+    color: #64748b;
+    margin: 0;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.stories-container {
+    margin-top: 2rem;
+}
+
+.story-item {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.story-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.story-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #0ea5e9;
+    margin: 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    flex: 1;
+    word-break: break-word;
+}
+
+.story-title:hover {
+    color: #0284c7;
+    text-decoration: underline;
+}
+
+.story-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    flex-shrink: 0;
+}
+
+.story-description {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    word-break: break-word;
+}
+
+.tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e1e4e8;
+    display: flex;
+    align-items: center;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-checkbox {
+    margin-right: 0.75rem;
+}
+
+.task-name {
+    flex: 1;
+    color: #24292e;
+}
+
+.task-assignee {
+    font-size: 0.85rem;
+    color: #586069;
+}
+
+.task-assignee-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.no-tasks {
+    color: #586069;
+    font-style: italic;
+    padding: 0.75rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.tasks-accordion {
+    margin-top: 1rem;
+}
+
+.accordion-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.accordion-toggle:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.accordion-toggle.active {
+    background: #e7f3ff;
+    border-color: #679def;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.task-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.counter-badge {
+    background: #679def;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
+
+.chevron-icon {
+    transition: transform 0.2s ease;
+    width: 16px;
+    height: 16px;
+    fill: #6c757d;
+}
+
+.accordion-toggle.active .chevron-icon {
+    transform: rotate(180deg);
+    fill: #679def;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    background: #ffffff;
+}
+
+.accordion-content.active {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.accordion-content .tasks-list {
+    margin: 0;
+    padding: 1rem;
+}
+
+.accordion-content .tasks-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f4;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.accordion-content .tasks-list li:last-child {
+    border-bottom: none;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+/* Responsive design - MEJORADO */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 35vh;
+        padding: 1rem;
+    }
+
+    .github-stats-section {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .contributor-item {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .contributor-avatar {
+        width: 40px;
+        height: 40px;
+        margin: 0 0.75rem;
+    }
+
+    .contributor-info {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .contributor-name {
+        font-size: 0.95rem;
+    }
+
+    .contributor-email {
+        font-size: 0.8rem;
+    }
+
+    .contributor-stats {
+        margin-top: 0.5rem;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .chart-wrapper {
+        height: 250px;
+    }
+
+    .contributions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Selector de proyecto responsivo */
+    .project-selector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .project-selector label {
+        text-align: center;
+    }
+    
+    .project-selector select {
+        max-width: 100%;
+        min-width: auto;
+    }
+    
+    .project-selector .btn {
+        align-self: center;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Modal responsive */
+    .modal-overlay {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+    
+    .modal-container {
+        max-width: 100%;
+        width: 100%;
+        max-height: calc(100vh - 4rem);
+        margin: 0;
+    }
+    
+    .modal-header {
+        padding: 1.5rem 1rem;
+        flex-shrink: 0;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+        max-width: calc(100% - 50px);
+    }
+    
+    .modal-body {
+        padding: 1rem;
+        flex: 1;
+        overflow-y: auto;
+    }
+    
+    .user-details-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        text-align: center;
+    }
+    
+    .user-details-header > div:last-child {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .story-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .story-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .story-status {
+        align-self: flex-start;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .accordion-toggle {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .task-counter {
+        gap: 0.25rem;
+    }
+    
+    .counter-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Breakpoint intermedio para tablets pequeños */
+@media (max-width: 640px) {
+    .project-selector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .project-selector select {
+        max-width: 100%;
+    }
+    
+    .modal-overlay {
+        padding: 15px;
+    }
+    
+    .story-item {
+        padding: 1.2rem;
+    }
+    
+    .user-details-header {
+        padding: 1.2rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .user-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        text-align: center;
+    }
+    
+    .modal-title {
+        max-width: calc(100% - 50px);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content {
+        padding: 1rem;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contributor-rank {
+        min-width: 2rem;
+        font-size: 1rem;
+    }
+
+    .contributor-avatar {
+        width: 36px;
+        height: 36px;
+        margin: 0 0.5rem;
+    }
+
+    .chart-wrapper {
+        height: 200px;
+    }
+
+    /* Modal ultra responsivo para móviles pequeños */
+    .modal-overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+    
+    .modal-container {
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        height: 100vh;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+        border-radius: 0;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+        max-width: calc(100% - 45px);
+    }
+    
+    .modal-close {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+    }
+    
+    .modal-body {
+        padding: 0.8rem;
+        flex: 1;
+    }
+    
+    .user-details-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1rem;
+        overflow: visible;
+    }
+    
+    .user-info {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .user-name {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+    
+    .user-email {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    
+    .user-details-header > div:last-child {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .story-item {
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .story-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .story-title {
+        font-size: 1.1rem;
+    }
+    
+    .story-status {
+        align-self: flex-end;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .story-description {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .accordion-toggle {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .task-counter {
+        gap: 0.2rem;
+        font-size: 0.85rem;
+    }
+    
+    .counter-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.3rem;
+        min-width: 18px;
+    }
+    
+    .accordion-content.active {
+        max-height: 250px;
+    }
+    
+    .accordion-content .tasks-list {
+        padding: 0.5rem;
+    }
+    
+    .accordion-content .tasks-list li {
+        padding: 0.4rem 0;
+        font-size: 0.85rem;
+    }
+    
+    /* Selector de proyecto para móviles pequeños */
+    .project-selector {
+        margin-bottom: 1rem;
+    }
+    
+    .project-selector .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .current-project-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .current-project-title svg {
+        width: 20px;
+        height: 20px;
+    }
+}
