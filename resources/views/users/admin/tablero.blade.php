@@ -136,7 +136,7 @@
                                                     <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
 
                                                         <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
-                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }} - {{ $historia->numero }} {{ $historia->nombre }}
+                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
                                                         </strong>
 
                                                     @if ($historia->descripcion)
