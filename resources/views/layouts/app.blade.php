@@ -69,8 +69,11 @@
 
     <link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
     <link rel="stylesheet" href="{{ asset('css/light-mode-bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout-fixes.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/breadcrumb-fixes.css') }}">
 
     <style>
+    /* Normalización para compatibilidad entre SO */
     * {
         margin: 0;
         padding: 0;
@@ -81,10 +84,96 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        width: 100%;
         overflow-x: hidden;
         scroll-behavior: smooth;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
     }
 
+    /* Fixes para navbar - NOTA: definición completa más adelante */
+    .navbar-optimized .container-fluid {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .navbar-optimized .btn-optimized {
+        flex-shrink: 0;
+        min-width: auto;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    /* Breadcrumbs mejorados */
+    .breadcrumb {
+        margin-bottom: 0;
+        padding: 0;
+        background: transparent;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        color: #6c757d;
+        font-weight: bold;
+        margin: 0 0.5rem;
+    }
+    
+    .breadcrumb-item {
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--bs-primary, #0d6efd);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--bs-primary-dark, #0a58ca);
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-item.active {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* Responsive fixes */
+    @media (max-width: 991.98px) {
+        .navbar-optimized .d-lg-flex {
+            display: none !important;
+        }
+        
+        .navbar-optimized .d-lg-none {
+            display: flex !important;
+        }
+        
+        .navbar-sidebar-header {
+            margin-left: 0 !important;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .navbar-optimized .d-lg-flex {
+            display: flex !important;
+        }
+        
+        .navbar-optimized .d-lg-none {
+            display: none !important;
+        }
+    }
+
+    /* Eliminamos la repetición del html, body que causa problemas */
     /* Mejoras específicas para compatibilidad entre sistemas operativos */
     @media screen {
         /* Asegurar consistencia de fuentes entre SO */
@@ -194,9 +283,7 @@
     }
 
     /* Asegurar que los elementos no se vean muy pequeños */
-    .sidebar-heading {
-        min-font-size: 1.25rem;
-    }
+    /* NOTA: sidebar-heading se define más adelante con tamaño específico */
 
     .list-group-item {
         min-font-size: 0.875rem;
@@ -246,12 +333,12 @@
         background-color: var(--sidebar-bg);
         transition: width var(--transition-speed) ease;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        z-index: 1000;
+        z-index: 1500;
         position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
-        overflow-y: auto;
+        overflow-y: hidden;
         overflow-x: hidden;
         display: flex;
         flex-direction: column;
@@ -278,12 +365,7 @@
     #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
         background-color: rgba(255, 255, 255, 0.5);
     }
-    /* Reducir el padding vertical de la clase container */
-    .sidebar-heading {
-        padding: 1.5rem 1rem;
-        font-size: 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    /* NOTA: sidebar-heading se define más adelante con altura específica */
 
     .list-group-item {
         padding: 0.75rem 1.25rem;
@@ -325,6 +407,13 @@
         min-height: 100vh;
         padding: 0; /* Sin padding para eliminar espacios */
         overflow-x: hidden; /* Evitar scroll horizontal */
+        display: flex;
+        flex-direction: column;
+        padding-top: 4rem !important; /* Exactamente la altura del navbar */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        padding-top: 60px !important; /* Espacio para el navbar fijo */
     }
 
     .navbar {
@@ -337,19 +426,125 @@
     }
 
     .content-wrapper {
-        padding: 64px 0 0 0;
+        padding: 0 !important; /* Eliminar padding para aprovechar toda la pantalla */
         transition: all var(--transition-speed) ease;
         overflow-x: hidden; /* Evitar scroll horizontal */
+        min-height: calc(100vh - 56px); /* Altura mínima menos el navbar */
+        margin: 0 !important; /* Sin márgenes */
+        display: flex;
+        flex-direction: column;
+        width: 100%;
     }
 
     /* Mejorar el comportamiento del scroll en contenedores internos */
     .container-fluid {
         overflow-x: hidden;
+        max-width: 100% !important; /* Usar todo el ancho disponible */
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Asegurar que el main use toda la altura disponible */
+    main {
+        min-height: calc(100vh - 56px); /* Altura completa menos navbar */
+        width: 100%;
+    }
+    
+    /* Para páginas con contenido dinámico */
+    .content-area {
+        min-height: calc(100vh - 120px); /* Altura menos navbar y breadcrumbs */
+        width: 100%;
     }
 
     /* Scroll suave para toda la aplicación */
     * {
         scroll-behavior: smooth;
+    }
+    
+    /* Mediaquery para dispositivos móviles */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .container-fluid.content-area {
+            padding: 0.5rem !important;
+        }
+        
+        .main-content {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .breadcrumb-container {
+            padding: 0.25rem 0.5rem !important;
+        }
+        
+        #page-content-wrapper {
+            margin-left: 0 !important;
+        }
+    }
+    
+    /* Asegurar que todos los elementos usen el ancho completo */
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Layout completo sin espacios innecesarios */
+    .container-fluid.content-area {
+        padding: 0.75rem;
+        padding-top: 0;
+        min-height: calc(100vh - 110px);
+        width: 100% !important;
+        max-width: none !important;
+        margin-top: 0;
+    }
+    
+    /* Asegurar que todos los encabezados no tengan margen superior */
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+        margin-top: 0;
+        padding-top: 0;
+    }
+    
+    /* Contenido de página completo */
+    .content-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Estilos para el contenido principal */
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100%;
+    }
+    
+    /* Contenedor de migas de pan */
+    .breadcrumb-container {
+        margin-top: 0;
+        padding-top: 0.5rem;
+    }
+    
+    /* Asegurar que las tarjetas y contenedores tengan ancho completo */
+    .card, .table-responsive {
+        width: 100% !important;
+    }
+    
+    /* Elementos de interfaz siempre visibles */
+    .row {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 
     .navbar-brand {
@@ -359,7 +554,7 @@
     }
 
     .content-wrapper {
-        padding: 64px 0 0 0;
+        padding: 0; /* Sin padding adicional */
         transition: all var(--transition-speed) ease;
     }
 
@@ -431,11 +626,62 @@
             display: none;
         }
     }
+    
+    /* Ajustes específicos para pantallas pequeñas */
+    @media (max-width: 767.98px) {
+        #page-content-wrapper {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .breadcrumb-container {
+            padding-top: 0 !important;
+            margin-top: 0.25rem !important;
+        }
+        
+        .content-area {
+            padding-top: 0.25rem !important;
+        }
+        
+        .navbar-optimized {
+            margin-bottom: 0 !important;
+        }
+    }
 
     /* En tablets, mostrar nombre de app */
     @media (max-width: 991.98px) {
         body.sidebar-collapsed .sidebar-heading span {
             display: inline-block;
+        }
+        
+        /* Asegurar que el contenido use toda la pantalla en móviles */
+        #page-content-wrapper {
+            margin-left: 0 !important;
+            width: 100% !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+        
+        .content-wrapper {
+            padding: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .container-fluid {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+            max-width: 100% !important;
+        }
+        
+        main {
+            min-height: calc(100vh - 56px) !important;
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .breadcrumb-container {
+            padding-top: 0.25rem !important;
+            padding-bottom: 0 !important;
         }
     }
 
@@ -544,7 +790,7 @@
         transform: none !important;
         margin-bottom: 0.5rem;
         min-width: 200px;
-        z-index: 9999 !important;
+        z-index: 1600 !important;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -591,7 +837,7 @@
         right: 0;
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        z-index: 1499;
     }
 
     /* Layout vertical para el sidebar */
@@ -603,6 +849,8 @@
 
     .list-group {
         flex-grow: 1;
+        overflow-y: visible;
+        max-height: calc(100vh - 200px);
     }
 
     /* Custom scrollbar */
@@ -653,6 +901,115 @@
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
+    }
+
+    /* Asegurar que las alertas sean visibles por encima del navbar */
+    .alert {
+        position: relative !important;
+        z-index: 1500 !important; /* Mayor que el navbar (z-index: 1400) */
+        margin: 0.5rem 1rem !important;
+        border-radius: 0.25rem !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 0.875rem !important;
+        line-height: 1.4 !important;
+        padding: 0.75rem 1rem !important;
+        max-width: calc(100% - 2rem) !important;
+        border: 1px solid !important;
+    }
+
+    /* Contenedor de alertas fijo */
+    .alerts-container {
+        transition: left var(--transition-speed) ease !important;
+    }
+
+    /* Ajustar posición cuando sidebar está colapsado */
+    body.sidebar-collapsed .alerts-container {
+        left: var(--sidebar-collapsed-width) !important;
+    }
+
+    /* Responsive para móviles y tablets */
+    @media (max-width: 991.98px) {
+        .alerts-container {
+            left: 0 !important;
+        }
+        
+        body.sidebar-collapsed .alerts-container {
+            left: 0 !important;
+        }
+    }
+
+    /* Animación de entrada para alertas */
+    .alert.fade.show {
+        animation: slideInFromTop 0.3s ease-out !important;
+    }
+
+    @keyframes slideInFromTop {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Restaurar los colores estándar de Bootstrap para las alertas */
+    .alert-danger {
+        color: #721c24 !important;
+        background-color: #f8d7da !important;
+        border-color: #f5c6cb !important;
+    }
+
+    .alert-success {
+        color: #155724 !important;
+        background-color: #d4edda !important;
+        border-color: #c3e6cb !important;
+    }
+
+    .alert-warning {
+        color: #856404 !important;
+        background-color: #fff3cd !important;
+        border-color: #ffeaa7 !important;
+    }
+
+    .alert-info {
+        color: #0c5460 !important;
+        background-color: #d1ecf1 !important;
+        border-color: #bee5eb !important;
+    }
+
+    /* Botón de cerrar normal */
+    .alert .btn-close {
+        position: relative !important;
+        z-index: 1501 !important;
+        opacity: 0.75 !important;
+        font-size: 0.75rem !important;
+        width: 1rem !important;
+        height: 1rem !important;
+        padding: 0 !important;
+    }
+
+    .alert .btn-close:hover {
+        opacity: 1 !important;
+    }
+
+    .alert .btn-close-sm {
+        font-size: 0.7rem !important;
+        width: 0.875rem !important;
+        height: 0.875rem !important;
+    }
+
+    /* Estilos para el contenido de las alertas */
+    .alert strong {
+        font-weight: 600 !important;
+    }
+
+    .alert p {
+        margin: 0.5rem 0 0 0 !important;
     }
 
     /* Dispositivos muy pequeños (menos de 320px) */
@@ -1078,7 +1435,66 @@
         }
     }
 
-/* Ajustes optimizados para alineación perfecta */
+    /* Ajuste fino para el navbar */
+    .navbar-optimized {
+        padding-left: var(--navbar-padding-x);
+        padding-right: var(--navbar-padding-x);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        height: 4rem;
+        min-height: 0;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        background-color: var(--bs-body-bg, #fff);
+    }
+
+    /* Mejoras para los elementos dentro del navbar */
+    .navbar-optimized .navbar-brand {
+        font-weight: 600;
+        color: var(--bs-primary, #0d6efd);
+        padding: 0.5rem 0;
+        margin-right: 1rem;
+    }
+
+    .navbar-optimized .nav-link {
+        font-weight: 500;
+        padding: 0.5rem 0.75rem;
+        transition: color 0.2s ease;
+    }
+
+    .navbar-optimized .navbar-toggler {
+        border: none;
+        padding: 0.25rem 0.5rem;
+        box-shadow: none;
+    }
+
+    .navbar-optimized .navbar-toggler:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    /* ========================================================================
+       ALINEACIÓN PERFECTA: NAVBAR Y SIDEBAR-HEADING
+       ======================================================================== 
+       
+       Ambos elementos deben tener EXACTAMENTE la misma altura para mantener
+       la alineación visual perfecta:
+       
+       - height: 4rem (64px)
+       - min-height: 4rem 
+       - max-height: 4rem
+       - box-sizing: border-box
+       - padding: 0 var(--navbar-padding-x)
+       
+       Esto asegura que el navbar y el sidebar-heading estén perfectamente
+       alineados independientemente del contenido o sistema operativo.
+       ======================================================================== */
+
+    /* Ajustes optimizados para alineación perfecta */
+
+:root {
+    --navbar-padding-x: 1rem;
+}
 
 .sidebar-heading {
     width: 100%;
@@ -1089,8 +1505,12 @@
     align-items: center;
     justify-content: space-between;
     height: 4rem;
-    min-height: 0;
+    min-height: 4rem;
+    max-height: 4rem;
     box-sizing: border-box;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
 }
 
 /* Asegura que el ancho del sidebar coincida exactamente */
@@ -1100,6 +1520,11 @@
     top: 0;
     transform: none !important; /* Anula transformaciones conflictivas */
     border-right: 1px solid rgba(0, 0, 0, 0.1); /* Borde que coincide con navbar */
+    position: fixed;
+    height: 100vh;
+    box-sizing: border-box;
+    z-index: 1500;
+    overflow: hidden;
 }
 
 /* Corrección para el estado colapsado */
@@ -1107,16 +1532,52 @@
     width: calc(var(--sidebar-collapsed-width) - 1px);
 }
 
-/* Ajuste fino para el navbar */
+/* Ajuste completo para el navbar */
 .navbar-optimized {
     padding-left: var(--navbar-padding-x);
     padding-right: var(--navbar-padding-x);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     height: 4rem;
-    min-height: 0;
+    min-height: 4rem;
+    max-height: 4rem;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: var(--bs-body-bg, #fff);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1400;
 }
 
+/* ========================================================================
+       ALINEACIÓN CONSISTENTE ENTRE BREADCRUMBS Y CONTENIDO
+       ======================================================================== */
+    
+    /* Asegurar que todo el contenido use el mismo padding lateral que las migas de pan */
+    .content-section {
+        /* El contenido principal ya está dentro de un contenedor con padding: 0 var(--navbar-padding-x) */
+        /* Esto garantiza que esté alineado con las migas de pan */
+    }
+    
+    /* Para elementos que necesiten alineación específica con las breadcrumbs */
+    .breadcrumb-aligned {
+        padding-left: var(--navbar-padding-x);
+        padding-right: var(--navbar-padding-x);
+    }
+    
+    /* Asegurar que las tarjetas y contenido principal mantengan la alineación */
+    .container-fluid.content-area .card,
+    .container-fluid.content-area .table-responsive,
+    .container-fluid.content-area .row {
+        /* Ya heredan el padding del contenedor padre */
+    }
+
+    /* ======================================================================== */
 </style>
     @yield('styles')
 </head>
@@ -1170,16 +1631,7 @@
                     <!-- otros botones comentados por ahora -->
 
                      </a>
-                     <!-- Ejemplo de submenú -->
-                     <div class="list-group-item list-group-item-action text-white sidebar-has-tree" onclick="toggleSubmenu(event, 'submenu1')" title="Gestión">
-                        <i class="bi bi-gear"></i>
-                        <span class="sidebar-text">Gestión</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </div>
-                    <div class="sidebar-submenu" id="submenu1">
-                        <a href="#" class="list-group-item list-group-item-action text-white ps-5">Opción 1</a>
-                        <a href="#" class="list-group-item list-group-item-action text-white ps-5">Opción 2</a>
-                    </div>
+                     
 
                 </div>
 
@@ -1224,23 +1676,75 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             @include('layouts.navigation')
+            
+            <!-- Alertas posicionadas inmediatamente debajo del navbar -->
+            <div class="alerts-container" style="position: fixed; top: 4rem; left: var(--sidebar-width); right: 0; z-index: 1500; pointer-events: none;">
+                <div style="pointer-events: auto;">
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
+                                <div class="flex-grow-1">
+                                    <strong>Error:</strong> {{ session('error') }}
+                                    @if (session('message'))
+                                        <div class="mt-1 small">{{ session('message') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    @endif
+                    
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
+                                <div class="flex-grow-1">
+                                    <strong>Éxito:</strong> {{ session('success') }}
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    @endif
+                    
+                    @if (session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
+                                <div class="flex-grow-1">
+                                    <strong>Advertencia:</strong> {{ session('warning') }}
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    @endif
+                    
+                    @if (session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
+                                <div class="flex-grow-1">
+                                    <strong>Información:</strong> {{ session('info') }}
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
-                <main>
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            @if (session('message'))
-                                <p>{{ session('message') }}</p>
-                            @endif
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                <main class="h-100 w-100 main-content">
+                    <div class="container-fluid content-area w-100" style="padding: 0 var(--navbar-padding-x); margin-top: 4rem;">
+                        <div class="mb-2 breadcrumb-wrapper" style="padding-top: 0.5rem;">
+                            <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
                         </div>
-                    @endif
-                    <div class="ps-3">
-                         <x-breadcrumbs :breadcrumbs="$breadcrumbs ?? []" />
+                        <div class="content-section" style="padding: 0 0;">
+                            @yield('content')
+                        </div>
                     </div>
-                    @yield('content')
                 </main>
             </div>
         </div>
@@ -1271,6 +1775,7 @@
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             const mobileIcon = document.getElementById('mobile-sidebar-icon');
             const overlay = document.querySelector('.overlay');
+            const alertsContainer = document.querySelector('.alerts-container');
 
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
@@ -1285,6 +1790,9 @@
                 if (window.innerWidth < 992 && overlay) {
                     overlay.style.display = 'none';
                 }
+                if (alertsContainer && window.innerWidth >= 992) {
+                    alertsContainer.style.left = 'var(--sidebar-collapsed-width)';
+                }
             } else {
                 body.classList.remove('sidebar-collapsed');
                 if (toggleIcon) {
@@ -1297,6 +1805,9 @@
                 }
                 if (window.innerWidth < 992 && overlay) {
                     overlay.style.display = 'block';
+                }
+                if (alertsContainer && window.innerWidth >= 992) {
+                    alertsContainer.style.left = 'var(--sidebar-width)';
                 }
             }
         }
@@ -1315,16 +1826,29 @@
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
 
-            // Cerrar alerts automáticamente
+            // Manejo de alertas mejorado
             const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alert) {
+            alerts.forEach(function(alert, index) {
+                // Asegurar que la alerta sea visible
+                alert.style.display = 'block';
+                alert.style.visibility = 'visible';
+                alert.style.opacity = '1';
+                alert.style.zIndex = '1500'; // Mayor que el navbar
+                
+                // Auto-cerrar después de 6 segundos
                 setTimeout(function() {
-                    const closeBtn = alert.querySelector('.btn-close');
-                    if (closeBtn) {
-                        closeBtn.click();
+                    if (alert && alert.parentNode) {
+                        // Usar la funcionalidad nativa de Bootstrap
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
                     }
-                }, 5000);
+                }, 6000 + (index * 1000)); // Escalonar múltiples alertas
             });
+
+            // Mensaje de consola si hay alertas
+            if (alerts.length > 0) {
+                console.log(`🔔 ${alerts.length} alerta(s) detectada(s)`);
+            }
 
             // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
             window.addEventListener('resize', function() {
@@ -1414,7 +1938,12 @@
                 css += `
                     /* Ajustes específicos para Linux */
                     html { font-size: 17px !important; }
-                    .sidebar-heading { font-size: 1.6rem !important; }
+                    .sidebar-heading { 
+                        font-size: 1.6rem !important; 
+                        height: 4rem !important;
+                        min-height: 4rem !important;
+                        max-height: 4rem !important;
+                    }
                     .list-group-item { font-size: 1rem !important; }
                     .user-avatar { font-size: 1rem !important; }
                 `;
@@ -1435,7 +1964,12 @@
                 css += `
                     /* Ajustes específicos para Firefox en Linux */
                     html { font-size: 18px !important; }
-                    .sidebar-heading { font-size: 1.7rem !important; }
+                    .sidebar-heading { 
+                        font-size: 1.7rem !important; 
+                        height: 4rem !important;
+                        min-height: 4rem !important;
+                        max-height: 4rem !important;
+                    }
                     .list-group-item { font-size: 1.1rem !important; }
                 `;
                 console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
@@ -1446,7 +1980,12 @@
                 css += `
                     /* Ajustes para DPI bajo */
                     html { font-size: 18px !important; }
-                    .sidebar-heading { font-size: 1.75rem !important; }
+                    .sidebar-heading { 
+                        font-size: 1.75rem !important; 
+                        height: 4rem !important;
+                        min-height: 4rem !important;
+                        max-height: 4rem !important;
+                    }
                     .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
                     .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
                 `;
@@ -1477,6 +2016,7 @@
     @yield('scripts')
     <!-- <script src="bootstrap.bundle.min.js"></script> -->
     <script src="{{ asset('js/dark-mode.js') }}"></script>
+    <script src="{{ asset('js/breadcrumb-fix.js') }}"></script>
 
 </body>
 </html>

@@ -27,22 +27,6 @@
         justify-content: center;
     }
 
-    .alert-flash {
-        border-left: 4px solid;
-        animation: fadeInOut 5s ease-in-out;
-    }
-    
-    .alert-flash.alert-success { 
-        border-left-color: #28a745; 
-    }
-    
-    @keyframes fadeInOut {
-        0% { opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { opacity: 0; }
-    }
-
     .user-avatar {
         width: 40px;
         height: 40px;
@@ -119,6 +103,14 @@
     }
 
     /* Modal personalizado */
+    .modal {
+        z-index: 1600 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1599 !important;
+    }
+
     .modal-content {
         border-radius: 8px;
         border: none;
@@ -138,6 +130,30 @@
         border-top: 1px solid #efe9e9;
         padding: 1.5rem;
     }
+
+    /* Mejorar centrado de modales */
+    .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 3rem);
+        margin: 1.5rem auto;
+    }
+
+    /* Responsive para modales */
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin: 1rem;
+            max-width: calc(100% - 2rem);
+            min-height: calc(100vh - 2rem);
+        }
+        
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 1rem;
+        }
+    }
     
 </style>
 @endsection
@@ -146,13 +162,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            @if(session('success'))
-                <div class="alert alert-success alert-flash d-flex align-items-center" role="alert">
-                    <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                    <div>{{ session('success') }}</div>
-                </div>
-            @endif
-
             <div class="card admin-card mb-4">
                 <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <div>
@@ -166,12 +175,6 @@
                             <i class="bi bi-search"></i>
                             <input type="text" id="searchUsers" class="form-control form-control-sm search-input" placeholder="Buscar usuarios...">
                         </div>
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
-                            <i class="bi bi-people me-1"></i><span>Ver Todos</span>
-                        </a>
-                        <button onclick="location.reload()" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                            <i class="bi bi-arrow-clockwise me-1"></i><span>Actualizar</span>
-                        </button>
                     </div>
                 </div>
 
@@ -266,7 +269,7 @@
 
 <!-- Modal de Aprobación -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">
@@ -307,7 +310,7 @@
 
 <!-- Modal de Rechazo -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">
@@ -349,7 +352,7 @@
 
 <!-- Modal de Detalle -->
 <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="userDetailModalLabel">
@@ -632,18 +635,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 rejectSubmitBtn.disabled = true;
             }
         });
-    }
-
-    // Alertas temporales con auto-hide
-    const flashAlerts = document.querySelectorAll('.alert-flash');
-    if (flashAlerts.length) {
-        setTimeout(() => {
-            flashAlerts.forEach(alert => {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.3s ease-in-out';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }, 5000);
     }
 
     // Limpiar formularios al cerrar modales
