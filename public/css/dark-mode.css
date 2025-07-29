@@ -116,6 +116,8 @@ body *::after {
 .dark-mode .story-item,
 .dark-mode .accordion-toggle,
 .dark-mode .dropdown-menu,
+.dark-mode .modal-header,
+.dark-mode .modal-body,
 .dark-mode .modal-footer{
     background-color: var(--dark-bg-secondary);
     border-color: var(--dark-border-primary);
@@ -683,13 +685,52 @@ body *::after {
 .dark-mode #projectSelect,
 .dark-mode select#projectSelect,
 .dark-mode select {
-    color: white !important;
+    color: var(--dark-text-primary) !important;
     background-color: var(--dark-bg-terciary) !important;
     border-color: var(--dark-border-primary) !important;
 }
 
+.dark-mode .projectSelect:focus,
+.dark-mode #projectSelect:focus,
+.dark-mode select#projectSelect:focus,
+.dark-mode select:focus {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .projectSelect:hover,
+.dark-mode #projectSelect:hover,
+.dark-mode select#projectSelect:hover,
+.dark-mode select:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-border-secondary) !important;
+}
+
 .dark-mode #projectSelect-label {
-    color: white !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Estilos para el contenedor del selector de proyecto */
+.dark-mode .project-selector {
+    background-color: transparent !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .project-selector label {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .project-selector .btn {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .project-selector .btn:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
 }
 
 .dark-mode .detail-label {
@@ -978,6 +1019,273 @@ body *::after {
     color: var(--dark-text-primary) !important;
 }
 
+/* ======= ESTILOS ESPECÍFICOS PARA MODAL DE ESTADÍSTICAS ======= */
+/* Modal overlay y contenedor */
+.dark-mode .modal-overlay {
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark-mode .modal-container {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+    box-shadow: var(--dark-shadow-lg) !important;
+}
+
+/* Header del modal de estadísticas */
+.dark-mode .modal-header {
+    background-color: var(--dark-bg-terciary) !important;
+    border-bottom-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .modal-title {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .modal-close {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-border-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .modal-close:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    color: var(--dark-accent-primary) !important;
+}
+
+/* Body del modal */
+.dark-mode .modal-body {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Header de detalles del usuario */
+.dark-mode .user-details-header {
+    background: linear-gradient(135deg, var(--dark-bg-terciary) 0%, var(--dark-bg-quaternary) 100%) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .user-info {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .user-name {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .user-email {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Estadísticas del usuario en el modal */
+.dark-mode .user-details-header > div:last-child > div {
+    background-color: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+}
+
+.dark-mode .user-details-header > div:last-child > div > div:first-child {
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .user-details-header > div:last-child > div > div:last-child {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Contenedor de historias */
+.dark-mode .stories-container {
+    background-color: transparent !important;
+}
+
+.dark-mode .section-title {
+    color: var(--dark-text-primary) !important;
+    border-bottom-color: var(--dark-border-primary) !important;
+}
+
+/* Items de historias */
+.dark-mode .story-item {
+    background-color: var(--dark-bg-terciary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: var(--dark-shadow-sm) !important;
+}
+
+.dark-mode .story-item:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    box-shadow: var(--dark-shadow-md) !important;
+}
+
+.dark-mode .story-title {
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .story-title:hover {
+    color: var(--dark-accent-hover) !important;
+}
+
+.dark-mode .story-description {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Estados de historias */
+.dark-mode .story-status {
+    color: white !important;
+}
+
+.dark-mode .story-status.status-pending {
+    background-color: var(--dark-warning) !important;
+}
+
+.dark-mode .story-status.status-progress {
+    background-color: var(--dark-info) !important;
+}
+
+.dark-mode .story-status.status-ready {
+    background-color: var(--dark-success) !important;
+}
+
+/* Acordeones de tareas */
+.dark-mode .tasks-accordion {
+    background-color: transparent !important;
+}
+
+.dark-mode .accordion-toggle {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .accordion-toggle:hover {
+    background-color: var(--dark-bg-terciary) !important;
+}
+
+.dark-mode .accordion-toggle.active {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .accordion-content {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+/* Lista de tareas */
+.dark-mode .tasks-list {
+    background-color: transparent !important;
+}
+
+.dark-mode .tasks-list li {
+    border-bottom-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Badges de contador */
+.dark-mode .counter-badge {
+    background-color: var(--dark-accent-primary) !important;
+    color: white !important;
+}
+
+/* Iconos de chevron */
+.dark-mode .chevron-icon {
+    color: var(--dark-text-secondary) !important;
+}
+
+.dark-mode .accordion-toggle.active .chevron-icon {
+    color: var(--dark-accent-primary) !important;
+}
+
+/* Mensaje de sin historias */
+.dark-mode .stories-container > div[style*="text-align: center"] {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Avatar del usuario en el modal */
+.dark-mode .contributor-modal-avatar,
+.dark-mode .user-details-header img {
+    border-color: var(--dark-border-secondary) !important;
+}
+
+/* Asegurar que cualquier elemento con fondo blanco en el modal se adapte */
+.dark-mode #contributorModal .bg-white,
+.dark-mode #contributorModal [style*="background-color: #fff"],
+.dark-mode #contributorModal [style*="background: white"],
+.dark-mode #contributorModal [style*="background-color: white"] {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Asegurar que cualquier texto oscuro en el modal se adapte */
+.dark-mode #contributorModal .text-dark,
+.dark-mode #contributorModal [style*="color: #000"],
+.dark-mode #contributorModal [style*="color: black"] {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Estilos específicos para elementos inline del modal */
+.dark-mode #contributorModal [style*="color: #64748b"] {
+    color: var(--dark-text-terciary) !important;
+}
+
+.dark-mode #contributorModal [style*="color: #374151"] {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode #contributorModal [style*="color: #1e293b"] {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode #contributorModal [style*="background: #f1f5f9"],
+.dark-mode #contributorModal [style*="background-color: #f1f5f9"] {
+    background-color: var(--dark-bg-terciary) !important;
+}
+
+.dark-mode #contributorModal [style*="background: #f8fafc"],
+.dark-mode #contributorModal [style*="background-color: #f8fafc"] {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Mejoras adicionales para el modo oscuro */
+.dark-mode .content-wrapper,
+.dark-mode .content-header,
+.dark-mode .content {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .main-header {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .main-sidebar {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+.dark-mode .nav-sidebar .nav-link {
+    color: var(--dark-text-secondary) !important;
+}
+
+.dark-mode .nav-sidebar .nav-link.active {
+    background-color: var(--dark-accent-primary) !important;
+    color: white !important;
+}
+
+.dark-mode .nav-sidebar .nav-link:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .nav-treeview .nav-link {
+    color: var(--dark-text-terciary) !important;
+}
+
+.dark-mode .nav-treeview .nav-link.active {
+    background-color: var(--dark-accent-primary) !important;
+    color: white !important;
+}
+
 /* Mejoras adicionales para el modo oscuro */
 .dark-mode .content-wrapper,
 .dark-mode .content-header,
@@ -1097,4 +1405,23 @@ body *::after {
 
 .dark-mode .popover-body {
     color: var(--dark-text-secondary) !important;
+}
+
+/* Estilos para el mensaje de "Proyecto Individual" */
+.dark-mode div[style*="text-align: center; padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 1rem;"] {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode div[style*="text-align: center; padding: 2rem; background: #f8fafc"] h4 {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode div[style*="text-align: center; padding: 2rem; background: #f8fafc"] p {
+    color: var(--dark-text-secondary) !important;
+}
+
+.dark-mode div[style*="text-align: center; padding: 2rem; background: #f8fafc"] svg {
+    color: var(--dark-text-terciary) !important;
 }
