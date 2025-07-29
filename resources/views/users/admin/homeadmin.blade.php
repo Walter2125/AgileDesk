@@ -454,6 +454,9 @@
                         <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
+                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-archive"></i> Todos los Eliminados
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">

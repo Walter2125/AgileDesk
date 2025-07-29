@@ -55,7 +55,7 @@ class RoleMiddleware
         
         return match($userType) {
             'admin' => 'homeadmin',
-            'user' => 'HomeUser',
+            'user' => 'homeuser',
             default => 'dashboard', // Ruta por defecto para otros tipos de usuario
         };   
     }

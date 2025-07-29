@@ -1229,7 +1229,7 @@ body *::after {
 }
 
 .dark-mode #contributorModal [style*="color: #374151"] {
-    color: var(--dark-text-primary) !important;
+    color: var(--dark-text-secondary) !important;
 }
 
 .dark-mode #contributorModal [style*="color: #1e293b"] {
@@ -1244,6 +1244,56 @@ body *::after {
 .dark-mode #contributorModal [style*="background: #f8fafc"],
 .dark-mode #contributorModal [style*="background-color: #f8fafc"] {
     background-color: var(--dark-bg-secondary) !important;
+}
+
+/* ======= ESTILOS PARA VISTA DE ELEMENTOS SOFT-DELETED ======= */
+/* Sección de filtros */
+.dark-mode .filter-section {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+/* Badges de tipo */
+.dark-mode .type-badge.badge-users {
+    background-color: var(--dark-accent-light) !important;
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .type-badge.badge-projects {
+    background-color: rgba(138, 124, 255, 0.15) !important;
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .type-badge.badge-historias {
+    background-color: var(--dark-success-light) !important;
+    color: var(--dark-success) !important;
+}
+
+.dark-mode .type-badge.badge-tareas {
+    background-color: var(--dark-warning-light) !important;
+    color: var(--dark-warning) !important;
+}
+
+/* Estado vacío */
+.dark-mode .empty-state {
+    color: var(--dark-text-terciary) !important;
+}
+
+.dark-mode .empty-state i {
+    color: var(--dark-border-primary) !important;
+}
+
+/* Breadcrumbs */
+.dark-mode .breadcrumb {
+    background-color: transparent !important;
+}
+
+.dark-mode .breadcrumb-item a {
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .breadcrumb-item.active {
+    color: var(--dark-text-terciary) !important;
 }
 
 /* Mejoras adicionales para el modo oscuro */

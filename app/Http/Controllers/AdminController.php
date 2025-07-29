@@ -9,11 +9,15 @@ use App\Models\Project;
 use App\Models\User;
 use App\Models\Historia;
 use App\Models\Columna;
+use App\Models\Tarea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AdminController extends Controller
 {
+    use AuthorizesRequests;
     public function index(Request $request, $projectId = null)
     {
         // Obtener datos administrativos básicos
@@ -334,5 +338,208 @@ class AdminController extends Controller
         $user->forceDelete();
         
         return redirect()->back()->with('success', 'User permanently deleted successfully.');
+    }
+
+    /**
+     * Vista general de elementos soft-deleted
+     */
+    public function softDeletedItems(Request $request)
+    {
+        // Autorizar acceso
+        if (!Gate::allows('soft-delete.viewAny')) {
+            abort(403, 'No tienes permisos para acceder a esta vista.');
+        }
+        
+        $type = $request->get('type', 'all');
+        $search = $request->get('search', '');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
+
+        $deletedItems = collect();
+
+        // Obtener usuarios eliminados
+        if ($type === 'all' || $type === 'users') {
+            $users = User::onlyTrashed()
+                ->where('usertype', '!=', 'admin')
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                    });
+                })
+                ->when($dateFrom, function ($query) use ($dateFrom) {
+                    $query->whereDate('deleted_at', '>=', $dateFrom);
+                })
+                ->when($dateTo, function ($query) use ($dateTo) {
+                    $query->whereDate('deleted_at', '<=', $dateTo);
+                })
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'type' => 'users',
+                        'type_label' => 'Usuario',
+                        'name' => $user->name,
+                        'description' => $user->email,
+                        'deleted_at' => $user->deleted_at,
+                        'model' => $user
+                    ];
+                });
+            $deletedItems = $deletedItems->merge($users);
+        }
+
+        // Obtener proyectos eliminados
+        if ($type === 'all' || $type === 'projects') {
+            $projects = Project::onlyTrashed()
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                          ->orWhere('codigo', 'like', "%{$search}%");
+                    });
+                })
+                ->when($dateFrom, function ($query) use ($dateFrom) {
+                    $query->whereDate('deleted_at', '>=', $dateFrom);
+                })
+                ->when($dateTo, function ($query) use ($dateTo) {
+                    $query->whereDate('deleted_at', '<=', $dateTo);
+                })
+                ->get()
+                ->map(function ($project) {
+                    return [
+                        'id' => $project->id,
+                        'type' => 'projects',
+                        'type_label' => 'Proyecto',
+                        'name' => $project->name,
+                        'description' => $project->descripcion ?? 'Sin descripción',
+                        'deleted_at' => $project->deleted_at,
+                        'model' => $project
+                    ];
+                });
+            $deletedItems = $deletedItems->merge($projects);
+        }
+
+        // Obtener historias eliminadas
+        if ($type === 'all' || $type === 'historias') {
+            $historias = Historia::onlyTrashed()
+                ->with(['proyecto'])
+                ->when($search, function ($query) use ($search) {
+                    $query->where('nombre', 'like', "%{$search}%");
+                })
+                ->when($dateFrom, function ($query) use ($dateFrom) {
+                    $query->whereDate('deleted_at', '>=', $dateFrom);
+                })
+                ->when($dateTo, function ($query) use ($dateTo) {
+                    $query->whereDate('deleted_at', '<=', $dateTo);
+                })
+                ->get()
+                ->map(function ($historia) {
+                    return [
+                        'id' => $historia->id,
+                        'type' => 'historias',
+                        'type_label' => 'Historia',
+                        'name' => $historia->nombre,
+                        'description' => "Proyecto: " . ($historia->proyecto->name ?? 'Sin proyecto'),
+                        'deleted_at' => $historia->deleted_at,
+                        'model' => $historia
+                    ];
+                });
+            $deletedItems = $deletedItems->merge($historias);
+        }
+
+        // Obtener tareas eliminadas
+        if ($type === 'all' || $type === 'tareas') {
+            $tareas = Tarea::onlyTrashed()
+                ->with(['historia'])
+                ->when($search, function ($query) use ($search) {
+                    $query->where('nombre', 'like', "%{$search}%");
+                })
+                ->when($dateFrom, function ($query) use ($dateFrom) {
+                    $query->whereDate('deleted_at', '>=', $dateFrom);
+                })
+                ->when($dateTo, function ($query) use ($dateTo) {
+                    $query->whereDate('deleted_at', '<=', $dateTo);
+                })
+                ->get()
+                ->map(function ($tarea) {
+                    return [
+                        'id' => $tarea->id,
+                        'type' => 'tareas',
+                        'type_label' => 'Tarea',
+                        'name' => $tarea->nombre,
+                        'description' => "Historia: " . ($tarea->historia->nombre ?? 'Sin historia'),
+                        'deleted_at' => $tarea->deleted_at,
+                        'model' => $tarea
+                    ];
+                });
+            $deletedItems = $deletedItems->merge($tareas);
+        }
+
+        // Ordenar por fecha de eliminación (más recientes primero)
+        $deletedItems = $deletedItems->sortByDesc('deleted_at');
+
+        return view('admin.soft-deleted', compact('deletedItems', 'type', 'search', 'dateFrom', 'dateTo'));
+    }
+
+    /**
+     * Restaurar un elemento eliminado
+     */
+    public function restoreItem(Request $request, $model, $id)
+    {
+        // Autorizar acción
+        if (!Gate::allows('soft-delete.restore')) {
+            abort(403, 'No tienes permisos para restaurar elementos.');
+        }
+        
+        try {
+            $modelClass = $this->getModelClass($model);
+            $item = $modelClass::onlyTrashed()->findOrFail($id);
+            
+            $item->restore();
+            
+            return redirect()->back()->with('success', ucfirst($model) . ' restaurado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al restaurar el elemento: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Eliminar permanentemente un elemento
+     */
+    public function permanentDeleteItem(Request $request, $model, $id)
+    {
+        // Autorizar acción
+        if (!Gate::allows('soft-delete.forceDelete')) {
+            abort(403, 'No tienes permisos para eliminar permanentemente elementos.');
+        }
+        
+        try {
+            $modelClass = $this->getModelClass($model);
+            $item = $modelClass::onlyTrashed()->findOrFail($id);
+            
+            $item->forceDelete();
+            
+            return redirect()->back()->with('success', ucfirst($model) . ' eliminado permanentemente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al eliminar el elemento: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Obtener la clase del modelo según el tipo
+     */
+    private function getModelClass($type)
+    {
+        switch ($type) {
+            case 'users':
+                return User::class;
+            case 'projects':
+                return Project::class;
+            case 'historias':
+                return Historia::class;
+            case 'tareas':
+                return Tarea::class;
+            default:
+                throw new \InvalidArgumentException("Tipo de modelo no válido: {$type}");
+        }
     }
 }
