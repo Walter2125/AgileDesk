@@ -2,6 +2,7 @@
 
 @section('styles')
 <style>
+
     /* Estilos consistentes con homeadmin.blade.php */
     .admin-card {
         margin-bottom: 20px;
