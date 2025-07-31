@@ -1,7 +1,8 @@
 @extends('layouts.app')
-   
+
 @section('styles')
 <style>
+
     /* Estilos consistentes con homeadmin.blade.php */
     .admin-card {
         margin-bottom: 20px;
@@ -147,14 +148,14 @@
             max-width: calc(100% - 2rem);
             min-height: calc(100vh - 2rem);
         }
-        
+
         .modal-header,
         .modal-body,
         .modal-footer {
             padding: 1rem;
         }
     }
-    
+
 </style>
 @endsection
 
@@ -229,13 +230,13 @@
                                             </td>
                                             <td class="text-end">
                                                 <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-sm btn-info btn-icon" 
-                                                            data-bs-toggle="modal" data-bs-target="#userDetailModal" 
+                                                    <button type="button" class="btn btn-sm btn-info btn-icon"
+                                                            data-bs-toggle="modal" data-bs-target="#userDetailModal"
                                                             data-user-id="{{ $user->id }}"
                                                             title="Ver detalles">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    
+
                                                     <button type="button" class="btn btn-sm btn-success btn-icon"
                                                             data-bs-toggle="modal" data-bs-target="#approveModal"
                                                             data-user-id="{{ $user->id }}"
@@ -259,7 +260,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     @endif
                 </div>
             </div>
@@ -335,7 +336,7 @@
                             <p class="mb-0 mt-1">Esta acción eliminará permanentemente la solicitud del usuario.</p>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -429,13 +430,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchUsers');
     if (searchInput) {
         let typingTimer;
-        
+
         searchInput.addEventListener('keyup', function() {
             clearTimeout(typingTimer);
             typingTimer = setTimeout(() => {
                 const searchTerm = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
-                
+
                 rows.forEach(row => {
                     const text = row.textContent.toLowerCase();
                     row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -465,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkbox.addEventListener('change', function() {
             const allChecked = Array.from(individualCheckboxes).every(cb => cb.checked);
             const someChecked = Array.from(individualCheckboxes).some(cb => cb.checked);
-            
+
             if (selectAllCheckbox) {
                 selectAllCheckbox.checked = allChecked;
                 selectAllCheckbox.indeterminate = someChecked && !allChecked;
@@ -495,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             const userData = getUserDataFromRow(userId);
-            
+
             if (userData) {
                 currentUserId = userId;
                 currentUserData = userData;
@@ -581,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
-            const userEmail = button.dataset.userEmail || 
+            const userEmail = button.dataset.userEmail ||
                              document.querySelector(`tr[data-user-id="${userId}"] .text-muted`).textContent;
             const userInitial = userName.charAt(0).toUpperCase();
 
@@ -610,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No se puede aprobar: usuario inválido.');
                 return false;
             }
-            
+
             // Agregar indicador de carga
             if (approveSubmitBtn) {
                 approveSubmitBtn.classList.add('loading');
@@ -627,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No se puede rechazar: usuario inválido.');
                 return false;
             }
-            
+
             // Agregar indicador de carga
             if (rejectSubmitBtn) {
                 rejectSubmitBtn.classList.add('loading');
@@ -646,14 +647,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (submitBtn) {
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
-                    
+
                     if (submitBtn.id === 'approveSubmitBtn') {
                         submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Aprobar Usuario';
                     } else if (submitBtn.id === 'rejectSubmitBtn') {
                         submitBtn.innerHTML = '<i class="bi bi-x-lg me-1"></i>Rechazar Usuario';
                     }
                 }
-                
+
                 // Limpiar formularios
                 const form = modal.querySelector('form');
                 if (form) {

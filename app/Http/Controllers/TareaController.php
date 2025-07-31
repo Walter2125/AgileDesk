@@ -107,13 +107,5 @@ class TareaController extends Controller
     return response()->json(['success' => true]);
 }
 
-public function showDetalle(Historia $historia)
-{
-    // Cargar las tareas relacionadas
-    $tareas = $historia->tareas()->with('user')->get();
-
-    // Retornar la vista con las dos variables
-    return view('historias.detalle', compact('historia', 'tareas'));
-}
 
 }
