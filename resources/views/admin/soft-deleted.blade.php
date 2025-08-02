@@ -44,6 +44,37 @@
         margin-bottom: 1rem;
         color: #dee2e6;
     }
+    
+    /* Indicador de carga para filtros automáticos */
+    .loading-indicator {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: none;
+    }
+    
+    .filter-loading {
+        position: relative;
+    }
+    
+    .filter-loading .loading-indicator {
+        display: block;
+    }
+    
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+    
+    /* Z-index para modales - superior al navbar */
+    .modal {
+        z-index: 1600;
+    }
+    
+    .modal-backdrop {
+        z-index: 1599;
+    }
 </style>
 @stop
 
@@ -53,20 +84,14 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Elementos Eliminados</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('homeadmin') }}">Admin</a></li>
-                        <li class="breadcrumb-item active">Elementos Eliminados</li>
-                    </ol>
-                </nav>
             </div>
 
             <!-- Filtros -->
             <div class="filter-section">
-                <form method="GET" action="{{ route('admin.soft-deleted') }}" class="row g-3">
+                <form method="GET" action="{{ route('admin.soft-deleted') }}" id="filterForm" class="row g-3">
                     <div class="col-md-3">
                         <label for="type" class="form-label">Tipo de Elemento</label>
-                        <select name="type" id="type" class="form-select">
+                        <select name="type" id="type" class="form-select auto-filter">
                             <option value="all" {{ $type === 'all' ? 'selected' : '' }}>Todos</option>
                             <option value="users" {{ $type === 'users' ? 'selected' : '' }}>Usuarios</option>
                             <option value="projects" {{ $type === 'projects' ? 'selected' : '' }}>Proyectos</option>
@@ -77,27 +102,24 @@
                     
                     <div class="col-md-3">
                         <label for="search" class="form-label">Buscar</label>
-                        <input type="text" name="search" id="search" class="form-control" 
+                        <input type="text" name="search" id="search" class="form-control auto-filter" 
                                value="{{ $search }}" placeholder="Buscar por nombre...">
                     </div>
                     
                     <div class="col-md-2">
                         <label for="date_from" class="form-label">Desde</label>
-                        <input type="date" name="date_from" id="date_from" class="form-control" 
+                        <input type="date" name="date_from" id="date_from" class="form-control auto-filter" 
                                value="{{ $dateFrom }}">
                     </div>
                     
                     <div class="col-md-2">
                         <label for="date_to" class="form-label">Hasta</label>
-                        <input type="date" name="date_to" id="date_to" class="form-control" 
+                        <input type="date" name="date_to" id="date_to" class="form-control auto-filter" 
                                value="{{ $dateTo }}">
                     </div>
                     
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-search"></i> Filtrar
-                        </button>
-                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-secondary w-100">
                             <i class="fas fa-times"></i> Limpiar
                         </a>
                     </div>
@@ -272,6 +294,36 @@
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    let filterTimeout;
+    const filterForm = document.getElementById('filterForm');
+    const autoFilterElements = document.querySelectorAll('.auto-filter');
+    
+    // Función para aplicar filtros automáticamente
+    function applyFilters() {
+        // Agregar indicador de carga
+        document.body.style.cursor = 'wait';
+        
+        // Enviar formulario
+        filterForm.submit();
+    }
+    
+    // Función debounce para evitar muchas peticiones
+    function debounceFilter() {
+        clearTimeout(filterTimeout);
+        filterTimeout = setTimeout(applyFilters, 500); // Esperar 500ms después de que el usuario deje de escribir
+    }
+    
+    // Agregar event listeners a todos los elementos de filtro
+    autoFilterElements.forEach(element => {
+        if (element.type === 'text') {
+            // Para campos de texto, usar debounce
+            element.addEventListener('input', debounceFilter);
+        } else {
+            // Para selects y fechas, aplicar inmediatamente
+            element.addEventListener('change', applyFilters);
+        }
+    });
+    
     // Modal de restauración
     const restoreModal = document.getElementById('restoreModal');
     if (restoreModal) {

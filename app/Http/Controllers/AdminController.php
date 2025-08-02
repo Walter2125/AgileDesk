@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Sprint;
 use App\Models\HistorialCambio;
 use App\Models\Project;
@@ -11,7 +12,6 @@ use App\Models\Historia;
 use App\Models\Columna;
 use App\Models\Tarea;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -50,6 +50,15 @@ class AdminController extends Controller
         $project = $projectId ? Project::with('users')->find($projectId) : null;
         
         if (!$projectId || !$project) {
+            // Configurar breadcrumbs
+            $breadcrumbs = [
+                [
+                    'label' => 'Dashboard Administrativo',
+                    'url' => null, // Current page
+                    'active' => true
+                ]
+            ];
+
             return view('users.admin.homeadmin', array_merge(
                 compact('usuarios', 'proyectos', 'historial', 'sprints'),
                 [
@@ -65,7 +74,8 @@ class AdminController extends Controller
                     'total_pendientes' => 0,
                     'total_en_proceso' => 0,
                     'total_terminadas' => 0,
-                    'total_contribuciones_proyecto' => 0
+                    'total_contribuciones_proyecto' => 0,
+                    'breadcrumbs' => $breadcrumbs
                 ]
             ));
         }
@@ -245,7 +255,14 @@ class AdminController extends Controller
                 'total_pendientes' => $totalPendientes,
                 'total_en_proceso' => $totalEnProceso,
                 'total_terminadas' => $totalTerminadas,
-                'total_contribuciones_proyecto' => $totalHistoriasProyecto + $totalTareasProyecto
+                'total_contribuciones_proyecto' => $totalHistoriasProyecto + $totalTareasProyecto,
+                'breadcrumbs' => [
+                    [
+                        'label' => 'Dashboard Administrativo',
+                        'url' => null, // Current page
+                        'active' => true
+                    ]
+                ]
             ]
         ));
     }
@@ -257,12 +274,12 @@ class AdminController extends Controller
     {
         // Verificar que no sea un admin
         if ($user->usertype === 'admin') {
-            return redirect()->back()->with('error', 'Cannot delete admin users.');
+            return redirect()->back()->with('error', 'No se pueden eliminar usuarios administradores.');
         }
         
         $user->delete();
         
-        return redirect()->back()->with('success', 'User deleted successfully.');
+        return redirect()->back()->with('success', 'Usuario eliminado exitosamente.');
     }
     
     /**
@@ -270,22 +287,29 @@ class AdminController extends Controller
      */
     public function restoreUser($id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        
-        // Verificar que el usuario esté soft deleted
-        if (!$user->trashed()) {
-            return redirect()->back()->with('error', 'El usuario no está eliminado.');
+        try {
+            $user = User::withTrashed()->findOrFail($id);
+            
+            // Verificar que el usuario esté soft deleted
+            if (!$user->trashed()) {
+                return redirect()->back()->with('error', 'El usuario no está eliminado.');
+            }
+            
+            // Verificar que no sea un admin
+            if ($user->usertype === 'admin') {
+                return redirect()->back()->with('error', 'No se pueden restaurar usuarios administradores.');
+            }
+            
+            $userName = $user->name;
+            $user->restore();
+            
+            Log::info("Usuario restaurado: {$userName} (ID: {$id})");
+            
+            return redirect()->back()->with('success', "Usuario {$userName} restaurado exitosamente. Ahora puede acceder al sistema nuevamente.");
+        } catch (\Exception $e) {
+            Log::error("Error al restaurar usuario ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al restaurar el usuario. Por favor, inténtelo de nuevo.');
         }
-        
-        // Verificar que no sea un admin
-        if ($user->usertype === 'admin') {
-            return redirect()->back()->with('error', 'No se pueden restaurar usuarios admin.');
-        }
-        
-        $userName = $user->name;
-        $user->restore();
-        
-        return redirect()->back()->with('success', "Usuario {$userName} restaurado exitosamente.");
     }
     
     /**
@@ -313,8 +337,21 @@ class AdminController extends Controller
             ->where('usertype', '!=', 'admin')
             ->orderBy('deleted_at', 'desc')
             ->paginate(10);
+
+        // Configurar breadcrumbs
+        $breadcrumbs = [
+            [
+                'label' => 'Dashboard',
+                'url' => route('homeadmin')
+            ],
+            [
+                'label' => 'Usuarios Eliminados',
+                'url' => null, // Current page
+                'active' => true
+            ]
+        ];
             
-        return view('users.admin.deleted-users', compact('deletedUsers'));
+        return view('users.admin.deleted-users', compact('deletedUsers', 'breadcrumbs'));
     }
     
     /**
@@ -322,22 +359,29 @@ class AdminController extends Controller
      */
     public function permanentDeleteUser($id)
     {
-        $user = User::withTrashed()->findOrFail($id);
-        
-        // Verificar que el usuario esté soft deleted
-        if (!$user->trashed()) {
-            return redirect()->back()->with('error', 'User is not deleted.');
+        try {
+            $user = User::withTrashed()->findOrFail($id);
+            
+            // Verificar que el usuario esté soft deleted
+            if (!$user->trashed()) {
+                return redirect()->back()->with('error', 'El usuario no está eliminado.');
+            }
+            
+            // Verificar que no sea un admin
+            if ($user->usertype === 'admin') {
+                return redirect()->back()->with('error', 'No se pueden eliminar usuarios administradores.');
+            }
+            
+            $userName = $user->name;
+            $user->forceDelete();
+            
+            Log::info("Usuario eliminado permanentemente: {$userName} (ID: {$id})");
+            
+            return redirect()->back()->with('warning', "Usuario {$userName} eliminado permanentemente. Esta acción no se puede deshacer.");
+        } catch (\Exception $e) {
+            Log::error("Error al eliminar permanentemente usuario ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el usuario. Por favor, inténtelo de nuevo.');
         }
-        
-        // Verificar que no sea un admin
-        if ($user->usertype === 'admin') {
-            return redirect()->back()->with('error', 'Cannot delete admin users.');
-        }
-        
-        $userName = $user->name;
-        $user->forceDelete();
-        
-        return redirect()->back()->with('success', 'User permanently deleted successfully.');
     }
 
     /**
@@ -477,7 +521,20 @@ class AdminController extends Controller
         // Ordenar por fecha de eliminación (más recientes primero)
         $deletedItems = $deletedItems->sortByDesc('deleted_at');
 
-        return view('admin.soft-deleted', compact('deletedItems', 'type', 'search', 'dateFrom', 'dateTo'));
+        // Configurar breadcrumbs
+        $breadcrumbs = [
+            [
+                'label' => 'Dashboard',
+                'url' => route('homeadmin')
+            ],
+            [
+                'label' => 'Elementos Eliminados',
+                'url' => null, // Current page
+                'active' => true
+            ]
+        ];
+
+        return view('admin.soft-deleted', compact('deletedItems', 'type', 'search', 'dateFrom', 'dateTo', 'breadcrumbs'));
     }
 
     /**
@@ -496,7 +553,7 @@ class AdminController extends Controller
             
             $item->restore();
             
-            return redirect()->back()->with('success', ucfirst($model) . ' restaurado exitosamente.');
+            return redirect()->back()->with('success', $this->getModelNameInSpanish($model) . ' restaurado exitosamente.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al restaurar el elemento: ' . $e->getMessage());
         }
@@ -518,7 +575,7 @@ class AdminController extends Controller
             
             $item->forceDelete();
             
-            return redirect()->back()->with('success', ucfirst($model) . ' eliminado permanentemente.');
+            return redirect()->back()->with('success', $this->getModelNameInSpanish($model) . ' eliminado permanentemente.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al eliminar el elemento: ' . $e->getMessage());
         }
@@ -540,6 +597,71 @@ class AdminController extends Controller
                 return Tarea::class;
             default:
                 throw new \InvalidArgumentException("Tipo de modelo no válido: {$type}");
+        }
+    }
+
+    /**
+     * Obtener el nombre en español del modelo según el tipo
+     */
+    private function getModelNameInSpanish($type)
+    {
+        switch ($type) {
+            case 'users':
+                return 'Usuario';
+            case 'projects':
+                return 'Proyecto';
+            case 'historias':
+                return 'Historia';
+            case 'tareas':
+                return 'Tarea';
+            default:
+                return ucfirst($type);
+        }
+    }
+
+    /**
+     * Eliminar un proyecto desde la vista de administración
+     */
+    public function deleteProject(Project $project)
+    {
+        try {
+            $projectName = $project->name;
+            $projectId = $project->id;
+            
+            // Verificar si el proyecto tiene datos asociados
+            $hasHistorias = $project->historias()->count() > 0;
+            $hasUsers = $project->users()->count() > 0;
+            
+            if ($hasHistorias || $hasUsers) {
+                // Si tiene datos asociados, hacer soft delete
+                $project->delete();
+                
+                // Registrar en el historial de cambios
+                HistorialCambio::create([
+                    'user_id' => Auth::id(),
+                    'accion' => 'delete',
+                    'modelo' => 'Project',
+                    'modelo_id' => $projectId,
+                    'detalles' => "Proyecto '{$projectName}' eliminado (soft delete) - tenía datos asociados"
+                ]);
+                
+                Log::info("Proyecto eliminado (soft delete) por admin: {$projectName} (ID: {$projectId})");
+                
+                return redirect()->route('homeadmin')->with('warning', 
+                    "Proyecto '{$projectName}' eliminado exitosamente. Se mantuvieron los datos asociados y puede ser restaurado si es necesario.");
+            } else {
+                // Si no tiene datos asociados, eliminar permanentemente
+                $project->forceDelete();
+                
+                Log::info("Proyecto eliminado permanentemente por admin: {$projectName} (ID: {$projectId})");
+                
+                return redirect()->route('homeadmin')->with('success', 
+                    "Proyecto '{$projectName}' eliminado permanentemente. No tenía datos asociados.");
+            }
+            
+        } catch (\Exception $e) {
+            Log::error("Error al eliminar proyecto ID {$project->id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el proyecto. Por favor, inténtelo de nuevo.');
         }
     }
 }

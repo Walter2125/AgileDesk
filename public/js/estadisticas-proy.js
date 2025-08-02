@@ -10,18 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const estadisticas = window.estadisticas || [];
     const columnasOrdenadas = window.columnasOrdenadas || [];
     
-    // Debug inicial
-    console.log('=== INICIALIZACIÓN ===');
-    console.log('userContributions cargado:', userContributions);
-    console.log('Número de usuarios:', Object.keys(userContributions).length);
-    console.log('projectId:', projectId);
-    console.log('estadisticas:', estadisticas);
-    console.log('columnasOrdenadas:', columnasOrdenadas);
-    console.log('Tipo de userContributions:', typeof userContributions);
-    
     // Verificar si está vacío
     if (Object.keys(userContributions).length === 0) {
-        console.warn('⚠️ userContributions está vacío - revisar controlador');
     }
     
     // Función para crear el avatar del usuario
@@ -150,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para crear el contenido del modal - MEJORADA
     function createModalContent(userData) {
-        console.log('Datos del usuario:', userData); // Debug
         
         if (!userData || !userData.user) {
             return `
@@ -164,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const { user, stories = [] } = userData;
         const userAvatar = createUserAvatar(user, 100);
         
-        console.log('Historias encontradas:', stories.length); // Debug
         
         // Estadísticas del usuario
         const totalHistorias = stories.length;
@@ -177,40 +165,29 @@ document.addEventListener('DOMContentLoaded', function() {
         let historiasEnProceso = 0;
         let historiasTerminadas = 0;
         
-        console.log('=== CALCULANDO ESTADÍSTICAS POSICIÓN ===');
-        console.log('columnasOrdenadas:', columnasOrdenadas);
-        console.log('stories del usuario:', stories);
         
         if (columnasOrdenadas && columnasOrdenadas.length >= 3) {
             const primeraColumna = columnasOrdenadas[0];
             const ultimaColumna = columnasOrdenadas[columnasOrdenadas.length - 1];
             
-            console.log('Primera columna:', primeraColumna);
-            console.log('Última columna:', ultimaColumna);
             
             stories.forEach(story => {
-                console.log(`Historia ${story.id} en columna ${story.columna_id || story.columna?.id}`);
                 
                 const columnaId = story.columna_id || story.columna?.id;
                 
                 if (columnaId === ultimaColumna.id) {
                     historiasTerminadas++;
-                    console.log(`Historia ${story.id} TERMINADA (columna ${columnaId})`);
                 } else if (columnaId !== primeraColumna.id && columnaId !== ultimaColumna.id) {
                     historiasEnProceso++;
-                    console.log(`Historia ${story.id} EN PROCESO (columna ${columnaId})`);
                 } else {
-                    console.log(`Historia ${story.id} INICIAL (columna ${columnaId})`);
                 }
             });
         } else {
-            console.log('Menos de 3 columnas, usando método por nombre');
             // Si hay menos de 3 columnas, usar el método anterior por compatibilidad
             historiasEnProceso = stories.filter(s => s.columna?.nombre === 'En progreso').length;
             historiasTerminadas = stories.filter(s => s.columna?.nombre === 'Listo').length;
         }
         
-        console.log('Resultado - En Proceso:', historiasEnProceso, 'Terminadas:', historiasTerminadas);
         
         // Estadísticas por estado (mantener para compatibilidad)
         const estadoStats = {
@@ -405,17 +382,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const userId = contributorItem.dataset.userId;
             const userData = userContributions[userId];
             
-            console.log('=== DEBUG MODAL ===');
-            console.log('Usuario seleccionado ID:', userId);
-            console.log('userContributions completo:', userContributions);
-            console.log('Claves disponibles:', Object.keys(userContributions));
-            console.log('Datos del usuario encontrados:', userData);
-            console.log('Tipo de userContributions:', typeof userContributions);
-            console.log('Es array userContributions:', Array.isArray(userContributions));
             
             // Verificar si los datos existen
             if (!userData) {
-                console.error('❌ No se encontraron datos para el usuario:', userId);
                 modalContent.innerHTML = `
                     <div style="text-align: center; padding: 3rem;">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
@@ -457,9 +426,7 @@ userContributions: ${JSON.stringify(userContributions, null, 2)}
                 try {
                     const content = createModalContent(userData);
                     modalContent.innerHTML = content;
-                    console.log('✅ Modal cargado exitosamente');
                 } catch (error) {
-                    console.error('❌ Error al crear contenido del modal:', error);
                     modalContent.innerHTML = `
                         <div style="text-align: center; padding: 3rem;">
                             <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>

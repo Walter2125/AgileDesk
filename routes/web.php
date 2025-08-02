@@ -159,6 +159,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
         Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
 
+        // Rutas adicionales para administración de proyectos desde homeadmin
+        Route::delete('/projects/{project}/admin-delete', [AdminController::class, 'deleteProject'])->name('admin.projects.delete');
+
 
         // Crud de Sprints
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');
