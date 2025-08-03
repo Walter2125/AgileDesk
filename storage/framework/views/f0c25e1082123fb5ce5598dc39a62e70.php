@@ -479,12 +479,6 @@
         text-decoration: none !important;
     }
 
-    .user-info:hover,
-    .user-info:focus {
-        color: white !important;
-        background: rgba(255, 255, 255, 0.1) !important;
-        text-decoration: none !important;
-    }
 
     .user-avatar {
         width: 40px;
