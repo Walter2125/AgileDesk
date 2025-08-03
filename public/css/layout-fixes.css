@@ -1,0 +1,87 @@
+/* CSS para solucionar problemas de visualización */
+
+/* Eliminación de espacios innecesarios */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+/* Correcciones para el contenedor principal */
+#wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Contenido sin márgenes innecesarios */
+#page-content-wrapper {
+    width: 100%;
+    margin-left: var(--sidebar-width);
+    transition: margin-left var(--transition-speed) ease;
+    flex: 1;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Asegurar que el contenido sea visible */
+.content-wrapper {
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    min-height: calc(100vh - 56px);
+}
+
+/* Contenedor de contenido principal */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Contenedor del área de contenido */
+.container-fluid.content-area {
+    padding: 0.75rem;
+    padding-top: 0;
+    min-height: calc(100vh - 110px);
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: 0;
+}
+
+/* Breadcrumbs - asegurar que sean visibles */
+.breadcrumb-container {
+    padding: 0.5rem 1rem !important;
+    margin-top: 60px !important; /* Importante: espacio para navbar fijo */
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 5;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    background: transparent;
+    padding: 0.5rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+}
+
+/* Corrección para el navbar fijo */
+.navbar-optimized {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}

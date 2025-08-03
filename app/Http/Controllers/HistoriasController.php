@@ -171,16 +171,15 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return null;
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(Historia $historia)
     {
-        // Cargamos también la relación con el proyecto
+
         $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        // Obtener el proyecto desde la columna o desde el propio campo proyecto_id
+
         $currentProject = $historia->columna->tablero->project
             ?? $historia->proyecto;
 
@@ -296,29 +295,29 @@ private function compartirContextoDesdeColumna(Columna $columna)
     private function generarDetallesCambios($antes, $despues)
 {
     $cambios = [];
-    
+
     if ($antes['nombre'] != $despues['nombre']) {
         $cambios[] = sprintf('Nombre: "%s" → "%s"', $antes['nombre'], $despues['nombre']);
     }
-    
+
     if ($antes['trabajo_estimado'] != $despues['trabajo_estimado']) {
-        $cambios[] = sprintf('Trabajo estimado: %d → %d', 
-            $antes['trabajo_estimado'] ?? 0, 
+        $cambios[] = sprintf('Trabajo estimado: %d → %d',
+            $antes['trabajo_estimado'] ?? 0,
             $despues['trabajo_estimado'] ?? 0);
     }
-    
+
     if ($antes['prioridad'] != $despues['prioridad']) {
         $cambios[] = sprintf('Prioridad: %s → %s', $antes['prioridad'], $despues['prioridad']);
     }
-    
+
     if ($antes['usuario'] != $despues['usuario']) {
         $cambios[] = sprintf('Asignado: %s → %s', $antes['usuario'], $despues['usuario']);
     }
-    
+
     if ($antes['columna'] != $despues['columna']) {
         $cambios[] = sprintf('Columna: %s → %s', $antes['columna'], $despues['columna']);
     }
-    
+
     return $cambios ? implode(', ', $cambios) : 'Sin cambios detectados';
 }
 
@@ -367,7 +366,21 @@ private function compartirContextoDesdeColumna(Columna $columna)
             ], 403);
         }
 
-        
+        // Registrar en el historial antes de mover
+        HistorialCambio::create([
+            'fecha' => now(),
+            'usuario' => auth()->user()->name,
+            'accion' => 'Movimiento de Historia',
+            'detalles' => sprintf(
+                'Historia "%s" movida de %s a %s',
+                $historia->nombre,
+                $columnaOrigen->nombre,
+                $columnaDestino->nombre
+            ),
+            'sprint' => $historia->sprint_id,
+            'proyecto_id' => $historia->proyecto_id
+        ]);
+
         // Actualizar y guardar
         $historia->columna_id = $validated['columna_id'];
         $historia->save();
@@ -395,14 +408,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
         ], 500);
     }
 }
-
-public function showDetalle(Historia $historia)
-{
-    // Cargar las tareas relacionadas
-    $tareas = $historia->tareas()->with('user')->get();
-
-    // Retornar la vista con las dos variables
-    return view('historias.detalle', compact('historia', 'tareas'));
 }
 
-}
+

@@ -79,17 +79,10 @@ class ProjectController extends Controller
             'proyecto_id' => $project->id,
         ]);
 
-        $tablero->columnas()->createMany([
-            [
-                'nombre' => 'Pendiente',
-                'posicion' => 1,
-                'es_backlog' => true,
-            ],
-            [
-                'nombre' => 'Backlog',
-                'posicion' => 2,
-                'es_backlog' => true,
-            ]
+        $tablero->columnas()->create([
+            'nombre' => 'Pendiente',
+            'posicion' => 1,
+            'es_backlog' => true,
         ]);
 
         DB::commit();
@@ -101,7 +94,7 @@ class ProjectController extends Controller
         return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
     }
 }
- 
+
 
     public function searchUsers(Request $request)
     {
@@ -186,7 +179,7 @@ class ProjectController extends Controller
         'unique:nuevo_proyecto,codigo,' . $project->id,
         'regex:/^[a-zA-Z0-9]+$/'
     ],
-           'descripcion' => [     
+           'descripcion' => [
         'nullable',
         'string',
         'max:255',
@@ -194,16 +187,16 @@ class ProjectController extends Controller
     ],
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'users' => 'required|array|min:1', 
-            'users.*' => 'exists:users,id', 
+            'users' => 'required|array|min:1',
+            'users.*' => 'exists:users,id',
         ]);
 
-        
+
         if (Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        
+
         $project->update([
             'name' => $request->name,
             'codigo' => $request->codigo,
@@ -214,7 +207,7 @@ class ProjectController extends Controller
 
         $users = $request->users;
         if (!in_array($project->user_id, $users)) {
-            $users[] = $project->user_id; 
+            $users[] = $project->user_id;
         }
 
         $project->users()->sync($users);
@@ -271,7 +264,7 @@ class ProjectController extends Controller
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
-            ->withPath(route('projects.listUsers')); 
+            ->withPath(route('projects.listUsers'));
 
         $selectedUsers = $request->input('selected_users', []);
 

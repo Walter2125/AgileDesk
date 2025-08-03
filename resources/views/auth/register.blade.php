@@ -35,7 +35,7 @@
     </style>
     
     <div class="auth-header">
-        <h2>Register</h2>
+        <label for="name">Registro</label>
         <div class="auth-header-links">
             <a href="{{ route('login') }}">Login</a>
             <a href="{{ route('register') }}" class="active">Registro</a>
