@@ -18,6 +18,10 @@ class Tablero extends Model {
     {
         return $this->belongsTo(Project::class, 'proyecto_id');
     }
-
+    public function proyecto()
+{
+    return $this->belongsTo(Project::class, 'proyecto_id');
 }
 
+
+}

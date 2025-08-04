@@ -10,7 +10,6 @@
     <!-- Filtro por sprint -->
         <form method="GET" class="mb-3 d-flex gap-2 align-items-center">
             <select name="sprint_id" class="form-select" style="max-height: 38px; height: 38px; max-width: 250px;" onchange="this.form.submit()">
-
             <option value="">Todos los Sprints</option>
                 <?php $__currentLoopData = $proyecto->sprints; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sprint): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <option value="<?php echo e($sprint->id); ?>" <?php echo e($sprintId == $sprint->id ? 'selected' : ''); ?>>
@@ -19,7 +18,7 @@
                     </option>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
-            <!-- Botón Azul a la par -->
+
             <a href="<?php echo e(route('historias.create', ['proyecto' => $proyecto->id])); ?>" class="btn btn-primary" style="height: 38px; display: flex; align-items: center;">
                 Agregar Historia
             </a>

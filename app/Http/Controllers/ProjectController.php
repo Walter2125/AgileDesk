@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     public function create(Request $request)
     {
         $users = User::where('usertype', '!=', 'admin')
@@ -79,10 +82,17 @@ class ProjectController extends Controller
             'proyecto_id' => $project->id,
         ]);
 
-        $tablero->columnas()->create([
-            'nombre' => 'Pendiente',
-            'posicion' => 1,
-            'es_backlog' => true,
+        $tablero->columnas()->createMany([
+            [
+                'nombre' => 'Pendiente',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ],
+            [
+                'nombre' => 'Backlog',
+                'posicion' => 2,
+                'es_backlog' => true,
+            ]
         ]);
 
         DB::commit();
@@ -284,15 +294,21 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    
+
     public function cambiarColor(Request $request, Project $project)
-{
-    $request->validate([
-        'color' => 'required|string|regex:/^#[a-fA-F0-9]{6}$/'
-    ]);
+    {
+        if (auth()->id() !== $project->user_id) {
+            return response()->json(['error' => 'No tienes permiso para cambiar el color.'], 403);
+        }
 
-    $project->update(['color' => $request->color]);
+        $request->validate([
+            'color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/']
+        ]);
 
-    return response()->json(['success' => true]);
-}
+        $project->color = $request->color;
+        $project->save();
+
+        return response()->json(['success' => true, 'color' => $project->color]);
+    }
+
 }
