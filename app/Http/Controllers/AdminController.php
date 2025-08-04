@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Models\Historia;
 use App\Models\Columna;
 use App\Models\Tarea;
-use App\Models\Tarea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
