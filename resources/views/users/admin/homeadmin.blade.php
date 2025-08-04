@@ -358,11 +358,11 @@
 
         /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
         .modal {
-            z-index: 9999 !important;
+            z-index: 1600 !important; /* Mayor que el navbar (z-index: 1400) */
         }
 
         .modal-backdrop {
-            z-index: 9998 !important;
+            z-index: 1599 !important; /* Justo debajo del modal */
         }
 
         /* Mejorar centrado de modales */
@@ -430,7 +430,83 @@
     </style>
 @stop
 @section('content')
+<!-- Contenedor de notificaciones flotantes -->
+<div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1600; width: auto; max-width: 350px;"></div>
+
 <div class="main-container">
+    {{-- Alertas para operaciones CRUD --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 4000);
+        </script>
+    @endif
+    
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('error-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 5000);
+        </script>
+    @endif
+
+    @if(session('warning'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning-alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ session('warning') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('warning-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 4500);
+        </script>
+    @endif
+
+    @if(session('info'))
+        <div class="alert alert-info alert-dismissible fade show" role="alert" id="info-alert">
+            <i class="bi bi-info-circle me-2"></i>
+            {{ session('info') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('info-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 4000);
+        </script>
+    @endif
+
     <!-- Sección administrativa -->
     <div class="row">
         <!-- Usuarios -->
@@ -453,6 +529,9 @@
                         </a>
                         <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
+                        </a>
+                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-archive"></i> Todos los Eliminados
                         </a>
                     </div>
                 </div>
@@ -570,9 +649,30 @@
                                     <td title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
                                     <td>{{ $proyecto->users->count() }}</td>
                                     <td>
-                                        <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
+                                        <div class="btn-group" role="group" aria-label="Acciones de proyecto">
+                                            <!-- Botón Ver -->
+                                            <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info" title="Ver Tablero">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            
+                                            <!-- Botón Editar -->
+                                            <a href="{{ route('projects.edit', $proyecto->id) }}" 
+                                               class="btn btn-sm btn-warning" 
+                                               title="Editar Proyecto">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            
+                                            <!-- Botón Eliminar -->
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    title="Eliminar Proyecto"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteProjectModal"
+                                                    data-project-id="{{ $proyecto->id }}"
+                                                    data-project-name="{{ $proyecto->name }}">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
@@ -970,7 +1070,189 @@
     </div>
 </div>
 
+<!-- Modal para confirmar eliminación de proyecto -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Eliminar Proyecto
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <h6 class="text-danger">¡Atención! Esta acción no se puede deshacer</h6>
+                    <p class="text-muted mb-0">Proyecto: <strong id="deleteProjectName"></strong></p>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <small>
+                            <i class="bi bi-info-circle me-1"></i>
+                            El proyecto y todos sus datos asociados (historias, tareas, tableros) serán eliminados permanentemente.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x me-1"></i>
+                    Cancelar
+                </button>
+                <form id="deleteProjectForm" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3 me-1"></i>
+                        Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('css')
+<style>
+    /* Modales con z-index superior a navbar */
+    .modal {
+        z-index: 1600;
+    }
+    
+    .modal-backdrop {
+        z-index: 1599;
+    }
+    
+    /* Alertas de notificación flotantes */
+    #notificationContainer .alert {
+        margin-bottom: 10px;
+        animation: slideInRight 0.3s ease-out;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .alert.fade-out {
+        animation: slideOutRight 0.3s ease-in;
+    }
+    
+    /* Estilos para botones de acción */
+    .btn-group .btn {
+        border: none;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+</style>
+@endpush
+
+@push('js')
+<script>
+    // Función para mostrar notificaciones dinámicas
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notificationContainer');
+        const alertId = 'alert-' + Date.now();
+        
+        const alertElement = document.createElement('div');
+        alertElement.id = alertId;
+        alertElement.className = `alert alert-${type} alert-dismissible fade show`;
+        alertElement.style.position = 'relative';
+        alertElement.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        `;
+        
+        container.appendChild(alertElement);
+        
+        // Auto-cerrar después de 5 segundos
+        setTimeout(() => {
+            const alert = document.getElementById(alertId);
+            if (alert) {
+                alert.classList.add('fade-out');
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+
+    // Funciones específicas para acciones de proyectos
+    function showProjectSuccess(message) {
+        showNotification(`<i class="bi bi-check-circle me-2"></i>${message}`, 'success');
+    }
+
+    function showProjectError(message) {
+        showNotification(`<i class="bi bi-exclamation-triangle me-2"></i>${message}`, 'danger');
+    }
+
+    function showProjectWarning(message) {
+        showNotification(`<i class="bi bi-exclamation-circle me-2"></i>${message}`, 'warning');
+    }
+
+    function showProjectInfo(message) {
+        showNotification(`<i class="bi bi-info-circle me-2"></i>${message}`, 'info');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejo del modal de eliminación
+        const deleteProjectModal = document.getElementById('deleteProjectModal');
+        const deleteProjectForm = document.getElementById('deleteProjectForm');
+        
+        deleteProjectModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const projectId = button.getAttribute('data-project-id');
+            const projectName = button.getAttribute('data-project-name');
+            
+            // Mostrar el nombre del proyecto
+            document.getElementById('deleteProjectName').textContent = projectName;
+            
+            // Configurar la acción del formulario
+            deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
+        });
+
+        // Manejo de envío del formulario de eliminación
+        deleteProjectForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const projectName = document.getElementById('deleteProjectName').textContent;
+            
+            // Confirmar eliminación
+            if (confirm(`¿Estás seguro de que deseas eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`)) {
+                this.submit();
+            }
+        });
+
+        // Mostrar alertas automáticamente si hay mensajes de sesión
+    });
+</script>
+@endpush
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

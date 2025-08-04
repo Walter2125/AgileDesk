@@ -49,9 +49,6 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Tabler Core CSS (Admin Template) - Comentado temporalmente para debugging -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@2.28.0/dist/css/tabler.min.css"> -->
-
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
     <!-- Fonts -->
@@ -1677,62 +1674,6 @@
         <div id="page-content-wrapper">
             @include('layouts.navigation')
             
-            <!-- Alertas posicionadas inmediatamente debajo del navbar -->
-            <div class="alerts-container" style="position: fixed; top: 4rem; left: var(--sidebar-width); right: 0; z-index: 1500; pointer-events: none;">
-                <div style="pointer-events: auto;">
-                    @if (session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
-                                <div class="flex-grow-1">
-                                    <strong>Error:</strong> {{ session('error') }}
-                                    @if (session('message'))
-                                        <div class="mt-1 small">{{ session('message') }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                        </div>
-                    @endif
-                    
-                    @if (session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-check-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
-                                <div class="flex-grow-1">
-                                    <strong>Éxito:</strong> {{ session('success') }}
-                                </div>
-                            </div>
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                        </div>
-                    @endif
-                    
-                    @if (session('warning'))
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-exclamation-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
-                                <div class="flex-grow-1">
-                                    <strong>Advertencia:</strong> {{ session('warning') }}
-                                </div>
-                            </div>
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                        </div>
-                    @endif
-                    
-                    @if (session('info'))
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-info-circle-fill me-2" style="font-size: 1rem; flex-shrink: 0;"></i>
-                                <div class="flex-grow-1">
-                                    <strong>Información:</strong> {{ session('info') }}
-                                </div>
-                            </div>
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                        </div>
-                    @endif
-                </div>
-            </div>
-            
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
@@ -1775,7 +1716,6 @@
             const toggleIcon = document.getElementById('sidebar-toggle-icon');
             const mobileIcon = document.getElementById('mobile-sidebar-icon');
             const overlay = document.querySelector('.overlay');
-            const alertsContainer = document.querySelector('.alerts-container');
 
             if (isCollapsed) {
                 body.classList.add('sidebar-collapsed');
@@ -1790,9 +1730,6 @@
                 if (window.innerWidth < 992 && overlay) {
                     overlay.style.display = 'none';
                 }
-                if (alertsContainer && window.innerWidth >= 992) {
-                    alertsContainer.style.left = 'var(--sidebar-collapsed-width)';
-                }
             } else {
                 body.classList.remove('sidebar-collapsed');
                 if (toggleIcon) {
@@ -1805,9 +1742,6 @@
                 }
                 if (window.innerWidth < 992 && overlay) {
                     overlay.style.display = 'block';
-                }
-                if (alertsContainer && window.innerWidth >= 992) {
-                    alertsContainer.style.left = 'var(--sidebar-width)';
                 }
             }
         }
@@ -1825,30 +1759,6 @@
             // Inicializar sidebar
             const savedState = getSavedSidebarState();
             applySidebarState(savedState);
-
-            // Manejo de alertas mejorado
-            const alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alert, index) {
-                // Asegurar que la alerta sea visible
-                alert.style.display = 'block';
-                alert.style.visibility = 'visible';
-                alert.style.opacity = '1';
-                alert.style.zIndex = '1500'; // Mayor que el navbar
-                
-                // Auto-cerrar después de 6 segundos
-                setTimeout(function() {
-                    if (alert && alert.parentNode) {
-                        // Usar la funcionalidad nativa de Bootstrap
-                        const bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    }
-                }, 6000 + (index * 1000)); // Escalonar múltiples alertas
-            });
-
-            // Mensaje de consola si hay alertas
-            if (alerts.length > 0) {
-                console.log(`🔔 ${alerts.length} alerta(s) detectada(s)`);
-            }
 
             // Detectar cambios en el tamaño de la ventana para actualizar íconos y overlay
             window.addEventListener('resize', function() {
@@ -1947,7 +1857,6 @@
                     .list-group-item { font-size: 1rem !important; }
                     .user-avatar { font-size: 1rem !important; }
                 `;
-                console.log('🐧 Sistema Linux detectado - Aplicando ajustes de escalado');
             }
 
             if (isMac) {
@@ -1957,7 +1866,6 @@
                     body { font-weight: 400 !important; }
                     .sidebar-heading { font-weight: 500 !important; }
                 `;
-                console.log('🍎 Sistema macOS detectado - Aplicando ajustes de escalado');
             }
 
             if (isFirefox && isLinux) {
@@ -1972,7 +1880,6 @@
                     }
                     .list-group-item { font-size: 1.1rem !important; }
                 `;
-                console.log('🦊 Firefox en Linux detectado - Aplicando ajustes especiales');
             }
 
             // Detectar DPI bajo (típico en algunos sistemas Linux)
@@ -1989,11 +1896,7 @@
                     .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
                     .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
                 `;
-                console.log('📱 DPI bajo detectado - Aplicando escalado aumentado');
 
-                console.log('✅ Event listeners agregados');
-            } else {
-                console.log('❌ No se encontraron los elementos del dropdown');
             }
 
             // Aplicar los estilos si hay alguno
@@ -2001,14 +1904,6 @@
                 osSpecificStyles.textContent = css;
                 document.head.appendChild(osSpecificStyles);
             }
-
-            // Mensaje de información en consola
-            console.log('🎨 AgileDesk - Ajustes de escalado aplicados para:', {
-                userAgent: navigator.userAgent,
-                devicePixelRatio: window.devicePixelRatio,
-                screenResolution: `${screen.width}x${screen.height}`,
-                windowSize: `${window.innerWidth}x${window.innerHeight}`
-            });
         });
     </script>
 

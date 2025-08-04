@@ -834,6 +834,15 @@
                         min-width: 0;
                     }
 
+                    /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
+                    .modal {
+                        z-index: 1600 !important; /* Mayor que el navbar (z-index: 1400) */
+                    }
+
+                    .modal-backdrop {
+                        z-index: 1599 !important; /* Justo debajo del modal */
+                    }
+
                 </style>
 
 

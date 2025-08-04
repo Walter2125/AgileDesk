@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tablero extends Model {
+    use HasFactory;
     protected $fillable = ['proyecto_id'];
 
    // public function proyectos() {

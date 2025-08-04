@@ -7,7 +7,16 @@
 
  <style>
     .user-dropdown .dropdown-menu {
-        z-index: 9999 !important;
+        z-index: 1550 !important; /* Menor que modales pero mayor que navbar */
+    }
+    
+    /* Asegurar z-index correcto para modales si los hay */
+    .modal {
+        z-index: 1600 !important; /* Mayor que el navbar (z-index: 1400) */
+    }
+
+    .modal-backdrop {
+        z-index: 1599 !important; /* Justo debajo del modal */
     }
 </style>
     @stop

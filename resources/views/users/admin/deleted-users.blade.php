@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Contenedor de notificaciones flotantes -->
+<div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1600; width: auto; max-width: 350px;"></div>
+
 <div class="container-fluid">
     <div class="row" style="padding: 1rem;">
         <div class="col-12">
@@ -16,20 +19,77 @@
                 </div>
                 
                 <div class="card-body">
+                    {{-- Alertas para operaciones CRUD --}}
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
                             <i class="bi bi-check-circle me-2"></i>
                             {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
+                        <script>
+                            setTimeout(function () {
+                                const alert = document.getElementById('success-alert');
+                                if (alert) {
+                                    alert.style.transition = "opacity 0.5s ease";
+                                    alert.style.opacity = 0;
+                                    setTimeout(() => alert.remove(), 500);
+                                }
+                            }, 4000);
+                        </script>
                     @endif
                     
                     @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
                             <i class="bi bi-exclamation-circle me-2"></i>
                             {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
+                        <script>
+                            setTimeout(function () {
+                                const alert = document.getElementById('error-alert');
+                                if (alert) {
+                                    alert.style.transition = "opacity 0.5s ease";
+                                    alert.style.opacity = 0;
+                                    setTimeout(() => alert.remove(), 500);
+                                }
+                            }, 5000);
+                        </script>
+                    @endif
+
+                    @if(session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning-alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {{ session('warning') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                        <script>
+                            setTimeout(function () {
+                                const alert = document.getElementById('warning-alert');
+                                if (alert) {
+                                    alert.style.transition = "opacity 0.5s ease";
+                                    alert.style.opacity = 0;
+                                    setTimeout(() => alert.remove(), 500);
+                                }
+                            }, 4500);
+                        </script>
+                    @endif
+
+                    @if(session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert" id="info-alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            {{ session('info') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                        <script>
+                            setTimeout(function () {
+                                const alert = document.getElementById('info-alert');
+                                if (alert) {
+                                    alert.style.transition = "opacity 0.5s ease";
+                                    alert.style.opacity = 0;
+                                    setTimeout(() => alert.remove(), 500);
+                                }
+                            }, 4000);
+                        </script>
                     @endif
 
                     @if($deletedUsers->count() > 0)
@@ -253,11 +313,11 @@
 
 /* CORREGIR PROBLEMA DE Z-INDEX DE LOS MODALES */
 .modal {
-    z-index: 9999 !important;
+    z-index: 1600 !important; /* Mayor que el navbar (z-index: 1400) */
 }
 
 .modal-backdrop {
-    z-index: 9998 !important;
+    z-index: 1599 !important; /* Justo debajo del modal */
 }
 
 /* Mejorar centrado de modales */
@@ -421,7 +481,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         restoreUserName.textContent = userName;
                     }
                     if (restoreForm && userId) {
-                        restoreForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/restore`);
+                        const actionUrl = `/admin/users/${userId}/restore`;
+                        restoreForm.setAttribute('action', actionUrl);
+                        console.log('Restore form action set to:', actionUrl);
                     }
                 } catch (error) {
                     console.error('Error en modal de restauración:', error);
@@ -446,7 +508,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         deleteUserName.textContent = userName;
                     }
                     if (deleteForm && userId) {
-                        deleteForm.setAttribute('action', `{{ url('admin/users') }}/${userId}/permanent-delete`);
+                        const actionUrl = `/admin/users/${userId}/permanent-delete`;
+                        deleteForm.setAttribute('action', actionUrl);
+                        console.log('Delete form action set to:', actionUrl);
                     }
                 } catch (error) {
                     console.error('Error en modal de eliminación:', error);
@@ -484,5 +548,55 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error en DOMContentLoaded:', error);
     }
 });
+
+// Función para mostrar notificaciones dinámicas
+function showNotification(type, message) {
+    const alertType = type === 'error' ? 'danger' : type;
+    const iconMap = {
+        'success': 'bi-check-circle',
+        'danger': 'bi-exclamation-circle', 
+        'warning': 'bi-exclamation-triangle',
+        'info': 'bi-info-circle'
+    };
+    const icon = iconMap[alertType] || 'bi-info-circle';
+    
+    const alertHtml = `
+        <div class="alert alert-${alertType} alert-dismissible fade show" role="alert">
+            <i class="bi ${icon} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    `;
+
+    const notificationContainer = document.getElementById('notification-container') || document.body;
+    notificationContainer.insertAdjacentHTML('afterbegin', alertHtml);
+
+    // Eliminar la notificación después de 5 segundos
+    setTimeout(() => {
+        const alert = notificationContainer.querySelector('.alert');
+        if (alert) {
+            alert.style.transition = "opacity 0.5s ease";
+            alert.style.opacity = 0;
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 5000);
+}
+
+// Funciones de conveniencia para notificaciones comunes
+function showSuccessNotification(message) {
+    showNotification('success', message);
+}
+
+function showErrorNotification(message) {
+    showNotification('error', message);
+}
+
+function showWarningNotification(message) {
+    showNotification('warning', message);
+}
+
+function showInfoNotification(message) {
+    showNotification('info', message);
+}
 </script>
 @endsection
