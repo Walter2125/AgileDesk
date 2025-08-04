@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     public function create(Request $request)
     {
         $users = User::where('usertype', '!=', 'admin')
@@ -79,10 +82,17 @@ class ProjectController extends Controller
             'proyecto_id' => $project->id,
         ]);
 
-        $tablero->columnas()->create([
-            'nombre' => 'Pendiente',
-            'posicion' => 1,
-            'es_backlog' => true,
+        $tablero->columnas()->createMany([
+            [
+                'nombre' => 'Pendiente',
+                'posicion' => 1,
+                'es_backlog' => true,
+            ],
+            [
+                'nombre' => 'Backlog',
+                'posicion' => 2,
+                'es_backlog' => true,
+            ]
         ]);
 
         DB::commit();
@@ -284,24 +294,21 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    public function cambiarColor(Request $request, $id)
-{
-    Log::info("Entró a cambiarColor para proyecto $id", ['color' => $request->input('color')]);
-    // o puedes hacer:
-    // dd($request->all());
 
-    $project = Project::findOrFail($id);
+    public function cambiarColor(Request $request, Project $project)
+    {
+        if (auth()->id() !== $project->user_id) {
+            return response()->json(['error' => 'No tienes permiso para cambiar el color.'], 403);
+        }
 
-    $color = $request->input('color') ?? json_decode($request->getContent(), true)['color'] ?? '#ffffff';
+        $request->validate([
+            'color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/']
+        ]);
 
-    $project->color = $color;
-    $project->save();
+        $project->color = $request->color;
+        $project->save();
 
-    return response()->json([
-        'success' => true,
-        'color' => $color
-    ]);
-}
-
+        return response()->json(['success' => true, 'color' => $project->color]);
+    }
 
 }

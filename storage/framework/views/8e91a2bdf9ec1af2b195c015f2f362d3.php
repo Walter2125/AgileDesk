@@ -1,14 +1,14 @@
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
 <!-- Tarjeta de proyecto -->
 <div class="col-md-6 col-lg-4 mb-4">
-    <div id="project-{{ $project->id }}"
+    <div id="project-<?php echo e($project->id); ?>"
          class="project-card card h-100 position-relative"
-         x-data="colorPicker({{ $project->id }}, '{{ route('projects.cambiarColor', $project->id) }}', '{{ $project->color ?? '#ffffff' }}')"
+         x-data="colorPicker(<?php echo e($project->id); ?>, '<?php echo e(route('projects.cambiarColor', $project->id)); ?>', '<?php echo e($project->color ?? '#ffffff'); ?>')"
          :style="'background-color: ' + color + ' !important;'">
 
         <!-- Muestra el valor del color actual (solo para pruebas) -->
-        {{-- <div><p x-text="color"></p></div> --}}
+        
 
         <!-- Botón de 3 puntitos y menú -->
         <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
@@ -41,10 +41,11 @@
                 <div class="project-title-wrapper">
                     <h3 class="project-title">
                         <i class="fas fa-project-diagram"></i>
-                        <span>{{ $project->name }}</span>
+                        <span><?php echo e($project->name); ?></span>
                     </h3>
                     <div class="project-code">
-                        <strong>Código:</strong> {{ $project->codigo }}
+                        <strong>Código:</strong> <?php echo e($project->codigo); ?>
+
                     </div>
                 </div>
             </div>
@@ -52,36 +53,37 @@
             <div class="date-info">
                 <div class="date-block">
                     <i class="fas fa-calendar-alt"></i>
-                    <span>{{ $project->fecha_inicio }}</span>
+                    <span><?php echo e($project->fecha_inicio); ?></span>
                 </div>
                 <div class="date-block">
                     <i class="fas fa-calendar-check"></i>
-                    <span>{{ $project->fecha_fin }}</span>
+                    <span><?php echo e($project->fecha_fin); ?></span>
                 </div>
             </div>
 
             <div class="project-description">
-                {{ Str::limit($project->descripcion, 100) }}
+                <?php echo e(Str::limit($project->descripcion, 100)); ?>
+
             </div>
 
             <div class="action-buttons">
-                <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
                     <i class="fas fa-eye"></i> Ver
                 </a>
 
-                @if(auth()->id() === $project->user_id)
-                    <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                <?php if(auth()->id() === $project->user_id): ?>
+                    <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
+                    <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
                         <button type="submit" class="btn btn-delete"
                                 onclick="return confirm('¿Estás segura de que deseas eliminar este proyecto?')">
                             <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </form>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -142,4 +144,4 @@
 <!-- AlpineJS y Toastify -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"><?php /**PATH C:\Users\Dell\Herd\AgileDesk\resources\views/projects/project-card.blade.php ENDPATH**/ ?>
