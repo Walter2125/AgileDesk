@@ -32,7 +32,7 @@
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
+            <form id="projectForm" method="POST" action="{{ route('projects.store') }}" autocomplete="off">
                 @csrf
 
                 <!-- Nombre -->

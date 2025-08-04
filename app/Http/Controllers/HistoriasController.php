@@ -59,39 +59,35 @@ private function compartirContextoDesdeColumna(Columna $columna)
         return view('historias.create', compact('columna', 'tablero', 'proyecto', 'usuarios', 'sprints', 'columnas'));
     }
 
+public function create(Request $request)
+{
+    $proyecto = null;
+    $columna = null;
+    $usuarios = collect(); // por defecto vacío
+    $sprints = collect();  // por defecto vacío
+    $columnas = collect(); // columnas también
+    $currentProject = $proyecto;
 
-    public function create(Request $request)
-    {
-        $proyecto = null;
-        $columna = null;
-        $usuarios = collect(); // por defecto vacío
-        $sprints = collect();  // por defecto vacío
-        $columnas = collect(); // columnas también
-        $currentProject = $proyecto;
+    if ($request->has('proyecto')) {
+        $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
 
+        if ($proyecto) {
+            $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
+            $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
 
-
-
-        if ($request->has('proyecto')) {
-            $proyecto = Project::with('tablero.columnas')->find($request->get('proyecto'));
-
-            if ($proyecto) {
-                $usuarios = $proyecto->users()->where('usertype', '!=', 'admin')->get();
-                $sprints = Sprint::where('proyecto_id', $proyecto->id)->get();
-
-
-                if ($proyecto->tablero) {
-                    $columnas = $proyecto->tablero->columnas;
-                }
-
+            if ($proyecto->tablero) {
+                $columnas = $proyecto->tablero->columnas;
             }
         }
-
-        return view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas', 'currentProject'));
-
-
-
     }
+
+    return response()
+        ->view('historias.create', compact('proyecto', 'columna', 'usuarios', 'sprints', 'columnas', 'currentProject'))
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
+}
+
 
 
 

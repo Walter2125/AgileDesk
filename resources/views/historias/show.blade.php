@@ -9,28 +9,29 @@
             
 
 @section('content')
-
-    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
     
     @if (session('success'))
-        <div class="alert alert-success mt-2" id="success-alert">
-            {{ session('success') }}
-        </div>
-        <script>
-            setTimeout(function () {
-                const alert = document.getElementById('success-alert');
-                if (alert) {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000);
-        </script>
-    @endif
+    <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
+        {{ session('success') }}
+    </div>
+    <script>
+        setTimeout(function () {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = 0;
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
+@endif
+
+    
 
     @if ($errors->any())
         <div class="alert alert-danger mt-2">
@@ -47,49 +48,49 @@
    
         <div class="card-body">
 
-            {{-- Título --}}
-            <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-                <h2 class="historia-title mb-0 rounded"
-                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 1200px;"
-                    title="{{ $historia->nombre }}">
-                    H{{ $historia->numero }} {{ $historia->nombre }}
-                </h2>
-
-                {{-- Botones --}}
-                <div class="d-flex align-items-center">
-                    <div class="dropdown me-3">
-                        <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                            <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                            <li>
-                                <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button>
-                                </form>
-                            </li>
-                            <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Nueva Tarea</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-
-            {{-- Formulario --}}
-            <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST">
+    <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
+            <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                <div class="mb-0" style="max-width: 600px; width: 100%;">
+
+    <h2 id="tituloTexto" class="historia-title rounded"
+        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+        title="{{ $historia->nombre }}">
+        H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+    </h2>
+
+  
+    <input id="tituloInput" type="text" name="nombre" maxlength="100" class="form-control form-control-lg rounded d-none" value="{{ old('nombre', $historia->nombre) }}"
+        data-editable="true"
+        style="font-weight: bold;" />
+</div>
+
+
+                
+                                    <div class="d-flex align-items-center">
+                                        <div id="dropdownMenuContainer"  class="dropdown me-3">
+                                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                                                <li>
+                                            
+                                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button>
+                                                
+                                                </li>
+                                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Nueva Tarea</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+            </div>
+            
 
     <div class="row mb-3">
         <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label rounded">Nombre</label>
-                <input type="text" class="form-control rounded" name="nombre" value="{{ old('nombre', $historia->nombre) }}" data-editable="true" readonly>
-            </div>
-
+           
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
                 <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
@@ -151,36 +152,61 @@
 
     <div class="mb-3">
         <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion" data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+        <textarea class="form-control" name="descripcion" style="field-sizing: content;"  maxlength="5000"data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
     </div>
 
-    {{-- Botón Guardar --}}
+  
     <div class="d-flex justify-content-end mb-3">
-        <button id="btnGuardar" type="submit" class="btn btn-success d-none">Actualizareeeeeeeeeee</button>
+        
+        <button id="btnGuardar" type="submit"
+    class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case d-none">
+    Actualizar
+</button>
+
+
     </div>
 </form>
+        <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
+            @csrf
+            @method('DELETE')
+        </form>
 
         </div>
     </div>
 </div>
 
-{{-- Script para manejar edición --}}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const btnEditar = document.getElementById('btnEditar');
-    const btnGuardar = document.getElementById('btnGuardar');
-    const editableFields = document.querySelectorAll('[data-editable="true"]');
 
-    btnEditar.addEventListener('click', function () {
-        editableFields.forEach(field => {
-            field.removeAttribute('readonly');
-            field.removeAttribute('disabled');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnEditar = document.getElementById('btnEditar');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const tituloTexto = document.getElementById('tituloTexto');
+        const tituloInput = document.getElementById('tituloInput');
+        const editableFields = document.querySelectorAll('[data-editable="true"]');
+
+       
+        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+
+        btnEditar.addEventListener('click', function (e) {
+            e.preventDefault(); 
+            tituloTexto.classList.add('d-none');
+            tituloInput.classList.remove('d-none');
+            editableFields.forEach(field => {
+                field.removeAttribute('readonly');
+                field.removeAttribute('disabled');
+            });
+            btnGuardar.classList.remove('d-none');
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.add('d-none');
+            }
         });
-        btnGuardar.classList.remove('d-none');
-        btnEditar.disabled = true;
+        const form = document.getElementById('formHistoria');
+        form.addEventListener('submit', function () {
+            console.log('Formulario enviado');
+        });
     });
-});
 </script>
+
 
 
        

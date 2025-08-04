@@ -35,7 +35,7 @@
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
-                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}">
+                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}" autocomplete="off">
                     @csrf
                     @method('PUT')
 
