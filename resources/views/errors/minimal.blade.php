@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Error</title>
     <!-- Optimizado: cargar solo los componentes necesarios de Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/fontawesome.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/solid.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/fontawesome/all-fixed.css') }}" rel="stylesheet">
     <style>
         :root {
             --primary-color: #4f46e5;

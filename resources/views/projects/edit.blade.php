@@ -129,7 +129,7 @@
 @endsection
 
 @section('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
     <script>
         $(function () {
             let selectedUsers = @json($selectedUsers);

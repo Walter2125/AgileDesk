@@ -7,8 +7,7 @@
 
         <title>{{ config('app.name', 'Agile Desk') }}</title>
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="{{ asset('vendor/fonts/figtree/figtree-local.css') }}" rel="stylesheet" />
 
         <!-- logo -->
         <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
