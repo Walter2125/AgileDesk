@@ -2,12 +2,21 @@
 
 @section('layouts_css')
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="{{ asset('vendor/fontawesome/all-fixed.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
 
  <style>
     .user-dropdown .dropdown-menu {
-        z-index: 9999 !important;
+        z-index: 1550 !important; /* Menor que modales pero mayor que navbar */
+    }
+    
+    /* Asegurar z-index correcto para modales si los hay */
+    .modal {
+        z-index: 1600 !important; /* Mayor que el navbar (z-index: 1400) */
+    }
+
+    .modal-backdrop {
+        z-index: 1599 !important; /* Justo debajo del modal */
     }
 </style>
     @stop
@@ -63,7 +72,7 @@
 
 @section('layouts_js')
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

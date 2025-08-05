@@ -15,7 +15,7 @@ class ColumnaController extends Controller
     {
         $tablero = Tablero::with('columnas')->findOrFail($tableroId);
 
-        // Validar que no haya más de 9 columnas
+
         if ($tablero->columnas->count() >= 9) {
             return redirect()->back()->withErrors('No se pueden crear más de 9 columnas en un tablero.');
         }

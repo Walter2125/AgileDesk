@@ -1,7 +1,8 @@
 @extends('layouts.app')
-   
+
 @section('styles')
 <style>
+
     /* Estilos consistentes con homeadmin.blade.php */
     .admin-card {
         margin-bottom: 20px;
@@ -25,22 +26,6 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .alert-flash {
-        border-left: 4px solid;
-        animation: fadeInOut 5s ease-in-out;
-    }
-    
-    .alert-flash.alert-success { 
-        border-left-color: #28a745; 
-    }
-    
-    @keyframes fadeInOut {
-        0% { opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { opacity: 0; }
     }
 
     .user-avatar {
@@ -119,6 +104,14 @@
     }
 
     /* Modal personalizado */
+    .modal {
+        z-index: 1600 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1599 !important;
+    }
+
     .modal-content {
         border-radius: 8px;
         border: none;
@@ -138,7 +131,31 @@
         border-top: 1px solid #efe9e9;
         padding: 1.5rem;
     }
-    
+
+    /* Mejorar centrado de modales */
+    .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 3rem);
+        margin: 1.5rem auto;
+    }
+
+    /* Responsive para modales */
+    @media (max-width: 576px) {
+        .modal-dialog {
+            margin: 1rem;
+            max-width: calc(100% - 2rem);
+            min-height: calc(100vh - 2rem);
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 1rem;
+        }
+    }
+
 </style>
 @endsection
 
@@ -146,13 +163,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            @if(session('success'))
-                <div class="alert alert-success alert-flash d-flex align-items-center" role="alert">
-                    <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                    <div>{{ session('success') }}</div>
-                </div>
-            @endif
-
             <div class="card admin-card mb-4">
                 <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                     <div>
@@ -166,12 +176,6 @@
                             <i class="bi bi-search"></i>
                             <input type="text" id="searchUsers" class="form-control form-control-sm search-input" placeholder="Buscar usuarios...">
                         </div>
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
-                            <i class="bi bi-people me-1"></i><span>Ver Todos</span>
-                        </a>
-                        <button onclick="location.reload()" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                            <i class="bi bi-arrow-clockwise me-1"></i><span>Actualizar</span>
-                        </button>
                     </div>
                 </div>
 
@@ -226,13 +230,13 @@
                                             </td>
                                             <td class="text-end">
                                                 <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-sm btn-info btn-icon" 
-                                                            data-bs-toggle="modal" data-bs-target="#userDetailModal" 
+                                                    <button type="button" class="btn btn-sm btn-info btn-icon"
+                                                            data-bs-toggle="modal" data-bs-target="#userDetailModal"
                                                             data-user-id="{{ $user->id }}"
                                                             title="Ver detalles">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    
+
                                                     <button type="button" class="btn btn-sm btn-success btn-icon"
                                                             data-bs-toggle="modal" data-bs-target="#approveModal"
                                                             data-user-id="{{ $user->id }}"
@@ -256,7 +260,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     @endif
                 </div>
             </div>
@@ -266,7 +270,7 @@
 
 <!-- Modal de Aprobación -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">
@@ -307,7 +311,7 @@
 
 <!-- Modal de Rechazo -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">
@@ -332,7 +336,7 @@
                             <p class="mb-0 mt-1">Esta acción eliminará permanentemente la solicitud del usuario.</p>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -349,7 +353,7 @@
 
 <!-- Modal de Detalle -->
 <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="userDetailModalLabel">
@@ -426,13 +430,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchUsers');
     if (searchInput) {
         let typingTimer;
-        
+
         searchInput.addEventListener('keyup', function() {
             clearTimeout(typingTimer);
             typingTimer = setTimeout(() => {
                 const searchTerm = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#pendingUsersTable tbody tr');
-                
+
                 rows.forEach(row => {
                     const text = row.textContent.toLowerCase();
                     row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -462,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkbox.addEventListener('change', function() {
             const allChecked = Array.from(individualCheckboxes).every(cb => cb.checked);
             const someChecked = Array.from(individualCheckboxes).some(cb => cb.checked);
-            
+
             if (selectAllCheckbox) {
                 selectAllCheckbox.checked = allChecked;
                 selectAllCheckbox.indeterminate = someChecked && !allChecked;
@@ -492,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             const userData = getUserDataFromRow(userId);
-            
+
             if (userData) {
                 currentUserId = userId;
                 currentUserData = userData;
@@ -578,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const userId = button.getAttribute('data-user-id');
             const userName = button.getAttribute('data-user-name');
-            const userEmail = button.dataset.userEmail || 
+            const userEmail = button.dataset.userEmail ||
                              document.querySelector(`tr[data-user-id="${userId}"] .text-muted`).textContent;
             const userInitial = userName.charAt(0).toUpperCase();
 
@@ -607,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No se puede aprobar: usuario inválido.');
                 return false;
             }
-            
+
             // Agregar indicador de carga
             if (approveSubmitBtn) {
                 approveSubmitBtn.classList.add('loading');
@@ -624,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No se puede rechazar: usuario inválido.');
                 return false;
             }
-            
+
             // Agregar indicador de carga
             if (rejectSubmitBtn) {
                 rejectSubmitBtn.classList.add('loading');
@@ -632,18 +636,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 rejectSubmitBtn.disabled = true;
             }
         });
-    }
-
-    // Alertas temporales con auto-hide
-    const flashAlerts = document.querySelectorAll('.alert-flash');
-    if (flashAlerts.length) {
-        setTimeout(() => {
-            flashAlerts.forEach(alert => {
-                alert.style.opacity = '0';
-                alert.style.transition = 'opacity 0.3s ease-in-out';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }, 5000);
     }
 
     // Limpiar formularios al cerrar modales
@@ -655,14 +647,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (submitBtn) {
                     submitBtn.classList.remove('loading');
                     submitBtn.disabled = false;
-                    
+
                     if (submitBtn.id === 'approveSubmitBtn') {
                         submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Aprobar Usuario';
                     } else if (submitBtn.id === 'rejectSubmitBtn') {
                         submitBtn.innerHTML = '<i class="bi bi-x-lg me-1"></i>Rechazar Usuario';
                     }
                 }
-                
+
                 // Limpiar formularios
                 const form = modal.querySelector('form');
                 if (form) {

@@ -1,15 +1,16 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('mensaje-superior')
     Proyectos
 @endsection
 
 @section('styles')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{{ asset('vendor/fontawesome/all-fixed.css') }}">
 
 <style>
     .projects-container {
         margin-top: 2rem;
+
     }
 
     .project-card {
@@ -75,7 +76,7 @@
 
     .date-info {
         display: flex;
-        justify-content: space-between; 
+        justify-content: space-between;
         gap: 1rem;
         margin-bottom: 1.2rem;
         color: #5d6778;
@@ -177,14 +178,17 @@
     .page-title {
     color: #2c3e50;
     font-weight: 800;
-    
+
     font-size: 2.2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    
+
 }
+    .bg-color-dynamic {
+        background-color: inherit !important;
+    }
 
 .page-title::after {
     content: '';
@@ -270,14 +274,51 @@ h1.page-title {
         @endforelse
     </div>
 
-    {{-- Todos los proyectos --}}
-    <h2 class="page-title mt-5">Todos los proyectos</h2>
-    <div class="row">
-        @forelse($allProjects as $project)
-            @include('projects.project-card', ['project' => $project])
-        @empty
-            <p class="text-muted">No hay proyectos para mostrar.</p>
-        @endforelse
+
+    <h2 class="page-title mt-5">Proyectos</h2>
+    <div class="list-group">
+    @forelse($allProjects as $project)
+        <div class="mb-3 p-3 border rounded shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1 text-blanck">{{ $project->name }}</h5>
+                    <small class="text-muted">
+                        {{ $project->created_at->format('d/m/Y') }}
+                        @if($project->category)
+                            | {{ $project->category->name }}
+                        @endif
+                    </small>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    @if (auth()->check() && auth()->user()->usertype == 'admin')
+                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+            @if($project->descripcion)
+                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ $project->id }}">
+                    Mostrar descripción
+                </button>
+                <div class="collapse mt-2" id="desc-{{ $project->id }}">
+                    <p class="mb-0 text-muted">{{ $project->descripcion }}</p>
+                </div>
+            @endif
+        </div>
+    @empty
+        <p class="text-muted">No hay proyectos para mostrar.</p>
+    @endforelse
     </div>
 </div>
 @endsection

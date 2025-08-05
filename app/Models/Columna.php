@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Columna extends Model {
+    use HasFactory;
     protected $fillable = ['tablero_id', 'nombre', 'posicion'];
 
     //public function tableros() {

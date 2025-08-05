@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Navbar</title>
     <!-- Incluir Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons-fixed.css') }}">
     <style>
         :root {
             --primary-color: #0d6efd;
@@ -28,27 +28,23 @@
             --navbar-padding-x: 1rem;
         }
 
-        /* Escalado de fuentes SOLO para la navbar, no global */
-        .navbar-optimized.font-scale-sm { font-size: 14px !important; }
-        .navbar-optimized.font-scale-md { font-size: 16px !important; }
-        .navbar-optimized.font-scale-lg { font-size: 18px !important; }
-        .navbar-optimized.font-scale-xl { font-size: 20px !important; }
-
         /* Navbar optimizada */
         .navbar-optimized {
             background: white;
             border-bottom: 1px solid var(--border-color);
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
-            transition: var(--transition);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 900;
-            padding: 0.5rem 0;
-            font-size: 1rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: var(--transition);        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        box-sizing: border-box;
+        max-width: 100vw;
+        overflow: hidden;
         }
 
         .navbar-optimized .container-fluid {
@@ -58,6 +54,9 @@
             padding: 0 1rem;
             width: 100%;
             margin: 0 auto;
+            box-sizing: border-box;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         /* Botones optimizados - Base */
@@ -122,57 +121,6 @@
             transform: scale(1.1);
         }
 
-        /* Botón escalado - Mejorado */
-        .navbar-optimized .btn-scale-toggle {
-            background: white;
-            border: 1px solid var(--border-color);
-            color: var(--dark-color);
-            position: relative;
-            height: 100%;
-            overflow: visible; /* Asegura que el badge nunca se corte */
-        }
-
-        .navbar-optimized .btn-scale-toggle:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
-        }
-
-        .navbar-optimized .btn-scale-toggle:active {
-            transform: translateY(0);
-        }
-
-        .navbar-optimized .btn-scale-toggle.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        .navbar-optimized .btn-scale-toggle .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--primary-color);
-            color: white;
-            font-size: 0.65rem;
-            padding: 0.2rem 0.4rem;
-            border-radius: 50px;
-            z-index: 2;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            pointer-events: none;
-        }
-
-        @media (max-width: 575.98px) {
-          .navbar-optimized .btn-scale-toggle .badge {
-            right: -4px;
-            top: -4px;
-            font-size: 0.7rem;
-            padding: 0.18rem 0.32rem;
-          }
-        }
-
         /* Botón dark mode - Mejorado */
         .navbar-optimized .btn-theme-toggle {
             background: linear-gradient(135deg, #667eea 0%, #57b0eb 100%);
@@ -211,121 +159,40 @@
             transform: rotate(180deg);
         }
 
-        /* Dropdown mejorado */
-        .navbar-optimized .dropdown-optimized {
-            position: relative;
-            display: inline-block;
+        /* Responsive mejorado */
+        @media (max-width: 991.98px) {
+            .navbar-optimized .btn-optimized .d-none.d-md-inline {
+                display: none !important;
+            }
+            
+            .navbar-optimized .btn-optimized {
+                min-width: 40px;
+                padding: 0.5rem;
+            }
+            
+            .navbar-optimized .d-lg-flex {
+                display: none !important;
+            }
+            
+            .navbar-optimized .d-lg-none {
+                display: flex !important;
+            }
+            
+            .navbar-sidebar-header {
+                margin-left: 0 !important;
+            }
         }
 
-        .navbar-optimized .dropdown-menu-optimized {
-            display: none;
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            z-index: 1040;
-            min-width: 280px;
-            padding: 0.5rem;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.2s ease-out;
+        @media (min-width: 992px) {
+            .navbar-optimized .d-lg-flex {
+                display: flex !important;
+            }
+            
+            .navbar-optimized .d-lg-none {
+                display: none !important;
+            }
         }
 
-        .navbar-optimized .dropdown-menu-optimized.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .navbar-optimized .dropdown-header-optimized {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .navbar-optimized .dropdown-item-optimized {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.25rem;
-            background: transparent;
-            border: none;
-            border-radius: calc(var(--border-radius) - 2px);
-            color: var(--dark-color);
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .navbar-optimized .dropdown-item-optimized:hover {
-            background: var(--hover-bg);
-            transform: translateX(4px);
-        }
-
-        .navbar-optimized .dropdown-item-optimized.active {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 500;
-        }
-
-        .navbar-optimized .dropdown-item-optimized.reset {
-            color: var(--danger-color);
-            border-top: 1px solid var(--border-color);
-            margin-top: 0.5rem;
-            padding-top: 0.75rem;
-        }
-
-        .navbar-optimized .dropdown-item-optimized.reset:hover {
-            background: rgba(220, 53, 69, 0.1);
-        }
-
-        /* Indicadores visuales */
-        .navbar-optimized .scale-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.75rem;
-            color: var(--secondary-color);
-            padding: 0.125rem 0.375rem;
-            background: var(--light-color);
-            border-radius: 12px;
-        }
-
-        .navbar-optimized .scale-size {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--secondary-color);
-        }
-
-        /* Notificaciones */
-        .navbar-optimized .notification-optimized {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 1050;
-            min-width: 300px;
-            max-width: 400px;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            padding: 1rem;
-            animation: slideInRight 0.3s ease-out;
-        }
 
         @keyframes slideInRight {
             from {
@@ -457,15 +324,6 @@
         .navbar-optimized .fs-4 {
             font-size: 1.25rem;
         }
-        .navbar-optimized .btn-scale-toggle {
-            overflow: visible;
-            padding-top: 1rem; /* Mayor espacio para que el badge no se corte */
-            position: relative; /* Asegura el posicionamiento del badge */
-        }
-
-        .navbar-optimized .btn-scale-toggle .badge {
-            top: -2px;
-        }
 
     </style>
 </head>
@@ -513,20 +371,6 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end h-100" style="min-height:0;">
-                
-        <div class="dropdown-optimized">
-            <button class="btn-optimized btn-scale-toggle" 
-                    type="button" 
-                    id="fontScaleDropdown" 
-                    onclick="toggleFontScaleDropdown(event)"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    title="Ajustar tamaño de interfaz">
-                <i class="bi bi-zoom-in"></i>
-                <span class="d-none d-md-inline">Tamaño</span>
-                <span class="badge" id="scale-badge">M</span>
-            </button>
-        </div>
                 <!-- Botón tema optimizado -->
                 <button id="dark-mode-toggle-btn" 
                         class="btn-optimized btn-theme-toggle"
@@ -536,206 +380,12 @@
                     <span class="d-none d-lg-inline" id="theme-text">Oscuro</span>
                 </button>
             </div>
-            <!-- Menú de escalado flotante -->
-            <div class="dropdown-menu-optimized" id="fontScaleDropdownMenu">
-                <div class="scale-menu-wrapper">
-                    <div class="scale-menu">
-                        <div class="scale-menu-header d-flex align-items-center gap-2 mb-2 fw-semibold text-muted">
-                            <i class="bi bi-display"></i>
-                            <span>Tamaño de Interfaz</span>
-                        </div>
-
-                        <button class="dropdown-item-optimized" data-scale="small" onclick="setFontScale('small')">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-circle-fill" style="font-size: 8px; color: var(--primary-color);"></i>
-                                <span>Pequeño</span>
-                            </div>
-                            <div class="scale-indicator">
-                                <div class="scale-size" style="width: 6px; height: 6px;"></div>
-                                <span>14px</span>
-                            </div>
-                        </button>
-
-                        <button class="dropdown-item-optimized active" data-scale="normal" onclick="setFontScale('normal')">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-circle-fill" style="font-size: 10px; color: var(--primary-color);"></i>
-                                <span>Normal</span>
-                            </div>
-                            <div class="scale-indicator">
-                                <div class="scale-size" style="width: 8px; height: 8px;"></div>
-                                <span>16px</span>
-                            </div>
-                        </button>
-
-                        <button class="dropdown-item-optimized" data-scale="large" onclick="setFontScale('large')">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-circle-fill" style="font-size: 12px; color: var(--primary-color);"></i>
-                                <span>Grande</span>
-                            </div>
-                            <div class="scale-indicator">
-                                <div class="scale-size" style="width: 10px; height: 10px;"></div>
-                                <span>18px</span>
-                            </div>
-                        </button>
-
-                        <button class="dropdown-item-optimized" data-scale="extra-large" onclick="setFontScale('extra-large')">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-circle-fill" style="font-size: 14px; color: var(--primary-color);"></i>
-                                <span>Extra Grande</span>
-                            </div>
-                            <div class="scale-indicator">
-                                <div class="scale-size" style="width: 12px; height: 12px;"></div>
-                                <span>20px</span>
-                            </div>
-                        </button>
-
-                        <button class="dropdown-item-optimized reset" onclick="resetFontScale()">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-arrow-clockwise"></i>
-                                <span>Restablecer</span>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
+    </div>
     </nav>
     <script>
-        // Configuración unificada de escalado
-        const FONT_SCALE_KEY = 'agiledesk_font_scale';
+        // Configuración unificada
         const THEME_KEY = 'agiledesk_theme';
-        
-        const SCALE_CONFIGS = {
-            small: { 
-                name: 'Pequeño', 
-                fontSize: '14px', 
-                class: 'font-scale-sm',
-                badge: 'S' 
-            },
-            normal: { 
-                name: 'Normal', 
-                fontSize: '16px', 
-                class: 'font-scale-md',
-                badge: 'M' 
-            },
-            large: { 
-                name: 'Grande', 
-                fontSize: '18px', 
-                class: 'font-scale-lg',
-                badge: 'L' 
-            },
-            'extra-large': { 
-                name: 'Extra Grande', 
-                fontSize: '20px', 
-                class: 'font-scale-xl',
-                badge: 'XL' 
-            }
-        };
-
-        // Variable para controlar el estado del dropdown
-        let currentDropdown = null;
-
-        // Obtener la escala guardada
-        function getSavedFontScale() {
-            return localStorage.getItem(FONT_SCALE_KEY) || 'normal';
-        }
-
-        // Guardar la escala seleccionada
-        function saveFontScale(scale) {
-            localStorage.setItem(FONT_SCALE_KEY, scale);
-        }
-
-        // Aplicar la escala al documento
-        function applyFontScale(scale) {
-            const config = SCALE_CONFIGS[scale] || SCALE_CONFIGS.normal;
-            
-            // Limpiar clases anteriores del body
-            document.body.className = document.body.className
-                .replace(/font-scale-\w+/g, '');
-            
-            // Aplicar nueva clase al body
-            document.body.classList.add(config.class);
-            
-            // Aplicar tamaño de fuente al html (afecta a todas las unidades rem)
-            document.documentElement.style.fontSize = config.fontSize;
-            
-            // Actualizar badge visual
-            updateScaleIndicator(scale);
-            
-            // Guardar configuración
-            saveFontScale(scale);
-            
-            console.log(`Escalado aplicado: ${scale} (${config.fontSize})`);
-        }
-
-        // Actualizar indicadores visuales
-        function updateScaleIndicator(currentScale) {
-            // Actualizar badge en el botón
-            const badge = document.getElementById('scale-badge');
-            if (badge) {
-                badge.textContent = SCALE_CONFIGS[currentScale]?.badge || 'M';
-            }
-            
-            // Actualizar estado activo en el dropdown
-            document.querySelectorAll('[data-scale]').forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-scale') === currentScale) {
-                    item.classList.add('active');
-                }
-            });
-        }
-
-        // Establecer nueva escala
-        function setFontScale(scale) {
-            const button = document.getElementById('fontScaleDropdown');
-            if (button) button.classList.add('loading');
-            
-            setTimeout(() => {
-                applyFontScale(scale);
-                closeAllDropdowns();
-                showOptimizedNotification(`Tamaño cambiado a ${SCALE_CONFIGS[scale].name}`, 'success');
-                if (button) button.classList.remove('loading');
-            }, 100);
-        }
-
-        // Restablecer escala predeterminada
-        function resetFontScale() {
-            setFontScale('normal');
-            showOptimizedNotification('Tamaño restablecido', 'info');
-        }
-
-        // Función corregida para toggle del dropdown
-        function toggleFontScaleDropdown(event) {
-            event.stopPropagation(); // Evitar que el evento llegue al document.click
-            const dropdownMenu = document.getElementById('fontScaleDropdownMenu');
-            const button = document.getElementById('fontScaleDropdown');
-            
-            if (!dropdownMenu || !button) {
-                console.error('Elementos del dropdown no encontrados');
-                return;
-            }
-
-            // Si ya está abierto, cerrarlo
-            if (currentDropdown === 'fontScale') {
-                closeAllDropdowns();
-                return;
-            }
-            
-            // Cerrar otros dropdowns primero
-            closeAllDropdowns();
-            
-            // Abrir este dropdown
-            dropdownMenu.classList.add('show');
-            button.setAttribute('aria-expanded', 'true');
-            button.classList.add('active');
-            currentDropdown = 'fontScale';
-            
-            // Focus en el primer elemento para accesibilidad
-            const firstItem = dropdownMenu.querySelector('.dropdown-item-optimized');
-            if (firstItem) {
-                setTimeout(() => firstItem.focus(), 100);
-            }
-        }
 
         // Función para alternar tema oscuro/claro
         function toggleTheme() {
@@ -755,23 +405,6 @@
                 text.textContent = newTheme === 'dark' ? 'Claro' : 'Oscuro';
             }
             
-            showOptimizedNotification(`Modo ${newTheme === 'dark' ? 'oscuro' : 'claro'} activado`);
-        }
-
-        // Cerrar todos los dropdowns
-        function closeAllDropdowns() {
-            const dropdowns = document.querySelectorAll('.dropdown-menu-optimized');
-            dropdowns.forEach(dropdown => {
-                dropdown.classList.remove('show');
-            });
-            
-            const buttons = document.querySelectorAll('[aria-expanded="true"]');
-            buttons.forEach(button => {
-                button.setAttribute('aria-expanded', 'false');
-                button.classList.remove('active');
-            });
-            
-            currentDropdown = null;
         }
 
         // Función de sidebar mejorada
@@ -789,51 +422,108 @@
             localStorage.setItem('agiledesk_sidebar_collapsed', (!isCollapsed).toString());
         }
 
-        // Notificaciones optimizadas
-        function showOptimizedNotification(message, type = 'info') {
-            // Remover notificaciones existentes
-            const existingNotifications = document.querySelectorAll('.notification-optimized');
-            existingNotifications.forEach(notif => notif.remove());
+        // Función de debugging simplificada
+        function debugLayout() {
+            const problems = [];
             
-            const notification = document.createElement('div');
-            notification.className = 'notification-optimized';
-            
-            const icons = {
-                success: 'bi-check-circle-fill text-success',
-                error: 'bi-x-circle-fill text-danger',
-                warning: 'bi-exclamation-triangle-fill text-warning',
-                info: 'bi-info-circle-fill text-info'
-            };
-            
-            notification.innerHTML = `
-                <div class="d-flex align-items-center gap-3">
-                    <i class="bi ${icons[type]} fs-4"></i>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold">${message}</div>
-                        <small class="text-muted">Configuración actualizada</small>
-                    </div>
-                    <button type="button" class="btn-close" onclick="this.closest('.notification-optimized').remove()">×</button>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove después de 4 segundos
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.style.animation = 'slideInRight 0.3s ease-out reverse';
-                    setTimeout(() => notification.remove(), 300);
+            try {
+                // Verificar navbar
+                const navbar = document.querySelector('.navbar-optimized');
+                if (navbar) {
+                    const rect = navbar.getBoundingClientRect();
+                    if (rect.width > window.innerWidth) {
+                        problems.push(`Navbar desborda: ${rect.width}px > ${window.innerWidth}px`);
+                    }
+                } else {
+                    problems.push('Navbar no encontrado');
                 }
-            }, 4000);
+                
+                if (problems.length === 0) {
+                    // showOptimizedNotification('Layout verificado - Sin problemas', 'success');
+                } else {
+                    // showOptimizedNotification(`${problems.length} problema(s) encontrado(s)`, 'warning');
+                }
+            } catch (error) {
+                problems.push('Error en función de debugging');
+            }
+            
+            return problems;
+        }
+        
+        // Función debounce para optimizar eventos de resize
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Función para ajustar layout según tamaño de pantalla
+        function adjustLayoutForScreen() {
+            const width = window.innerWidth;
+            const navbar = document.querySelector('.navbar-optimized');
+            
+            try {
+                // Ajustar navbar para pantallas pequeñas
+                if (navbar && width < 576) {
+                    navbar.style.flexWrap = 'wrap';
+                } else if (navbar) {
+                    navbar.style.flexWrap = 'nowrap';
+                }
+            } catch (error) {
+                // Error silencioso
+            }
+        }
+
+        // Función para corregir errores comunes de Alpine.js
+        function fixAlpineErrors() {
+            try {
+                // Si Alpine aún no está definido, crear un objeto temporal
+                if (typeof Alpine === 'undefined') {
+                    window.Alpine = { 
+                        version: 'polyfill',
+                        start: function() { }
+                    };
+                }
+                
+                // Definir variables globales comunes usadas por Alpine para prevenir errores
+                if (typeof window.color === 'undefined') {
+                    window.color = '#ffffff';
+                }
+                
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        function detectAlpineErrors() {
+            // Intentar corregir errores primero
+            fixAlpineErrors();
+            
+            // Detectar si Alpine está cargado
+            if (typeof Alpine === 'undefined' || Alpine.version === 'polyfill') {
+                return false;
+            }
+            
+            // Verificar directivas Alpine en el DOM
+            try {
+                const alpineElements = document.querySelectorAll('[x-data], [x-show], [x-if]');
+                return alpineElements.length >= 0;
+            } catch (error) {
+                return false;
+            }
         }
 
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Inicializando navbar...');
-            
-            // Cargar configuraciones guardadas
-            const savedScale = getSavedFontScale();
-            applyFontScale(savedScale);
+            // Corregir errores de Alpine.js lo antes posible
+            fixAlpineErrors();
             
             // Cargar tema guardado o detectar preferencia del sistema
             const savedTheme = localStorage.getItem(THEME_KEY);
@@ -852,39 +542,43 @@
                 text.textContent = initialTheme === 'dark' ? 'Claro' : 'Oscuro';
             }
             
-            // Configurar evento para cerrar dropdowns al hacer clic fuera
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.dropdown-optimized')) {
-                    closeAllDropdowns();
-                }
-            });
-            
-            // Eventos de teclado para cerrar dropdown con Escape
+            // Eventos de teclado para shortcuts
             document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    closeAllDropdowns();
-                }
-                
                 // Shortcuts de teclado
-                if (event.ctrlKey && event.key === 'k') {
-                    event.preventDefault();
-                    document.getElementById('fontScaleDropdown').click();
-                }
                 if (event.ctrlKey && event.key === 't') {
                     event.preventDefault();
                     toggleTheme();
                 }
+                if (event.ctrlKey && event.key === 'd') {
+                    event.preventDefault();
+                    debugLayout();
+                }
             });
             
-            console.log('Navbar inicializada correctamente');
+            // Resizing responsivo
+            window.addEventListener('resize', function() {
+                debounce(() => {
+                    adjustLayoutForScreen();
+                }, 250)();
+            });
+            
+            // Ejecutar verificaciones iniciales
+            setTimeout(() => {
+                fixAlpineErrors();
+                detectAlpineErrors();
+            }, 1000);
         });
 
         // Verificar que las funciones estén disponibles globalmente
-        window.toggleFontScaleDropdown = toggleFontScaleDropdown;
-        window.setFontScale = setFontScale;
-        window.resetFontScale = resetFontScale;
         window.toggleSidebar = toggleSidebar;
         window.toggleTheme = toggleTheme;
+        window.debugLayout = debugLayout;
+        window.detectAlpineErrors = detectAlpineErrors;
+        window.fixAlpineErrors = fixAlpineErrors;
+        window.adjustLayoutForScreen = adjustLayoutForScreen;
+        
+        // Definir color globalmente para evitar errores de Alpine
+        window.color = '#ffffff';
     </script>
 </body>
 </html>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HistorialCambio;
 use Illuminate\Http\Request;
+use App\Models\Project; 
 
 class HistorialCambioController extends Controller
 {
@@ -32,4 +33,35 @@ class HistorialCambioController extends Controller
 
         return view('historial.index', compact('historial'));
     }
+    
+
+    public function porProyecto(Project $project, Request $request)
+{
+    if (!auth()->user()->projects->contains($project->id)) {
+        abort(403, 'No tienes acceso a este proyecto');
+    }
+
+    $query = HistorialCambio::where('proyecto_id', $project->id)
+        ->with('proyecto') // Carga la relación para evitar N+1
+        ->orderBy('fecha', 'desc');
+
+    if ($request->filled('busqueda')) {
+        $searchTerm = '%' . $request->input('busqueda') . '%';
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('usuario', 'LIKE', $searchTerm)
+              ->orWhere('accion', 'LIKE', $searchTerm)
+              ->orWhere('detalles', 'LIKE', $searchTerm)
+              ->orWhere('sprint', 'LIKE', $searchTerm)
+              ->orWhereHas('proyecto', function ($q) use ($searchTerm) {
+                  $q->where('name', 'LIKE', $searchTerm);
+              });
+        });
+    }
+
+    $historial = $query->paginate(10)->appends($request->query());
+
+    return view('users.colaboradores.historial', compact('historial', 'project'));
+}
+
+
 }

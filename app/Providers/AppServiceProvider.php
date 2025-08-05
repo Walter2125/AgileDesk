@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
       Paginator::useBootstrap();
-      Project::observe(ProjectObserver::class);
+      // Project::observe(ProjectObserver::class); // Observer comentado - problema de autoload
 
         View::composer('*', function ($view) {
             $route = request()->route();
