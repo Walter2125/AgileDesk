@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('mensaje-superior')
     Proyectos
 @endsection
@@ -10,10 +10,7 @@
 <style>
     .projects-container {
         margin-top: 2rem;
-        /* Remover cualquier padding lateral para usar el del contenedor padre */
-        /* Esto permite que el contenido se alinee con las migas de pan */
-        padding-left: 0;
-        padding-right: 0;
+
     }
 
     .project-card {
@@ -79,7 +76,7 @@
 
     .date-info {
         display: flex;
-        justify-content: space-between; 
+        justify-content: space-between;
         gap: 1rem;
         margin-bottom: 1.2rem;
         color: #5d6778;
@@ -181,14 +178,17 @@
     .page-title {
     color: #2c3e50;
     font-weight: 800;
-    
+
     font-size: 2.2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    
+
 }
+    .bg-color-dynamic {
+        background-color: inherit !important;
+    }
 
 .page-title::after {
     content: '';
@@ -248,7 +248,7 @@ h1.page-title {
 @endsection
 
 @section('content')
-<div class="projects-container">
+<div class="container projects-container">
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
@@ -273,7 +273,7 @@ h1.page-title {
             <p class="text-muted">No hay proyectos recientes aún.</p>
         @endforelse
     </div>
-    
+
 
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">

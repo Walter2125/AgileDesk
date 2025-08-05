@@ -18,6 +18,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class AdminController extends Controller
 {
     use AuthorizesRequests;
+    use AuthorizesRequests;
     public function index(Request $request, $projectId = null)
     {
         // Obtener datos administrativos básicos
