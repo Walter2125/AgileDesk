@@ -88,11 +88,7 @@ class ProjectController extends Controller
                 'posicion' => 1,
                 'es_backlog' => true,
             ],
-            [
-                'nombre' => 'Backlog',
-                'posicion' => 2,
-                'es_backlog' => true,
-            ]
+
         ]);
 
         DB::commit();
