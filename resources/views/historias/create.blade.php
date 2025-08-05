@@ -71,7 +71,7 @@
 
                 
 
-            </div>
+
 
             <div class="col-md-6">
                 <div class="mb-3">
@@ -114,10 +114,15 @@
                 Cancelar
             </a>
 
+
             <button type="submit"
                 class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                 Guardar
             </button>
+
+            <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar</button>
+
+
         </div>
 
     </form>
