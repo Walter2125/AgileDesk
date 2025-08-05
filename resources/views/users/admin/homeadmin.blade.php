@@ -1255,7 +1255,7 @@
 @endpush
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('vendor/chart.js/chart.min.js') }}"></script>
     <script>
         // Prevenir errores de extensiones del navegador
         window.addEventListener('error', function(e) {

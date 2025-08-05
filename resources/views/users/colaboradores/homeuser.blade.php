@@ -201,7 +201,7 @@
 @stop
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('vendor/chart.js/chart.min.js') }}"></script>
 <script>
 // Inyectar datos del servidor para que el archivo externo pueda acceder a ellos
 window.userContributions = @json($user_contributions ?? []);
