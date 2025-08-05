@@ -9,125 +9,234 @@
 
 
 @section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="container-fluid-m-2 mi-container m-2">
+   
+        @if (session('success'))
+            <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
+                {{ session('success') }}
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+        @endif
+   
 
-             @if (session('success'))
-                <div class="alert alert-success mt-2" id="success-alert">
-                    {{ session('success') }}
-                </div>
+
+    
+
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+                    <style>
+            .hover-card {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .hover-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .respuesta-celeste {
+            background-color: #e0f7fa !important; /* celeste */
+        }
+
+        .scroll-comentarios {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        </style>
+       
+
+<div class="container-fluid-m-2 mi-container m-2">
+   
+<div class="card-body">
+
+         <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
+    @csrf
+    @method('PATCH')
+
+    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+        <div class="mb-0" style="max-width: 600px; width: 100%;">
+            <h2 id="tituloTexto" class="historia-title rounded"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                title="{{ $historia->nombre }}">
+                H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+            </h2>
+
+            <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                class="form-control form-control-lg rounded d-none"
+                value="{{ old('nombre', $historia->nombre) }}"
+                data-editable="true"
+                style="font-weight: bold;" />
+        </div>
+
+        <div class="d-flex align-items-center">
+            <div id="dropdownMenuContainer" class="dropdown me-3">
+                <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
+                    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label rounded">Asignado a</label>
+      
+
+                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">-- Seleccionar usuario --</option>
+    @foreach($usuarios as $usuario)
+        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+            {{ $usuario->name }}
+        </option>
+    @endforeach
+
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Estado</label>
+                <select name="columna_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">Sin Estado</option>
+                    @foreach ($columnas as $columna)
+                        <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                            {{ $columna->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Prioridad</label>
+                <select name="prioridad" class="form-control rounded" data-editable="true" disabled>
+                    <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                    <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                    <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label rounded">Horas estimadas</label>
+                <input type="number" class="form-control rounded" name="trabajo_estimado"
+                    value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
+                    data-editable="true" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Sprint</label>
+                <select name="sprint_id" class="form-control rounded" data-editable="true" disabled>
+                    <option value="">Ningún Sprint</option>
+                    @foreach ($sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label rounded">Última modificación</label>
+                <input type="text" class="form-control rounded"
+                    value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
+                    readonly>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-control" name="descripcion"
+             maxlength="5000"
+            data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <button id="btnGuardar" type="submit"
+            class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case d-none">
+            Actualizar
+        </button>
+    </div>
+</form>
+
+<form action="{{ route('historias.destroy', $historia->id) }}" method="post">
+    @csrf
+    @method('DELETE')
+</form>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            setTimeout(function() {
-                alert.style.transition = "opacity 0.5s ease";
-                alert.style.opacity = 0;
-                setTimeout(() => alert.remove(), 500);
-            }, 3000);
+    document.addEventListener('DOMContentLoaded', function () {
+     document.querySelectorAll('textarea[readonly]').forEach(textarea => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+        const btnEditar = document.getElementById('btnEditar');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const tituloTexto = document.getElementById('tituloTexto');
+        const tituloInput = document.getElementById('tituloInput');
+        const editableFields = document.querySelectorAll('[data-editable="true"]');
+        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+
+        btnEditar.addEventListener('click', function (e) {
+            e.preventDefault();
+            tituloTexto.classList.add('d-none');
+            tituloInput.classList.remove('d-none');
+            editableFields.forEach(field => {
+                field.removeAttribute('readonly');
+                field.removeAttribute('disabled');
+              if (field.tagName === 'TEXTAREA') {
+            field.style.height = 'auto';
+            field.style.height = field.scrollHeight + 'px';
         }
     });
+            btnGuardar.classList.remove('d-none');
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.add('d-none');
+            }
+        });
+
+        const form = document.getElementById('formHistoria');
+        form.addEventListener('submit', function () {
+            console.log('Formulario enviado');
+        });
+    });
 </script>
-            @endif
-
-<style>
-    .hover-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .hover-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .respuesta-celeste {
-    background-color: #e0f7fa !important; /* celeste */
-}
-
-.scroll-comentarios {
-    max-height: 500px;
-    overflow-y: auto;
-}
-</style>
 
 
 
- <div class="historia-header">
-                    <div class="historia-header d-flex justify-content-between align-items-start">
 
-                        <div>
-                            <h2 class="historia-title mb-1"
-                                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;"
-                                title="{{ $historia->nombre }}">
-                                H{{ $historia->numero }} {{ $historia->nombre }}
-                            </h2>
-                            <div class="d-flex gap-2">
-                                <span class="badge bg-primary">{{ $historia->prioridad }}</span>
-                                <span class="badge bg-secondary">{{ $historia->trabajo_estimado }} horas</span>
-                            </div>
-                        </div>
-                        <a href="{{ route('tareas.show', $historia->id) }}" class="inline-block bg-teal-500 border border-teal-500 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-teal-700 mr-3 normal-case" data-bs-toggle="tooltip" title="Crea una Tarea"><i class="bi bi-plus-lg"></i></a>
-
-                    </div>
-
-                    <div class="historia-content">
-
-                        <div class="historia-section ">
-                            <h3 class="section-title">Descripción</h3>
-                            <div class="container" style="word-wrap: break-word; overflow-wrap: break-word;">
-                                        {{ $historia->descripcion }}
-                        </div>
-                    </div>
-
-
-                        <div class="historia-details md-3">
-                            <div class="detail-item">
-                                <span class="detail-label">Estado:</span>
-                                <span class="detail-value">{{ $historia->columna?->nombre ?? 'Sin estado asignado' }}</span>
-                            </div>
-                            <div class="detail-item">
-
-                                <span class="detail-label">Sprint:</span>
-                                <span class="detail-value">{{ $historia->sprint ?->nombre ?? 'No asignado' }}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Fecha creación:</span>
-                                <span class="detail-value">{{ $historia->created_at->format('d/m/Y') }}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Asignado a:</span>
-                                <span class="detail-value">
-                                    {{ $historia->usuario ? $historia->usuario->name : 'No asignado' }}
-                                </span>
-                            </div>
-
-                        </div>
-
-                                               <div class="d-flex justify-content-end align-items-center mt-4 pt-3 border-top gap-2">
-                                                <a href="{{ route('tableros.show', $historia->proyecto_id) }}"
-                                                class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white normal-case">
-                                                Atrás
-                                                </a>
-
-                                                <a href="{{ route('historias.edit', $historia->id) }}"
-                                                class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 normal-case">
-                                                Editar
-                                                </a>
-
-                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button"
-                                                            class="inline-block bg-red-400 border border-red-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-red-600 normal-case"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteHistoriaModal{{ $historia->id }}">
-                                                            Borrar
-                                                    </button>
-                                                </form>
-                                            </div>
-
+       
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content rounded-4 shadow">
@@ -162,9 +271,8 @@
                                     </div>
                                 </div>
                             </div>
-
-
-{{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
+                            
+                   {{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
 <div class="mt-5">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
     <div class="mb-3 border rounded">

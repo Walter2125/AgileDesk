@@ -18,7 +18,7 @@
         @endif
 
         <!-- Formulario de Edición de Tarea -->
-        <form action="{{ route('tareas.update', [$historia->id, $tarea->id]) }}" method="POST">
+        <form action="{{ route('tareas.update', [$historia->id, $tarea->id]) }}" method="POST" autocomplete="off">
             @csrf
             @method('PUT')
             

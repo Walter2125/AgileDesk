@@ -99,7 +99,7 @@
             </div>
         @endif
 
-        <form action="{{ route('tareas.store', $historia->id) }}" method="POST">
+        <form action="{{ route('tareas.store', $historia->id) }}" method="POST" autocomplete="off">
             @csrf
 
             <div class="mb-4">

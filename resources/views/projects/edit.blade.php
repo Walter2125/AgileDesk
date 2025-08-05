@@ -26,6 +26,8 @@
     }
 </style>
 @section('content')
+
+
     <div class="container-fluid p-0">
         <div class="row m-0">
             <div class="col-12 p-4">
@@ -33,7 +35,7 @@
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
-                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}">
+                <form id="editProjectForm" method="POST" action="{{ route('projects.update', $project->id) }}" autocomplete="off">
                     @csrf
                     @method('PUT')
 
