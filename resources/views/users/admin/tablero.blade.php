@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     @php
         $colCount = $tablero->columnas->count();
@@ -86,8 +87,7 @@
 
                     <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
-
-                        @foreach($tablero->columnas as $columna)
+                    @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
                                  style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
 
@@ -208,6 +208,57 @@
                             </div>
                         @endforeach
                     </div>
+
+
+                    {{-- INICIO: Accordion para móvil --}}
+                    <div class="kanban-accordion">
+                        <div class="accordion" id="accordionKanban">
+                            @foreach($tablero->columnas as $columna)
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ $columna->id }}">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ $columna->id }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ $columna->id }}">
+                                            {{ $columna->nombre }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ $columna->id }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ $columna->id }}"
+                                         data-bs-parent="#accordionKanban">
+                                        <div class="accordion-body">
+                                            <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                                               class="btn btn-sm btn-primary mb-3 w-100">
+                                                Agregar historias
+                                            </a>
+
+                                            @forelse ($columna->historias as $historia)
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">
+                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                        </h6>
+                                                        @if ($historia->descripcion)
+                                                            <p>{{ $historia->descripcion }}</p>
+                                                        @endif
+                                                        <a href="{{ route('historias.edit', $historia->id) }}"
+                                                           class="btn btn-outline-secondary btn-sm">Editar</a>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-muted">No hay historias en esta columna.</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    {{-- FIN: Accordion para móvil --}}
+
+                
                 </div>
 
                 {{-- Scripts existentes --}}
@@ -696,6 +747,7 @@
 
 
                 <style>
+
                     .kanban-columna {
                         min-width: 0 !important;
                         overflow: hidden;
@@ -842,8 +894,28 @@
                     .modal-backdrop {
                         z-index: 1599 !important; /* Justo debajo del modal */
                     }
+                    /* Por defecto, oculta el accordion */
 
                 </style>
+                <style>
+                    /* Por defecto, el accordion está oculto */
+                    .kanban-accordion {
+                        display: none;
+                    }
+
+                    /* Diseño responsive */
+                    @media (max-width: 767.98px) {
+                        #kanban-board {
+                            display: none !important;
+                        }
+
+                        .kanban-accordion {
+                            display: block !important;
+                        }
+                    }
+                </style>
+
+
 
 
 
