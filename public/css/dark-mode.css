@@ -1475,3 +1475,423 @@ body *::after {
 .dark-mode div[style*="text-align: center; padding: 2rem; background: #f8fafc"] svg {
     color: var(--dark-text-terciary) !important;
 }
+
+/* ======= ICONOS BLANCOS EN MODO OSCURO ======= */
+
+/* Iconos Bootstrap Icons */
+.dark-mode i[class*="bi-"],
+.dark-mode .bi-,
+.dark-mode [class*="bi-"] {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Iconos Font Awesome */
+.dark-mode i[class*="fa-"],
+.dark-mode .fa-,
+.dark-mode [class*="fa-"] {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Iconos genéricos */
+.dark-mode .icon,
+.dark-mode i {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Iconos específicos en botones */
+.dark-mode .btn i,
+.dark-mode .btn svg,
+.dark-mode .btn [class*="bi-"],
+.dark-mode .btn [class*="fa-"] {
+    color: inherit !important;
+}
+
+/* Iconos en enlaces */
+.dark-mode a i,
+.dark-mode a svg,
+.dark-mode a [class*="bi-"],
+.dark-mode a [class*="fa-"] {
+    color: var(--dark-accent-primary) !important;
+}
+
+/* Iconos en navegación */
+.dark-mode .navbar i,
+.dark-mode .navbar svg,
+.dark-mode .nav-link i,
+.dark-mode .nav-link svg {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Iconos en alertas - mantener colores semánticos */
+.dark-mode .alert-success i,
+.dark-mode .alert-success svg {
+    color: var(--dark-success) !important;
+}
+
+.dark-mode .alert-warning i,
+.dark-mode .alert-warning svg {
+    color: var(--dark-warning) !important;
+}
+
+.dark-mode .alert-danger i,
+.dark-mode .alert-danger svg {
+    color: var(--dark-danger) !important;
+}
+
+.dark-mode .alert-info i,
+.dark-mode .alert-info svg {
+    color: var(--dark-info) !important;
+}
+
+/* Iconos en badges - usar color blanco para contraste */
+.dark-mode .badge i,
+.dark-mode .badge svg {
+    color: white !important;
+}
+
+/* ======= OPTIMIZACIONES ESPECÍFICAS PARA VISTAS DE HISTORIAS ======= */
+
+/* Overrides para elementos con estilos inline de fondo blanco */
+.dark-mode [style*="background-color: #ffffff"],
+.dark-mode [style*="background-color: white"],
+.dark-mode [style*="background: #ffffff"],
+.dark-mode [style*="background: white"],
+.dark-mode [style*="background-color: #fff"],
+.dark-mode [style*="background: #fff"] {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Overrides para elementos con estilos inline de color negro */
+.dark-mode [style*="color: #000000"],
+.dark-mode [style*="color: black"],
+.dark-mode [style*="color: #000"],
+.dark-mode [style*="color: rgb(0, 0, 0)"] {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones específicas para formularios en vistas de historias */
+.dark-mode .form-control,
+.dark-mode .form-select,
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus,
+.dark-mode input:focus,
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .form-control::placeholder,
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: var(--dark-text-terciary) !important;
+}
+
+.dark-mode .form-label {
+    color: var(--dark-text-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Optimizaciones para botones outline específicos de historias */
+.dark-mode .btn-outline-primary {
+    color: var(--dark-accent-primary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    background-color: transparent !important;
+}
+
+.dark-mode .btn-outline-primary:hover {
+    background-color: var(--dark-accent-primary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    color: white !important;
+}
+
+.dark-mode .btn-outline-secondary {
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-secondary) !important;
+    background-color: transparent !important;
+}
+
+.dark-mode .btn-outline-secondary:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    border-color: var(--dark-border-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .btn-outline-warning {
+    color: var(--dark-warning) !important;
+    border-color: var(--dark-warning) !important;
+    background-color: transparent !important;
+}
+
+.dark-mode .btn-outline-warning:hover {
+    background-color: var(--dark-warning) !important;
+    border-color: var(--dark-warning) !important;
+    color: white !important;
+}
+
+.dark-mode .btn-outline-danger {
+    color: var(--dark-danger) !important;
+    border-color: var(--dark-danger) !important;
+    background-color: transparent !important;
+}
+
+.dark-mode .btn-outline-danger:hover {
+    background-color: var(--dark-danger) !important;
+    border-color: var(--dark-danger) !important;
+    color: white !important;
+}
+
+.dark-mode .btn-outline-info {
+    color: var(--dark-info) !important;
+    border-color: var(--dark-info) !important;
+    background-color: transparent !important;
+}
+
+.dark-mode .btn-outline-info:hover {
+    background-color: var(--dark-info) !important;
+    border-color: var(--dark-info) !important;
+    color: white !important;
+}
+
+/* Optimizaciones para acordeones específicos de historias */
+.dark-mode .toggle-btn {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+}
+
+.dark-mode .toggle-btn:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .contenido-acordeon {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .contenido-tarea {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .accordion-button {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border: none !important;
+}
+
+.dark-mode .accordion-button:not(.collapsed) {
+    background-color: var(--dark-bg-quaternary) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: none !important;
+}
+
+.dark-mode .accordion-item {
+    background-color: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+}
+
+.dark-mode .accordion-body {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para títulos y elementos específicos de historias */
+.dark-mode .historia-title {
+    color: var(--dark-text-primary) !important;
+    font-weight: bold !important;
+}
+
+.dark-mode .mi-container {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para modales específicos */
+.dark-mode .modal-content {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .modal-header {
+    background-color: var(--dark-bg-terciary) !important;
+    border-bottom-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .modal-body {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .modal-footer {
+    background-color: var(--dark-bg-terciary) !important;
+    border-top-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .modal-title {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+}
+
+/* Optimizaciones para alertas */
+.dark-mode .alert-success {
+    background-color: var(--dark-success-light) !important;
+    border-color: var(--dark-success) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .alert-danger {
+    background-color: var(--dark-danger-light) !important;
+    border-color: var(--dark-danger) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .alert-warning {
+    background-color: var(--dark-warning-light) !important;
+    border-color: var(--dark-warning) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para tablas en vistas de historias */
+.dark-mode .table {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+.dark-mode .table th,
+.dark-mode .table td {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .table-hover tbody tr:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .table-light th {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para elementos de comentarios */
+.dark-mode .scroll-comentarios {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .hover-card {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .hover-card:hover {
+    background-color: var(--dark-bg-terciary) !important;
+    box-shadow: var(--dark-shadow-md) !important;
+}
+
+.dark-mode .respuesta-celeste {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para clases de texto */
+.dark-mode .text-dark {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .text-secondary {
+    color: var(--dark-text-secondary) !important;
+}
+
+.dark-mode .text-muted {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Optimizaciones para fondos específicos */
+.dark-mode .bg-light {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para btn-group */
+.dark-mode .btn-group .btn {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .btn-group .btn:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Fix específico para z-index de modales en modo oscuro */
+.dark-mode .modal {
+    z-index: 9999 !important;
+}
+
+.dark-mode .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    z-index: 9998 !important;
+}
+
+.dark-mode .modal.show {
+    z-index: 10000 !important;
+}
+
+.dark-mode .modal-dialog {
+    z-index: 10001 !important;
+}
+
+/* Optimizaciones para dropdowns */
+.dark-mode .dropdown-menu {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .dropdown-item {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .dropdown-item:hover,
+.dark-mode .dropdown-item:focus {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Optimizaciones para elementos disabled */
+.dark-mode .form-control:disabled,
+.dark-mode .form-select:disabled,
+.dark-mode input:disabled,
+.dark-mode textarea:disabled,
+.dark-mode select:disabled {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-terciary) !important;
+    border-color: var(--dark-border-primary) !important;
+    opacity: 0.6 !important;
+}
