@@ -453,21 +453,6 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 'nueva_columna_nombre' => $columnaDestino->nombre
             ]
         ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error de validación',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al mover la historia: ' . $e->getMessage()
-        ], 500);
-    }
-}
-}
-
     }
 
 }
