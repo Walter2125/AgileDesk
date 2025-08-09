@@ -21,10 +21,17 @@
 
     @endphp
 
-    <div class="container-fluid px-3 py-0">
-        <div class="container-fluid px-3 py-0">
+    <div class="container-fluid px-3 py-0 tablero-wrapper">
+        <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
+            <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
+                <!-- columnas -->
+            </div>
+        </div>
+    </div>
 
-            @if (session('success'))
+
+
+    @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
                 </div>
@@ -896,6 +903,13 @@
                     .modal-backdrop {
                         z-index: 1599 !important; /* Justo debajo del modal */
                     }
+
+                    /* Igualar el margen del tablero al de las migas */
+                    .tablero-wrapper {
+                        padding-left: var(--navbar-padding-x, 1rem) !important;
+                        padding-right: var(--navbar-padding-x, 1rem) !important;
+                    }
+
                     /* Por defecto, oculta el accordion */
 
                 </style>

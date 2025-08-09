@@ -183,7 +183,7 @@
                 min-width: auto;
             }
             
-            .card-header .btn-group {
+            .card-header .d-flex.gap-2 {
                 justify-content: center;
                 width: 100%;
             }
@@ -230,24 +230,6 @@
 
         .row{
             padding-block-start: 1rem;
-        }
-
-        /* Estilos para los btn-group sin bordes redondeados y separados */
-        .btn-group {
-            gap: 8px; /* Separación entre botones */
-        }
-
-        /* Quitar el borde entre los botones del grupo para que se vean como btn-info independientes */
-        .btn-group .btn {
-            border-radius: 6px !important;
-            margin-right: 0;
-            border: none !important;
-            box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
-        }
-
-        .btn-group .btn:focus, .btn-group .btn:active {
-            outline: none;
-            box-shadow: 0 0 0 0.15rem rgba(74,144,226,0.25);
         }
 
         /* Estilos para truncar texto largo en las tablas */
@@ -424,7 +406,7 @@
 
         @media (min-width: 768px) {
             .main-container {
-                padding: 0 1.5rem;
+                padding: 0 0rem;
             }
         }
     </style>
@@ -517,20 +499,20 @@
                         <span>Usuarios</span>
                         <!-- Buscador para usuarios -->
                         <div class="input-group" style="width: 300px;">
-                            <input type="text" class="form-control form-control-sm" id="searchUsuarios" placeholder="Buscar usuarios...">
-                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchUsuarios">
+                            <input type="text" class="form-control form-control-sm" id="searchUsuarios" placeholder="Buscar usuarios..." style="height: 35px;">
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchUsuarios">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="btn-group" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                    <div class="d-flex gap-2" role="group">
+                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-1">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-sm btn-danger">
+                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-outline-danger px-2 py-1">
                             <i class="bi bi-trash"></i> Usuarios Eliminados
                         </a>
-                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-sm btn-warning">
+                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-1">
                             <i class="bi bi-archive"></i> Todos los Eliminados
                         </a>
                     </div>
@@ -542,9 +524,9 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Rol</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="usuariosTableBody">
@@ -554,30 +536,30 @@
                                         <div class="user-name-cell">
                                             <span class="user-name-text">{{ $usuario->name }}</span>
                                             @if($usuario->trashed())
-                                                <span class="badge bg-secondary ms-1">Eliminado</span>
+                                                <span class="text-dark ms-1">(Eliminado)</span>
                                             @endif
                                         </div>
                                     </td>
                                     <td title="{{ $usuario->email }}">{{ $usuario->email }}</td>
-                                    <td title="{{ ucfirst($usuario->usertype) }}">{{ ucfirst($usuario->usertype) }}</td>
-                                    <td>
+                                    <td class="text-center" title="{{ ucfirst($usuario->usertype) }}">{{ ucfirst($usuario->usertype) }}</td>
+                                    <td class="text-center">
                                         @if($usuario->trashed())
-                                            <span class="badge bg-secondary">Eliminado</span>
+                                            <span class="text-dark">Eliminado</span>
                                         @else
-                                            <span class="badge {{ $usuario->is_approved ? 'bg-success' : 'bg-warning' }}">
+                                            <span class="text-dark">
                                                 {{ $usuario->is_approved ? 'Aprobado' : 'Pendiente' }}
                                             </span>
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.users') }}" class="btn btn-sm btn-info">
+                                        <div class="d-flex gap-1 justify-content-center" role="group">
+                                            <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-1">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             @if($usuario->usertype !== 'admin')
                                                 @if($usuario->trashed())
                                                     <!-- Botón para restaurar usuario -->
-                                                    <button type="button" class="btn btn-sm btn-success" 
+                                                    <button type="button" class="btn btn-outline-success px-2 py-1" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#restoreUserModal"
                                                             data-user-id="{{ $usuario->id }}"
@@ -586,7 +568,7 @@
                                                     </button>
                                                 @else
                                                     <!-- Botón para eliminar usuario -->
-                                                    <button type="button" class="btn btn-sm btn-danger" 
+                                                    <button type="button" class="btn btn-outline-danger px-2 py-1" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#deleteUserModal"
                                                             data-user-id="{{ $usuario->id }}"
@@ -621,13 +603,13 @@
                         <span>Proyectos</span>
                         <!-- Buscador para proyectos -->
                         <div class="input-group" style="width: 300px;">
-                            <input type="text" class="form-control form-control-sm" id="searchProyectos" placeholder="Buscar proyectos...">
-                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchProyectos">
+                            <input type="text" class="form-control form-control-sm" id="searchProyectos" placeholder="Buscar proyectos..." style="height: 35px;">
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchProyectos">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('projects.my') }}" class="btn btn-sm btn-info">
+                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-1">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -637,34 +619,34 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Responsable</th>
-                                    <th>Miembros</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Responsable</th>
+                                    <th class="text-center">Miembros</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="proyectosTableBody">
                                 @forelse($proyectos as $proyecto)
                                 <tr class="proyecto-row">
                                     <td title="{{ $proyecto->name }}">{{ $proyecto->name }}</td>
-                                    <td title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
-                                    <td>{{ $proyecto->users->count() }}</td>
+                                    <td class="text-center" title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
+                                    <td class="text-center">{{ $proyecto->users->count() }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Acciones de proyecto">
-                                            <!-- Botón Ver -->
-                                            <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-sm btn-info" title="Ver Tablero">
+                                        <div class="d-flex gap-1 justify-content-center" role="group" aria-label="Acciones de proyecto">
+                                            <!-- Botón Ver Sprints -->
+                                            <a href="{{ route('sprints.index', ['project' => $proyecto->id]) }}" class="btn btn-outline-secondary px-2 py-1" title="Ver Sprints del Proyecto">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             
                                             <!-- Botón Editar -->
                                             <a href="{{ route('projects.edit', $proyecto->id) }}" 
-                                               class="btn btn-sm btn-warning" 
+                                               class="btn btn-outline-warning px-2 py-1" 
                                                title="Editar Proyecto">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             
                                             <!-- Botón Eliminar -->
                                             <button type="button" 
-                                                    class="btn btn-sm btn-danger" 
+                                                    class="btn btn-outline-danger px-2 py-1" 
                                                     title="Eliminar Proyecto"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#deleteProjectModal"
@@ -698,13 +680,13 @@
                         <span>Historial de Cambios</span>
                         <!-- Buscador para historial -->
                         <div class="input-group" style="width: 300px;">
-                            <input type="text" class="form-control form-control-sm" id="searchHistorial" placeholder="Buscar historial...">
-                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchHistorial">
+                            <input type="text" class="form-control form-control-sm" id="searchHistorial" placeholder="Buscar historial..." style="height: 35px;">
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchHistorial">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('historial.index') }}" class="btn btn-sm btn-info">
+                    <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-1">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
@@ -768,15 +750,12 @@
                         <span>Sprints</span>
                         <!-- Buscador para sprints -->
                         <div class="input-group" style="width: 300px;">
-                            <input type="text" class="form-control form-control-sm" id="searchSprints" placeholder="Buscar sprints...">
-                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnSearchSprints">
+                            <input type="text" class="form-control form-control-sm" id="searchSprints" placeholder="Buscar sprints..." style="height: 35px;">
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchSprints">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-sm btn-info">
-                        <i class="bi bi-flag"></i> Ver Todos
-                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -784,9 +763,8 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Proyecto</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Proyecto</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="sprintsTableBody">
@@ -794,13 +772,8 @@
                                 <tr class="sprint-row">
                                     <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
                                     <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
-                                    <td>
-                                        <span class="badge {{ $sprint->estado === 'completado' ? 'bg-success' : ($sprint->estado === 'en progreso' ? 'bg-info' : 'bg-warning') }}">
-                                            {{ ucfirst($sprint->estado) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-info">
+                                    <td class="text-center">
+                                        <a href="{{ route('sprints.index', ['project' => $sprint->proyecto->id]) }}" class="btn btn-outline-secondary px-2 py-1">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
@@ -935,7 +908,7 @@
                                     <div class="contributor-contributions">
                                         {{ $totalContributions }} contribuciones
                                     </div>
-                                    <div class="contributor-badge {{ $badgeClass }}">
+                                    <div class="text-dark">
                                         {{ $badgeText }}
                                     </div>
                                 </div>
@@ -1159,12 +1132,12 @@
     }
     
     /* Estilos para botones de acción */
-    .btn-group .btn {
+    .btn {
         border: none;
         transition: all 0.2s ease;
     }
     
-    .btn-group .btn:hover {
+    .btn:hover {
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }

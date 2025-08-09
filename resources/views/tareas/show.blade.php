@@ -79,6 +79,27 @@
         color: #fff;
     }
 
+    .btn-outline-secondary {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004b9a;
+    }
+
     .btn-info {
         background-color: #0dcaf0;
         border-color: #0dcaf0;
@@ -166,11 +187,12 @@
                     </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ route('historias.show', ['historia' => $historia->id]) }}"
-                    class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
-                    Atras
+                    <a href="{{ route('historias.show', ['historia' => $historia->id]) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Atrás
                     </a>
-                    <a href="{{ route('tareas.index', $historia->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Nueva Tarea</a>
+                    <a href="{{ route('tareas.index', $historia->id) }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Nueva Tarea
+                    </a>
                 </div>
     </div>
     {{-- Aquí van los modales, fuera de la tabla --}}

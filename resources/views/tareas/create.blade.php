@@ -139,10 +139,12 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-light">
-    Cancelar
-</a>
-                <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar </button>
+                <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Guardar
+                </button>
             </div>
         </form>
     </div>
