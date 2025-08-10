@@ -440,8 +440,8 @@
     .container-fluid {
         overflow-x: hidden;
         max-width: 100% !important; /* Usar todo el ancho disponible */
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
     
     /* Asegurar que el main use toda la altura disponible */

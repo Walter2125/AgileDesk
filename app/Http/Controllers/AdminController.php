@@ -522,6 +522,27 @@ class AdminController extends Controller
         // Ordenar por fecha de eliminación (más recientes primero)
         $deletedItems = $deletedItems->sortByDesc('deleted_at');
 
+        // Implementar paginación manual
+        $currentPage = $request->get('page', 1);
+        $perPage = 15;
+        $total = $deletedItems->count();
+        $offset = ($currentPage - 1) * $perPage;
+        
+        // Crear paginador manual
+        $deletedItemsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $deletedItems->slice($offset, $perPage)->values(),
+            $total,
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'pageName' => 'page',
+            ]
+        );
+        
+        // Preservar parámetros de filtro en la paginación
+        $deletedItemsPaginated->appends($request->except('page'));
+
         // Configurar breadcrumbs
         $breadcrumbs = [
             [
@@ -535,7 +556,7 @@ class AdminController extends Controller
             ]
         ];
 
-        return view('admin.soft-deleted', compact('deletedItems', 'type', 'search', 'dateFrom', 'dateTo', 'breadcrumbs'));
+        return view('admin.soft-deleted', compact('deletedItemsPaginated', 'type', 'search', 'dateFrom', 'dateTo', 'breadcrumbs'));
     }
 
     /**
