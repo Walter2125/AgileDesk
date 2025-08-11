@@ -248,10 +248,14 @@
         progressBar.textContent = porcentaje + '%';
     }
 
-    document.querySelectorAll('.tarea-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const tareaId = this.dataset.id;
+    // Escuchar los cambios en todo el documento (delegación de eventos)
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
 
+            // Enviar al servidor
             fetch(`/tareas/${tareaId}/completar`, {
                 method: 'POST',
                 headers: {
@@ -262,14 +266,55 @@
             }).then(response => {
                 if (response.ok) {
                     actualizarBarraProgreso();
+
+                    // Sincronizar todos los checkboxes con el mismo data-id
+                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                        cb.checked = estaMarcado;
+                    });
                 } else {
                     alert('Error al guardar el progreso.');
-                    this.checked = !this.checked;
+                    checkbox.checked = !checkbox.checked;
                 }
             });
-        });
+        }
     });
 
     window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
+</script>
+
+<script>
+    function guardarEstadoCheckbox(tareaId, estado) {
+        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+        estados[tareaId] = estado;
+        localStorage.setItem('tareasEstado', JSON.stringify(estados));
+    }
+
+    function cargarEstadoCheckboxes() {
+        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+        document.querySelectorAll('.tarea-checkbox').forEach(cb => {
+            const id = cb.dataset.id;
+            if (estados.hasOwnProperty(id)) {
+                cb.checked = estados[id];
+            }
+        });
+    }
+
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
+
+            // Guardar en localStorage
+            guardarEstadoCheckbox(tareaId, estaMarcado);
+
+            // Sincronizar checkboxes con el mismo data-id en la misma página
+            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+                    .forEach(cb => cb.checked = estaMarcado);
+        }
+    });
+
+    // Cargar estado al abrir la página
+    window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
 </script>
 @endsection
