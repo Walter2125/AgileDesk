@@ -16,6 +16,42 @@
     .container-fluid {
         background-color: #ffffff;
         color: #000000;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .historia-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .historia-header .titulo-container {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        
+        .historia-header .actions-container {
+            align-self: flex-end;
+            width: auto;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1rem 0.5rem;
+        }
+        
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
     }
 
     .card {
@@ -165,41 +201,14 @@
         overflow-y: auto;
     }
 
-    /* Fix para z-index de modales */
-    .modal {
-        z-index: 9999 !important;
-        position: fixed !important;
-    }
-    
-    .modal-backdrop {
-        z-index: 9998 !important;
-        position: fixed !important;
-    }
-    
-    .modal.show {
-        z-index: 10000 !important;
-        position: fixed !important;
-    }
-    
-    .modal-dialog {
-        z-index: 10001 !important;
-        position: relative;
-    }
-    
-    .modal-content {
-        z-index: 10002 !important;
-        position: relative;
-        background-color: #ffffff;
-        color: #000000;
-    }
-    
-    .modal.fade.show {
-        z-index: 10003 !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
+    /* Modal layering tuned for Admin sidebar (use Bootstrap defaults as much as possible) */
+    .modal { z-index: 2050; }
+    .modal-backdrop { z-index: 2040; }
+    .modal-content { background-color: #ffffff; color: #000000; }
+    .modal-dialog { margin: 1.75rem auto; }
+    @media (max-width: 576px) {
+        .modal-dialog { margin: 0.5rem; }
+        .modal-lg { max-width: calc(100vw - 1rem); }
     }
 
     .accordion-button {
@@ -277,18 +286,18 @@
         </div>
     @endif
 
-<div class="container-fluid-m-2 mi-container m-2">
-   
+<div class="container-fluid">
+<div class="card">
 <div class="card-body">
 
          <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
 
-    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="max-width: 600px; width: 100%;">
+    <div class="mb-4 d-flex justify-content-between align-items-start historia-header">
+        <div class="mb-0 titulo-container" style="max-width: 600px; width: 100%;">
             <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                style="word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;"
                 title="{{ $historia->nombre }}">
                 H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
             </h2>
@@ -300,8 +309,8 @@
                 style="font-weight: bold;" />
         </div>
 
-        <div class="d-flex align-items-center">
-            <div id="dropdownMenuContainer" class="dropdown me-3">
+        <div class="d-flex align-items-center actions-container">
+            <div id="dropdownMenuContainer" class="dropdown">
                 <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-three-dots-vertical"></i>
                 </button>
@@ -316,12 +325,12 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-12">
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
       
 
-                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
+                <select name="usuario_id" class="form-select rounded" data-editable="true" disabled>
                     <option value="">-- Seleccionar usuario --</option>
     @foreach($usuarios as $usuario)
         <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
@@ -334,7 +343,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-control rounded" data-editable="true" disabled>
+                <select name="columna_id" class="form-select rounded" data-editable="true" disabled>
                     <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
                         <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
@@ -346,7 +355,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-control rounded" data-editable="true" disabled>
+                <select name="prioridad" class="form-select rounded" data-editable="true" disabled>
                     <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
                     <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
                     <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
@@ -354,7 +363,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-12">
             <div class="mb-3">
                 <label class="form-label rounded">Horas estimadas</label>
                 <input type="number" class="form-control rounded" name="trabajo_estimado"
@@ -364,7 +373,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-control rounded" data-editable="true" disabled>
+                <select name="sprint_id" class="form-select rounded" data-editable="true" disabled>
                     <option value="">Ningún Sprint</option>
                     @foreach ($sprints as $sprint)
                         <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -446,7 +455,7 @@
 
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content rounded-4 shadow">
                                             <div class="modal-header border-bottom-0">
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -481,21 +490,23 @@
                             </div>
                             
                    {{-- 🔽 ACORDEÓN DE TAREAS Y COMENTARIOS (UNO A LA VEZ, A PANTALLA COMPLETA) --}}
-<div class="mt-5">
+<div class="mt-4">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
     <div class="mb-3 border rounded">
         <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button">
-            Tareas relacionadas
+            <i class="bi bi-list-task me-2"></i>Tareas relacionadas
         </button>
 
         <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
             @if($tareas->isEmpty())
-                <div class="alert alert-warning m-3">No hay tareas registradas para esta historia.</div>
+                <div class="alert alert-warning m-3">
+                    <i class="bi bi-info-circle me-2"></i>No hay tareas registradas para esta historia.
+                </div>
             @else
                 <div class="accordion m-3" id="accordionListaTareas">
                     @foreach($tareas as $tarea)
-                        <div class="accordion-item mb-4 p-3 rounded shadow-sm border-0 bg-white hover-card">
-                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center" type="button"
+                        <div class="accordion-item mb-3 rounded shadow-sm border-0 bg-white hover-card">
+                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center w-100 p-3" type="button"
                                     onclick="toggleTarea(this)">
                                 <input type="checkbox"
                                        class="form-check-input me-3 tarea-checkbox"
@@ -504,42 +515,59 @@
                                        onclick="event.stopPropagation();">
 
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0 fw-bold">{{ $tarea->nombre }}</h6>
+                                    <h6 class="mb-0 fw-bold text-start">{{ $tarea->nombre }}</h6>
+                                </div>
+                                
+                                <div class="ms-auto">
+                                    <i class="bi bi-chevron-down"></i>
                                 </div>
                             </button>
 
-                            <div class="contenido-tarea bg-light p-4 rounded-bottom" style="display: none;">
-                                <p class="mb-2">
-                                    <strong>Descripción:</strong> {{ $tarea->descripcion }}
-                                </p>
+                            <div class="contenido-tarea bg-light p-4 rounded-bottom border-top" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-8 col-12">
+                                        <p class="mb-3">
+                                            <strong>Descripción:</strong> 
+                                            <span class="text-muted">{{ $tarea->descripcion ?: 'Sin descripción' }}</span>
+                                        </p>
 
-                                <p class="mb-2">
-                                    <strong>Fecha de creación:</strong> {{ $tarea->created_at->format('d/m/Y H:i') }}
-                                </p>
+                                        <p class="mb-3">
+                                            <strong>Fecha de creación:</strong> 
+                                            <span class="text-muted">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
+                                        </p>
 
-                                <p class="mb-2">
-                                    <strong>Tipo de actividad:</strong>
-                                    <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #6f42c1;">
-                                        <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
-                                    </span>
-                                </p>
+                                        <p class="mb-3">
+                                            <strong>Tipo de actividad:</strong>
+                                            <span class="badge px-3 py-2 rounded-pill text-white ms-2" style="background-color: #6f42c1;">
+                                                <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="col-md-4 col-12">
+                                        <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
+                                            <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" 
+                                               class="btn btn-outline-warning btn-sm" title="Editar">
+                                                <i class="bi bi-pencil-square"></i> 
+                                                <span class="d-none d-md-inline">Editar</span>
+                                            </a>
 
-                                <div class="d-flex justify-content-end gap-2 mt-3">
-                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm" title="Editar">
-                                        <i class="bi bi-pencil-square"></i> Editar
-                                    </a>
-
-                                    <!-- Botón Eliminar con modal -->
-                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
-                                        <i class="bi bi-trash3"></i> Eliminar
-                                    </button>
+                                            <button class="btn btn-outline-danger btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ $tarea->id }}" 
+                                                    title="Eliminar">
+                                                <i class="bi bi-trash3"></i> 
+                                                <span class="d-none d-md-inline">Eliminar</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Modal estilizado de confirmación -->
                         <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $tarea->id }}" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content rounded-4 shadow">
                                     <div class="modal-header border-bottom-0">
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -577,20 +605,22 @@
             @endif
 
             {{-- Botones finales --}}
-            <div class="ms-3 mb-3">
-                <a href="{{ route('tareas.index', $historia->id) }}"
-                   class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-                   style="width: 40px; height: 40px;"
-                   title="Ver tareas">
-                    <i class="bi bi-plus-lg"></i>
-                </a>
+            <div class="px-3 pb-3">
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                    <a href="{{ route('tareas.index', $historia->id) }}"
+                       class="btn btn-outline-primary d-flex align-items-center"
+                       title="Crear nueva tarea">
+                        <i class="bi bi-plus-lg me-2"></i>
+                        <span>Nueva tarea</span>
+                    </a>
 
-                <a href="{{ route('tareas.show', $historia->id) }}"
-                   class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-                   style="width: 40px; height: 40px;"
-                   title="Ver lista de tareas">
-                    <i class="bi bi-eye"></i>
-                </a>
+                    <a href="{{ route('tareas.show', $historia->id) }}"
+                       class="btn btn-outline-info d-flex align-items-center"
+                       title="Ver lista completa de tareas">
+                        <i class="bi bi-eye me-2"></i>
+                        <span>Ver todas</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -599,73 +629,75 @@
  {{-- BOTÓN: COMENTARIOS --}}
 <div class="mb-0">
   <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
-    Comentarios
+    <i class="bi bi-chat-left-text me-2"></i>Comentarios
   </button>
   <div id="comentarios-acordeon" class="contenido-acordeon" style="display: none;">
 
     <!-- Comentarios Modernizados -->
     <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white border-0 d-flex flex-column flex-md-row justify-content-between align-items-center px-4 py-3 gap-3">
+            <h4 class="mb-0 text-dark">
+                <i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios
+            </h4>
+            <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#nuevoComentarioModal">
+                <i class="bi bi-chat-left-text me-1"></i> 
+                <span class="d-none d-md-inline">Nuevo </span>Comentario
+            </button>
+        </div>
+
         <div class="card-body bg-light px-4 py-3 scroll-comentarios">
-      <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
-        <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
-        <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#nuevoComentarioModal">
-          <i class="bi bi-chat-left-text me-1"></i> Comentar
-        </button>
-      </div>
+            @if($historia->comentarios->count())
+                @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
+                    <div class="rounded-4 p-3 mb-3 bg-white shadow-sm">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-2 gap-2">
+                            <div class="flex-grow-1">
+                                <strong class="text-dark fs-6">{{ optional($comentario->user)->name ?? 'Usuario eliminado' }}</strong>
+                                <small class="text-muted ms-2 d-block d-md-inline">{{ $comentario->created_at->diffForHumans() }}</small>
+                            </div>
+                            @if(Auth::id() === $comentario->user_id)
+                                <div class="btn-group btn-group-sm flex-shrink-0">
+                                    <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal{{ $comentario->id }}" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
 
-      <div class="card-body bg-light px-4 py-3">
-        @if($historia->comentarios->count())
-          @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
-            <div class="rounded-4 p-3 mb-3 bg-white shadow-sm">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                  <strong class="text-dark fs-6">{{ optional($comentario->user)->name ?? 'Usuario eliminado' }}</strong>
-                  <small class="text-muted ms-2">{{ $comentario->created_at->diffForHumans() }}</small>
-                </div>
-                @if(Auth::id() === $comentario->user_id)
-                  <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal{{ $comentario->id }}">
-                      <i class="bi bi-pencil-square fs-5"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
-                      <i class="bi bi-trash fs-5"></i>
-                    </button>
-                  </div>
-                @endif
-              </div>
+                        <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
 
-              <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
-
-              <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#responderComentarioModal{{ $comentario->id }}">
-                <i class="bi bi-reply-fill me-1"></i> Responder
-              </button>
-
-              {{-- RESPUESTAS --}}
-              @foreach ($comentario->respuestas as $respuesta)
-                  <div class="mt-3 ms-4 p-3 rounded-3 shadow-sm respuesta-celeste">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                      <strong class="text-dark">{{ optional($respuesta->user)->name ?? 'Usuario eliminado' }}</strong>
-                      <small class="text-muted ms-2">{{ $respuesta->created_at->diffForHumans() }}</small>
-                    </div>
-                    @if(Auth::id() === $respuesta->user_id)
-                      <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarRespuestaModal{{ $respuesta->id }}">
-                          <i class="bi bi-pencil-square fs-5"></i>
+                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#responderComentarioModal{{ $comentario->id }}">
+                            <i class="bi bi-reply-fill me-1"></i> Responder
                         </button>
-                        <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
-                          <i class="bi bi-trash fs-5"></i>
-                        </button>
-                      </div>
-                    @endif
-                  </div>
-                  <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
-                </div>
-              @endforeach
+
+                        {{-- RESPUESTAS --}}
+                        @foreach ($comentario->respuestas as $respuesta)
+                            <div class="mt-3 ms-3 ms-md-4 p-3 rounded-3 shadow-sm respuesta-celeste">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2">
+                                    <div class="flex-grow-1">
+                                        <strong class="text-dark">{{ optional($respuesta->user)->name ?? 'Usuario eliminado' }}</strong>
+                                        <small class="text-muted ms-2 d-block d-md-inline">{{ $respuesta->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    @if(Auth::id() === $respuesta->user_id)
+                                        <div class="btn-group btn-group-sm flex-shrink-0">
+                                            <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarRespuestaModal{{ $respuesta->id }}" title="Editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                                <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
+                            </div>
+                        @endforeach
 
               <!-- Modal Responder -->
-              <div class="modal fade" id="responderComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="responderComentarioModalLabel{{ $comentario->id }}" aria-hidden="true" style="z-index: 10000;">
-                <div class="modal-dialog modal-lg">
+                            <div class="modal fade" id="responderComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="responderComentarioModalLabel{{ $comentario->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
                   <div class="modal-content rounded-4 shadow">
                     <div class="modal-header border-bottom-0">
                       <h5 class="modal-title" id="responderComentarioModalLabel{{ $comentario->id }}">
@@ -695,8 +727,8 @@
               </div>
 
               <!-- Modal Editar Comentario -->
-              <div class="modal fade" id="editarComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="editarComentarioModalLabel{{ $comentario->id }}" aria-hidden="true" style="z-index: 10000;">
-                <div class="modal-dialog modal-lg">
+                            <div class="modal fade" id="editarComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="editarComentarioModalLabel{{ $comentario->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
                   <div class="modal-content rounded-4 shadow">
                     <div class="modal-header border-bottom-0">
                       <h5 class="modal-title" id="editarComentarioModalLabel{{ $comentario->id }}">
@@ -725,8 +757,8 @@
               </div>
 
               <!-- Modal Confirmar Eliminar Comentario -->
-              <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1" style="z-index: 10000;">
-                <div class="modal-dialog">
+                            <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content rounded-4 shadow">
                     <div class="modal-header border-bottom-0">
                       <h5 class="modal-title text-danger">Confirmar Eliminación</h5>
@@ -747,17 +779,23 @@
                 </div>
               </div>
 
-            </div>
-          @endforeach
-        @else
-          <p class="text-muted text-center">No hay comentarios aún.</p>
-        @endif
-      </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="text-center py-4">
+                    <i class="bi bi-chat-left text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2">No hay comentarios aún.</p>
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#nuevoComentarioModal">
+                        <i class="bi bi-plus-lg me-1"></i> Agregar el primer comentario
+                    </button>
+                </div>
+            @endif
+        </div>
     </div>
 
     <!-- Modal Nuevo Comentario -->
-    <div class="modal fade" id="nuevoComentarioModal" tabindex="-1" aria-labelledby="nuevoComentarioModalLabel" aria-hidden="true" style="z-index: 10000;">
-      <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="nuevoComentarioModal" tabindex="-1" aria-labelledby="nuevoComentarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-4 shadow">
           <div class="modal-header border-bottom-0">
             <h5 class="modal-title" id="nuevoComentarioModalLabel">
@@ -790,6 +828,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Ensure modals are appended to body to avoid layout/overflow issues with sidebars or parents
+        document.querySelectorAll('.modal').forEach(modal => {
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+        });
+
         const buttons = document.querySelectorAll('.toggle-btn');
 
         buttons.forEach(button => {
@@ -846,8 +891,8 @@
 @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
   @foreach ($comentario->respuestas as $respuesta)
     <!-- Modal Editar Respuesta -->
-    <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
-      <div class="modal-dialog modal-lg">
+        <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content rounded-4 shadow">
           <div class="modal-header border-bottom-0">
             <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
@@ -876,8 +921,8 @@
     </div>
 
     <!-- Modal Confirmar Eliminar Respuesta -->
-    <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1" style="z-index: 10000;">
-      <div class="modal-dialog">
+        <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow">
           <div class="modal-header border-bottom-0">
             <h5 class="modal-title text-danger">Confirmar Eliminación</h5>
@@ -899,5 +944,9 @@
     </div>
   @endforeach
 @endforeach
+
+</div>
+</div>
+</div>
 
 @endsection
