@@ -263,7 +263,8 @@
         }
     }
 
-    /* Detección específica de sistemas Linux/macOS (aproximada) */
+            border: 2px solid #fff2;
+            box-sizing: border-box; /* Permite padding interno sin crecer de 40x40 */
     @supports (font-variant-ligatures: normal) {
         /* Mejoras para sistemas que probablemente usan FreeType o CoreText */
         body {
@@ -568,7 +569,7 @@
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 0.5rem 0.75rem; /* más espacio horizontal contra los bordes */
         width: 32px;
         height: 32px;
     }
@@ -748,6 +749,7 @@
         transition: background 0.2s, box-shadow 0.2s;
         box-shadow: none;
         background: rgba(255,255,255,0.03);
+        padding: 0.5rem 0.75rem !important; /* separa del borde (override p-0) */
     }
 
     .user-info.user-dropdown-btn:hover, .user-info.user-dropdown-btn:focus {
