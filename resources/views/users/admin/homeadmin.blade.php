@@ -587,9 +587,6 @@
                         <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-outline-danger px-2 py-2">
-                            <i class="bi bi-trash"></i> Usuarios Eliminados
-                        </a>
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
                             <i class="bi bi-archive"></i> Todos los Eliminados
                         </a>
@@ -621,7 +618,10 @@
                                         </div>
                                     </td>
                                     <td title="{{ $usuario->email }}">{{ $usuario->email }}</td>
-                                    <td class="text-center" title="{{ ucfirst($usuario->usertype) }}">{{ ucfirst($usuario->usertype) }}</td>
+                                    @php
+                                        $__roleLabel = $usuario->usertype === 'admin' ? 'Administrador' : 'Colaborador';
+                                    @endphp
+                                    <td class="text-center" title="{{ $__roleLabel }}">{{ $__roleLabel }}</td>
                                     <td class="text-center">
                                         @if($usuario->trashed())
                                             <span class="text-dark">Eliminado</span>
@@ -1000,9 +1000,14 @@
                         @endforeach
                     </div>
                     @else
-                        <div style="text-align: center; padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 1rem;">
-                            <h4 style="margin: 0 0 0.5rem 0; color: #64748b;">Sin colaboradores</h4>
-                            <p style="margin: 0; color: #9ca3af;">No hay contribuciones registradas aún para este proyecto.</p>
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M16 4C18.2 4 20 5.8 20 8C20 10.2 18.2 12 16 12C13.8 12 12 10.2 12 8C12 5.8 13.8 4 16 4ZM8 4C10.2 4 12 5.8 12 8C12 10.2 10.2 12 8 12C5.8 12 4 10.2 4 8C4 5.8 5.8 4 8 4ZM8 13C11.3 13 16 14.7 16 18V20H0V18C0 14.7 4.7 13 8 13ZM16 13C16.8 13 17.6 13.1 18.4 13.3C20.2 14.1 21.5 15.7 21.5 18V20H17.5V18.5C17.5 16.8 16.9 15.3 16 14.1V13Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #dc2626; font-weight: 600; margin-bottom: 0.5rem;">Sin Colaboradores</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">No hay contribuciones registradas aún para este proyecto. Agrega colaboradores desde la gestión de usuarios.</p>
                         </div>
                     @endif
 
@@ -1014,13 +1019,15 @@
                                 <canvas id="contributionsChart"></canvas>
                             </div>
                         </div>
-                    @else
-                        <div style="text-align: center; padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 1rem;">
-                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom: 1rem; color: #64748b;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <h4 style="margin: 0 0 0.5rem 0; color: #64748b;">Proyecto Individual</h4>
-                            <p style="margin: 0; color: #9ca3af;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
+                    @elseif($estadisticas->count() === 1)
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21A2 2 0 0 0 5 23H19A2 2 0 0 0 21 21V9M19 9H15V5H19V9Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #4c51bf; font-weight: 600; margin-bottom: 0.5rem;">Proyecto Individual</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
                         </div>
                     @endif
                 </div>
@@ -1080,7 +1087,7 @@
 
 <!-- Modal para confirmar eliminación de usuario -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteUserModalLabel">
@@ -1114,7 +1121,7 @@
 
 <!-- Modal para confirmar restauración de usuario -->
 <div class="modal fade" id="restoreUserModal" tabindex="-1" aria-labelledby="restoreUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="restoreUserModalLabel">
@@ -1146,7 +1153,7 @@
 
 <!-- Modal para confirmar eliminación de proyecto -->
 <div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteProjectModalLabel">
