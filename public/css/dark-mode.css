@@ -1895,3 +1895,11 @@ body *::after {
     border-color: var(--dark-border-primary) !important;
     opacity: 0.6 !important;
 }
+/* Optimizaciones para botones */
+[data-bs-theme="dark"] .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex,
+    .dark-mode .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex {
+        background: #222 !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
