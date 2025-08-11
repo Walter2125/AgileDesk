@@ -15,19 +15,26 @@
         @auth
             @if(isset($proyecto_actual))
                 <!-- Selector de proyecto -->
-                <div class="project-selector">
-                    <label id="projectSelect-label">Proyecto:</label>
-                    <select id="projectSelect" onchange="window.location.href = '/homeuser/project/' + this.value">
-                        @foreach($proyectos_usuario as $project)
-                            <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
-                                {{ $project->name }} ({{ $project->codigo }})
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="project-selector d-flex justify-content-between align-items-center flex-wrap mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <label for="projectSelectCurrent" class="form-label mb-0 fw-medium">
+                            Proyecto:
+                        </label>
+                        <div class="select-with-icon">
+                            <select id="projectSelectCurrent" class="form-select" style="min-width: 240px; max-width: 320px; height: 38px;" 
+                                    onchange="window.location.href = '/admin/homeadmin/project/' + this.value">
+                                @foreach($proyectos_usuario as $project)
+                                    <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
+                                        {{ $project->name }} ({{ $project->codigo }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <!-- Botón de historial -->
                     <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
-                       class="btn btn-outline-primary me-2">
-                         Ver Historial de Cambios
+                       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+                        <i class="bi bi-clock-history me-1"></i> Ver Historial
                     </a>
                 </div>
                 
@@ -142,13 +149,25 @@
                                 <canvas id="contributionsChart"></canvas>
                             </div>
                         </div>
+                    @elseif($estadisticas->count() === 1)
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21A2 2 0 0 0 5 23H19A2 2 0 0 0 21 21V9M19 9H15V5H19V9Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #4c51bf; font-weight: 600; margin-bottom: 0.5rem;">Proyecto Individual</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
+                        </div>
                     @else
-                        <div style="text-align: center; padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 1rem;">
-                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom: 1rem; color: #64748b;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <h4 style="margin: 0 0 0.5rem 0; color: #64748b;">Proyecto Individual</h4>
-                            <p style="margin: 0; color: #9ca3af;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M16 4C18.2 4 20 5.8 20 8C20 10.2 18.2 12 16 12C13.8 12 12 10.2 12 8C12 5.8 13.8 4 16 4ZM8 4C10.2 4 12 5.8 12 8C12 10.2 10.2 12 8 12C5.8 12 4 10.2 4 8C4 5.8 5.8 4 8 4ZM8 13C11.3 13 16 14.7 16 18V20H0V18C0 14.7 4.7 13 8 13ZM16 13C16.8 13 17.6 13.1 18.4 13.3C20.2 14.1 21.5 15.7 21.5 18V20H17.5V18.5C17.5 16.8 16.9 15.3 16 14.1V13Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #dc2626; font-weight: 600; margin-bottom: 0.5rem;">Sin Colaboradores</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">No hay contribuciones registradas aún para este proyecto. ¡Invita a más colaboradores para empezar!</p>
                         </div>
                     @endif
                 </div>
