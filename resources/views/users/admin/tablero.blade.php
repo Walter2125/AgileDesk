@@ -17,6 +17,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
     @php
         $colCount = $tablero->columnas->count();
@@ -26,8 +28,15 @@
 
     @endphp
 
-    <div class="container-fluid px-3 py-0">
-        <div class="container-fluid px-3 py-0">
+    <div class="container-fluid px-3 py-0 tablero-wrapper">
+        <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
+            <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
+                <!-- columnas -->
+            </div>
+        </div>
+    </div>
+
+
 
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md" id="success-alert">
@@ -61,30 +70,36 @@
                     </div>
 
 
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
-                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
-                                {{ $sprint->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                @endif
+                    @if($tablero->sprints && $tablero->sprints->count())
+                        <select class="form-select"
+                                id="sprintSelect"
+                                aria-label="Seleccionar sprint"
+                                style="min-width: 200px; max-width: 240px; height: 40px; border-radius: 0.375rem;"
+                                onchange="seleccionarSprint(this)">
+                            <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
+                            @foreach($tablero->sprints as $sprint)
+                                <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                    {{ $sprint->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
 
 
-                <div class="d-flex gap-2 ms-auto">
+
+                    <div class="d-flex gap-2 ms-auto">
                     <button class="btn btn-outline-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#modalCrearSprint"
-                            id="btnAbrirCrearSprint">
+                            id="btnAbrirCrearSprint"
+                            style="height: 40px">
                         Crear sprint
                     </button>
 
                     <button class="btn btn-primary"
                             data-bs-toggle="modal"
-                            data-bs-target="#modalAgregarColumna">
+                            data-bs-target="#modalAgregarColumna"
+                            style="height: 40px">
                         Agregar columna
                     </button>
                 </div>
@@ -95,6 +110,7 @@
 
                     <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
+                    @foreach($tablero->columnas as $columna)
                     @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
                                  style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
@@ -216,6 +232,57 @@
                             </div>
                         @endforeach
                     </div>
+
+
+                    {{-- INICIO: Accordion para móvil --}}
+                    <div class="kanban-accordion">
+                        <div class="accordion" id="accordionKanban">
+                            @foreach($tablero->columnas as $columna)
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ $columna->id }}">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ $columna->id }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ $columna->id }}">
+                                            {{ $columna->nombre }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ $columna->id }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ $columna->id }}">
+
+                                    <div class="accordion-body">
+                                            <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                                               class="btn btn-sm btn-primary mb-3 w-100">
+                                                Agregar historias
+                                            </a>
+
+                                            @forelse ($columna->historias as $historia)
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">
+                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                        </h6>
+                                                        @if ($historia->descripcion)
+                                                            <p>{{ $historia->descripcion }}</p>
+                                                        @endif
+                                                        <a href="{{ route('historias.edit', $historia->id) }}"
+                                                           class="btn btn-outline-secondary btn-sm">Editar</a>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-muted">No hay historias en esta columna.</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    {{-- FIN: Accordion para móvil --}}
+
+
 
 
                     {{-- INICIO: Accordion para móvil --}}
@@ -1187,6 +1254,7 @@
 
 
                 <style>
+
 
                     .kanban-columna {
                         min-width: 0 !important;

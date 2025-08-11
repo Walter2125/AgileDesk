@@ -79,6 +79,27 @@
         color: #fff;
     }
 
+    .btn-outline-secondary {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004b9a;
+    }
+
     .btn-info {
         background-color: #0dcaf0;
         border-color: #0dcaf0;
@@ -189,11 +210,12 @@
                     </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ route('historias.show', ['historia' => $historia->id]) }}"
-                    class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
-                    Atras
+                    <a href="{{ route('historias.show', ['historia' => $historia->id]) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Atrás
                     </a>
-                    <a href="{{ route('tareas.index', $historia->id) }}" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Nueva Tarea</a>
+                    <a href="{{ route('tareas.index', $historia->id) }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Nueva Tarea
+                    </a>
                 </div>
     </div>
     {{-- Aquí van los modales, fuera de la tabla --}}
@@ -249,10 +271,14 @@
         progressBar.textContent = porcentaje + '%';
     }
 
-    document.querySelectorAll('.tarea-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const tareaId = this.dataset.id;
+    // Escuchar los cambios en todo el documento (delegación de eventos)
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
 
+            // Enviar al servidor
             fetch(`/tareas/${tareaId}/completar`, {
                 method: 'POST',
                 headers: {
@@ -263,14 +289,55 @@
             }).then(response => {
                 if (response.ok) {
                     actualizarBarraProgreso();
+
+                    // Sincronizar todos los checkboxes con el mismo data-id
+                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                        cb.checked = estaMarcado;
+                    });
                 } else {
                     alert('Error al guardar el progreso.');
-                    this.checked = !this.checked;
+                    checkbox.checked = !checkbox.checked;
                 }
             });
-        });
+        }
     });
 
     window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
+</script>
+
+<script>
+    function guardarEstadoCheckbox(tareaId, estado) {
+        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+        estados[tareaId] = estado;
+        localStorage.setItem('tareasEstado', JSON.stringify(estados));
+    }
+
+    function cargarEstadoCheckboxes() {
+        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+        document.querySelectorAll('.tarea-checkbox').forEach(cb => {
+            const id = cb.dataset.id;
+            if (estados.hasOwnProperty(id)) {
+                cb.checked = estados[id];
+            }
+        });
+    }
+
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
+
+            // Guardar en localStorage
+            guardarEstadoCheckbox(tareaId, estaMarcado);
+
+            // Sincronizar checkboxes con el mismo data-id en la misma página
+            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+                    .forEach(cb => cb.checked = estaMarcado);
+        }
+    });
+
+    // Cargar estado al abrir la página
+    window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
 </script>
 @endsection

@@ -49,8 +49,8 @@ class TareaController extends Controller
         // Asociar tarea con la historia
         $historia->tareas()->create($validatedData);
 
-        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea creada con éxito.');
-    }
+return redirect()->route('historias.show', $historia->id)
+                     ->with('success', 'Tarea creada con éxito.');    }
 
     public function edit(Historia $historia, Tarea $tarea)
     {
@@ -81,14 +81,14 @@ class TareaController extends Controller
 
         $tarea->update($validatedData);
 
-        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea actualizada con éxito.');
+        return redirect()->route('historias.show', $historia->id)->with('success', 'Tarea actualizada con éxito.');
     }
 
     public function destroy(Historia $historia, Tarea $tarea)
     {
         $tarea->delete();
 
-        return redirect()->route('tareas.show', $historia->id)->with('success', 'Tarea eliminada con éxito.');
+        return redirect()->route('historias.show', $historia->id)->with('success', 'Tarea eliminada con éxito.');
     }
 
     public function lista(Historia $historia)

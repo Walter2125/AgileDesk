@@ -129,6 +129,15 @@
     background: var(--github-card-bg);
     color: var(--github-text);
     font-size: 1rem;
+    /* Mostrar icono de flecha personalizado y ocultar el nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%2364778b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 16px;
+    padding-right: 2.25rem; /* evitar que el texto se superponga con la flecha */
 }
 
 .project-selector .btn {
@@ -441,6 +450,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    /* Normalizar para que padding internos no alteren el ancho/alto percibido */
+    box-sizing: border-box;
+    margin: 0; /* Evita márgenes por defecto en algunos agentes */
+    padding: 0; /* El padding se maneja en header/body */
 }
 
 .modal-overlay.active .modal-container {
@@ -455,6 +468,7 @@
     justify-content: space-between;
     background: #f8fafc;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
+    box-sizing: border-box;
 }
 
 .modal-title {
@@ -498,6 +512,7 @@
     max-height: calc(90vh - 120px);
     overflow-y: auto;
     flex: 1;
+    box-sizing: border-box;
 }
 
 .contributor-modal-avatar {
@@ -998,7 +1013,47 @@
         max-height: calc(100vh - 4rem);
         margin: 0;
     }
+    /* Reducir padding interno en móviles para que no se vea diferente por densidad de píxeles */
+    .modal-header {
+        padding: 1rem 1rem 0.75rem 1rem;
+    }
+    .modal-body {
+        padding: 1rem;
+        max-height: calc(100vh - 6rem);
+    }
     
+
+/* Ajustes extra pequeños */
+@media (max-width: 420px) {
+    .modal-overlay {
+        padding: 8px;
+        padding-top: 1.5rem;
+    }
+    .modal-header {
+        padding: 0.875rem 0.875rem 0.5rem 0.875rem;
+    }
+    .modal-body {
+        padding: 0.875rem;
+    }
+}
+
+/* Empty state shared box */
+.empty-state-box {
+    text-align: center;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+.empty-state-box h4 {
+    margin: 0 0 0.5rem 0;
+    color: #64748b;
+}
+.empty-state-box p {
+    margin: 0;
+    color: #9ca3af;
+}
     .modal-header {
         padding: 1.5rem 1rem;
         flex-shrink: 0;

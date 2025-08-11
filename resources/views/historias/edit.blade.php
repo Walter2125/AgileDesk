@@ -1,15 +1,81 @@
 @extends('layouts.app')
 
 @section('title')
-         @section('mensaje-superior')
+        @section('mensaje-superior')
             Editar Historia
         @endsection
+
+@section('styles')
+<style>
+    body {
+        background-color: #ffffff;
+        color: #000000;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container-fluid {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .form-label {
+        color: #000000;
+        font-weight: 600;
+    }
+
+    .form-control {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control:focus {
+        background-color: #ffffff;
+        color: #000000;
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-outline-secondary {
+        color: #6c757d;
+        border-color: #6c757d;
+        background-color: transparent;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+        color: #ffffff;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        color: #842029;
+    }
+</style>
+@endsection
 
 @section('content')
 
 <div class="container-fluid mi-container">
-    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 
         @if ($errors->any())
         <div class="alert alert-danger mt-2">
@@ -103,10 +169,13 @@
 
 
          <div class="mb-3 d-flex justify-content-end">
+            <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-outline-secondary me-2">
+                <i class="bi bi-arrow-left"></i> Atrás
+            </a>
 
-            <a href="{{ route('historias.show', $historia->id) }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case me-2">Atras</a>
-
-            <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Actualizar</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Actualizar
+            </button>
         </div>
     </form>
 </div>

@@ -286,32 +286,7 @@ class AdminController extends Controller
     /**
      * Restore a soft deleted user
      */
-    public function restoreUser($id)
-    {
-        try {
-            $user = User::withTrashed()->findOrFail($id);
-            
-            // Verificar que el usuario esté soft deleted
-            if (!$user->trashed()) {
-                return redirect()->back()->with('error', 'El usuario no está eliminado.');
-            }
-            
-            // Verificar que no sea un admin
-            if ($user->usertype === 'admin') {
-                return redirect()->back()->with('error', 'No se pueden restaurar usuarios administradores.');
-            }
-            
-            $userName = $user->name;
-            $user->restore();
-            
-            Log::info("Usuario restaurado: {$userName} (ID: {$id})");
-            
-            return redirect()->back()->with('success', "Usuario {$userName} restaurado exitosamente. Ahora puede acceder al sistema nuevamente.");
-        } catch (\Exception $e) {
-            Log::error("Error al restaurar usuario ID {$id}: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al restaurar el usuario. Por favor, inténtelo de nuevo.');
-        }
-    }
+    // Método eliminado: restoreUser (mantenido por soft-deleted general: restoreItem)
     
     /**
      * Get only active users (not soft deleted)
@@ -321,69 +296,11 @@ class AdminController extends Controller
         return User::where('usertype', '!=', 'admin')->paginate(10);
     }
     
-    /**
-     * Get only soft deleted users
-     */
-    public function getDeletedUsers()
-    {
-        return User::onlyTrashed()->where('usertype', '!=', 'admin')->paginate(10);
-    }
+    // Método eliminado: getDeletedUsers (reemplazado por el panel general de elementos eliminados)
     
-    /**
-     * Show deleted users history
-     */
-    public function deletedUsers()
-    {
-        $deletedUsers = User::onlyTrashed()
-            ->where('usertype', '!=', 'admin')
-            ->orderBy('deleted_at', 'desc')
-            ->paginate(10);
-
-        // Configurar breadcrumbs
-        $breadcrumbs = [
-            [
-                'label' => 'Dashboard',
-                'url' => route('homeadmin')
-            ],
-            [
-                'label' => 'Usuarios Eliminados',
-                'url' => null, // Current page
-                'active' => true
-            ]
-        ];
-            
-        return view('users.admin.deleted-users', compact('deletedUsers', 'breadcrumbs'));
-    }
+    // Método eliminado: deletedUsers (vista específica obsoleta)
     
-    /**
-     * Permanently delete a user
-     */
-    public function permanentDeleteUser($id)
-    {
-        try {
-            $user = User::withTrashed()->findOrFail($id);
-            
-            // Verificar que el usuario esté soft deleted
-            if (!$user->trashed()) {
-                return redirect()->back()->with('error', 'El usuario no está eliminado.');
-            }
-            
-            // Verificar que no sea un admin
-            if ($user->usertype === 'admin') {
-                return redirect()->back()->with('error', 'No se pueden eliminar usuarios administradores.');
-            }
-            
-            $userName = $user->name;
-            $user->forceDelete();
-            
-            Log::info("Usuario eliminado permanentemente: {$userName} (ID: {$id})");
-            
-            return redirect()->back()->with('warning', "Usuario {$userName} eliminado permanentemente. Esta acción no se puede deshacer.");
-        } catch (\Exception $e) {
-            Log::error("Error al eliminar permanentemente usuario ID {$id}: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al eliminar el usuario. Por favor, inténtelo de nuevo.');
-        }
-    }
+    // Método eliminado: permanentDeleteUser (mantenido por soft-deleted general: permanentDeleteItem)
 
     /**
      * Vista general de elementos soft-deleted
@@ -522,6 +439,27 @@ class AdminController extends Controller
         // Ordenar por fecha de eliminación (más recientes primero)
         $deletedItems = $deletedItems->sortByDesc('deleted_at');
 
+        // Implementar paginación manual
+        $currentPage = $request->get('page', 1);
+        $perPage = 15;
+        $total = $deletedItems->count();
+        $offset = ($currentPage - 1) * $perPage;
+        
+        // Crear paginador manual
+        $deletedItemsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $deletedItems->slice($offset, $perPage)->values(),
+            $total,
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'pageName' => 'page',
+            ]
+        );
+        
+        // Preservar parámetros de filtro en la paginación
+        $deletedItemsPaginated->appends($request->except('page'));
+
         // Configurar breadcrumbs
         $breadcrumbs = [
             [
@@ -535,7 +473,7 @@ class AdminController extends Controller
             ]
         ];
 
-        return view('admin.soft-deleted', compact('deletedItems', 'type', 'search', 'dateFrom', 'dateTo', 'breadcrumbs'));
+        return view('admin.soft-deleted', compact('deletedItemsPaginated', 'type', 'search', 'dateFrom', 'dateTo', 'breadcrumbs'));
     }
 
     /**

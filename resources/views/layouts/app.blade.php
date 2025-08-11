@@ -32,7 +32,7 @@
             // 3. Aplicar el modo oscuro ANTES de que se renderice la página
             if (darkMode) {
                 html.classList.add('dark-mode');
-                body.classList.add('dark-mode');
+                //body.classList.add('dark-mode');
                 html.style.backgroundColor = '#121218';
             } else {
                 // Asegurar que en modo claro el fondo sea claro
@@ -263,7 +263,8 @@
         }
     }
 
-    /* Detección específica de sistemas Linux/macOS (aproximada) */
+            border: 2px solid #fff2;
+            box-sizing: border-box; /* Permite padding interno sin crecer de 40x40 */
     @supports (font-variant-ligatures: normal) {
         /* Mejoras para sistemas que probablemente usan FreeType o CoreText */
         body {
@@ -440,8 +441,8 @@
     .container-fluid {
         overflow-x: hidden;
         max-width: 100% !important; /* Usar todo el ancho disponible */
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
     
     /* Asegurar que el main use toda la altura disponible */
@@ -568,7 +569,7 @@
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 0.5rem 0.75rem; /* más espacio horizontal contra los bordes */
         width: 32px;
         height: 32px;
     }
@@ -748,6 +749,7 @@
         transition: background 0.2s, box-shadow 0.2s;
         box-shadow: none;
         background: rgba(255,255,255,0.03);
+        padding: 0.5rem 0.75rem !important; /* separa del borde (override p-0) */
     }
 
     .user-info.user-dropdown-btn:hover, .user-info.user-dropdown-btn:focus {
@@ -789,8 +791,13 @@
         position: absolute !important;
         transform: none !important;
         margin-bottom: 0.5rem;
-        min-width: 200px;
-        z-index: 1600 !important;
+    min-width: 200px;
+    max-width: calc(100vw - 2rem);
+    width: max-content;
+    z-index: 1600 !important;
+    overflow-y: auto;
+    max-height: 60vh;
+    white-space: normal;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -804,7 +811,8 @@
         bottom: 0 !important;
         top: auto !important;
         margin-left: 0.5rem;
-        margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    max-height: 80vh;
     }
 
     body.sidebar-collapsed .user-dropdown .dropup .dropdown-menu {
@@ -1577,6 +1585,39 @@
         /* Ya heredan el padding del contenedor padre */
     }
 
+    /* Mobile alignment fixes for sidebar heading */
+    @media (max-width: 575.98px) {
+        .sidebar-heading {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            padding: 0 1rem !important;
+            gap: 0.75rem !important;
+        }
+
+        .sidebar-heading > span {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+
+        .sidebar-heading .bi-columns-gap {
+            font-size: 1.5rem !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .sidebar-heading .app-name {
+            display: inline-flex !important;
+            align-items: center !important;
+            font-size: 1.25rem !important;
+            line-height: 1.2 !important;
+            font-weight: 600 !important;
+        }
+    }
+
     /* ======================================================================== */
 </style>
     @yield('styles')
@@ -1637,7 +1678,7 @@
 
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
-                    <div class="dropdown dropup">
+                    <div class="dropdown">
                         <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
                                 type="button"
                                 data-bs-toggle="dropdown"
@@ -1777,6 +1818,46 @@
                         applySidebarState(true);
                         saveSidebarState(true);
                     }
+                });
+            }
+
+            // Auto-flip para el dropdown de usuario (dropup vs dropdown)
+            const userDropdownBtn = document.getElementById('userDropdown');
+            if (userDropdownBtn) {
+                userDropdownBtn.addEventListener('click', function() {
+                    const container = userDropdownBtn.closest('.dropdown');
+                    const menu = container ? container.querySelector('.dropdown-menu') : null;
+                    // Asegurar que Bootstrap construya el menu primero
+                    setTimeout(() => {
+                        if (!container || !menu) return;
+                        // Resetear estados
+                        container.classList.remove('dropup');
+                        menu.style.maxHeight = '';
+                        menu.style.bottom = '';
+                        menu.style.top = '';
+
+                        const rect = userDropdownBtn.getBoundingClientRect();
+                        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+                        const spaceBelow = viewportH - rect.bottom;
+                        const spaceAbove = rect.top;
+                        const desiredMenuHeight = Math.min(320, viewportH * 0.6);
+
+                        // Elegir dirección
+                        if (spaceBelow < 200 && spaceAbove > spaceBelow) {
+                            // Mostrar hacia arriba
+                            container.classList.add('dropup');
+                            menu.style.maxHeight = Math.max(160, Math.min(spaceAbove - 16, desiredMenuHeight)) + 'px';
+                        } else {
+                            // Mostrar hacia abajo
+                            container.classList.remove('dropup');
+                            menu.style.maxHeight = Math.max(160, Math.min(spaceBelow - 16, desiredMenuHeight)) + 'px';
+                        }
+
+                        // Si el sidebar está colapsado y en móvil/tablet, forzar que no desborde la pantalla
+                        if (document.body.classList.contains('sidebar-collapsed') && window.innerWidth < 992) {
+                            menu.style.maxWidth = 'calc(100vw - 1rem)';
+                        }
+                    }, 0);
                 });
             }
         });
