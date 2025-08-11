@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 class Project extends Model
 {
+    use HasFactory, SoftDeletes;
     protected $table = 'nuevo_proyecto';
     protected $primaryKey = 'id';
 
@@ -17,16 +20,17 @@ class Project extends Model
         'fecha_inicio',
         'fecha_fin',
         'user_id',
+        'color',
     ];
 
     public static function generarCodigo()
     {
     do {
-        
+
         $numero = str_pad(random_int(0, 99), 3, '0', STR_PAD_LEFT);
         $codigo = 'INF' . $numero;
 
-        
+
         $exists = self::where('codigo', $codigo)->exists();
     } while ($exists);
 
@@ -80,5 +84,3 @@ public function sprint() {
 
 
 }
-
-

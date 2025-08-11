@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     public function create(Request $request)
     {
         $users = User::where('usertype', '!=', 'admin')
@@ -85,11 +88,7 @@ class ProjectController extends Controller
                 'posicion' => 1,
                 'es_backlog' => true,
             ],
-            [
-                'nombre' => 'Backlog',
-                'posicion' => 2,
-                'es_backlog' => true,
-            ]
+
         ]);
 
         DB::commit();
@@ -101,7 +100,7 @@ class ProjectController extends Controller
         return back()->with('error', 'Error al crear el proyecto: ' . $e->getMessage());
     }
 }
- 
+
 
     public function searchUsers(Request $request)
     {
@@ -186,7 +185,7 @@ class ProjectController extends Controller
         'unique:nuevo_proyecto,codigo,' . $project->id,
         'regex:/^[a-zA-Z0-9]+$/'
     ],
-           'descripcion' => [     
+           'descripcion' => [
         'nullable',
         'string',
         'max:255',
@@ -194,16 +193,16 @@ class ProjectController extends Controller
     ],
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'users' => 'required|array|min:1', 
-            'users.*' => 'exists:users,id', 
+            'users' => 'required|array|min:1',
+            'users.*' => 'exists:users,id',
         ]);
 
-        
+
         if (Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        
+
         $project->update([
             'name' => $request->name,
             'codigo' => $request->codigo,
@@ -214,7 +213,7 @@ class ProjectController extends Controller
 
         $users = $request->users;
         if (!in_array($project->user_id, $users)) {
-            $users[] = $project->user_id; 
+            $users[] = $project->user_id;
         }
 
         $project->users()->sync($users);
@@ -271,7 +270,7 @@ class ProjectController extends Controller
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
-            ->withPath(route('projects.listUsers')); 
+            ->withPath(route('projects.listUsers'));
 
         $selectedUsers = $request->input('selected_users', []);
 
@@ -291,24 +290,21 @@ class ProjectController extends Controller
 
         return view('projects.create', compact('users', 'selectedUsers'));
     }
-    public function cambiarColor(Request $request, $id)
-{
-    Log::info("Entró a cambiarColor para proyecto $id", ['color' => $request->input('color')]);
-    // o puedes hacer:
-    // dd($request->all());
 
-    $project = Project::findOrFail($id);
+    public function cambiarColor(Request $request, Project $project)
+    {
+        if (auth()->id() !== $project->user_id) {
+            return response()->json(['error' => 'No tienes permiso para cambiar el color.'], 403);
+        }
 
-    $color = $request->input('color') ?? json_decode($request->getContent(), true)['color'] ?? '#ffffff';
+        $request->validate([
+            'color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/']
+        ]);
 
-    $project->color = $color;
-    $project->save();
+        $project->color = $request->color;
+        $project->save();
 
-    return response()->json([
-        'success' => true,
-        'color' => $color
-    ]);
-}
-
+        return response()->json(['success' => true, 'color' => $project->color]);
+    }
 
 }

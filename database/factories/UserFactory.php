@@ -23,13 +23,34 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $nombresEspanol = [
+            'María González', 'Carlos Rodríguez', 'Ana Martínez', 'Luis Hernández',
+            'Carmen López', 'Miguel Sánchez', 'Laura Jiménez', 'Roberto Díaz',
+            'Sofía Morales', 'Diego Vargas', 'Patricia Ruiz', 'Alejandro Torres',
+            'Isabel Castro', 'Fernando Ortiz', 'Gabriela Mendoza', 'Ricardo Vega'
+        ];
+
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement($nombresEspanol),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'usertype' => 'user',
+            'is_approved' => true,
         ];
+    }
+
+    /**
+     * Usuario administrador
+     */
+    public function admin()
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Administrador ' . fake()->lastName(),
+            'usertype' => 'admin',
+            'email' => 'admin' . fake()->numberBetween(1, 99) . '@unah.hn',
+        ]);
     }
 
     /**

@@ -1,41 +1,20 @@
-<div class="col-md-6 col-lg-4 mb-4 project-card-container">
-    <div id="project-{{ $project->id }}" class="project-card card h-100 position-relative w-100"
-         style="background-color: {{ $project->color ?? '#ffffff' }}; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Botón de opciones (tres puntitos) -->
-        <div id="color-picker-{{ $project->id }}" 
-             x-data='{ 
-                open: false, 
-                projectColor: "{{ $project->color ?? '#ffffff' }}", 
-                guardarColor() { 
-                    const url = "{{ route('projects.cambiarColor', $project->id) }}";
-                    const data = { color: this.projectColor };
-                    const headers = {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").getAttribute("content")
-                    };
-                    
-                    fetch(url, {
-                        method: "POST",
-                        headers: headers,
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            document.getElementById("project-{{ $project->id }}").style.backgroundColor = this.projectColor;
-                            this.open = false;
-                        }
-                    })
-                    .catch(error => console.error("Error:", error));
-                }
-             }'
-             class="position-absolute top-0 end-0 p-2" 
-             style="z-index: 10;">
-            <button @click="open = !open" class="btn btn-sm btn-light border-0">
-                &#x22EE;
-            </button>
+<!-- Tarjeta de proyecto -->
+<div class="col-md-6 col-lg-4 mb-4">
+    <div id="project-{{ $project->id }}"
+         class="project-card card h-100 position-relative"
+         x-data="colorPicker({{ $project->id }}, '{{ route('projects.cambiarColor', $project->id) }}', '{{ $project->color ?? '#ffffff' }}')"
+         :style="'background-color: ' + color + ' !important;'">
 
-            <!-- Menú desplegable -->
+        <!-- Muestra el valor del color actual (solo para pruebas) -->
+        {{-- <div><p x-text="color"></p></div> --}}
+
+        <!-- Botón de 3 puntitos y menú -->
+        <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+            <button @click="open = !open" class="btn btn-sm btn-light border-0">&#x22EE;</button>
+
+            <!-- Menú de selección de color -->
             <div x-show="open"
                  @click.away="open = false"
                  x-transition
@@ -45,7 +24,7 @@
 
                 <label class="form-label">Seleccionar color:</label>
                 <input type="color"
-                       x-model="projectColor"
+                       x-model="color"
                        class="form-control form-control-color"
                        style="width: 100%;">
 
@@ -56,8 +35,8 @@
             </div>
         </div>
 
-        <!-- Cuerpo de la tarjeta -->
-        <div class="card-body">
+        <!-- Contenido principal de la tarjeta -->
+        <div class="card-body" style="background-color: inherit !important;">
             <div class="project-header">
                 <div class="project-title-wrapper">
                     <h3 class="project-title">
@@ -108,3 +87,59 @@
     </div>
 </div>
 
+<!-- Script Alpine + lógica -->
+<script>
+    function colorPicker(projectId, url, initialColor) {
+        return {
+            open: false,
+            color: initialColor,
+
+            guardarColor() {
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ color: this.color })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.open = false;
+                            Toastify({
+                                text: "Color actualizado correctamente",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#4CAF50"
+                            }).showToast();
+                        } else {
+                            Toastify({
+                                text: data.error || "Error al actualizar el color",
+                                duration: 3000,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#FF0000"
+                            }).showToast();
+                        }
+                    })
+                    .catch(error => {
+                        Toastify({
+                            text: "Error al actualizar el color",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#FF0000"
+                        }).showToast();
+                        console.error('Error:', error);
+                    });
+            }
+        }
+    }
+</script>
+
+<!-- AlpineJS y Toastify -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">

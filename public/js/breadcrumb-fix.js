@@ -33,9 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Forzar visibilidad con setAttribute
             breadcrumbContainer.setAttribute('style', breadcrumbContainer.getAttribute('style') + '; display: block !important; visibility: visible !important; opacity: 1 !important;');
             
-            console.log('✅ Breadcrumb container styles fixed');
         } else {
-            console.warn('⚠️ Breadcrumb container not found');
         }
         
         // Si existe el breadcrumb, aplicar estilos
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 borderRadius: '4px !important'
             });
             
-            console.log('✅ Breadcrumb styles fixed');
         }
         
         // Aplicar estilos a cada item
@@ -62,14 +59,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
-            console.log(`✅ Fixed ${breadcrumbItems.length} breadcrumb items`);
         }
         
         // Ajustar el espacio para el navbar
         const pageContentWrapper = document.getElementById('page-content-wrapper');
         if (pageContentWrapper) {
             pageContentWrapper.style.paddingTop = '60px !important';
-            console.log('✅ Page content wrapper padding adjusted');
         }
     }
     
@@ -93,6 +88,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // También corregir después de eventos de carga y resize
     window.addEventListener('load', fixBreadcrumbs);
     window.addEventListener('resize', fixBreadcrumbs);
-    
-    console.log('🍞 Breadcrumb visibility enhancement script initialized');
 });

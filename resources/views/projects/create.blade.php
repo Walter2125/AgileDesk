@@ -32,7 +32,7 @@
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
+            <form id="projectForm" method="POST" action="{{ route('projects.store') }}" autocomplete="off">
                 @csrf
 
                 <!-- Nombre -->
@@ -52,8 +52,8 @@
                     <label for="descripcion">Descripción</label>
                     <textarea id="descripcion" 
                         class="form-control @error('descripcion') is-invalid @enderror" 
-                        name="descripcion" 
-                        rows="4">{{ old('descripcion') }}</textarea>
+                        name="descripcion" maxlength="255"
+                        rows="4">{{ old('descripcion') }} </textarea>
                     @error('descripcion')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -138,7 +138,7 @@
 @endsection
 
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 <script>
 $(function () {
     // Recuperar datos del sessionStorage si existen

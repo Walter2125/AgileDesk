@@ -115,10 +115,8 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         ->where('project', '[0-9]+');
 
     // Ruta correcta para cambiar el color
-    Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])
-        ->name('projects.cambiarColor');
-
-
+    Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
+    Route::post('/projects/{project}/color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
 
 });
 
@@ -127,6 +125,7 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->group(function () {
         Route::get('/homeadmin', [AdminController::class, 'index'])->name('homeadmin');
+        Route::get('/homeadmin/project/{projectId}', [AdminController::class, 'index'])->name('homeadmin.project');
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
@@ -138,6 +137,11 @@ Route::middleware(['auth', 'role:admin'])
         // Rutas para historial de usuarios eliminados
         Route::get('/deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
         Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
+
+        // Vista general de elementos soft-deleted
+        Route::get('/soft-deleted', [AdminController::class, 'softDeletedItems'])->name('admin.soft-deleted');
+        Route::post('/soft-deleted/restore/{model}/{id}', [AdminController::class, 'restoreItem'])->name('admin.soft-deleted.restore');
+        Route::delete('/soft-deleted/permanent-delete/{model}/{id}', [AdminController::class, 'permanentDeleteItem'])->name('admin.soft-deleted.permanent-delete');
 
         //historial de cambios
         Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
@@ -152,6 +156,10 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/projects/search-users', [ProjectController::class, 'searchUsers'])->name('projects.searchUsers');
         Route::get('/projects/users/list', [ProjectController::class, 'listUsers'])->name('projects.listUsers');
         Route::put('/projects/{id}/cambiar-color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
+        Route::post('/projects/{project}/color', [ProjectController::class, 'cambiarColor'])->name('projects.cambiarColor');
+
+        // Rutas adicionales para administración de proyectos desde homeadmin
+        Route::delete('/projects/{project}/admin-delete', [AdminController::class, 'deleteProject'])->name('admin.projects.delete');
 
 
         // Crud de Sprints

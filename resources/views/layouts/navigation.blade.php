@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Navbar</title>
     <!-- Incluir Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons-fixed.css') }}">
     <style>
         :root {
             --primary-color: #0d6efd;
@@ -422,18 +422,15 @@
             localStorage.setItem('agiledesk_sidebar_collapsed', (!isCollapsed).toString());
         }
 
-        // Función de debugging mejorada
+        // Función de debugging simplificada
         function debugLayout() {
             const problems = [];
-            
-            console.log('🔍 Iniciando diagnóstico...');
             
             try {
                 // Verificar navbar
                 const navbar = document.querySelector('.navbar-optimized');
                 if (navbar) {
                     const rect = navbar.getBoundingClientRect();
-                    console.log('📏 Navbar:', { width: rect.width, height: rect.height });
                     if (rect.width > window.innerWidth) {
                         problems.push(`Navbar desborda: ${rect.width}px > ${window.innerWidth}px`);
                     }
@@ -441,23 +438,10 @@
                     problems.push('Navbar no encontrado');
                 }
                 
-                // Verificar errores JavaScript
-                const errors = window.console.error || [];
-                console.log('🐛 Errores JS detectados:', errors.length);
-                
-                // Verificar viewport
-                console.log('📱 Viewport:', {
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                    devicePixelRatio: window.devicePixelRatio
-                });
-                
                 if (problems.length === 0) {
-                    console.log('✅ Layout OK');
-                    showOptimizedNotification('Layout verificado - Sin problemas', 'success');
+                    // showOptimizedNotification('Layout verificado - Sin problemas', 'success');
                 } else {
-                    console.warn('⚠️ Problemas encontrados:', problems);
-                    showOptimizedNotification(`${problems.length} problema(s) encontrado(s)`, 'warning');
+                    // showOptimizedNotification(`${problems.length} problema(s) encontrado(s)`, 'warning');
                 }
             } catch (error) {
                 problems.push('Error en función de debugging');
@@ -491,35 +475,29 @@
                 } else if (navbar) {
                     navbar.style.flexWrap = 'nowrap';
                 }
-                
-                console.log(`📐 Layout ajustado para: ${width}px`);
             } catch (error) {
-                console.error('Error ajustando layout:', error);
+                // Error silencioso
             }
         }
 
-        // Función para detectar errores de Alpine.js (arreglada)
         // Función para corregir errores comunes de Alpine.js
         function fixAlpineErrors() {
             try {
                 // Si Alpine aún no está definido, crear un objeto temporal
                 if (typeof Alpine === 'undefined') {
-                    console.warn('🚨 Alpine.js no está disponible - creando polyfill temporal');
                     window.Alpine = { 
                         version: 'polyfill',
-                        start: function() { console.warn('Alpine polyfill activado'); }
+                        start: function() { }
                     };
                 }
                 
                 // Definir variables globales comunes usadas por Alpine para prevenir errores
                 if (typeof window.color === 'undefined') {
                     window.color = '#ffffff';
-                    console.log('🔧 Definida variable global color para Alpine.js');
                 }
                 
                 return true;
             } catch (error) {
-                console.error('Error en fixAlpineErrors:', error);
                 return false;
             }
         }
@@ -530,52 +508,20 @@
             
             // Detectar si Alpine está cargado
             if (typeof Alpine === 'undefined' || Alpine.version === 'polyfill') {
-                console.warn('🚨 Alpine.js no está completamente disponible');
                 return false;
             }
             
-            // Interceptar errores de Alpine
-            const originalError = console.error;
-            let alpineErrors = [];
-            
-            console.error = function(...args) {
-                const message = args.join(' ');
-                if (message.includes('Alpine') || message.includes('x-data') || message.includes('color')) {
-                    alpineErrors.push(message);
-                    console.warn('🔥 Error Alpine detectado:', message);
-                }
-                originalError.apply(console, args);
-            };
-            
-            // Verificar directivas Alpine en el DOM (selector corregido)
+            // Verificar directivas Alpine en el DOM
             try {
                 const alpineElements = document.querySelectorAll('[x-data], [x-show], [x-if]');
-                console.log(`🔍 Elementos Alpine encontrados: ${alpineElements.length}`);
-                
-                // Verificar que los elementos tengan todas las variables definidas
-                alpineElements.forEach((el, index) => {
-                    const xData = el.getAttribute('x-data');
-                    if (xData && xData.includes('color')) {
-                        console.log(`ℹ️ Elemento Alpine con color en índice ${index + 1}`);
-                    }
-                });
-                
-                if (alpineErrors.length > 0) {
-                    showOptimizedNotification(`${alpineErrors.length} error(es) de Alpine.js detectado(s)`, 'danger');
-                    console.warn('🚨 Resumen errores Alpine:', alpineErrors);
-                }
-                
-                return alpineErrors.length === 0;
+                return alpineElements.length >= 0;
             } catch (error) {
-                console.error('Error en detectAlpineErrors:', error);
                 return false;
             }
         }
 
         // Inicialización al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Inicializando navbar...');
-            
             // Corregir errores de Alpine.js lo antes posible
             fixAlpineErrors();
             
@@ -613,24 +559,14 @@
             window.addEventListener('resize', function() {
                 debounce(() => {
                     adjustLayoutForScreen();
-                    debugLayout();
                 }, 250)();
             });
             
             // Ejecutar verificaciones iniciales
             setTimeout(() => {
-                debugLayout();
                 fixAlpineErrors();
                 detectAlpineErrors();
-                console.log('🔧 Verificaciones completadas');
             }, 1000);
-            
-            console.log('✅ Navbar inicializada correctamente');
-            console.log('💡 Comandos disponibles:');
-            console.log('  - debugLayout() - Diagnosticar layout');
-            console.log('  - detectAlpineErrors() - Verificar Alpine.js');
-            console.log('  - Ctrl+D - Debug rápido');
-            console.log('  - Ctrl+T - Toggle tema');
         });
 
         // Verificar que las funciones estén disponibles globalmente

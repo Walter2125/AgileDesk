@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use App\Models\HistorialCambio;
+use Illuminate\Support\Facades\Auth;
 
 
 class HistoriasController extends Controller
@@ -143,7 +144,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
     HistorialCambio::create([
         'fecha' => now(),
-        'usuario' => auth()->user()->name,
+        'usuario' => Auth::user()->name,
         'accion' => 'Creación de Historia',
         'detalles' => 'Historia "' . $historia->nombre . '" creada',
         'sprint' => $historia->sprint_id,
@@ -174,19 +175,32 @@ private function compartirContextoDesdeColumna(Columna $columna)
     /**
      * Display the specified resource.
      */
-    public function show(Historia $historia)
-    {
+ public function show(Historia $historia)
+{
+    $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
 
-        $historia->load('usuario', 'sprints', 'columna.tablero.project', 'proyecto');
+    $currentProject = $historia->columna->tablero->project ?? $historia->proyecto;
 
+    $tareas = $historia->tareas()->with('user')->get();
 
-        $currentProject = $historia->columna->tablero->project
-            ?? $historia->proyecto;
-
-                $tareas = $historia->tareas()->with('user')->get(); // <- AGREGADO
-
-        return view('historias.show', compact('historia', 'currentProject', 'tareas'));
+    // Obtener las columnas para el select
+    $columnas = collect(); // valor por defecto vacío
+    if ($historia->columna && $historia->columna->tablero) {
+        $columnas = $historia->columna->tablero->columnas;
+    } else if ($currentProject->tablero) {
+        $columnas = $currentProject->tablero->columnas;
     }
+
+    // Agregar usuarios y sprints para los selects en la vista
+    $usuarios = User::all();
+
+    $sprints = Sprint::all();
+
+    return view('historias.show', compact('historia', 'currentProject', 'tareas', 'columnas', 'usuarios', 'sprints'));
+}
+
+
+
 
 
     /**
@@ -270,7 +284,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
     // Registrar en el historial
     HistorialCambio::create([
         'fecha' => now(),
-        'usuario' => auth()->user()->name,
+        'usuario' => Auth::user()->name,
         'accion' => 'Edición de Historia',
         'detalles' => $this->generarDetallesCambios([
             'nombre' => $valoresAntiguos['nombre'],
@@ -322,17 +336,18 @@ private function compartirContextoDesdeColumna(Columna $columna)
 }
 
 
+
    public function destroy(Historia $historia)
         {
             HistorialCambio::create([
                 'fecha' => now(),
-                'usuario' => auth()->user()->name,
+                'usuario' => Auth::user()->name,
                 'accion' => 'Eliminación de Historia',
                 'detalles' => sprintf(
                 'Historia "%s" (ID: %d) eliminada por %s',
             $historia->nombre,
             $historia->id,
-            auth()->user()->name
+            Auth::user()->name
             ),
                 'sprint' => $historia->sprint_id,
                 'proyecto_id' => $historia->proyecto_id
@@ -346,68 +361,73 @@ private function compartirContextoDesdeColumna(Columna $columna)
                             ->with('success', 'Historia borrada con éxito');
         }
 
-   public function mover(Request $request, $id)
-{
-    try {
-        // Validar entrada
-        $validated = $request->validate([
-            'columna_id' => 'required|integer|exists:columnas,id'
-        ]);
 
-        // Obtener la historia
-        $historia = Historia::findOrFail($id);
 
-        // Verificar que la columna destino pertenece al mismo tablero
-        $columnaDestino = Columna::findOrFail($validated['columna_id']);
-        if ($historia->columna->tablero_id !== $columnaDestino->tablero_id) {
+    public function mover(Request $request, $id)
+    {
+        try {
+            // Validar entrada
+            $validated = $request->validate([
+                'columna_id' => 'required|integer|exists:columnas,id'
+            ]);
+
+            // Obtener la historia
+            $historia = Historia::findOrFail($id);
+
+            // Verificar que la columna destino pertenece al mismo tablero
+            $columnaDestino = Columna::findOrFail($validated['columna_id']);
+            if ($historia->columna->tablero_id !== $columnaDestino->tablero_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No puedes mover historias entre tableros diferentes'
+                ], 403);
+            }
+
+            // Registrar en el historial antes de mover
+            $columnaOrigen = $historia->columna;
+            
+            HistorialCambio::create([
+                'fecha' => now(),
+                'usuario' => Auth::user()->name,
+                'accion' => 'Movimiento de Historia',
+                'detalles' => sprintf(
+                    'Historia "%s" movida de %s a %s',
+                    $historia->nombre,
+                    $columnaOrigen->nombre,
+                    $columnaDestino->nombre
+                ),
+                'sprint' => $historia->sprint_id,
+                'proyecto_id' => $historia->proyecto_id
+            ]);
+
+            // Actualizar y guardar
+            $historia->columna_id = $validated['columna_id'];
+            $historia->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Historia movida correctamente',
+                'data' => [
+                    'historia_id' => $historia->id,
+                    'nueva_columna_id' => $historia->columna_id,
+                    'nueva_columna_nombre' => $columnaDestino->nombre
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'No puedes mover historias entre tableros diferentes'
-            ], 403);
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al mover la historia: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Registrar en el historial antes de mover
-       /* HistorialCambio::create([
-            'fecha' => now(),
-            'usuario' => auth()->user()->name,
-            'accion' => 'Movimiento de Historia',
-            'detalles' => sprintf(
-                'Historia "%s" movida de %s a %s',
-                $historia->nombre,
-                $columnaOrigen->nombre,
-                $columnaDestino->nombre
-            ),
-            'sprint' => $historia->sprint_id,
-            'proyecto_id' => $historia->proyecto_id
-        ]);*/
-
-        // Actualizar y guardar
-        $historia->columna_id = $validated['columna_id'];
-        $historia->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Historia movida correctamente',
-            'data' => [
-                'historia_id' => $historia->id,
-                'nueva_columna_id' => $historia->columna_id,
-                'nueva_columna_nombre' => $columnaDestino->nombre
-            ]
-        ]);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error de validación',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error al mover la historia: ' . $e->getMessage()
-        ], 500);
     }
 }
-}
+
 
 
