@@ -217,3 +217,31 @@ html:not(.dark-mode) .pagination .page-link.active {
 }
 
 /* Puedes agregar más reglas según los componentes Bootstrap que uses */
+
+/* Fix: asegurar que los iconos de selector (calendario/reloj) se vean en modo claro */
+body:not(.dark-mode) input[type="date"],
+body:not(.dark-mode) input[type="time"],
+body:not(.dark-mode) input[type="datetime-local"] {
+  color-scheme: light !important; /* fuerza controles nativos en esquema claro */
+}
+
+/* Reset de filtros que puedan venir de estilos oscuros */
+body:not(.dark-mode) input[type="date"]::-webkit-calendar-picker-indicator,
+body:not(.dark-mode) input[type="time"]::-webkit-calendar-picker-indicator,
+body:not(.dark-mode) input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* Mejorar click/tamaño del área del icono en WebKit */
+body:not(.dark-mode) input[type="date"]::-webkit-calendar-picker-indicator,
+body:not(.dark-mode) input[type="time"]::-webkit-calendar-picker-indicator,
+body:not(.dark-mode) input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+body:not(.dark-mode) .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}

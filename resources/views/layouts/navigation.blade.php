@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Navbar</title>
     <!-- Incluir Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons-fixed.css') }}">
     <style>
         :root {
             --primary-color: #0d6efd;
@@ -530,7 +530,9 @@
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
             
+            // Aplicar tema inmediatamente para evitar conflictos
             document.documentElement.setAttribute('data-bs-theme', initialTheme);
+            localStorage.setItem(THEME_KEY, initialTheme);
             
             // Configurar tema inicial
             const icon = document.getElementById('theme-icon');

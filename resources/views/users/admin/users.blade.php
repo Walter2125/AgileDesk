@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('layouts_css')
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link href="{{ asset('vendor/fontawesome/all-fixed.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
 
  <style>
     .user-dropdown .dropdown-menu {
@@ -50,9 +50,10 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
-                                            <span class="badge bg-{{ $user->usertype == 'admin' ? 'danger' : 'primary' }}">
-                                                {{ $user->usertype }}
-                                            </span>
+                                            @php
+                                                $roleLabel = $user->usertype === 'admin' ? 'Administrador' : 'Colaborador';
+                                            @endphp
+                                            <span class="badge bg-{{ $user->usertype === 'admin' ? 'danger' : 'primary' }}">{{ $roleLabel }}</span>
                                         </td>
                                         <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                     </tr>
@@ -72,7 +73,7 @@
 
 @section('layouts_js')
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
     <script>
@@ -31,7 +32,7 @@
             // 3. Aplicar el modo oscuro ANTES de que se renderice la página
             if (darkMode) {
                 html.classList.add('dark-mode');
-                body.classList.add('dark-mode');
+                //body.classList.add('dark-mode');
                 html.style.backgroundColor = '#121218';
             } else {
                 // Asegurar que en modo claro el fondo sea claro
@@ -43,23 +44,25 @@
         })();
     </script>
 
-    <!-- Bootstrap CSS (solo una versión) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- Bootstrap CSS local -->
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap Icons local -->
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons-fixed.css') }}">
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('img/agiledesk.png') }}" type="image/x-icon">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+    <!-- Fonts locales (usando fuentes del sistema) -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
 
 
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/all-fixed.css') }}">
 
     <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -260,7 +263,8 @@
         }
     }
 
-    /* Detección específica de sistemas Linux/macOS (aproximada) */
+            border: 2px solid #fff2;
+            box-sizing: border-box; /* Permite padding interno sin crecer de 40x40 */
     @supports (font-variant-ligatures: normal) {
         /* Mejoras para sistemas que probablemente usan FreeType o CoreText */
         body {
@@ -437,8 +441,8 @@
     .container-fluid {
         overflow-x: hidden;
         max-width: 100% !important; /* Usar todo el ancho disponible */
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0rem;
+        padding-right: 0rem;
     }
     
     /* Asegurar que el main use toda la altura disponible */
@@ -565,7 +569,7 @@
         transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 0.5rem 0.75rem; /* más espacio horizontal contra los bordes */
         width: 32px;
         height: 32px;
     }
@@ -745,6 +749,7 @@
         transition: background 0.2s, box-shadow 0.2s;
         box-shadow: none;
         background: rgba(255,255,255,0.03);
+        padding: 0.5rem 0.75rem !important; /* separa del borde (override p-0) */
     }
 
     .user-info.user-dropdown-btn:hover, .user-info.user-dropdown-btn:focus {
@@ -786,8 +791,13 @@
         position: absolute !important;
         transform: none !important;
         margin-bottom: 0.5rem;
-        min-width: 200px;
-        z-index: 1600 !important;
+    min-width: 200px;
+    max-width: calc(100vw - 2rem);
+    width: max-content;
+    z-index: 1600 !important;
+    overflow-y: auto;
+    max-height: 60vh;
+    white-space: normal;
     }
 
     .user-dropdown .dropup .dropdown-menu {
@@ -801,7 +811,8 @@
         bottom: 0 !important;
         top: auto !important;
         margin-left: 0.5rem;
-        margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    max-height: 80vh;
     }
 
     body.sidebar-collapsed .user-dropdown .dropup .dropdown-menu {
@@ -1574,6 +1585,39 @@
         /* Ya heredan el padding del contenedor padre */
     }
 
+    /* Mobile alignment fixes for sidebar heading */
+    @media (max-width: 575.98px) {
+        .sidebar-heading {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            padding: 0 1rem !important;
+            gap: 0.75rem !important;
+        }
+
+        .sidebar-heading > span {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+
+        .sidebar-heading .bi-columns-gap {
+            font-size: 1.5rem !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .sidebar-heading .app-name {
+            display: inline-flex !important;
+            align-items: center !important;
+            font-size: 1.25rem !important;
+            line-height: 1.2 !important;
+            font-weight: 600 !important;
+        }
+    }
+
     /* ======================================================================== */
 </style>
     @yield('styles')
@@ -1634,7 +1678,7 @@
 
                 <!-- User dropdown in sidebar -->
                 <div class="user-dropdown mt-auto">
-                    <div class="dropdown dropup">
+                    <div class="dropdown">
                         <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
                                 type="button"
                                 data-bs-toggle="dropdown"
@@ -1691,8 +1735,8 @@
         </div>
     </div>
 
-    <!-- Core JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <!-- Core JS local -->
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Base Layout Script -->
     <script>
@@ -1774,6 +1818,46 @@
                         applySidebarState(true);
                         saveSidebarState(true);
                     }
+                });
+            }
+
+            // Auto-flip para el dropdown de usuario (dropup vs dropdown)
+            const userDropdownBtn = document.getElementById('userDropdown');
+            if (userDropdownBtn) {
+                userDropdownBtn.addEventListener('click', function() {
+                    const container = userDropdownBtn.closest('.dropdown');
+                    const menu = container ? container.querySelector('.dropdown-menu') : null;
+                    // Asegurar que Bootstrap construya el menu primero
+                    setTimeout(() => {
+                        if (!container || !menu) return;
+                        // Resetear estados
+                        container.classList.remove('dropup');
+                        menu.style.maxHeight = '';
+                        menu.style.bottom = '';
+                        menu.style.top = '';
+
+                        const rect = userDropdownBtn.getBoundingClientRect();
+                        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+                        const spaceBelow = viewportH - rect.bottom;
+                        const spaceAbove = rect.top;
+                        const desiredMenuHeight = Math.min(320, viewportH * 0.6);
+
+                        // Elegir dirección
+                        if (spaceBelow < 200 && spaceAbove > spaceBelow) {
+                            // Mostrar hacia arriba
+                            container.classList.add('dropup');
+                            menu.style.maxHeight = Math.max(160, Math.min(spaceAbove - 16, desiredMenuHeight)) + 'px';
+                        } else {
+                            // Mostrar hacia abajo
+                            container.classList.remove('dropup');
+                            menu.style.maxHeight = Math.max(160, Math.min(spaceBelow - 16, desiredMenuHeight)) + 'px';
+                        }
+
+                        // Si el sidebar está colapsado y en móvil/tablet, forzar que no desborde la pantalla
+                        if (document.body.classList.contains('sidebar-collapsed') && window.innerWidth < 992) {
+                            menu.style.maxWidth = 'calc(100vw - 1rem)';
+                        }
+                    }, 0);
                 });
             }
         });

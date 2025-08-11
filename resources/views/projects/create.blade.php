@@ -32,7 +32,7 @@
 <div class="container-fluid p-0">
     <div class="row m-0">
         <div class="col-12 p-4">
-            <form id="projectForm" method="POST" action="{{ route('projects.store') }}">
+            <form id="projectForm" method="POST" action="{{ route('projects.store') }}" autocomplete="off">
                 @csrf
 
                 <!-- Nombre -->
@@ -52,8 +52,8 @@
                     <label for="descripcion">Descripción</label>
                     <textarea id="descripcion" 
                         class="form-control @error('descripcion') is-invalid @enderror" 
-                        name="descripcion" 
-                        rows="4">{{ old('descripcion') }}</textarea>
+                        name="descripcion" maxlength="255"
+                        rows="4">{{ old('descripcion') }} </textarea>
                     @error('descripcion')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -117,8 +117,8 @@
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar Proyecto</button>
-                    <a href="{{ route('projects.my') }}" class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">Cancelar</a>
+                    <button type="submit" class="btn btn-primary me-2">Guardar Proyecto</button>
+                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary">Cancelar</a>
                 </div>
             </form>
         </div>
@@ -138,7 +138,7 @@
 @endsection
 
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 <script>
 $(function () {
     // Recuperar datos del sessionStorage si existen

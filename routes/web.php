@@ -134,8 +134,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/users/{user}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
         Route::patch('/users/{id}/restore', [AdminController::class, 'restoreUser'])->name('admin.users.restore');
 
-        // Rutas para historial de usuarios eliminados
-        Route::get('/deleted-users', [AdminController::class, 'deletedUsers'])->name('admin.deleted-users');
+    // Ruta eliminada: vista específica de usuarios eliminados
         Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
 
         // Vista general de elementos soft-deleted

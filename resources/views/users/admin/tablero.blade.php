@@ -6,10 +6,12 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons-fixed.css') }}">
+    <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
     @php
         $colCount = $tablero->columnas->count();
@@ -19,10 +21,17 @@
 
     @endphp
 
-    <div class="container-fluid px-3 py-0">
-        <div class="container-fluid px-3 py-0">
+    <div class="container-fluid px-3 py-0 tablero-wrapper">
+        <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
+            <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
+                <!-- columnas -->
+            </div>
+        </div>
+    </div>
 
-            @if (session('success'))
+
+
+    @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
                 </div>
@@ -38,43 +47,50 @@
                 </script>
             @endif
 
-            <div class="d-flex align-items-center gap-3 w-100 flex-nowrap" style="padding-bottom: 1rem; overflow-x: auto;">
 
-                <div class="input-group">
-    <span class="input-group-text">
-        <i class="bi bi-search"></i>
-    </span>
-                    <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre...">
-                    <button class="btn btn-outline-secondary" type="button" id="limpiarBusqueda">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
+                <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
 
-
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
-                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
-                                {{ $sprint->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                @endif
+                <div class="input-group w-100">
+                    <span class="input-group-text" style="height: 40px">
+                    <i class="bi bi-search"></i>
+                                            </span>
+                        <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
+                        <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
 
 
-                <div class="d-flex gap-2 ms-auto">
+                    @if($tablero->sprints && $tablero->sprints->count())
+                        <select class="form-select"
+                                id="sprintSelect"
+                                aria-label="Seleccionar sprint"
+                                style="min-width: 200px; max-width: 240px; height: 40px; border-radius: 0.375rem;"
+                                onchange="seleccionarSprint(this)">
+                            <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
+                            @foreach($tablero->sprints as $sprint)
+                                <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                    {{ $sprint->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
+
+
+
+                    <div class="d-flex gap-2 ms-auto">
                     <button class="btn btn-outline-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#modalCrearSprint"
-                            id="btnAbrirCrearSprint">
+                            id="btnAbrirCrearSprint"
+                            style="height: 40px">
                         Crear sprint
                     </button>
 
                     <button class="btn btn-primary"
                             data-bs-toggle="modal"
-                            data-bs-target="#modalAgregarColumna">
+                            data-bs-target="#modalAgregarColumna"
+                            style="height: 40px">
                         Agregar columna
                     </button>
                 </div>
@@ -86,8 +102,7 @@
 
                     <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
-
-                        @foreach($tablero->columnas as $columna)
+                    @foreach($tablero->columnas as $columna)
                             <div class="bg-white border rounded shadow-sm kanban-columna d-flex flex-column"
                                  style="{{ $widthStyle }} min-height: 500px; max-height: 500px;">
 
@@ -208,10 +223,61 @@
                             </div>
                         @endforeach
                     </div>
+
+
+                    {{-- INICIO: Accordion para móvil --}}
+                    <div class="kanban-accordion">
+                        <div class="accordion" id="accordionKanban">
+                            @foreach($tablero->columnas as $columna)
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ $columna->id }}">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ $columna->id }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ $columna->id }}">
+                                            {{ $columna->nombre }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ $columna->id }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ $columna->id }}">
+
+                                    <div class="accordion-body">
+                                            <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
+                                               class="btn btn-sm btn-primary mb-3 w-100">
+                                                Agregar historias
+                                            </a>
+
+                                            @forelse ($columna->historias as $historia)
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">
+                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                        </h6>
+                                                        @if ($historia->descripcion)
+                                                            <p>{{ $historia->descripcion }}</p>
+                                                        @endif
+                                                        <a href="{{ route('historias.edit', $historia->id) }}"
+                                                           class="btn btn-outline-secondary btn-sm">Editar</a>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-muted">No hay historias en esta columna.</p>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    {{-- FIN: Accordion para móvil --}}
+
+
                 </div>
 
                 {{-- Scripts existentes --}}
-                <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+                <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
@@ -696,6 +762,7 @@
 
 
                 <style>
+
                     .kanban-columna {
                         min-width: 0 !important;
                         overflow: hidden;
@@ -843,7 +910,213 @@
                         z-index: 1599 !important; /* Justo debajo del modal */
                     }
 
+                    /* Igualar el margen del tablero al de las migas */
+                    .tablero-wrapper {
+                        padding-left: var(--navbar-padding-x, 1rem) !important;
+                        padding-right: var(--navbar-padding-x, 1rem) !important;
+                    }
+
+                    /* Por defecto, oculta el accordion */
+
                 </style>
+                <style>
+                    .kanban-accordion {
+                        display: none;
+                    }
+
+                    @media (max-width: 767.98px) {
+
+                        #kanban-board {
+                            display: none !important;
+                        }
+
+                        .kanban-accordion {
+                            display: block !important;
+                        }
+
+                        .kanban-accordion .accordion-item,
+                        .kanban-accordion .accordion-button,
+                        .kanban-accordion .accordion-body {
+                            background-color: #fff !important;
+                            color: #000 !important;
+                        }
+
+                        /* Toolbar en columna */
+                        .kanban-toolbar {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                            gap: 0.75rem !important;
+                        }
+
+                        .kanban-toolbar .input-group,
+                        .kanban-toolbar select,
+                        .kanban-toolbar .btn {
+                            width: 100% !important;
+                            min-width: 100% !important;
+                        }
+
+                        .kanban-toolbar .ms-auto {
+                            margin-left: 0 !important;
+                        }
+
+                        .kanban-toolbar .d-flex.gap-2 {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                        }
+
+                        #sprintSelect {
+                            height: 38px !important;
+                        }
+
+                        .kanban-toolbar .input-group {
+                            display: flex !important;
+                            flex-wrap: nowrap !important;
+                            align-items: center !important;
+                            width: 100% !important;
+                        }
+
+                        .kanban-toolbar .input-group-text {
+                            flex: 0 0 auto !important;
+                            width: 42px !important;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        #buscadorHistorias {
+                            flex: 1 1 auto !important;
+                            min-width: 0 !important;
+                        }
+
+
+
+                    }
+                    @media (max-width: 767.98px) {
+                        .kanban-toolbar {
+                            background: #fff;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                        }
+
+                        .kanban-toolbar select,
+                        .kanban-toolbar button {
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                        }
+
+                        .kanban-toolbar .btn-primary {
+                            background-color: #007bff;
+                            color: #fff;
+                        }
+
+                        .kanban-toolbar .btn-outline-primary {
+                            color: #007bff;
+                            border-color: #007bff;
+                        }
+
+                        .kanban-toolbar .btn-outline-primary:hover {
+                            background-color: #007bff;
+                            color: #fff;
+                        }
+                        .limpiar-busqueda {
+                            flex: 0 0 auto !important;
+                            width: 42px !important;
+                            padding: 0 !important;
+                            display: flex !important;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .kanban-toolbar .btn:not(.limpiar-busqueda) {
+                            width: 100% !important;
+                        }
+
+
+                    }
+
+                    @media (max-width: 767.98px) {
+                        .kanban-toolbar {
+                            background: #fff;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                            gap: 0.75rem !important;
+                        }
+
+                        .kanban-toolbar .input-group {
+                            display: flex !important;
+                            flex-wrap: nowrap !important;
+                            align-items: center !important;
+                            width: 100% !important;
+                        }
+
+                        .kanban-toolbar .input-group-text {
+                            flex: 0 0 auto !important;
+                            width: 42px !important;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 0.375rem 0.75rem;
+                        }
+
+                        .kanban-toolbar #buscadorHistorias {
+                            flex: 1 1 auto !important;
+                            min-width: 0 !important;
+                            width: 100% !important;
+                        }
+
+                        .kanban-toolbar .limpiar-busqueda {
+                            flex: 0 0 auto !important;
+                            width: auto !important;
+                            padding: 0.375rem 0.75rem !important;
+                            display: flex !important;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .kanban-toolbar select,
+                        .kanban-toolbar .btn:not(.limpiar-busqueda) {
+                            width: 100% !important;
+                            min-width: 100% !important;
+                            border-radius: 6px;
+                            border: 1px solid #ccc;
+                        }
+
+                        .kanban-toolbar .btn-primary {
+                            background-color: #007bff;
+                            color: #fff;
+                        }
+
+                        .kanban-toolbar .btn-outline-primary {
+                            color: #007bff;
+                            border-color: #007bff;
+                        }
+
+                        .kanban-toolbar .btn-outline-primary:hover {
+                            background-color: #007bff;
+                            color: #fff;
+                        }
+
+                        #sprintSelect {
+                            height: 38px !important;
+                        }
+                    }
+
+
+
+
+
+                </style>
+
+
+
+
+
+
+
 
 
 
