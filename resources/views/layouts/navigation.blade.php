@@ -530,7 +530,9 @@
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
             
+            // Aplicar tema inmediatamente para evitar conflictos
             document.documentElement.setAttribute('data-bs-theme', initialTheme);
+            localStorage.setItem(THEME_KEY, initialTheme);
             
             // Configurar tema inicial
             const icon = document.getElementById('theme-icon');

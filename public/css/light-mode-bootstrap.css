@@ -239,3 +239,9 @@ body:not(.dark-mode) input[type="time"]::-webkit-calendar-picker-indicator,
 body:not(.dark-mode) input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
+
+body:not(.dark-mode) .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}
