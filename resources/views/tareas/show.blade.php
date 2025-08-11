@@ -226,10 +226,14 @@
         progressBar.textContent = porcentaje + '%';
     }
 
-    document.querySelectorAll('.tarea-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const tareaId = this.dataset.id;
+    // Escuchar los cambios en todo el documento (delegación de eventos)
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
 
+            // Enviar al servidor
             fetch(`/tareas/${tareaId}/completar`, {
                 method: 'POST',
                 headers: {
@@ -240,12 +244,17 @@
             }).then(response => {
                 if (response.ok) {
                     actualizarBarraProgreso();
+
+                    // Sincronizar todos los checkboxes con el mismo data-id
+                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                        cb.checked = estaMarcado;
+                    });
                 } else {
                     alert('Error al guardar el progreso.');
-                    this.checked = !this.checked;
+                    checkbox.checked = !checkbox.checked;
                 }
             });
-        });
+        }
     });
 
     window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
