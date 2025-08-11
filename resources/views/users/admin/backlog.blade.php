@@ -12,7 +12,7 @@
     <!-- Filtro por sprint -->
         <form method="GET" class="mb-3 d-flex gap-2 align-items-center">
             <select name="sprint_id" class="form-select" style="max-height: 38px; height: 38px; max-width: 250px;" onchange="this.form.submit()">
-            <option value="">Todos los Sprints</option>
+            <option value="">Todas las Historias</option>
                 @foreach ($proyecto->sprints as $sprint)
                     <option value="{{ $sprint->id }}" {{ $sprintId == $sprint->id ? 'selected' : '' }}>
                         {{ $sprint->nombre }}
