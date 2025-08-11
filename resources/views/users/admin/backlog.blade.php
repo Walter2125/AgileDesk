@@ -40,10 +40,10 @@
         </form>
 
 
-        <div style="margin-left: -20px; ">
+        <div class="mt-4" style="margin-left: -22px; margin-right: -22px;">
             @forelse ($historias as $historia)
                 <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark">
-                    <div class="card mb-2 p-3" style="transition: box-shadow 0.2s; cursor: pointer; ">
+                    <div class="card mb-2 p-3" style="transition: box-shadow 0.2s; cursor: pointer; width: 100%;">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <strong>{{ $historia->nombre }}</strong><br>
@@ -67,5 +67,6 @@
                 <div class="alert alert-info">No hay historias en el backlog para este proyecto.</div>
             @endforelse
         </div>
+
 
 @endsection
