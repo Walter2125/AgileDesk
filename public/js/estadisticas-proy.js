@@ -105,13 +105,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     padding: 1rem;
                     background: #f8fafc;
                     border: 1px solid #e2e8f0;
-                    border-radius: 8px;
+                    border-radius: 8px 8px 0 0;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    position: relative;
+                    z-index: 1;
                 " onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <span style="font-weight: 600; color: #374151;">Tareas</span>
                         ${taskCount > 0 ? `
+                        <div style="width: 100%; max-width: 120px; background: #e5e7eb; border-radius: 8px; height: 6px; overflow: hidden;">
+                            <div style="width: ${progressPercentage}%; height: 100%; background: ${progressColor}; transition: width 0.3s ease; border-radius: 8px;"></div>
+                        </div>
                         ` : ''}
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -131,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     border-top: none;
                     border-radius: 0 0 8px 8px;
                     background: white;
+                    margin-top: -1px;
                 ">
                     <ul style="list-style: none; margin: 0; padding: 1rem;">${tasksHtml}</ul>
                 </div>
@@ -138,6 +144,47 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
     
+    // Resolver el estado visual de una historia según el orden de columnas o nombre de la columna
+    function resolveStoryStatus(story) {
+        const colorMap = {
+            pending: { class: 'status-pending', text: 'Pendiente', color: '#f59e0b' },
+            progress: { class: 'status-progress', text: 'En progreso', color: '#3b82f6' },
+            ready: { class: 'status-ready', text: 'Listo', color: '#10b981' }
+        };
+
+        const colId = story.columna_id || story.columna?.id || null;
+        const colName = (story.columna?.nombre || '').toString().toLowerCase().trim();
+
+        // 1) Usar columnas ordenadas del backend si están disponibles
+        if (Array.isArray(columnasOrdenadas) && columnasOrdenadas.length > 0 && colId) {
+            const first = columnasOrdenadas[0]?.id;
+            const last = columnasOrdenadas[columnasOrdenadas.length - 1]?.id;
+            if (columnasOrdenadas.length >= 3) {
+                if (colId === first) return colorMap.pending;
+                if (colId === last) return colorMap.ready;
+                return colorMap.progress;
+            } else if (columnasOrdenadas.length === 2) {
+                if (colId === first) return colorMap.pending;
+                return colorMap.ready;
+            } else {
+                // 1 sola columna => considerar como pendientes
+                return colorMap.pending;
+            }
+        }
+
+        // 2) Fallback por nombres conocidos (sinónimos en ES/EN)
+        const pendingNames = ['pendiente','por hacer','por-hacer','todo','to do','backlog','nuevo','new'];
+        const progressNames = ['en progreso','progreso','doing','in progress','wip','en curso','curso','trabajando','en desarrollo','desarrollo'];
+        const readyNames = ['listo','hecho','done','terminado','terminada','completado','completada','cerrado','closed','finalizado','finalizada'];
+
+        if (pendingNames.includes(colName)) return colorMap.pending;
+        if (progressNames.includes(colName)) return colorMap.progress;
+        if (readyNames.includes(colName)) return colorMap.ready;
+
+        // 3) Último recurso: pendientes
+        return colorMap.pending;
+    }
+
     // Función para crear el contenido del modal - MEJORADA
     function createModalContent(userData) {
         
@@ -208,13 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (stories.length > 0) {
             storiesHtml = stories.map((story, index) => {
-                const statusMap = {
-                    'Pendiente': { class: 'status-pending', text: 'Pendiente', color: '#f59e0b' },
-                    'En progreso': { class: 'status-progress', text: 'En progreso', color: '#3b82f6' },
-                    'Listo': { class: 'status-ready', text: 'Listo', color: '#10b981' }
-                };
-                const status = statusMap[story.columna?.nombre] || statusMap['Pendiente'];
-                
+                const status = resolveStoryStatus(story);
                 return `
                     <div class="story-item" style="animation: fadeInUp 0.3s ease ${index * 0.1}s both;">
                         <div class="story-header">
