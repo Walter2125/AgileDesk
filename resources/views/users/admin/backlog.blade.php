@@ -6,27 +6,30 @@
 
 @section('content')
     <div class="container-fluid mt-4 px-4">
-        <form method="GET"
-              class="mb-3 d-flex gap-2 align-items-center"
-              style="margin-left: -22px;">
-            <select name="sprint_id" class="form-select"
-                    style="max-height: 38px; height: 38px; max-width: 250px; border-radius: 0.375rem;"
-                    onchange="this.form.submit()">
-                <option value="">Todas las Historias</option>
-                @foreach ($proyecto->sprints as $sprint)
-                    <option value="{{ $sprint->id }}" {{ $sprintId == $sprint->id ? 'selected' : '' }}>
-                        {{ $sprint->nombre }}
-                    </option>
-                @endforeach
-            </select>
+        <!-- Contenedor alineado con las tarjetas -->
+        <div class="mb-3 d-flex justify-content-end gap-2" style="margin-left: -22px; margin-right: -22px;">
 
+            <!-- Select Sprint -->
+            <form method="GET" class="d-flex gap-2">
+                <select name="sprint_id" class="form-select"
+                        style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                        onchange="this.form.submit()">
+                    <option value="">Todas las Historias</option>
+                    @foreach ($proyecto->sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ $sprintId == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+
+            <!-- Botones -->
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"
                class="btn btn-primary"
                style="height: 38px; display: flex; align-items: center;">
                 Agregar Historia
             </a>
 
-            <!-- Botón para exportar a PDF (solo para administradores) -->
             @if(auth()->user()->usertype === 'admin')
                 <a href="{{ route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId]) }}"
                    class="btn btn-secondary"
@@ -34,12 +37,10 @@
                    title="Exportar a PDF">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Exportar a PDF
                 </a>
-                @endif
+            @endif
+        </div>
 
-                </a>
-        </form>
-
-
+        <!-- Lista de historias -->
         <div class="mt-4" style="margin-left: -22px; margin-right: -22px;">
             @forelse ($historias as $historia)
                 <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark">
@@ -67,6 +68,5 @@
                 <div class="alert alert-info">No hay historias en el backlog para este proyecto.</div>
             @endforelse
         </div>
-
-
+    </div>
 @endsection
