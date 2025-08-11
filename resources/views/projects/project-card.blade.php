@@ -14,25 +14,24 @@
         <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
             <button @click="open = !open" class="btn btn-sm btn-light border-0">&#x22EE;</button>
 
-            <!-- Menú de selección de color -->
-            <div x-show="open"
-                 @click.away="open = false"
-                 x-transition
-                 x-cloak
-                 class="position-absolute end-0 mt-2 bg-white border rounded shadow p-3"
-                 style="z-index: 20; width: 220px;">
+            <!-- Botón de 3 puntitos con menú -->
+<div class="position-absolute top-0 end-0 p-2" style="z-index: 10;" x-data="{ open: false, showColor: false }">
+    <button @click="open = !open" class="btn btn-sm btn-light border-0">&#x22EE;</button>
 
-                <label class="form-label">Seleccionar color:</label>
-                <input type="color"
-                       x-model="color"
-                       class="form-control form-control-color"
-                       style="width: 100%;">
+    <div x-show="open" @click.away="open = false" x-transition x-cloak class="position-absolute end-0 mt-2 bg-white border rounded shadow p-2" style="z-index: 20; width: 180px;">
+        <button class="dropdown-item btn btn-sm text-start" @click="showColor = !showColor">Cambiar color</button>
+        <button class="dropdown-item btn btn-sm text-start" data-bs-toggle="modal" data-bs-target="#modal-integrantes-{{ $project->id }}">Ver integrantes</button>
 
-                <button @click.prevent="guardarColor"
-                        class="btn btn-primary btn-sm w-100 mt-2">
-                    Aplicar
-                </button>
-            </div>
+        <!-- Paleta de colores (mostrada al darle clic a cambiar color) -->
+        <div x-show="showColor" x-transition x-cloak class="mt-2">
+            <label class="form-label">Color:</label>
+            <input type="color" x-model="color" class="form-control form-control-color" style="width: 100%;">
+            <button @click.prevent="guardarColor" class="btn btn-primary btn-sm w-100 mt-2">Aplicar</button>
+        </div>
+    </div>
+</div>
+
+
         </div>
 
         <!-- Contenido principal de la tarjeta -->
@@ -84,6 +83,39 @@
                 @endif
             </div>
         </div>
+        <!-- Modal de Ver Integrantes -->
+<div class="modal fade" id="modal-integrantes-{{ $project->id }}" tabindex="-1" aria-labelledby="integrantesLabel-{{ $project->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="integrantesLabel-{{ $project->id }}">Integrantes del Proyecto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        @if ($project->users && $project->users->count())
+            <ul class="list-group list-group-flush">
+                @foreach ($project->users as $user)
+                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                        <div>
+                            <strong>{{ $user->name }}</strong>
+                            <div class="text-muted small">{{ $user->email }}</div>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill">{{ $user->usertype }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p class="text-muted">No hay integrantes asignados a este proyecto.</p>
+        @endif
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     </div>
 </div>
 
@@ -143,3 +175,4 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

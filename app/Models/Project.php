@@ -82,5 +82,11 @@ public function sprint() {
     return $this->belongsTo(Project::class, 'proyecto_id');
 }
 
+public function integrantes()
+{
+    return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
+}
+
+
 
 }

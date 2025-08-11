@@ -257,7 +257,7 @@ h1.page-title {
         </div>
     @endif
 
-    {{-- Proyectos más recientes --}}
+    {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos más recientes
         @if (auth()->check() && auth()->user()->usertype == 'admin')
