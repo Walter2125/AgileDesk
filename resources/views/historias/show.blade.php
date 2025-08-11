@@ -89,7 +89,7 @@
                 class="form-control form-control-lg rounded d-none"
                 value="{{ old('nombre', $historia->nombre) }}"
                 data-editable="true"
-                style="font-weight: bold;" />
+                style="font-weight: bold;"  />
         </div>
 
         <div class="d-flex align-items-center">
