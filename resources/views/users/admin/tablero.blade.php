@@ -24,7 +24,7 @@
     <div class="container-fluid px-3 py-0 tablero-wrapper">
         <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
             <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
-                <!-- columnas -->
+
             </div>
         </div>
     </div>
