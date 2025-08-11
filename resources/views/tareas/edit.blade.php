@@ -48,7 +48,7 @@
 
             <!-- Botones -->
             <div class="d-flex justify-content-between">
-            <a href="{{ route('tareas.show', $historia->id) }}" 
+            <a href="{{ route('historias.show', $historia->id) }}" 
             class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
             Cancelar
             </a>                

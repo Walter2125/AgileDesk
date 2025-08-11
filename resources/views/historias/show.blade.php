@@ -82,7 +82,34 @@
     }
 </style>
 
+<style>
+  .toggle-btn {
+    position: relative;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease;
+  }
 
+  .toggle-btn::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    transform: rotate(45deg);
+    pointer-events: none;
+    transition: transform 0.2s ease;
+  }
+
+  .toggle-btn.active::after {
+    transform: rotate(225deg); /* para cuando se despliega */
+  }
+</style>
 
  <div class="historia-header">
                     <div class="historia-header d-flex justify-content-between align-items-start">
