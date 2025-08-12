@@ -345,6 +345,7 @@
 
 <div class="card-body">
 
+
     <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
         @csrf
         @method('PATCH')
