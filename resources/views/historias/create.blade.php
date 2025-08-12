@@ -3,81 +3,14 @@
 @section('title', 'Crear Nueva Historia')
 
 @section('mensaje-superior')
-    Crear una nueva Historia
+    Crea una nueva Historia
 @endsection
-
-@section('styles')
-<style>
-    body {
-        background-color: #ffffff;
-        color: #000000;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .container-fluid {
-        background-color: #ffffff;
-        color: #000000;
-    }
-
-    .form-label {
-        color: #000000;
-        font-weight: 600;
-    }
-
-    .form-control {
-        background-color: #ffffff;
-        color: #000000;
-        border: 1px solid #ced4da;
-    }
-
-    .form-control:focus {
-        background-color: #ffffff;
-        color: #000000;
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-
-    .btn {
-        transition: all 0.2s ease-in-out;
-    }
-
-    .btn-outline-secondary {
-        color: #6c757d;
-        border-color: #6c757d;
-        background-color: transparent;
-    }
-
-    .btn-outline-secondary:hover {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: #ffffff;
-    }
-
-    .btn-primary {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        color: #ffffff;
-    }
-
-    .btn-primary:hover {
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
-        color: #ffffff;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        border-color: #f5c2c7;
-        color: #842029;
-    }
-</style>
-@endsection
-
-@section('content')
 
 @php
     $currentProject = $proyecto;
 @endphp
+
+@section('content')
 
 <div class="container-fluid mi-container">
 
@@ -135,6 +68,7 @@
                         @endforeach
                     </select>
                 </div>
+            </div>
 
                 
 
@@ -176,21 +110,28 @@
         </div>
 
         <div class="mb-3 d-flex justify-content-end">
-            <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}" class="btn btn-outline-secondary me-2">
-                <i class="bi bi-arrow-left"></i> Cancelar
+            <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}"
+                class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case me-2">
+                Cancelar
             </a>
 
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save"></i> Guardar
+
+            <button type="submit"
+                class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
+                Guardar
             </button>
+
+           
+
         </div>
 
     </form>
 
 </div>
 
+@endsection
 <script>
-    window.addEventListener("pageshow", function (event) {
+        window.addEventListener("pageshow", function (event) {
         // Si la página fue cargada desde caché (por el botón "Atrás"), limpiamos el formulario
         if (event.persisted) {
             const form = document.querySelector('form');
@@ -200,5 +141,3 @@
         }
     });
 </script>
-
-@endsection
