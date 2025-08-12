@@ -385,7 +385,7 @@ private function compartirContextoDesdeColumna(Columna $columna)
 
             // Registrar en el historial antes de mover
             $columnaOrigen = $historia->columna;
-            
+
             HistorialCambio::create([
                 'fecha' => now(),
                 'usuario' => Auth::user()->name,

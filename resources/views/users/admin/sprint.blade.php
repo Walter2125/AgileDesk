@@ -18,15 +18,16 @@
                         <small class="text-muted">Inicio: {{ $sprint->fecha_inicio }} | Fin: {{ $sprint->fecha_fin }}</small>
                     </div>
                    <div class="d-flex gap-2">
-                        <a href="{{ route('sprints.edit', $sprint->id) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i>
-                        </a>
+                       <a href="{{ route('sprints.edit', $sprint->id) }}" class="btn btn-outline-secondary btn-sm px-2 py-1">
+                           <i class="bi bi-pencil" style="font-size: 0.9rem;"></i>
+                       </a>
 
-                        <!-- Botón para abrir el modal -->
-                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarSprint{{ $sprint->id }}">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
+                       <button class="btn btn-outline-danger btn-sm px-2 py-1" data-bs-toggle="modal" data-bs-target="#modalEliminarSprint{{ $sprint->id }}">
+                           <i class="bi bi-trash" style="font-size: 0.9rem;"></i>
+                       </button>
+
+
+                   </div>
                 </div>
             </div>
 

@@ -21,10 +21,17 @@
 
     @endphp
 
-    <div class="container-fluid px-3 py-0">
-        <div class="container-fluid px-3 py-0">
+    <div class="container-fluid px-3 py-0 tablero-wrapper">
+        <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
+            <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
+                <!-- columnas -->
+            </div>
+        </div>
+    </div>
 
-            @if (session('success'))
+
+
+    @if (session('success'))
                 <div class="alert alert-success mt-2" id="success-alert">
                     {{ session('success') }}
                 </div>
@@ -44,40 +51,46 @@
                 <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
 
                 <div class="input-group w-100">
-                    <span class="input-group-text">
+                    <span class="input-group-text" style="height: 40px">
                     <i class="bi bi-search"></i>
                                             </span>
-                        <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre...">
-                        <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda">
+                        <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
+                        <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
 
 
-                @if($tablero->sprints && $tablero->sprints->count())
-                    <select class="form-select" id="sprintSelect" aria-label="Seleccionar sprint"
-                            style="min-width: 200px; max-width: 240px;" onchange="seleccionarSprint(this)">
-                        <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                        @foreach($tablero->sprints as $sprint)
-                            <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
-                                {{ $sprint->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                @endif
+                    @if($tablero->sprints && $tablero->sprints->count())
+                        <select class="form-select"
+                                id="sprintSelect"
+                                aria-label="Seleccionar sprint"
+                                style="min-width: 200px; max-width: 240px; height: 40px; border-radius: 0.375rem;"
+                                onchange="seleccionarSprint(this)">
+                            <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
+                            @foreach($tablero->sprints as $sprint)
+                                <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                                    {{ $sprint->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @endif
 
 
-                <div class="d-flex gap-2 ms-auto">
+
+                    <div class="d-flex gap-2 ms-auto">
                     <button class="btn btn-outline-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#modalCrearSprint"
-                            id="btnAbrirCrearSprint">
+                            id="btnAbrirCrearSprint"
+                            style="height: 40px">
                         Crear sprint
                     </button>
 
                     <button class="btn btn-primary"
                             data-bs-toggle="modal"
-                            data-bs-target="#modalAgregarColumna">
+                            data-bs-target="#modalAgregarColumna"
+                            style="height: 40px">
                         Agregar columna
                     </button>
                 </div>
@@ -896,6 +909,13 @@
                     .modal-backdrop {
                         z-index: 1599 !important; /* Justo debajo del modal */
                     }
+
+                    /* Igualar el margen del tablero al de las migas */
+                    .tablero-wrapper {
+                        padding-left: var(--navbar-padding-x, 1rem) !important;
+                        padding-right: var(--navbar-padding-x, 1rem) !important;
+                    }
+
                     /* Por defecto, oculta el accordion */
 
                 </style>
