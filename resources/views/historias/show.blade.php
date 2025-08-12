@@ -302,9 +302,9 @@
                     const alert = document.getElementById('success-alert');
                     if (alert) {
                         setTimeout(function () {
-                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.transition = "opacity 0.10s ease";
                             alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
+                            setTimeout(() => alert.remove(), 1000);
                         }, 3000);
                     }
                 });
@@ -359,8 +359,9 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
+    
+        <div class="col-lg-6 col-md-12">
+          
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
       
@@ -433,13 +434,20 @@
              maxlength="5000"
             data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
     </div>
-
-    <div class="d-flex justify-content-end mb-3">
-        <button id="btnGuardar" type="submit"
-            class="btn btn-primary d-none">
-            <i class="bi bi-save"></i> Actualizar
-        </button>
+    <div class="d-flex justify-content-end mb-3 mt-4">
+    <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
+        Cancelar
+    </button>
+    <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
+        <i class="bi bi-save"></i> Actualizar
+    </button>
+</div>
     </div>
+
+
+    
+
+    
 </form>
 
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
