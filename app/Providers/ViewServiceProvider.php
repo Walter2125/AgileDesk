@@ -411,6 +411,21 @@ class ViewServiceProvider extends ServiceProvider
                     ['label' => 'Panel de Administración'],
                 ],
 
+                // Usuarios administrativos
+                'admin.users' => [
+                    ['label' => 'Inicio', 'url' => route('homeadmin')],
+                    ['label' => 'Usuarios del Sistema'],
+                ],
+                'admin.users.index' => [
+                    ['label' => 'Inicio', 'url' => route('homeadmin')],
+                    ['label' => 'Usuarios del Sistema', 'url' => route('admin.users')],
+                    ['label' => 'Usuarios Pendientes'],
+                ],
+                'admin.soft-deleted' => [
+                    ['label' => 'Inicio', 'url' => route('homeadmin')],
+                    ['label' => 'Elementos Eliminados'],
+                ],
+
                 // Sprints
                 'sprints.index' => function() {
                     $currentRoute = Route::current();

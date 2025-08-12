@@ -236,6 +236,13 @@ body *::after {
     box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25);
 }
 
+/* Input group text para modo oscuro */
+.dark-mode .input-group-text {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
 /* Estilos optimizados para tablas en admin */
 .dark-mode .table,
 .dark-mode .table-bordered,
