@@ -17,6 +17,32 @@ class SprintController extends Controller
         return view('users.admin.sprint', compact('proyecto'));
     }
 
+
+    public function show($projectId, Request $request)
+    {
+        $tablero = Tablero::with(['sprints', 'columnas.historias'])->where('proyecto_id', $projectId)->firstOrFail();
+        $sprintId = $request->query('sprint_id');
+
+        if (!empty($sprintId)) {
+            // Filtrar historias por sprint
+            $tablero->columnas->each(function ($columna) use ($sprintId) {
+                $columna->historias = $columna->historias->where('sprint_id', $sprintId)->values();
+            });
+        } else {
+            // Mostrar todas las historias (sin filtrar)
+            $tablero->columnas->each(function ($columna) {
+                $columna->historias = $columna->historias->values(); // Asegúrate de no filtrar
+            });
+        }
+
+        return view('users.admin.tablero', [
+            'tablero' => $tablero,
+            'project' => $tablero->project,
+            'sprintSeleccionado' => $sprintId
+        ]);
+    }
+
+
     /**
      * Almacena un nuevo sprint asociado a un proyecto y tablero.
      */

@@ -31,7 +31,7 @@ class TareaController extends Controller
     {
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string', // ← ahora obligatorio
+            'descripcion' => 'required|string|max:250', // ← ahora obligatorio
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
 
              ], [
@@ -63,7 +63,7 @@ return redirect()->route('historias.show', $historia->id)
     {
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string', 
+            'descripcion' => 'required|string|max:250', 
             'actividad' => 'required|in:Configuracion,Desarrollo,Prueba,Diseño,OtroTipo',
 
             ], [
