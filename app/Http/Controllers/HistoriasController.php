@@ -428,6 +428,3 @@ private function compartirContextoDesdeColumna(Columna $columna)
         }
     }
 }
-
-
-
