@@ -7,16 +7,17 @@
 @section('content')
     <div class="container-fluid mt-4 px-4">
 
-        <div class="mb-3 d-flex justify-content-end" style="position: relative; right: -20px;">
+        <div class="mb-3 d-flex justify-content-end boton-wrapper">
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"
-               class="btn btn-primary"
-               style="height: 40px; display: flex; align-items: center;">
+               class="btn btn-primary boton-ajustado"
+               style="height: 38px; display: flex; align-items: center;">
                 Crear Sprint
             </a>
+
         </div>
 
         <!-- Lista de Sprints, ocupando todo el ancho -->
-        <div style="margin-left: -22px; margin-right: -22px;">
+        <div class="mx-n3 mx-md-n4">
             @forelse ($proyecto->sprints as $sprint)
                 <div class="card mb-2 p-3">
                     <div class="d-flex justify-content-between align-items-center">
@@ -71,4 +72,25 @@
         </div>
 
     </div>
+    <script>
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                const sidebar = document.querySelector('.sidebar-collapse'); // Ajusta selector
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+
+    </script>
+    <style>
+    @media (min-width: 768px) {
+    .boton-wrapper {
+    position: relative;
+    right: -20px;
+    }
+    }
+    </style>
+
+
 @endsection
