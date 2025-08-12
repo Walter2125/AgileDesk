@@ -80,7 +80,7 @@
 
         @if(Auth::check())
             <div class="mb-4">
-                <strong>Bienvenido, {{ Auth::user()->name }}</strong>
+                <strong>Formulario para Tareas</strong>
             </div>
         @else
             <div class="mb-4">
@@ -112,15 +112,17 @@
                 @enderror
             </div>
 
-            <div class="mb-4">
-                <label for="descripcion" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
-                <textarea name="descripcion" id="descripcion"
-                          class="form-control @error('descripcion') is-invalid @enderror"
-                          required>{{ old('descripcion') }}</textarea>
-                @error('descripcion')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+           <div class="mb-4">
+    <label for="descripcion" class="form-label fw-bold">
+        Descripción <span class="text-danger">*</span>
+    </label>
+    <textarea name="descripcion" id="descripcion"
+              class="form-control @error('descripcion') is-invalid @enderror"
+              maxlength="250" required>{{ old('descripcion') }}</textarea>
+    @error('descripcion')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
             <div class="mb-4">
                 <label for="actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>

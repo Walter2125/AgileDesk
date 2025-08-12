@@ -262,11 +262,6 @@
             white-space: nowrap; /* Evitar que los botones se envuelvan */
         }
 
-        /* Tooltip para mostrar el texto completo al hacer hover */
-        .admin-table td[title] {
-            cursor: help;
-        }
-
         /* Estilos específicos para nombres de usuario con badges */
         .user-name-cell {
             display: flex;
@@ -377,11 +372,59 @@
                 padding: 1rem;
             }
         }
+        
+        /* Estilos mejorados para modales - Consistent con soft-deleted */
+        .modal-content {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            border-radius: 0.75rem 0.75rem 0 0;
+            padding: 1.25rem;
+        }
+        
+        .modal-footer {
+            border-radius: 0 0 0.75rem 0.75rem;
+            padding: 1.25rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem 1.25rem;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .bg-danger-subtle {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+        .bg-warning-subtle {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+        
+        /* Tamaño estándar para todos los modales */
+        .modal-dialog {
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        @media (max-width: 576px) {
+            .modal-dialog {
+                max-width: 95%;
+                margin: 1rem auto;
+            }
+        }
 
         /* Estilos para separar las secciones */
         .estadisticas-section {
             margin-top: 3rem;
             padding-top: 2rem;
+            padding-left: 1rem; /* Igual que .main-container en móviles */
+            padding-right: 1rem; /* Igual que .main-container en móviles */
             border-top: 2px solid #e9ecef;
             position: relative;
         }
@@ -408,6 +451,41 @@
             .main-container {
                 padding: 0 0rem;
             }
+            .estadisticas-section {
+                padding-left: 0; /* Igual que .main-container en >=768px */
+                padding-right: 0; /* Igual que .main-container en >=768px */
+            }
+        }
+
+        /* Estilos para selector con icono de dropdown */
+        .select-with-icon {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .select-with-icon::after {
+            content: '\F282';
+            font-family: 'bootstrap-icons';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 0.875rem;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .select-with-icon .form-select {
+            padding-right: 2.5rem;
+            background-image: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+        
+        .select-with-icon .form-select:focus + ::after {
+            color: #4a90e2;
         }
     </style>
 @stop
@@ -506,13 +584,10 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-1">
+                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
-                        <a href="{{ route('admin.deleted-users') }}" class="btn btn-outline-danger px-2 py-1">
-                            <i class="bi bi-trash"></i> Usuarios Eliminados
-                        </a>
-                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-1">
+                        <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
                             <i class="bi bi-archive"></i> Todos los Eliminados
                         </a>
                     </div>
@@ -522,6 +597,7 @@
                         <table class="table table-hover admin-table">
                             <thead>
                                 <tr>
+                                    <th class="text-center">#</th>
                                     <th>Nombre</th>
                                     <th>Email</th>
                                     <th class="text-center">Rol</th>
@@ -530,8 +606,9 @@
                                 </tr>
                             </thead>
                             <tbody id="usuariosTableBody">
-                                @forelse($usuarios as $usuario)
+                                @forelse($usuarios as $index => $usuario)
                                 <tr class="usuario-row {{ $usuario->trashed() ? 'table-secondary' : '' }}">
+                                    <td class="text-center fw-bold">{{ ($usuarios->currentPage() - 1) * $usuarios->perPage() + $loop->iteration }}</td>
                                     <td title="{{ $usuario->name }}">
                                         <div class="user-name-cell">
                                             <span class="user-name-text">{{ $usuario->name }}</span>
@@ -541,7 +618,10 @@
                                         </div>
                                     </td>
                                     <td title="{{ $usuario->email }}">{{ $usuario->email }}</td>
-                                    <td class="text-center" title="{{ ucfirst($usuario->usertype) }}">{{ ucfirst($usuario->usertype) }}</td>
+                                    @php
+                                        $__roleLabel = $usuario->usertype === 'admin' ? 'Administrador' : 'Colaborador';
+                                    @endphp
+                                    <td class="text-center" title="{{ $__roleLabel }}">{{ $__roleLabel }}</td>
                                     <td class="text-center">
                                         @if($usuario->trashed())
                                             <span class="text-dark">Eliminado</span>
@@ -582,7 +662,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No hay usuarios registrados</td>
+                                    <td colspan="6" class="text-center">No hay usuarios registrados</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -609,7 +689,7 @@
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-1">
+                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
                         <i class="bi bi-folder"></i> Ver Todos
                     </a>
                 </div>
@@ -618,6 +698,7 @@
                         <table class="table table-hover admin-table proyectos-table">
                             <thead>
                                 <tr>
+                                    <th class="text-center">#</th>
                                     <th>Nombre</th>
                                     <th class="text-center">Responsable</th>
                                     <th class="text-center">Miembros</th>
@@ -627,13 +708,14 @@
                             <tbody id="proyectosTableBody">
                                 @forelse($proyectos as $proyecto)
                                 <tr class="proyecto-row">
+                                    <td class="text-center fw-bold">{{ ($proyectos->currentPage() - 1) * $proyectos->perPage() + $loop->iteration }}</td>
                                     <td title="{{ $proyecto->name }}">{{ $proyecto->name }}</td>
                                     <td class="text-center" title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
                                     <td class="text-center">{{ $proyecto->users->count() }}</td>
                                     <td>
                                         <div class="d-flex gap-1 justify-content-center" role="group" aria-label="Acciones de proyecto">
-                                            <!-- Botón Ver Sprints -->
-                                            <a href="{{ route('sprints.index', ['project' => $proyecto->id]) }}" class="btn btn-outline-secondary px-2 py-1" title="Ver Sprints del Proyecto">
+                                            <!-- Botón Ver Proyecto -->
+                                            <a href="{{ route('tableros.show', $proyecto->id) }}" class="btn btn-outline-secondary px-2 py-1" title="Ver Proyecto">
                                                 <i class="bi bi-eye"></i>
                                             </a>
                                             
@@ -659,7 +741,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No hay proyectos registrados</td>
+                                    <td colspan="5" class="text-center">No hay proyectos registrados</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -686,7 +768,7 @@
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-1">
+                    <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-">
                         <i class="bi bi-clock-history"></i> Ver Todo
                     </a>
                 </div>
@@ -695,9 +777,10 @@
                         <table class="table table-hover admin-table historial-table align-middle">
                             <thead>
                                 <tr>
+                                    <th class="text-center">#</th>
                                     <th>Usuario</th>
-                                    <th>Acción</th>
                                     <th>Detalles</th>
+                                    <th>Acción</th>
                                     <!-- <th>Sprint</th> -->
                                     <th>Fecha</th>
                                 </tr>
@@ -705,22 +788,16 @@
                             <tbody id="historialTableBody">
                                 @forelse($historial as $item)
                                 <tr class="historial-row">
+                                    <td class="text-center fw-bold">{{ ($historial->currentPage() - 1) * $historial->perPage() + $loop->iteration }}</td>
                                     <td title="{{ $item->usuario }}">
                                         <span class="fw-semibold">{{ $item->usuario }}</span>
-                                    </td>
-                                    <td title="{{ $item->accion }}">
-                                        {{ $item->accion }}
                                     </td>
                                     <td title="{{ preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles) }}">
                                         <span>{{ \Illuminate\Support\Str::limit(preg_replace('/\s*\(ID:.*?\)/', '', $item->detalles), 40) }}</span>
                                     </td>
-                                    <!-- <td>
-                                        @if($item->sprint)
-                                            <span class="badge bg-info text-dark">#{{ $item->sprint }}</span>
-                                        @else
-                                            <span class="text-muted">N/A</span>
-                                        @endif
-                                    </td> -->
+                                    <td title="{{ $item->accion }}">
+                                        {{ $item->accion }}
+                                    </td>
                                     <td>
                                         <span title="{{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->format('d/m/Y H:i:s') : $item->created_at->format('d/m/Y H:i:s') }}">
                                             {{ $item->fecha ? \Carbon\Carbon::parse($item->fecha)->diffForHumans() : $item->created_at->diffForHumans() }}
@@ -762,6 +839,7 @@
                         <table class="table table-hover admin-table sprints-table">
                             <thead>
                                 <tr>
+                                    <th class="text-center">#</th>
                                     <th>Nombre</th>
                                     <th class="text-center">Proyecto</th>
                                     <th class="text-center">Acciones</th>
@@ -770,6 +848,7 @@
                             <tbody id="sprintsTableBody">
                                 @forelse($sprints as $sprint)
                                 <tr class="sprint-row">
+                                    <td class="text-center fw-bold">{{ ($sprints->currentPage() - 1) * $sprints->perPage() + $loop->iteration }}</td>
                                     <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
                                     <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td class="text-center">
@@ -795,27 +874,32 @@
     </div>
     
     <!-- Sección de estadísticas del proyecto -->
-    <div class="estadisticas-section">
+    <div class="row">
         <h1 style="font-size:2.2rem;font-weight:700;margin-bottom:0.7rem;letter-spacing:0.5px;">Estadisticas del Proyecto</h1>
-        @auth
-@endauth
         
         @auth
             @if(isset($proyecto_actual))
                 <!-- Selector de proyecto -->
-                <div class="project-selector">
-                    <label id="projectSelect-label">Proyecto:</label>
-                    <select id="projectSelect" onchange="window.location.href = '/admin/homeadmin/project/' + this.value">
-                        @foreach($proyectos_usuario as $project)
-                            <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
-                                {{ $project->name }} ({{ $project->codigo }})
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="project-selector d-flex justify-content-between align-items-center flex-wrap mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <label for="projectSelectCurrent" class="form-label mb-0 fw-medium">
+                            Proyecto:
+                        </label>
+                        <div class="select-with-icon">
+                            <select id="projectSelectCurrent" class="form-select" style="min-width: 240px; max-width: 320px; height: 38px;" 
+                                    onchange="window.location.href = '/admin/homeadmin/project/' + this.value">
+                                @foreach($proyectos_usuario as $project)
+                                    <option value="{{ $project->id }}" {{ $project->id == $proyecto_actual->id ? 'selected' : '' }}>
+                                        {{ $project->name }} ({{ $project->codigo }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <!-- Botón de historial -->
                     <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
-                       class="btn btn-outline-primary me-2">
-                         Ver Historial de Cambios
+                       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+                        <i class="bi bi-clock-history me-1"></i> Ver Historial
                     </a>
                 </div>
                 
@@ -826,7 +910,6 @@
                     {{ $proyecto_actual->name }}
                 </h2>
                 
-                @if($estadisticas->count())
                 <div class="">
 
                     <!-- Resumen general del proyecto -->
@@ -854,6 +937,7 @@
                     </div>
 
                     <!-- Ranking de contribuidores -->
+                    @if($estadisticas->count())
                     <div class="contributors-ranking">
                         <div class="ranking-header">
                             <h4 class="ranking-title">
@@ -915,6 +999,17 @@
                             </div>
                         @endforeach
                     </div>
+                    @else
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M16 4C18.2 4 20 5.8 20 8C20 10.2 18.2 12 16 12C13.8 12 12 10.2 12 8C12 5.8 13.8 4 16 4ZM8 4C10.2 4 12 5.8 12 8C12 10.2 10.2 12 8 12C5.8 12 4 10.2 4 8C4 5.8 5.8 4 8 4ZM8 13C11.3 13 16 14.7 16 18V20H0V18C0 14.7 4.7 13 8 13ZM16 13C16.8 13 17.6 13.1 18.4 13.3C20.2 14.1 21.5 15.7 21.5 18V20H17.5V18.5C17.5 16.8 16.9 15.3 16 14.1V13Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #dc2626; font-weight: 600; margin-bottom: 0.5rem;">Sin Colaboradores</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">No hay contribuciones registradas aún para este proyecto. Agrega colaboradores desde la gestión de usuarios.</p>
+                        </div>
+                    @endif
 
                     <!-- Gráfico de contribuciones - Solo mostrar si hay más de un colaborador -->
                     @if($estadisticas->count() > 1)
@@ -924,37 +1019,45 @@
                                 <canvas id="contributionsChart"></canvas>
                             </div>
                         </div>
-                    @else
-                        <div style="text-align: center; padding: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 1rem;">
-                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-bottom: 1rem; color: #64748b;">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            <h4 style="margin: 0 0 0.5rem 0; color: #64748b;">Proyecto Individual</h4>
-                            <p style="margin: 0; color: #9ca3af;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
+                    @elseif($estadisticas->count() === 1)
+                        <div class="empty-state-box">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21A2 2 0 0 0 5 23H19A2 2 0 0 0 21 21V9M19 9H15V5H19V9Z"/>
+                                </svg>
+                            </div>
+                            <h4 style="color: #4c51bf; font-weight: 600; margin-bottom: 0.5rem;">Proyecto Individual</h4>
+                            <p style="color: #6b7280; margin: 0 0 1rem 0; line-height: 1.5;">El gráfico de comparación se muestra cuando hay múltiples colaboradores en el proyecto.</p>
                         </div>
                     @endif
                 </div>
-            @endif
-        @else
+            @else
             <div class="no-project-message">
                 <h3>No hay proyecto seleccionado</h3>
                 <p>Por favor, selecciona un proyecto para ver las estadísticas.</p>
                 @if(isset($proyectos_usuario) && $proyectos_usuario->count())
-                    <div class="project-selector" style="justify-content: center;">
-                        <label for="projectSelect">Seleccionar proyecto:</label>
-                        <select id="projectSelect" onchange="window.location.href = '/admin/homeadmin/project/' + this.value">
-                            <option value="">-- Seleccione --</option>
-                            @foreach($proyectos_usuario as $project)
-                                <option value="{{ $project->id }}">
-                                    {{ $project->name }} ({{ $project->codigo }})
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="project-selector d-flex justify-content-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="projectSelectPicker" class="form-label mb-0 fw-medium">
+                                Seleccionar proyecto:
+                            </label>
+                            <div class="select-with-icon">
+                                <select id="projectSelectPicker" class="form-select form-select-sm" style="min-width: 240px; max-width: 320px;"
+                                        onchange="window.location.href = '/admin/homeadmin/project/' + this.value">
+                                    <option value="">-- Seleccione --</option>
+                                    @foreach($proyectos_usuario as $project)
+                                        <option value="{{ $project->id }}">
+                                            {{ $project->name }} ({{ $project->codigo }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>
         @endif
-    @endauth
+      @endauth
     </div>
 </div>
 
@@ -985,32 +1088,30 @@
 <!-- Modal para confirmar eliminación de usuario -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header border-bottom-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
-                <div class="mb-4">
-                    <h5 class="modal-title text-danger" id="deleteUserModalLabel">Confirmar Eliminación</h5>
-                    <h5 class="modal-title text-danger">¿Deseas eliminar este usuario?</h5>
-                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                    <div class="alert alert-danger d-flex align-items-center mt-3">
-                        <i class="bi bi-exclamation-circle-fill me-2"></i>
-                        <div>
-                            "<strong><span id="deleteUserName"></span></strong>" será eliminado permanentemente.
-                        </div>
-                    </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
-                <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <form id="deleteUserForm" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            Eliminar
-                        </button>
-                    </form>
-                </div>
+                <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteUserForm" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -1023,19 +1124,26 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="restoreUserModalLabel">Confirmar Restauración</h5>
+                <h5 class="modal-title" id="restoreUserModalLabel">
+                    <i class="bi bi-arrow-clockwise text-success"></i>
+                    Confirmar Restauración
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>¿Está seguro de que desea restaurar al usuario <strong id="restoreUserName"></strong>?</p>
-                <p class="text-muted small">El usuario será restaurado al estado activo.</p>
+                <p>¿Está seguro de que desea restaurar el siguiente elemento?</p>
+                <div class="alert alert-info">
+                    <strong id="restoreUserName"></strong>
+                    <br>
+                    <small class="text-muted">El elemento será restaurado a su estado anterior a la eliminación.</small>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="restoreUserForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Restaurar Usuario
+                        <i class="bi bi-arrow-clockwise"></i> Restaurar
                     </button>
                 </form>
             </div>
@@ -1047,37 +1155,27 @@
 <div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="deleteProjectModalLabel">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Eliminar Proyecto
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center mb-3">
-                    <i class="bi bi-exclamation-triangle fa-3x text-danger mb-3"></i>
-                    <h6 class="text-danger">¡Atención! Esta acción no se puede deshacer</h6>
-                    <p class="text-muted mb-0">Proyecto: <strong id="deleteProjectName"></strong></p>
-                    <div class="alert alert-danger mt-3" role="alert">
-                        <small>
-                            <i class="bi bi-info-circle me-1"></i>
-                            El proyecto y todos sus datos asociados (historias, tareas, tableros) serán eliminados permanentemente.
-                        </small>
-                    </div>
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
+                <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
             </div>
-            <div class="modal-footer justify-content-end gap-2">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x me-1"></i>
-                    Cancelar
-                </button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="deleteProjectForm" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3 me-1"></i>
-                        Eliminar Permanentemente
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>
@@ -1203,8 +1301,8 @@
             const projectId = button.getAttribute('data-project-id');
             const projectName = button.getAttribute('data-project-name');
             
-            // Mostrar el nombre del proyecto
-            document.getElementById('deleteProjectName').textContent = projectName;
+            // Guardar nombre para confirmación (sin mostrar en el modal)
+            deleteProjectForm.dataset.projectName = projectName;
             
             // Configurar la acción del formulario
             deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
@@ -1214,7 +1312,7 @@
         deleteProjectForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const projectName = document.getElementById('deleteProjectName').textContent;
+            const projectName = deleteProjectForm.dataset.projectName || '';
             
             // Confirmar eliminación
             if (confirm(`¿Estás seguro de que deseas eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`)) {
@@ -1222,7 +1320,24 @@
             }
         });
 
-        // Mostrar alertas automáticamente si hay mensajes de sesión
+        // Manejo del modal de eliminación
+        const deleteUserModal = document.getElementById('deleteUserModal');
+        const deleteUserForm = document.getElementById('deleteUserForm');
+        
+        deleteUserModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            
+            // Actualizar el contenido del modal
+            const deleteUserNameEl = document.getElementById('deleteUserName');
+            if (deleteUserNameEl) {
+                deleteUserNameEl.textContent = userName;
+            }
+            
+            // Actualizar la acción del formulario
+            deleteUserForm.action = `/admin/users/${userId}/delete`;
+        });
     });
 </script>
 @endpush
@@ -1488,7 +1603,7 @@
             }
         });
     </script>
-
+    
     <script>
         // Función de configuración de paginación para cualquier tabla
         function setupTablePagination(tableId, rowSelector, paginationId, rowsPerPage = 5) {

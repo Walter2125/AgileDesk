@@ -11,6 +11,14 @@
         margin-bottom: 2rem;
     }
     
+    /* Asegurar que el botón limpiar tenga la misma altura que los inputs */
+    .filter-section .btn {
+        height: calc(1.5em + 1.6rem + 1px) !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
     .type-badge {
         font-size: 0.75rem;
         font-weight: 600;
@@ -75,6 +83,27 @@
     .modal-backdrop {
         z-index: 1599;
     }
+    
+    /* Estilos para la paginación */
+    .pagination {
+        margin-bottom: 0;
+    }
+    
+    .pagination .page-link {
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+    
+    .pagination .page-link:hover {
+        color: #495057;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
 </style>
 @stop
 
@@ -120,7 +149,7 @@
                     
                     <div class="col-md-2 d-flex align-items-end">
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-secondary w-100">
-                            <i class="fas fa-times"></i> Limpiar
+                            <i class="bi bi-x"></i> Limpiar
                         </a>
                     </div>
                 </form>
@@ -130,16 +159,17 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-trash-restore"></i>
-                        Elementos Eliminados ({{ $deletedItems->count() }})
+                        <i class="bi bi-trash"></i>
+                        Elementos Eliminados ({{ $deletedItemsPaginated->total() }})
                     </h5>
                 </div>
                 <div class="card-body p-0">
-                    @if($deletedItems->count() > 0)
+                    @if($deletedItemsPaginated->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
+                                        <th class="text-center">#</th>
                                         <th>Tipo</th>
                                         <th>Nombre</th>
                                         <th>Descripción</th>
@@ -148,8 +178,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($deletedItems as $item)
+                                    @foreach($deletedItemsPaginated as $item)
                                         <tr>
+                                            <td class="text-center fw-bold">{{ ($deletedItemsPaginated->currentPage() - 1) * $deletedItemsPaginated->perPage() + $loop->iteration }}</td>
                                             <td>
                                                 <span class="type-badge badge-{{ $item['type'] }}">
                                                     {{ $item['type_label'] }}
@@ -171,29 +202,27 @@
                                                 </small>
                                             </td>
                                             <td class="actions-cell text-center">
-                                                <div class="btn-group" role="group">
+                                                <div class="d-flex gap-1 justify-content-center" role="group">
                                                     <!-- Botón Restaurar -->
-                                                    <button type="button" 
-                                                            class="btn btn-success btn-sm"
+                                                    <button type="button" class="btn btn-outline-success px-2 py-1" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#restoreModal"
                                                             data-type="{{ $item['type'] }}"
                                                             data-id="{{ $item['id'] }}"
                                                             data-name="{{ $item['name'] }}"
                                                             title="Restaurar">
-                                                        <i class="fas fa-undo"></i>
+                                                        <i class="bi bi-arrow-clockwise"></i>
                                                     </button>
                                                     
                                                     <!-- Botón Eliminar Permanentemente -->
-                                                    <button type="button" 
-                                                            class="btn btn-danger btn-sm"
+                                                    <button type="button" class="btn btn-outline-danger px-2 py-1" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#deleteModal"
                                                             data-type="{{ $item['type'] }}"
                                                             data-id="{{ $item['id'] }}"
                                                             data-name="{{ $item['name'] }}"
                                                             title="Eliminar Permanentemente">
-                                                        <i class="fas fa-trash"></i>
+                                                        <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>
@@ -202,9 +231,16 @@
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Paginación -->
+                        @if($deletedItemsPaginated->hasPages())
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                {{ $deletedItemsPaginated->links() }}
+                            </div>
+                        @endif
                     @else
                         <div class="empty-state">
-                            <i class="fas fa-inbox"></i>
+                            <i class="bi bi-inbox"></i>
                             <h4>No hay elementos eliminados</h4>
                             <p class="text-muted">
                                 @if($search || $dateFrom || $dateTo || $type !== 'all')
@@ -223,11 +259,11 @@
 
 <!-- Modal de Restauración -->
 <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="restoreModalLabel">
-                    <i class="fas fa-undo text-success"></i>
+                    <i class="bi bi-arrow-clockwise text-success"></i>
                     Confirmar Restauración
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -245,7 +281,7 @@
                 <form id="restoreForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-undo"></i> Restaurar
+                        <i class="bi bi-arrow-clockwise"></i> Restaurar
                     </button>
                 </form>
             </div>
@@ -255,26 +291,21 @@
 
 <!-- Modal de Eliminación Permanente -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle"></i>
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
                 <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
-                <div class="alert alert-warning">
-                    <strong id="deleteItemName"></strong>
-                    <br>
-                    <small>Una vez eliminado permanentemente, no podrá ser recuperado.</small>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -282,7 +313,7 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Eliminar Permanentemente
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>

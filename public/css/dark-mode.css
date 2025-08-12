@@ -142,15 +142,71 @@ body *::after {
 }
 
 /* Componentes interactivos SIN TRANSICIONES */
-.dark-mode .btn {
+.dark-mode .btn:not(.btn-primary):not(.btn-secondary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-light):not(.btn-dark):not([class*="btn-outline-"]) {
     background-color: var(--dark-bg-terciary);
     color: var(--dark-text-secondary);
     border-color: var(--dark-border-primary);
 }
 
-.dark-mode .btn:hover {
+.dark-mode .btn:not(.btn-primary):not(.btn-secondary):not(.btn-success):not(.btn-danger):not(.btn-warning):not(.btn-info):not(.btn-light):not(.btn-dark):not([class*="btn-outline-"]):hover {
     background-color: var(--dark-bg-quaternary);
     color: var(--dark-text-primary);
+}
+
+/* Asegurar colores Bootstrap para botones contextuales */
+.dark-mode .btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: #fff !important;
+}
+
+.dark-mode .btn-secondary:hover {
+    background-color: #5c636a !important;
+    border-color: #565e64 !important;
+}
+
+.dark-mode .btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+}
+
+.dark-mode .btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+}
+
+.dark-mode .btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+.dark-mode .btn-danger:hover {
+    background-color: #bb2d3b !important;
+    border-color: #b02a37 !important;
+}
+
+.dark-mode .btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.dark-mode .btn-warning:hover {
+    background-color: #ffca2c !important;
+    border-color: #ffc720 !important;
+}
+
+.dark-mode .btn-info {
+    background-color: #0dcaf0 !important;
+    border-color: #0dcaf0 !important;
+    color: #fff !important;
+}
+
+.dark-mode .btn-info:hover {
+    background-color: #31d2f2 !important;
+    border-color: #25cff2 !important;
 }
 
 .dark-mode .btn-primary {
@@ -1895,3 +1951,11 @@ body *::after {
     border-color: var(--dark-border-primary) !important;
     opacity: 0.6 !important;
 }
+/* Optimizaciones para botones */
+[data-bs-theme="dark"] .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex,
+    .dark-mode .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex {
+        background: #222 !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }

@@ -1,90 +1,99 @@
-.descripcion-limitada {
-    display:-webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 4.5em;
-    line-height: 1.5em;
-    word-break: break-word;
-    overflow-wrap: break-word;
+#tituloInput {
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px !important;
 }
 
-input[readonly].form-control,
-textarea[readonly].form-control,
-select[disabled].form-control {
-    background-color: #fff !important;
-    color: #212529 !important;
-    cursor: default;
+.formulario-editable {
+    border-radius: 10px !important;   
+    height: 45px;                     
+    font-size: 1rem;                  
+    background-color: #f5f5f5;
+    border: 1px solid #ced4da;        
+    padding: 0.5rem 0.75rem;
     box-shadow: none;
-    border: 1px solid #ced4da;
-
-    height: auto;
-    min-height: calc(2.25rem + 0.75rem);
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 0.375rem;
-    opacity: 1 !important;
-    filter: none !important; 
-    overflow: hidden;
-    resize: none;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
+    transition: all 0.2s ease-in-out;
+    color: #495057;
 }
 
-/* editables */
-input.form-control:not([readonly]),
-textarea.form-control:not([readonly]),
-select.form-control:not([disabled]) {
-    background-color: white;
-    color: #212529;
-    height: calc(2.25rem + 0.75rem);
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 0.375rem;
-    border: 1px solid #ced4da;
-    cursor: text;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    overflow: hidden;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
+/* Campos readonly */
+.formulario-editable[readonly],
+.formulario-editable:read-only {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    cursor: text !important;
+    border: 1px solid #ced4da !important;
 }
 
+/* Campos disabled */
+.formulario-editable:disabled,
+.formulario-editable[disabled] {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    border: 1px solid #e9ecef !important;
+}
 
-input.form-control:not([readonly]):focus,
-textarea.form-control:not([readonly]):focus,
-select.form-control:not([disabled]):focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+/* INPUTS NUMBER - NUNCA MOSTRAR FLECHAS (en ningún estado) */
+input[type="number"].formulario-editable {
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+    appearance: none !important;
+}
+
+/* Para Firefox */
+input[type="number"].formulario-editable::-webkit-outer-spin-button,
+input[type="number"].formulario-editable::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+/* Para Chrome/Safari */
+input[type="number"].formulario-editable::-webkit-inner-spin-button,
+input[type="number"].formulario-editable::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+/* SELECTS - FLECHAS SOLO EN EDITABLES */
+select.formulario-editable:not([readonly]):not(:disabled) {
+    appearance: auto !important;
+    -webkit-appearance: menulist !important;
+    -moz-appearance: menulist !important;
+    background-image: initial !important;
+}
+
+/* SELECTS - SIN FLECHAS EN NO EDITABLES */
+select.formulario-editable[readonly],
+select.formulario-editable:disabled {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+}
+
+/* Foco para edición */
+.formulario-editable:focus {
+    border-color: #0d6efd;
+    background-color: #ffffff !important;
     outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-
-textarea.form-control:not([readonly]) {
-    resize: vertical;
-    min-height: calc(2.25rem + 0.75rem);
-}
-#trabajo_estimado::-webkit-inner-spin-button, 
-#trabajo_estimado::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    margin: 0; 
-    opacity: 0;
-    pointer-events: none;
+/* Estilos específicos */
+input[name="trabajo_estimado"].formulario-editable,
+input[name="trabajo_estimado"].formulario-editable[readonly],
+input[type="text"].formulario-editable:read-only {
+    background-color: #ffffff !important;
+    color: #495057 !important;
 }
 
 #trabajo_estimado {
     -moz-appearance: textfield;
+    -webkit-appearance: none !important;
+    appearance: none !important;
 }
-
-
-
-
 .mi-container {
     background-color: #ffff;
     padding: 30px;
@@ -198,4 +207,87 @@ textarea.form-control:not([readonly]) {
     font-weight: 500;
     color: #2d3748;
 }
+/* Unicamente paara crear historia*/
+
+
+
+.formulario-editable {
+    border-radius: 10px !important;
+    height: 45px;
+    font-size: 1rem;
+    background-color: #f5f5f5;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+    color: #495057;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.formulario-editable:focus {
+    border-color: #0d6efd;
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.formulario-editable[readonly],
+.formulario-editable:read-only {
+    background-color: #ffffff !important;
+    cursor: text !important;
+}
+
+.formulario-editable:disabled {
+    background-color: #f8f9fa !important;
+    cursor: not-allowed !important;
+}
+
+/* Textarea especial */
+textarea.formulario-editable {
+    height: auto;
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Inputs number - ocultar flechas */
+input[type="number"].formulario-editable {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: none;
+}
+
+/* Para navegadores WebKit (Chrome, Safari) */
+input[type="number"].formulario-editable::-webkit-outer-spin-button,
+input[type="number"].formulario-editable::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Selects - mostrar flecha */
+select.formulario-editable {
+    appearance: auto;
+    -webkit-appearance: menulist;
+    -moz-appearance: menulist;
+    background-image: initial;
+    padding-right: 2rem; /* Espacio para la flecha */
+}
+
+/* Botones consistentes */
+.btn-form-actions {
+    min-width: 120px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Estilo para etiquetas de formulario */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #495057;
+}
+
+/*fin*/
 
