@@ -26,17 +26,17 @@
             padding-left: 10px;
             padding-right: 10px;
         }
-        
+
         .historia-header {
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .historia-header .titulo-container {
             max-width: 100% !important;
             width: 100% !important;
         }
-        
+
         .historia-header .actions-container {
             align-self: flex-end;
             width: auto;
@@ -47,7 +47,7 @@
         .card-body {
             padding: 1rem 0.5rem;
         }
-        
+
         .btn-group .btn {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
@@ -300,8 +300,8 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
- </style>   
- 
+ </style>
+
 @endsection
 
 
@@ -310,7 +310,7 @@
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-   
+
         @if (session('success'))
             <div id="success-alert" class="alert alert-success alert-dismissible fade show mt-2">
                 <i class="bi bi-check-circle me-2"></i>
@@ -330,7 +330,7 @@
                 });
             </script>
         @endif
-   
+
     @if ($errors->any())
         <div class="alert alert-danger mt-2">
             <ul class="mb-0">
@@ -342,133 +342,137 @@
     @endif
 
 <div class="container-fluid-m-2 mi-container m-2">
-   
+
 <div class="card-body">
 
-         <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
-    @csrf
-    @method('PATCH')
+    <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
+        @csrf
+        @method('PATCH')
+        <div class="row mb-3">
 
-    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="max-width: 600px; width: 100%;">
-            <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                title="{{ $historia->nombre }}">
-                H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-            </h2>
+            <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                <div class="mb-0" style="font-weight: bold; width: 100%;">
+                    <label class="form-label rounded">Nombre de la Historia</label>
+                    <h2 id="tituloTexto" class="historia-title rounded"
+                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        title="{{ $historia->nombre }}">
+                        H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                    </h2>
+                    <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                           class="form-control formulario-editable rounded d-none"
+                           value="{{ old('nombre', $historia->nombre) }}"
+                           data-editable="true" />
 
-            <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                class="form-control form-control-lg rounded d-none"
-                value="{{ old('nombre', $historia->nombre) }}"
-                data-editable="true"
-                style="font-weight: bold;" />
-        </div>
 
-        <div class="d-flex align-items-center">
-            <div id="dropdownMenuContainer" class="dropdown me-3">
-                <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical"></i>
+
+
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div id="dropdownMenuContainer" class="dropdown me-3">
+                        <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                            <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
+                            <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 ">
+
+                <div class="mb-3">
+                    <label class="form-label rounded">Asignado a</label>
+
+
+                    <select name="usuario_id" class="form-control formulario-editable" data-editable="true" disabled>
+                        <option value="">-- Seleccionar usuario --</option>
+                        @foreach($usuarios as $usuario)
+                            <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                                {{ $usuario->name }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label rounded">Estado</label>
+                    <select name="columna_id" class="form-control formulario-editable" data-editable="true" disabled>
+                        <option value="">Sin Estado</option>
+                        @foreach ($columnas as $columna)
+                            <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                                {{ $columna->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label rounded">Prioridad</label>
+                    <select name="prioridad" class="form-control formulario-editable" data-editable="true" disabled>
+                        <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                        <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                        <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12">
+                <div class="mb-3">
+                    <label class="form-label rounded">Horas estimadas</label>
+                    <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
+                           value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
+                           data-editable="true" readonly>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label rounded">Sprint</label>
+                    <select name="sprint_id" class="form-control formulario-editable" data-editable="true" disabled >
+                        <option value="">Ningún Sprint</option>
+                        @foreach ($sprints as $sprint)
+                            <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                {{ $sprint->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label rounded">Última modificación</label>
+                    <input type="text" class="form-control formulario-editable"
+                           value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
+                           readonly>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-control formulario-editable" name="descripcion"
+                          maxlength="5000"
+                          data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+            </div>
+            <div class="d-flex justify-content-end mb-3">
+                <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
+                    Cancelar
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
-                    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    
-        <div class="col-lg-6 col-md-12">
-          
-            <div class="mb-3">
-                <label class="form-label rounded">Asignado a</label>
-      
-
-                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
-                    <option value="">-- Seleccionar usuario --</option>
-    @foreach($usuarios as $usuario)
-        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-            {{ $usuario->name }}
-        </option>
-    @endforeach
-
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-select rounded" data-editable="true" disabled>
-                    <option value="">Sin Estado</option>
-                    @foreach ($columnas as $columna)
-                        <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
-                            {{ $columna->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-select rounded" data-editable="true" disabled>
-                    <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
-                    <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
-                    <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
-                </select>
+                <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
+                    <i class="bi bi-save"></i> Actualizar
+                </button>
             </div>
         </div>
 
-        <div class="col-lg-6 col-md-12">
-            <div class="mb-3">
-                <label class="form-label rounded">Horas estimadas</label>
-                <input type="number" class="form-control rounded" name="trabajo_estimado"
-                    value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
-                    data-editable="true" readonly>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-select rounded" data-editable="true" disabled>
-                    <option value="">Ningún Sprint</option>
-                    @foreach ($sprints as $sprint)
-                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
-                            {{ $sprint->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control rounded"
-                    value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
-                    readonly>
-            </div>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion"
-             maxlength="5000"
-            data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
-    </div>
-    <div class="d-flex justify-content-end mb-3 mt-4">
-    <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
-        Cancelar
-    </button>
-    <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
-        <i class="bi bi-save"></i> Actualizar
-    </button>
-</div>
-    </div>
 
 
-    
 
-    
-</form>
+
+    </form>
 
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
     @csrf
@@ -512,7 +516,7 @@
         });
     });
 </script>
-       
+
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content rounded-4 shadow">
@@ -547,7 +551,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
 {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
 <div class="mb-0">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
@@ -598,10 +602,10 @@
 
                                 <div class="d-flex justify-content-end gap-2 mt-2">
                                     <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
-                                        <i class="bi bi-pencil-square"></i> 
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-outline-danger btn-sm p-1 px-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
-                                        <i class="bi bi-trash3"></i> 
+                                        <i class="bi bi-trash3"></i>
                                     </button>
                                 </div>
                             </div>
