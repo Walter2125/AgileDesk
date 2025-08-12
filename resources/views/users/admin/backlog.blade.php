@@ -6,13 +6,14 @@
 
 @section('content')
     <div class="container-fluid mt-4 px-4">
-        <!-- Contenedor alineado con las tarjetas -->
-        <div class="mb-3 d-flex justify-content-end gap-2" style="margin-left: -22px; margin-right: -22px;">
+
+        <!-- Contenedor de filtros y botones -->
+        <div class="mb-3 d-flex flex-column flex-md-row justify-content-end gap-2 mx-n3 mx-md-n4">
 
             <!-- Select Sprint -->
-            <form method="GET" class="d-flex gap-2">
+            <form method="GET" class="d-flex">
                 <select name="sprint_id" class="form-select"
-                        style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                        style="max-height: 38px; height: 38px; width: 250px;border-radius: 0.375rem"
                         onchange="this.form.submit()">
                     <option value="">Todas las Historias</option>
                     @foreach ($proyecto->sprints as $sprint)
@@ -23,17 +24,18 @@
                 </select>
             </form>
 
-            <!-- Botones -->
+            <!-- Botón Agregar Historia -->
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"
-               class="btn btn-primary"
-               style="height: 38px; display: flex; align-items: center;">
+               class="btn btn-primary d-flex align-items-center"
+               style="height: 38px;">
                 Agregar Historia
             </a>
 
+            <!-- Botón Exportar PDF -->
             @if(auth()->user()->usertype === 'admin')
                 <a href="{{ route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId]) }}"
-                   class="btn btn-secondary"
-                   style="height: 38px; display: flex; align-items: center;"
+                   class="btn btn-secondary d-flex align-items-center"
+                   style="height: 38px;"
                    title="Exportar a PDF">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Exportar a PDF
                 </a>
@@ -41,7 +43,7 @@
         </div>
 
         <!-- Lista de historias -->
-        <div class="mt-4" style="margin-left: -22px; margin-right: -22px;">
+        <div class="mt-4 mx-n3 mx-md-n4">
             @forelse ($historias as $historia)
                 <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark">
                     <div class="card mb-2 p-3" style="transition: box-shadow 0.2s; cursor: pointer; width: 100%;">
@@ -69,4 +71,18 @@
             @endforelse
         </div>
     </div>
+    <style>
+        @media (max-width: 576px) {
+            .form-select,
+            .btn {
+                width: 100% !important;
+            }
+
+            /* Esto asegura que no quede más pequeño por padding interno del form */
+            form.d-flex {
+                width: 100%;
+            }
+        }
+    </style>
+
 @endsection

@@ -1104,6 +1104,53 @@
                             height: 38px !important;
                         }
                     }
+                    @media (max-width: 576px) {
+                        #buscadorHistorias {
+                            flex: 1 1 auto; /* Que el input crezca y ocupe todo el espacio disponible */
+                        }
+                        .limpiar-busqueda {
+                            padding: 0 8px; /* Botón más compacto */
+                            flex: 0 0 auto; /* No crecer más de lo necesario */
+                        }
+                        .input-group-text {
+                            flex: 0 0 auto; /* Mantiene el ícono de lupa del mismo tamaño */
+                        }
+                    }
+
+                    @media (max-width: 576px) {
+                        .input-group.w-100 {
+                            display: flex !important;
+                            width: 100% !important;
+                        }
+
+                        .input-group.w-100 > .input-group-text {
+                            flex: 0 0 40px !important;
+                            width: 40px !important;
+                            min-width: 40px !important;
+                            display: flex !important;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        .input-group.w-100 > #buscadorHistorias,
+                        .input-group.w-100 > .form-control {
+                            flex: 1 1 auto !important;
+                            min-width: 0 !important;
+                            width: auto !important;
+                        }
+
+                        .input-group.w-100 > .limpiar-busqueda {
+                            flex: 0 0 40px !important;
+                            width: 40px !important;
+                            min-width: 40px !important;
+                            padding: 0 !important;
+                            display: flex !important;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                    }
+
+
 
 
 
