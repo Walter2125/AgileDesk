@@ -293,7 +293,6 @@ class ProjectController extends Controller
     }
     }
 
-
     public function listUsers(Request $request)
     {
         $users = User::where('usertype', '!=', 'admin')
