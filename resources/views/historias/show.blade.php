@@ -478,10 +478,6 @@
         });
     });
 </script>
-
-
-
-
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -521,7 +517,6 @@
 {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
 <div class="mb-0">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
-    <div class="mb-0 border rounded">
         <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
             Tareas relacionadas
         </button>
@@ -631,7 +626,6 @@
 
  {{-- BOTÓN: COMENTARIOS --}}
 <div class="mb-0">
-<div class="mb-0 border rounded">
   <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
     Comentarios
   </button>

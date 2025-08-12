@@ -80,7 +80,7 @@
 
         @if(Auth::check())
             <div class="mb-4">
-                <strong>Bienvenido, {{ Auth::user()->name }}</strong>
+                <strong>Formulario para Tareas</strong>
             </div>
         @else
             <div class="mb-4">
