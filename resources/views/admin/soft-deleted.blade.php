@@ -36,9 +36,21 @@
     .badge-projects { background-color: #f3e5f5; color: #4a148c; }
     .badge-historias { background-color: #e8f5e8; color: #1b5e20; }
     .badge-tareas { background-color: #fff3e0; color: #e65100; }
+    .badge-comentarios { background-color: #f0f0f0; color: #2c3e50; }
     
     .actions-cell {
         white-space: nowrap;
+    }
+    
+    .description-cell {
+        max-width: 300px;
+        word-wrap: break-word;
+        white-space: normal;
+        cursor: help;
+    }
+    
+    .description-cell:hover {
+        background-color: #f8f9fa;
     }
     
     .table-responsive {
@@ -201,6 +213,14 @@
         gap: 1rem;
         margin-bottom: 1rem;
     }
+    
+    /* Estilos para tooltips de descripción */
+    .tooltip-inner {
+        max-width: 400px;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
 </style>
 @stop
 
@@ -219,6 +239,7 @@
                             <option value="projects" {{ $type === 'projects' ? 'selected' : '' }}>Proyectos</option>
                             <option value="historias" {{ $type === 'historias' ? 'selected' : '' }}>Historias</option>
                             <option value="tareas" {{ $type === 'tareas' ? 'selected' : '' }}>Tareas</option>
+                            <option value="comentarios" {{ $type === 'comentarios' ? 'selected' : '' }}>Comentarios</option>
                         </select>
                     </div>
                     
@@ -287,8 +308,11 @@
                                             <td>
                                                 <strong>{{ $item['name'] }}</strong>
                                             </td>
-                                            <td class="text-muted">
-                                                {{ Str::limit($item['description'], 50) }}
+                                            <td class="text-muted description-cell" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="{{ $item['full_description'] ?? $item['description'] }}">
+                                                {{ Str::limit($item['description'], 80) }}
                                             </td>
                                             <td>
                                                 <small class="text-muted">
@@ -499,6 +523,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let filterTimeout;
     const filterForm = document.getElementById('filterForm');
     const autoFilterElements = document.querySelectorAll('.auto-filter');
+    
+    // Inicializar tooltips de Bootstrap
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true,
+            trigger: 'hover focus'
+        });
+    });
     
     // Función para aplicar filtros automáticamente
     function applyFilters() {
