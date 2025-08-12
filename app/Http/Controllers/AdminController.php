@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Historia;
 use App\Models\Columna;
 use App\Models\Tarea;
+use App\Models\Comentario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -343,6 +344,7 @@ class AdminController extends Controller
                         'type_label' => 'Usuario',
                         'name' => $user->name,
                         'description' => $user->email,
+                        'full_description' => $user->email,
                         'deleted_at' => $user->deleted_at,
                         'model' => $user
                     ];
@@ -367,12 +369,14 @@ class AdminController extends Controller
                 })
                 ->get()
                 ->map(function ($project) {
+                    $description = $project->descripcion ?? 'Sin descripción';
                     return [
                         'id' => $project->id,
                         'type' => 'projects',
                         'type_label' => 'Proyecto',
                         'name' => $project->name,
-                        'description' => $project->descripcion ?? 'Sin descripción',
+                        'description' => strlen($description) > 100 ? substr($description, 0, 100) . '...' : $description,
+                        'full_description' => $description,
                         'deleted_at' => $project->deleted_at,
                         'model' => $project
                     ];
@@ -395,12 +399,14 @@ class AdminController extends Controller
                 })
                 ->get()
                 ->map(function ($historia) {
+                    $description = $historia->descripcion ?? 'Sin descripción';
                     return [
                         'id' => $historia->id,
                         'type' => 'historias',
                         'type_label' => 'Historia',
                         'name' => $historia->nombre,
-                        'description' => "Proyecto: " . ($historia->proyecto->name ?? 'Sin proyecto'),
+                        'description' => strlen($description) > 100 ? substr($description, 0, 100) . '...' : $description,
+                        'full_description' => $description,
                         'deleted_at' => $historia->deleted_at,
                         'model' => $historia
                     ];
@@ -423,17 +429,53 @@ class AdminController extends Controller
                 })
                 ->get()
                 ->map(function ($tarea) {
+                    $description = $tarea->descripcion ?? 'Sin descripción';
                     return [
                         'id' => $tarea->id,
                         'type' => 'tareas',
                         'type_label' => 'Tarea',
                         'name' => $tarea->nombre,
-                        'description' => "Historia: " . ($tarea->historia->nombre ?? 'Sin historia'),
+                        'description' => strlen($description) > 100 ? substr($description, 0, 100) . '...' : $description,
+                        'full_description' => $description,
                         'deleted_at' => $tarea->deleted_at,
                         'model' => $tarea
                     ];
                 });
             $deletedItems = $deletedItems->merge($tareas);
+        }
+
+        // Obtener comentarios eliminados
+        if ($type === 'all' || $type === 'comentarios') {
+            $comentarios = Comentario::onlyTrashed()
+                ->with(['historia', 'user'])
+                ->when($search, function ($query) use ($search) {
+                    $query->where('contenido', 'like', "%{$search}%");
+                })
+                ->when($dateFrom, function ($query) use ($dateFrom) {
+                    $query->whereDate('deleted_at', '>=', $dateFrom);
+                })
+                ->when($dateTo, function ($query) use ($dateTo) {
+                    $query->whereDate('deleted_at', '<=', $dateTo);
+                })
+                ->get()
+                ->map(function ($comentario) {
+                    $contenido = $comentario->contenido;
+                    $nombreUsuario = $comentario->user ? $comentario->user->name : 'Usuario desconocido';
+                    
+                    return [
+                        'id' => $comentario->id,
+                        'type' => 'comentarios',
+                        'type_label' => 'Comentario',
+                        'name' => $nombreUsuario,
+                        'description' => strlen($contenido) > 100 
+                            ? substr($contenido, 0, 100) . '...' 
+                            : $contenido,
+                        'full_description' => $contenido,
+                        'deleted_at' => $comentario->deleted_at,
+                        'model' => $comentario
+                    ];
+                });
+            $deletedItems = $deletedItems->merge($comentarios);
         }
 
         // Ordenar por fecha de eliminación (más recientes primero)
@@ -534,6 +576,8 @@ class AdminController extends Controller
                 return Historia::class;
             case 'tareas':
                 return Tarea::class;
+            case 'comentarios':
+                return Comentario::class;
             default:
                 throw new \InvalidArgumentException("Tipo de modelo no válido: {$type}");
         }
@@ -553,6 +597,8 @@ class AdminController extends Controller
                 return 'Historia';
             case 'tareas':
                 return 'Tarea';
+            case 'comentarios':
+                return 'Comentario';
             default:
                 return ucfirst($type);
         }
