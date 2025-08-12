@@ -303,17 +303,15 @@
                                         return;
                                     }
 
-                                    fetch(/historias/${historiaId}/mover, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                            'Accept': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            columna_id: nuevaColumnaId
-                                        })
-                                    })
+                                   fetch(`/historias/${historiaId}/mover`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ columna_id: nuevaColumnaId })
+                })
                                         .then(response => {
                                             if (!response.ok) {
                                                 return response.json().then(err => { throw err; });
@@ -407,6 +405,8 @@
                             });
                         });
                     });
+
+                    
                 </script>
 
                 <!-- Modal Bootstrap para agregar columna -->
