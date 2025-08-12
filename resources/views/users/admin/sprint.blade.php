@@ -8,11 +8,6 @@
     <div class="container-fluid mt-4 px-4">
 
         <div class="mb-3 d-flex justify-content-end boton-wrapper">
-            <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"
-               class="btn btn-primary boton-ajustado"
-               style="height: 38px; display: flex; align-items: center;">
-                Crear Sprint
-            </a>
 
         </div>
 

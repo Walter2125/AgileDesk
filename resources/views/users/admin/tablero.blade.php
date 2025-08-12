@@ -61,22 +61,18 @@
                         </button>
                     </div>
 
-
-                    @if($tablero->sprints && $tablero->sprints->count())
-                        <select class="form-select"
-                                id="sprintSelect"
-                                aria-label="Seleccionar sprint"
-                                style="min-width: 200px; max-width: 240px; height: 40px; border-radius: 0.375rem;"
-                                onchange="seleccionarSprint(this)">
-                            <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                            @foreach($tablero->sprints as $sprint)
-                                <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                    <form method="GET" class="d-flex">
+                        <select name="sprint_id" id="sprintSelect" class="form-select"
+                                style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                                onchange="this.form.submit()">
+                            <option value="">Todas las Historias</option>
+                            @foreach ($tablero->sprints as $sprint)
+                                <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
                                     {{ $sprint->nombre }}
                                 </option>
                             @endforeach
                         </select>
-                    @endif
-
+                    </form>
 
 
                     <div class="d-flex gap-2 ms-auto">
@@ -232,10 +228,42 @@
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading{{ $columna->id }}">
-                                        <button class="accordion-button collapsed accordion-toggle"
+                                        <button class="accordion-button collapsed accordion-toggle d-flex align-items-center"
                                                 type="button"
-                                                data-target="#collapse{{ $columna->id }}">
-                                            {{ $columna->nombre }}
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ $columna->id }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ $columna->id }}">
+
+                                            {{-- Menú de tres puntitos (reutilizado de escritorio) --}}
+                                            <div class="me-2">
+                                                <div class="menu-wrapper">
+                                                    <input type="checkbox" class="toggler" id="toggle-mobile-{{ $columna->id }}" />
+                                                    <div class="dots">
+                                                        <div></div>
+                                                    </div>
+                                                    <div class="menu">
+                                                        <ul>
+                                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
+                                                            <li>
+                                                                <a href="#" class="link"
+                                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                                    Editar nombre
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" class="link"
+                                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                                    Eliminar columna
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Nombre de la columna --}}
+                                            <span class="flex-grow-1">{{ $columna->nombre }}</span>
                                         </button>
                                     </h2>
 
@@ -271,6 +299,7 @@
                         </div>
                     </div>
                     {{-- FIN: Accordion para móvil --}}
+
 
 
 
@@ -427,6 +456,9 @@
                     </div>
                 </div>
 
+
+
+                <!-- Modal para crear sprint -->
                 <!-- Modal para crear sprint -->
                 <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -435,21 +467,35 @@
                             <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
 
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalCrearSprintLabel">Crear Sprint <span id="numeroSprint"></span></h5>
+                                <h5 class="modal-title" id="modalCrearSprintLabel">
+                                    Crear Sprint <span id="numeroSprint"></span>
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
 
                             <div class="modal-body">
+                                {{-- Mensajes de error en letras rojas --}}
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div class="mb-3">
                                     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
+                                           value="{{ old('fecha_inicio') }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="fecha_fin" class="form-label">Fecha de fin</label>
-                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
+                                           value="{{ old('fecha_fin') }}" required>
                                 </div>
                             </div>
-
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -458,6 +504,16 @@
                         </form>
                     </div>
                 </div>
+
+                {{-- Script para reabrir el modal si hay errores --}}
+                @if ($errors->any())
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var myModal = new bootstrap.Modal(document.getElementById('modalCrearSprint'));
+                            myModal.show();
+                        });
+                    </script>
+                @endif
 
 
                 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
@@ -474,15 +530,20 @@
                                 <div class="modal-body">
                                     <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
                                 </div>
-                                <div class="modal-footer justify-content-end gap-2">
-                                    <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
+                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
                                         Borrar columna y sus historias
                                     </button>
-                                    <button type="button" class="btn btn-outline-warning" onclick="enviarFormularioEliminar('solo_columna')">
+                                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
                                         Borrar columna, conservar historias
                                     </button>
+                                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
+                                        Cancelar
+                                    </button>
                                 </div>
+
                             </div>
+
 
                         </form>
                     </div>
@@ -596,24 +657,6 @@
                             }
                         });
                     });
-                </script>
-                <script>
-                    document.getElementById('sprintSelect').addEventListener('change', function () {
-                        const sprintId = this.value;
-                        const url = new URL(window.location.href);
-
-                        if (sprintId) {
-                            // Si selecciona un sprint específico, actualiza el parámetro
-                            url.searchParams.set('sprint_id', sprintId);
-                        } else {
-                            // Si selecciona "Ningún Sprint", elimina el parámetro para mostrar todos
-                            url.searchParams.delete('sprint_id');
-                        }
-
-                        // Redirige a la nueva URL
-                        window.location.href = url.toString();
-                    });
-
                 </script>
                 <script>
 
@@ -752,14 +795,6 @@
                 </script>
 
                 <script>
-                    function seleccionarSprint(select) {
-                        const sprintId = select.value;
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
-                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
-                    }
-                </script>
-                <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         document.querySelectorAll('.accordion-toggle').forEach(function (btn) {
                             btn.addEventListener('click', function () {
@@ -785,6 +820,8 @@
                             });
                         });
                     });
+
+
                 </script>
 
 
@@ -1180,6 +1217,49 @@
                             align-items: center;
                         }
                     }
+                    .accordion-button:focus,
+                    .accordion-button:active {
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+                    /* Ajustar menú en móvil */
+                    @media (max-width: 767.98px) {
+                        .menu-wrapper {
+                            transform: scale(0.9);
+                        }
+                    }
+
+                    /* Evitar modales cortados en móvil */
+                    @media (max-width: 767.98px) {
+                        .modal-dialog {
+                            margin: 0.5rem auto;
+                            max-width: 95% !important;
+                        }
+                        .modal-content {
+                            border-radius: 8px;
+                        }
+
+                        /* Móvil: abrir menú hacia la derecha */
+                        @media (max-width: 767.98px) {
+                            .kanban-accordion .menu {
+                                left: 0 !important;
+                                right: auto !important;
+                                transform: translateY(0) translateX(0) !important;
+                            }
+                        }
+
+                        /* PC: mantener hacia la izquierda (como está ahora) */
+                        @media (min-width: 768px) {
+                            .menu {
+                                right: 0 !important;
+                                left: auto !important;
+                            }
+                        }
+
+                    }
+
+
+
                 </style>
 
 
