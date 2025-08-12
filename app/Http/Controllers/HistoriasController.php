@@ -339,7 +339,19 @@ class HistoriasController extends Controller
 
     public function destroy(Historia $historia)
     {
-
+        /*HistorialCambio::create([
+            'fecha' => now(),
+            'usuario' => Auth::user()->name,
+            'accion' => 'Eliminación de Historia',
+            'detalles' => sprintf(
+                'Historia "%s" (ID: %d) eliminada por %s',
+                $historia->nombre,
+                $historia->id,
+                Auth::user()->name
+            ),
+            'sprint' => $historia->sprint_id,
+            'proyecto_id' => $historia->proyecto_id
+        ]);*/
 
         $proyectoId = $historia->proyecto_id; // Guardas el ID antes de eliminar
 
