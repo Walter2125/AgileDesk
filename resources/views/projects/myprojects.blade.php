@@ -259,7 +259,7 @@ h1.page-title {
 
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
-        Proyectos más recientes
+        Proyectos recientes
         @if (auth()->check() && auth()->user()->usertype == 'admin')
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
@@ -300,9 +300,14 @@ h1.page-title {
                         <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            <button type="button"
+                            class="btn btn-delete"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalConfirmarEliminarProyecto"
+                            data-action="{{ route('projects.destroy', $project->id) }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
                         </form>
                     @endif
                 </div>
@@ -316,9 +321,47 @@ h1.page-title {
                 </div>
             @endif
         </div>
+        {{-- Modal Confirmar Eliminar --}}
+            <div class="modal fade" id="modalConfirmarEliminarProyecto{{ $project->id }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ $project->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <form method="POST" action="{{ route('projects.destroy', $project->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger" id="modalEliminarLabel{{ $project->id }}">Confirmar eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Seguro que deseas eliminar el proyecto <strong>{{ $project->name }}</strong>? Esta acción no se puede deshacer.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
     @empty
         <p class="text-muted">No hay proyectos para mostrar.</p>
     @endforelse
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalEliminar = document.getElementById('modalConfirmarEliminarProyecto');
+    modalEliminar.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const action = button.getAttribute('data-action');
+        const form = document.getElementById('formEliminarProyecto');
+        form.setAttribute('action', action);
+    });
+});
+</script>
+
 @endsection
+
+<!-- Scripts Bootstrap 5 (si no los tienes ya cargados en tu layout) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -7,30 +7,38 @@
          x-data="colorPicker(<?php echo e($project->id); ?>, '<?php echo e(route('projects.cambiarColor', $project->id)); ?>', '<?php echo e($project->color ?? '#ffffff'); ?>')"
          :style="'background-color: ' + color + ' !important;'">
 
-        <!-- Muestra el valor del color actual (solo para pruebas) -->
-        
-
-        <!-- Botón de 3 puntitos y menú -->
-        <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
-            <button @click="open = !open" class="btn btn-sm btn-light border-0">&#x22EE;</button>
-
-            <!-- Botón de 3 puntitos con menú -->
-<div class="position-absolute top-0 end-0 p-2" style="z-index: 10;" x-data="{ open: false, showColor: false }">
-    <button @click="open = !open" class="btn btn-sm btn-light border-0">&#x22EE;</button>
-
-    <div x-show="open" @click.away="open = false" x-transition x-cloak class="position-absolute end-0 mt-2 bg-white border rounded shadow p-2" style="z-index: 20; width: 180px;">
-        <button class="dropdown-item btn btn-sm text-start" @click="showColor = !showColor">Cambiar color</button>
-        <button class="dropdown-item btn btn-sm text-start" data-bs-toggle="modal" data-bs-target="#modal-integrantes-<?php echo e($project->id); ?>">Ver integrantes</button>
-
-        <!-- Paleta de colores (mostrada al darle clic a cambiar color) -->
-        <div x-show="showColor" x-transition x-cloak class="mt-2">
-            <label class="form-label">Color:</label>
-            <input type="color" x-model="color" class="form-control form-control-color" style="width: 100%;">
-            <button @click.prevent="guardarColor" class="btn btn-primary btn-sm w-100 mt-2">Aplicar</button>
-        </div>
+        <!-- Botón de 3 puntitos con menú estilo columnas historias -->
+         
+<div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+    <div class="dropdown">
+        <button @click="open = !open" 
+                class="btn btn-sm btn-light border-0" 
+                type="button" id="dropdownMenuButton<?php echo e($project->id); ?>" 
+                data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem;">
+            &#x22EE;
+        </button>
+        <ul x-show="open" @click.away="open = false" x-transition x-cloak
+            class="dropdown-menu dropdown-menu-end" 
+            aria-labelledby="dropdownMenuButton<?php echo e($project->id); ?>" style="min-width: 160px;">
+            <li>
+                <button class="dropdown-item btn btn-sm text-start w-100" @click.prevent="showColor = !showColor">
+                    Cambiar color
+                </button>
+            </li>
+            <li>
+                <button class="dropdown-item btn btn-sm text-start w-100" data-bs-toggle="modal" data-bs-target="#modal-integrantes-<?php echo e($project->id); ?>">
+                    Ver integrantes
+                </button>
+            </li>
+            <!-- Paleta de colores -->
+                <div x-show="showColor" x-transition x-cloak class="mt-2">
+                    <label class="form-label mb-1">Color:</label>
+                    <input type="color" x-model="color" class="form-control form-control-color" style="width: 100%;">
+                    <button @click.prevent="guardarColor" class="btn btn-primary btn-sm w-100 mt-2">Aplicar</button>
+                </div>
+        </ul>
     </div>
 </div>
-
 
         </div>
 
@@ -65,7 +73,7 @@
 
             </div>
 
-            <div class="action-buttons">
+            <div class="action-buttons mt-3">
                 <a href="<?php echo e(route('tableros.show', $project->id)); ?>" class="btn btn-view">
                     <i class="fas fa-eye"></i> Ver
                 </a>
@@ -74,60 +82,99 @@
                     <a href="<?php echo e(route('projects.edit', $project->id)); ?>" class="btn btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST">
+                    <form action="<?php echo e(route('projects.destroy', $project->id)); ?>" method="POST" class="d-inline">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>
-                        <button type="submit" class="btn btn-delete"
-                                onclick="return confirm('¿Estás segura de que deseas eliminar este proyecto?')">
+                        <button type="button"
+                                class="btn btn-delete"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalConfirmarEliminarProyecto"
+                                data-action="<?php echo e(route('projects.destroy', $project->id)); ?>">
                             <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </form>
                 <?php endif; ?>
             </div>
         </div>
+
         <!-- Modal de Ver Integrantes -->
-<div class="modal fade" id="modal-integrantes-<?php echo e($project->id); ?>" tabindex="-1" aria-labelledby="integrantesLabel-<?php echo e($project->id); ?>" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="integrantesLabel-<?php echo e($project->id); ?>">Integrantes del Proyecto</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        <?php if($project->users && $project->users->count()): ?>
-            <ul class="list-group list-group-flush">
-                <?php $__currentLoopData = $project->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <li class="list-group-item d-flex align-items-center justify-content-between">
-                        <div>
-                            <strong><?php echo e($user->name); ?></strong>
-                            <div class="text-muted small"><?php echo e($user->email); ?></div>
-                        </div>
-                        <span class="badge bg-secondary rounded-pill"><?php echo e($user->usertype); ?></span>
-                    </li>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </ul>
-        <?php else: ?>
-            <p class="text-muted">No hay integrantes asignados a este proyecto.</p>
-        <?php endif; ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
+        <div class="modal fade" id="modal-integrantes-<?php echo e($project->id); ?>" tabindex="-1" aria-labelledby="integrantesLabel-<?php echo e($project->id); ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="integrantesLabel-<?php echo e($project->id); ?>">Integrantes del Proyecto</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <?php if($project->users && $project->users->count()): ?>
+                            <ul class="list-group list-group-flush">
+                                <?php $__currentLoopData = $project->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <strong><?php echo e($user->name); ?></strong>
+                                            <div class="text-muted small"><?php echo e($user->email); ?></div>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill"><?php echo e($user->usertype); ?></span>
+                                    </li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="text-muted">No hay integrantes asignados a este proyecto.</p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </div>
 </div>
 
-
+<!-- Modal Eliminar Proyecto -->
+<div class="modal fade" id="modalConfirmarEliminarProyecto" tabindex="-1" aria-labelledby="eliminarProyectoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formEliminarProyecto" method="POST" action="">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarProyectoLabel">Eliminar proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-outline-danger">Eliminar</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
-<!-- Script Alpine + lógica -->
+<!-- Script para manejar el modal de eliminar proyecto -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalEliminar = document.getElementById('modalConfirmarEliminarProyecto');
+    modalEliminar.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const action = button.getAttribute('data-action');
+        const form = document.getElementById('formEliminarProyecto');
+        form.setAttribute('action', action);
+    });
+});
+</script>
+
+<!-- AlpineJS + Toastify + Función colorPicker -->
 <script>
     function colorPicker(projectId, url, initialColor) {
         return {
             open: false,
+            showColor: false,
             color: initialColor,
-
             guardarColor() {
                 fetch(url, {
                     method: 'POST',
@@ -137,43 +184,42 @@
                     },
                     body: JSON.stringify({ color: this.color })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.open = false;
-                            Toastify({
-                                text: "Color actualizado correctamente",
-                                duration: 3000,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "#4CAF50"
-                            }).showToast();
-                        } else {
-                            Toastify({
-                                text: data.error || "Error al actualizar el color",
-                                duration: 3000,
-                                gravity: "top",
-                                position: "right",
-                                backgroundColor: "#FF0000"
-                            }).showToast();
-                        }
-                    })
-                    .catch(error => {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.showColor = false;
                         Toastify({
-                            text: "Error al actualizar el color",
+                            text: "Color actualizado correctamente",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#4CAF50"
+                        }).showToast();
+                    } else {
+                        Toastify({
+                            text: data.error || "Error al actualizar el color",
                             duration: 3000,
                             gravity: "top",
                             position: "right",
                             backgroundColor: "#FF0000"
                         }).showToast();
-                        console.error('Error:', error);
-                    });
+                    }
+                })
+                .catch(() => {
+                    Toastify({
+                        text: "Error al actualizar el color",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#FF0000"
+                    }).showToast();
+                });
             }
         }
     }
 </script>
 
-<!-- AlpineJS y Toastify -->
+<!-- Dependencias -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
