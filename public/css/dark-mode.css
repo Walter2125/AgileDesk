@@ -1951,6 +1951,137 @@ body *::after {
     border-color: var(--dark-border-primary) !important;
     opacity: 0.6 !important;
 }
+/* ======= ESTILOS ESPECÍFICOS PARA VISTA DE HISTORIAS ======= */
+
+/* Acordeón de comentarios en modo oscuro */
+.dark-mode .toggle-btn.bg-light {
+    background-color: var(--dark-bg-terciary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-primary) !important;
+}
+
+.dark-mode .toggle-btn.bg-light:hover {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-border-secondary) !important;
+}
+
+.dark-mode .contenido-acordeon {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+.dark-mode .scroll-comentarios {
+    background-color: var(--dark-bg-primary) !important;
+}
+
+.dark-mode .card.shadow.border-0 {
+    background-color: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+}
+
+/* Comentarios específicos en modo oscuro */
+.dark-mode .rounded-4.p-3.mb-3.bg-white.shadow-sm {
+    background-color: var(--dark-bg-secondary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .respuesta-celeste {
+    background-color: var(--dark-bg-terciary) !important;
+    border: 1px solid var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Formularios en línea de respuesta en modo oscuro */
+.dark-mode [id*="form-responder"] .form-control {
+    background-color: var(--dark-bg-terciary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode [id*="form-responder"] .form-control:focus {
+    background-color: var(--dark-bg-quaternary) !important;
+    border-color: var(--dark-accent-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(138, 124, 255, 0.25) !important;
+}
+
+.dark-mode [id*="form-responder"] .form-control::placeholder {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Estilo del acordeón completo de historias */
+.dark-mode .mb-0.border.rounded {
+    border-color: var(--dark-border-primary) !important;
+    background-color: var(--dark-bg-primary) !important;
+}
+
+/* Iconos específicos en historias */
+.dark-mode .bi-reply-fill {
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .bi-chat-left-text {
+    color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .bi-pencil-square {
+    color: var(--dark-warning) !important;
+}
+
+.dark-mode .bi-trash {
+    color: var(--dark-danger) !important;
+}
+
+.dark-mode .bi-send-fill,
+.dark-mode .bi-save-fill {
+    color: white !important;
+}
+
+/* Elementos específicos de historias */
+.dark-mode .fs-6 {
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode small.text-muted {
+    color: var(--dark-text-terciary) !important;
+}
+
+/* Botones específicos de historias */
+.dark-mode .btn-sm.btn-outline-info {
+    color: var(--dark-accent-primary) !important;
+    border-color: var(--dark-accent-primary) !important;
+}
+
+.dark-mode .btn-sm.btn-outline-info:hover {
+    background-color: var(--dark-accent-primary) !important;
+    color: white !important;
+}
+
+/* Elementos del modal que necesiten ajuste adicional */
+.dark-mode .modal-title.text-danger {
+    color: var(--dark-danger) !important;
+}
+
+.dark-mode .bi-exclamation-triangle-fill.text-danger {
+    color: var(--dark-danger) !important;
+}
+
+/* Historia container específico */
+.dark-mode .historia-container-fluid {
+    background-color: var(--dark-bg-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Custom modals en modo oscuro */
+.dark-mode .custom-modal .bg-white {
+    background-color: var(--dark-bg-secondary) !important;
+    border-color: var(--dark-border-primary) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+.dark-mode .bg-black.bg-opacity-50 {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
 /* Optimizaciones para botones */
 [data-bs-theme="dark"] .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex,
     .dark-mode .btn-optimized.btn-sidebar-toggle.d-none.d-lg-flex {
