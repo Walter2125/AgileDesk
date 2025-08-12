@@ -11,6 +11,12 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap CSS -->
+
+
+<!-- Bootstrap Bundle JS (incluye Popper para dropdowns, tooltips, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
     @php
@@ -170,7 +176,7 @@
                                                             &#x22EE; {{-- ⋮ --}}
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a></li>
+                                                            <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
                                                                 <button type="button" class="dropdown-item text-danger"
                                                                         data-bs-toggle="modal"
@@ -297,7 +303,7 @@
                                         return;
                                     }
 
-                                    fetch(`/historias/${historiaId}/mover`, {
+                                    fetch(/historias/${historiaId}/mover, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -533,7 +539,7 @@
                                     return;
                                 }
 
-                                fetch(`/columnas/${columnId}`, {
+                                fetch(/columnas/${columnId}, {
                                     method: 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -632,7 +638,7 @@
 
                         // Asegurar que la URL comience con "/" para que sea una ruta absoluta
                         // y agregar el prefijo de administrador para acceder a la ruta correcta
-                        form.action = `/admin/columnas/${columnaId}`;
+                        form.action = /admin/columnas/${columnaId};
 
                         // Resetea el input modo por si acaso
                         document.getElementById('modoEliminar').value = '';
@@ -742,7 +748,7 @@
                         const form = document.getElementById('formEditarColumna');
                         const input = document.getElementById('inputNombreColumna');
 
-                        form.action = `/columnas/${id}`; // Asegúrate que esta ruta está definida
+                        form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
                         input.value = nombre;
 
                         const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));

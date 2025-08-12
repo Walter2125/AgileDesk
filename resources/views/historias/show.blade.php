@@ -322,20 +322,24 @@
          <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
+    <div class="row mb-3">
 
     <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="max-width: 600px; width: 100%;">
+        <div class="mb-0" style="font-weight: bold; width: 100%;">
+          <label class="form-label rounded">Nombre de la Historia</label>
             <h2 id="tituloTexto" class="historia-title rounded"
                 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                 title="{{ $historia->nombre }}">
                 H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
             </h2>
-
             <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                class="form-control form-control-lg rounded d-none"
-                value="{{ old('nombre', $historia->nombre) }}"
-                data-editable="true"
-                style="font-weight: bold;" />
+    class="form-control formulario-editable rounded d-none"
+    value="{{ old('nombre', $historia->nombre) }}"
+    data-editable="true" />
+
+    
+
+
         </div>
 
         <div class="d-flex align-items-center">
@@ -353,13 +357,14 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
+    
+        <div class="col-md-6 ">
+          
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
       
 
-                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
+                <select name="usuario_id" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="">-- Seleccionar usuario --</option>
     @foreach($usuarios as $usuario)
         <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
@@ -372,7 +377,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-select rounded" data-editable="true" disabled>
+                <select name="columna_id" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
                         <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
@@ -384,7 +389,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-select rounded" data-editable="true" disabled>
+                <select name="prioridad" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
                     <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
                     <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
@@ -395,14 +400,15 @@
         <div class="col-lg-6 col-md-12">
             <div class="mb-3">
                 <label class="form-label rounded">Horas estimadas</label>
-                <input type="number" class="form-control rounded" name="trabajo_estimado"
+                <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
                     value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
                     data-editable="true" readonly>
+                    
             </div>
 
             <div class="mb-3">
                 <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-select rounded" data-editable="true" disabled>
+                <select name="sprint_id" class="form-control formulario-editable" data-editable="true" disabled >
                     <option value="">Ningún Sprint</option>
                     @foreach ($sprints as $sprint)
                         <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -414,26 +420,31 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control rounded"
+                <input type="text" class="form-control formulario-editable"
                     value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
                     readonly>
             </div>
         </div>
-    </div>
-
+        
     <div class="mb-3">
         <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion"
+        <textarea class="form-control formulario-editable" name="descripcion"
              maxlength="5000"
             data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
     </div>
+    </div>
+
 
     <div class="d-flex justify-content-end mb-3">
-        <button id="btnGuardar" type="submit"
-            class="btn btn-primary d-none">
-            <i class="bi bi-save"></i> Actualizar
-        </button>
-    </div>
+    <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
+        Cancelar
+    </button>
+    <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
+        <i class="bi bi-save"></i> Actualizar
+    </button>
+</div>
+
+    
 </form>
 
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
@@ -441,42 +452,84 @@
     @method('DELETE')
 </form>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-     document.querySelectorAll('textarea[readonly]').forEach(textarea => {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    });
-        const btnEditar = document.getElementById('btnEditar');
-        const btnGuardar = document.getElementById('btnGuardar');
-        const tituloTexto = document.getElementById('tituloTexto');
-        const tituloInput = document.getElementById('tituloInput');
-        const editableFields = document.querySelectorAll('[data-editable="true"]');
-        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+<script>document.addEventListener('DOMContentLoaded', function () {
+    const btnEditar = document.getElementById('btnEditar');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const btnCancelar = document.createElement('button'); // crear botón cancelar dinámicamente
+    btnCancelar.id = 'btnCancelar';
+    btnCancelar.type = 'button';
+    btnCancelar.className = 'btn btn-secondary ms-2 d-none';
+    btnCancelar.textContent = 'Cancelar';
 
-        btnEditar.addEventListener('click', function (e) {
-            e.preventDefault();
-            tituloTexto.classList.add('d-none');
-            tituloInput.classList.remove('d-none');
-            editableFields.forEach(field => {
-                field.removeAttribute('readonly');
-                field.removeAttribute('disabled');
-              if (field.tagName === 'TEXTAREA') {
-            field.style.height = 'auto';
-            field.style.height = field.scrollHeight + 'px';
+    // Agregar el botón cancelar después de btnGuardar
+    btnGuardar.parentNode.appendChild(btnCancelar);
+
+    const tituloTexto = document.getElementById('tituloTexto');
+    const tituloInput = document.getElementById('tituloInput');
+    const editableFields = document.querySelectorAll('[data-editable="true"]');
+    const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+    const form = document.getElementById('formHistoria');
+
+    // Guardar valores originales para restaurar si se cancela
+    let originalValues = {};
+
+    btnEditar.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Guardar valores actuales
+        editableFields.forEach(field => {
+            originalValues[field.name || field.id] = field.value;
+        });
+
+        tituloTexto.classList.add('d-none');
+        tituloInput.classList.remove('d-none');
+        editableFields.forEach(field => {
+            field.removeAttribute('readonly');
+            field.removeAttribute('disabled');
+            if (field.tagName === 'TEXTAREA') {
+                field.style.height = 'auto';
+                field.style.height = field.scrollHeight + 'px';
+            }
+        });
+        btnGuardar.classList.remove('d-none');
+        btnCancelar.classList.remove('d-none');
+        if (dropdownMenuContainer) {
+            dropdownMenuContainer.classList.add('d-none');
         }
     });
-            btnGuardar.classList.remove('d-none');
-            if (dropdownMenuContainer) {
-                dropdownMenuContainer.classList.add('d-none');
+
+    btnCancelar.addEventListener('click', function () {
+        // Restaurar valores originales
+        editableFields.forEach(field => {
+            const key = field.name || field.id;
+            if (originalValues.hasOwnProperty(key)) {
+                field.value = originalValues[key];
             }
         });
 
-        const form = document.getElementById('formHistoria');
-        form.addEventListener('submit', function () {
-            console.log('Formulario enviado');
+        // Restaurar modo lectura
+        tituloTexto.classList.remove('d-none');
+        tituloInput.classList.add('d-none');
+        editableFields.forEach(field => {
+            field.setAttribute('readonly', true);
+            field.setAttribute('disabled', true);
+            if (field.tagName === 'TEXTAREA') {
+                field.style.height = 'auto';
+                field.style.height = field.scrollHeight + 'px';
+            }
         });
+
+        btnGuardar.classList.add('d-none');
+        btnCancelar.classList.add('d-none');
+        if (dropdownMenuContainer) {
+            dropdownMenuContainer.classList.remove('d-none');
+        }
     });
+
+    form.addEventListener('submit', function () {
+        console.log('Formulario enviado');
+    });
+});
 </script>
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">

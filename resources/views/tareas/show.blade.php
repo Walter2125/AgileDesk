@@ -135,15 +135,37 @@
 @endsection
 
 @section('content')
-<div class="container py-4" style="max-width: 1200px;">
-    <div class="card p-5 mb-5">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
+<link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+@if(session('success'))
+            <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
+                {{ session('success') }}
+                <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+            </div>
         @endif
         @if(session('deleted'))
             <div class="alert alert-info">{{ session('deleted') }}</div>
         @endif
+
+<div class="container py-4" style="max-width: 1200px;">
+    <div class="card p-5 mb-5">
+
+        
 
         <div class="mb-4">
             <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
