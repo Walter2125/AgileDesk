@@ -102,12 +102,8 @@
                     </select>
                 </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label rounded">Descripción</label>
-                <textarea name="descripcion" maxlength="5000" style="field-sizing: content;" class="form-control rounded" rows="4">{{ old('descripcion') }}</textarea>
-            </div>
 
-<<<<<<< HEAD
+
         <div class="mb-3">
             <label class="form-label rounded">Descripción</label>
             <textarea name="descripcion" maxlength="5000" style="field-sizing: content;" class="form-control rounded" rows="4">{{ old('descripcion') }}</textarea>
@@ -123,16 +119,6 @@
             <button type="submit"
                 class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">
                 Guardar
-=======
-            <div class="mb-3 d-flex justify-content-end">
-            <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}" 
-               class="btn btn-secondary me-2">
-                <i class="bi bi-x-circle me-1"></i> Cancelar
-            </a>
-            
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle me-1"></i> Guardar
->>>>>>> origin
             </button>
 
            
