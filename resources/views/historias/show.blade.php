@@ -271,6 +271,26 @@
   .toggle-btn.active::after {
     transform: rotate(225deg); /* para cuando se despliega */
   }
+
+    /* Custom modals that respect sidebar */
+    .custom-modal {
+        margin-left: var(--sidebar-width, 250px);
+        width: calc(100% - var(--sidebar-width, 250px));
+    }
+
+    /* Sidebar collapsed state for modals */
+    body.sidebar-collapsed .custom-modal {
+        margin-left: var(--sidebar-collapsed-width, 56px);
+        width: calc(100% - var(--sidebar-collapsed-width, 56px));
+    }
+
+    /* Mobile responsive - modals cover full screen */
+    @media (max-width: 991.98px) {
+        .custom-modal {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+    }
 </style>
 @endsection
 
@@ -642,7 +662,7 @@
         <div class="card-body bg-light px-4 py-3 scroll-comentarios">
       <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
         <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
-        <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
+        <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('d-none')">
           <i class="bi bi-chat-left-text me-1"></i> Comentar
         </button>
       </div>
@@ -658,7 +678,7 @@
                 </div>
                 @if(Auth::id() === $comentario->user_id)
                   <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
+                    <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('d-none')">
                       <i class="bi bi-pencil-square fs-5"></i>
                     </button>
                     <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
@@ -699,7 +719,7 @@
                     </div>
                     @if(Auth::id() === $respuesta->user_id)
                       <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $respuesta->id }}').classList.remove('hidden')">
+                        <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $respuesta->id }}').classList.remove('d-none')">
                           <i class="bi bi-pencil-square fs-5"></i>
                         </button>
                         <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
@@ -711,8 +731,8 @@
                   <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
 
                   <!-- Modal Editar Respuesta -->
-<div id="editarComentarioModal{{ $respuesta->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
+<div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
     <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
       @csrf @method('PUT')
       <div class="mb-4 text-center">
@@ -720,9 +740,9 @@
         <h4 class="fw-bold text-dark">Editar Respuesta</h4>
         <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
       </div>
-      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
+      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
         <button type="submit" class="btn btn-primary text-white">
           <i class="bi bi-save-fill me-1"></i> Actualizar
         </button>
@@ -757,8 +777,9 @@
               @endforeach
 
               <!-- Modal Editar Comentario -->
-              <div id="editarComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
+              <!-- Modal Editar Comentario -->
+              <div id="editarComentarioModal{{ $comentario->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
       @csrf @method('PUT')
       <div class="mb-4 text-center">
@@ -766,9 +787,9 @@
         <h4 class="fw-bold text-dark">Editar Comentario</h4>
         <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
       </div>
-      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
+      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
         <button type="submit" class="btn btn-primary text-white">
           <i class="bi bi-save-fill me-1"></i> Actualizar
         </button>
@@ -809,8 +830,8 @@
     </div>
 
  <!-- Modal Nuevo Comentario -->
-<div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+<div id="nuevoComentarioModal" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
     <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
       @csrf
       <div class="mb-4 text-center">
@@ -819,10 +840,10 @@
         <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
       </div>
       <div class="form-group mb-4">
-        <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-4 w-full" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
+        <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-3 w-100" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
       </div>
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('d-none')">Cancelar</button>
         <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
           <i class="bi bi-send-fill me-1"></i> Publicar
         </button>
