@@ -179,6 +179,14 @@ Route::middleware(['auth', 'role:admin'])
 
         // Operaciones exclusivas de administradores para columnas
         Route::delete('columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
+
+       // Historial por proyecto (para administradores)
+      Route::get('/users/admin/{project}/historial', 
+      [HistorialCambioController::class, 'porProyecto'])
+          ->name('users.admin.historial')
+          ->where('project', '[0-9]+');
+
+        
 });
 
 // Rutas de autenticación
