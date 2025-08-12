@@ -174,7 +174,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
         // Gestión de usuarios
-        Route::get('/miembros',    [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('/miembros',    [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
 
         // Operaciones exclusivas de administradores para columnas

@@ -419,10 +419,53 @@ private function compartirContextoDesdeColumna(Columna $columna)
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error al mover la historia: ' . $e->getMessage()
-            ], 500);
+                'message' => 'No puedes mover historias entre tableros diferentes'
+            ], 403);
         }
+
+        // Registrar en el historial antes de mover
+       /* HistorialCambio::create([
+            'fecha' => now(),
+            'usuario' => auth()->user()->name,
+            'accion' => 'Movimiento de Historia',
+            'detalles' => sprintf(
+                'Historia "%s" movida de %s a %s',
+                $historia->nombre,
+                $columnaOrigen->nombre,
+                $columnaDestino->nombre
+            ),
+            'sprint' => $historia->sprint_id,
+            'proyecto_id' => $historia->proyecto_id
+        ]);*/
+
+        // Actualizar y guardar
+        $historia->columna_id = $validated['columna_id'];
+        $historia->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Historia movida correctamente',
+            'data' => [
+                'historia_id' => $historia->id,
+                'nueva_columna_id' => $historia->columna_id,
+                'nueva_columna_nombre' => $columnaDestino->nombre
+            ]
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error de validación',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al mover la historia: ' . $e->getMessage()
+        ], 500);
     }
 }
+

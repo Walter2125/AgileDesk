@@ -4,6 +4,8 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/estadisticas-proy.css') }}">
+    <!-- DataTables Bootstrap 5 CSS - Local -->
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/css/dataTables.bootstrap5.min.css') }}">
     <style>
         /* Estilos para el panel de administración */
         .admin-header {
@@ -352,10 +354,11 @@
         }
 
         .modal-content {
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             border: none;
             box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
             max-width: 90vw;
+            width: 100%;
         }
 
         /* Responsive para modales */
@@ -369,11 +372,11 @@
             .modal-header,
             .modal-body,
             .modal-footer {
-                padding: 1rem;
+                padding: 1.5rem;
             }
         }
         
-        /* Estilos mejorados para modales - Consistent con soft-deleted */
+        /* Estilos mejorados para modales - Simétricos y consistentes */
         .modal-content {
             border: none;
             border-radius: 0.75rem;
@@ -382,20 +385,28 @@
         
         .modal-header {
             border-radius: 0.75rem 0.75rem 0 0;
-            padding: 1.25rem;
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+            text-align: center;
         }
         
         .modal-footer {
             border-radius: 0 0 0.75rem 0.75rem;
-            padding: 1.25rem;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            border-top: 1px solid #dee2e6;
+            justify-content: center;
+            gap: 0.75rem;
         }
         
         .modal-body {
-            padding: 1.5rem 1.25rem;
+            padding: 1.5rem;
+            text-align: center;
         }
         
         .modal-title {
             font-weight: 600;
+            margin: 0 auto;
+            text-align: center;
         }
         
         .bg-danger-subtle {
@@ -416,6 +427,12 @@
             .modal-dialog {
                 max-width: 95%;
                 margin: 1rem auto;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1.25rem;
             }
         }
 
@@ -487,6 +504,113 @@
         .select-with-icon .form-select:focus + ::after {
             color: #4a90e2;
         }
+
+        /* Ajustes del selector de paginación (DataTables) en card-header */
+        .card-header .dataTables_length,
+        .card-header .dataTables_length label,
+        .card-header .dataTables_length select {
+            font-weight: 400 !important; /* quitar negrita */
+        }
+        .card-header .dataTables_length label {
+            margin-bottom: 0; /* alineación limpia */
+        }
+
+        /* Centrar controles de longitud cuando estén en el body */
+        .dt-length-center .dataTables_length {
+            display: inline-block;
+            text-align: center;
+        }
+        .dt-length-center .dataTables_length label,
+        .dt-length-center .dataTables_length select {
+            font-weight: 400 !important;
+        }
+
+        /* Centrar paginación de DataTables */
+        .dataTables_wrapper .dataTables_paginate {
+            display: flex;
+            justify-content: center;
+            float: none !important;
+            width: 100%;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        /* Estilo de los items para parecer « ‹ 1 2 3 › » */
+        .dataTables_wrapper .dataTables_paginate .pagination {
+            gap: 14px; /* separación uniforme entre items */
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-item {
+            margin: 0; /* usar gap del contenedor */
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-link {
+            background: transparent;
+            color: #e0e6eb; /* texto claro para tema oscuro */
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 4px 10px;
+            line-height: 1.25;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+            background: transparent;
+            color: #ffffff;
+            border-color: #ffffff;
+            border-width: 2px;
+            box-shadow: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+            color: #a3aab2;
+            opacity: 0.6;
+            border-color: transparent;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .page-link:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Altura del selector de longitud de Usuarios igual al buscador (35px) */
+        #usuariosTable_length .form-select,
+        #usuariosTable_length select {
+            height: 35px !important;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 1.25;
+        }
+        #usuariosTable_length label { margin-bottom: 0; }
+
+        /* Altura del selector de longitud de Proyectos igual al buscador (35px) */
+        #proyectosTable_length .form-select,
+        #proyectosTable_length select {
+            height: 35px !important;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 1.25;
+        }
+        #proyectosTable_length label { margin-bottom: 0; }
+
+        /* Altura del selector de longitud de Historial igual al buscador (35px) */
+        #historialTable_length .form-select,
+        #historialTable_length select {
+            height: 35px !important;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 1.25;
+        }
+        #historialTable_length label { margin-bottom: 0; }
+
+        /* Altura del selector de longitud de Sprints igual al buscador (35px) */
+        #sprintsTable_length .form-select,
+        #sprintsTable_length select {
+            height: 35px !important;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 1.25;
+        }
+        #sprintsTable_length label { margin-bottom: 0; }
     </style>
 @stop
 @section('content')
@@ -575,6 +699,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-3">
                         <span>Usuarios</span>
+                        <div id="usuariosLengthContainer" class="d-flex align-items-center"></div>
                         <!-- Buscador para usuarios -->
                         <div class="input-group" style="width: 300px;">
                             <input type="text" class="form-control form-control-sm" id="searchUsuarios" placeholder="Buscar usuarios..." style="height: 35px;">
@@ -583,7 +708,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="d-flex gap-2" role="group">
+                    <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
                         <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
                             <i class="bi bi-people"></i> Ver Todos
                         </a>
@@ -594,7 +719,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table">
+                        <table class="table table-hover admin-table" id="usuariosTable">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -608,7 +733,7 @@
                             <tbody id="usuariosTableBody">
                                 @forelse($usuarios as $index => $usuario)
                                 <tr class="usuario-row {{ $usuario->trashed() ? 'table-secondary' : '' }}">
-                                    <td class="text-center fw-bold">{{ ($usuarios->currentPage() - 1) * $usuarios->perPage() + $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td title="{{ $usuario->name }}">
                                         <div class="user-name-cell">
                                             <span class="user-name-text">{{ $usuario->name }}</span>
@@ -661,15 +786,11 @@
                                     </td>
                                 </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="6" class="text-center">No hay usuarios registrados</td>
-                                </tr>
+                                {{-- Sin fila de vacíos para DataTables --}}
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="pagination-container">
-                            {{ $usuarios->links() }}
-                        </div>
+                        {{-- Paginación manejada por DataTables --}}
                     </div>
                 </div>
             </div>
@@ -681,6 +802,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-3">
                         <span>Proyectos</span>
+                        <div id="proyectosLengthContainer" class="d-flex align-items-center"></div>
                         <!-- Buscador para proyectos -->
                         <div class="input-group" style="width: 300px;">
                             <input type="text" class="form-control form-control-sm" id="searchProyectos" placeholder="Buscar proyectos..." style="height: 35px;">
@@ -689,13 +811,15 @@
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
-                        <i class="bi bi-folder"></i> Ver Todos
-                    </a>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
+                            <i class="bi bi-folder"></i> Ver Todos
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table proyectos-table">
+                        <table class="table table-hover admin-table proyectos-table" id="proyectosTable">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -708,7 +832,7 @@
                             <tbody id="proyectosTableBody">
                                 @forelse($proyectos as $proyecto)
                                 <tr class="proyecto-row">
-                                    <td class="text-center fw-bold">{{ ($proyectos->currentPage() - 1) * $proyectos->perPage() + $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td title="{{ $proyecto->name }}">{{ $proyecto->name }}</td>
                                     <td class="text-center" title="{{ $proyecto->creator->name ?? 'Sin responsable' }}">{{ $proyecto->creator->name ?? 'Sin responsable' }}</td>
                                     <td class="text-center">{{ $proyecto->users->count() }}</td>
@@ -740,15 +864,11 @@
                                     </td>
                                 </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">No hay proyectos registrados</td>
-                                </tr>
+                                {{-- Sin fila de vacíos para DataTables --}}
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="pagination-container">
-                            {{ $proyectos->links() }}
-                        </div>
+                        {{-- Paginación manejada por DataTables --}}
                     </div>
                 </div>
             </div>
@@ -760,6 +880,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-3">
                         <span>Historial de Cambios</span>
+                        <div id="historialLengthContainer" class="d-flex align-items-center"></div>
                         <!-- Buscador para historial -->
                         <div class="input-group" style="width: 300px;">
                             <input type="text" class="form-control form-control-sm" id="searchHistorial" placeholder="Buscar historial..." style="height: 35px;">
@@ -768,13 +889,15 @@
                             </button>
                         </div>
                     </div>
-                    <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-">
-                        <i class="bi bi-clock-history"></i> Ver Todo
-                    </a>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-2">
+                            <i class="bi bi-clock-history"></i> Ver Todo
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table historial-table align-middle">
+                        <table class="table table-hover admin-table historial-table align-middle" id="historialTable">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -788,7 +911,7 @@
                             <tbody id="historialTableBody">
                                 @forelse($historial as $item)
                                 <tr class="historial-row">
-                                    <td class="text-center fw-bold">{{ ($historial->currentPage() - 1) * $historial->perPage() + $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td title="{{ $item->usuario }}">
                                         <span class="fw-semibold">{{ $item->usuario }}</span>
                                     </td>
@@ -805,15 +928,11 @@
                                     </td>
                                 </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">No hay historial registrado</td>
-                                </tr>
+                                {{-- Sin fila de vacíos para DataTables --}}
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="pagination-container">
-                            {{ $historial->links() }}
-                        </div>
+                        {{-- Paginación manejada por DataTables --}}
                     </div>
                 </div>
             </div>
@@ -825,6 +944,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-3">
                         <span>Sprints</span>
+                        <div id="sprintsLengthContainer" class="d-flex align-items-center"></div>
                         <!-- Buscador para sprints -->
                         <div class="input-group" style="width: 300px;">
                             <input type="text" class="form-control form-control-sm" id="searchSprints" placeholder="Buscar sprints..." style="height: 35px;">
@@ -832,11 +952,13 @@
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
+                        
                     </div>
+                    
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover admin-table sprints-table">
+                        <table class="table table-hover admin-table sprints-table" id="sprintsTable">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -848,7 +970,7 @@
                             <tbody id="sprintsTableBody">
                                 @forelse($sprints as $sprint)
                                 <tr class="sprint-row">
-                                    <td class="text-center fw-bold">{{ ($sprints->currentPage() - 1) * $sprints->perPage() + $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
                                     <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td class="text-center">
@@ -861,15 +983,11 @@
                                     </td>
                                 </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">No hay sprints registrados</td>
-                                </tr>
+                                {{-- Sin fila de vacíos para DataTables --}}
                                 @endforelse
                             </tbody>
                         </table>
-                        <div class="pagination-container">
-                            {{ $sprints->links() }}
-                        </div>
+                        {{-- Paginación manejada por DataTables --}}
                     </div>
                 </div>
             </div>
@@ -1118,7 +1236,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="deleteUserForm" method="POST" class="d-inline">
                     @csrf
-                    @method('DELETE')
+                    <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3"></i> Eliminar Permanentemente
                     </button>
@@ -1184,7 +1302,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="deleteProjectForm" method="POST" class="d-inline">
                     @csrf
-                    @method('DELETE')
+                    <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3"></i> Eliminar Permanentemente
                     </button>
@@ -1303,33 +1421,23 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Manejo del modal de eliminación
+        // Manejo del modal de eliminación (solo establece la acción del formulario)
         const deleteProjectModal = document.getElementById('deleteProjectModal');
         const deleteProjectForm = document.getElementById('deleteProjectForm');
-        
-        deleteProjectModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const projectId = button.getAttribute('data-project-id');
-            const projectName = button.getAttribute('data-project-name');
-            
-            // Guardar nombre para confirmación (sin mostrar en el modal)
-            deleteProjectForm.dataset.projectName = projectName;
-            
-            // Configurar la acción del formulario
-            deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
-        });
-
-        // Manejo de envío del formulario de eliminación
-        deleteProjectForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const projectName = deleteProjectForm.dataset.projectName || '';
-            
-            // Confirmar eliminación
-            if (confirm(`¿Estás seguro de que deseas eliminar el proyecto "${projectName}"? Esta acción no se puede deshacer.`)) {
-                this.submit();
-            }
-        });
+        if (deleteProjectModal && deleteProjectForm) {
+            deleteProjectModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const projectId = button?.getAttribute('data-project-id');
+                const projectName = button?.getAttribute('data-project-name') || '';
+                // Guardar nombre (por si se quiere usar en el contenido)
+                deleteProjectForm.dataset.projectName = projectName;
+                // Configurar la acción del formulario
+                if (projectId) {
+                    deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
+                }
+            });
+            // Sin confirm() adicional: el modal ya actúa como confirmación
+        }
 
         // Manejo del modal de eliminación
         const deleteUserModal = document.getElementById('deleteUserModal');
@@ -1378,28 +1486,39 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             try {
+                // Modal de eliminación de proyecto: solo establecer action del formulario (sin confirm extra)
+                const deleteProjectModal2 = document.getElementById('deleteProjectModal');
+                const deleteProjectForm2 = document.getElementById('deleteProjectForm');
+                if (deleteProjectModal2 && deleteProjectForm2) {
+                    deleteProjectModal2.addEventListener('show.bs.modal', function(event) {
+                        try {
+                            const button = event.relatedTarget;
+                            const projectId = button?.getAttribute('data-project-id');
+                            const projectName = button?.getAttribute('data-project-name') || '';
+                            deleteProjectForm2.dataset.projectName = projectName;
+                            if (projectId) {
+                                deleteProjectForm2.action = `/admin/projects/${projectId}/admin-delete`;
+                            }
+                        } catch (err) {
+                            console.error('Error preparando modal de eliminación de proyecto:', err);
+                        }
+                    });
+                }
+
                 // JavaScript para manejar modales de eliminación y restauración de usuarios
                 
-                // Modal de eliminación de usuario
+                // Modal de eliminación de usuario (única inicialización)
                 const deleteUserModal = document.getElementById('deleteUserModal');
                 if (deleteUserModal) {
                     deleteUserModal.addEventListener('show.bs.modal', function (event) {
                         try {
                             const button = event.relatedTarget;
-                            const userId = button.getAttribute('data-user-id');
-                            const userName = button.getAttribute('data-user-name');
-                            
-                            // Actualizar el contenido del modal
+                            const userId = button?.getAttribute('data-user-id');
+                            const userName = button?.getAttribute('data-user-name') || '';
                             const deleteUserNameEl = document.getElementById('deleteUserName');
-                            if (deleteUserNameEl) {
-                                deleteUserNameEl.textContent = userName;
-                            }
-                            
-                            // Actualizar la acción del formulario
+                            if (deleteUserNameEl) deleteUserNameEl.textContent = userName;
                             const form = document.getElementById('deleteUserForm');
-                            if (form && userId) {
-                                form.action = `/admin/users/${userId}/delete`;
-                            }
+                            if (form && userId) form.action = `/admin/users/${userId}/delete`;
                         } catch (error) {
                             console.error('Error en modal de eliminación:', error);
                         }
@@ -1454,11 +1573,26 @@
                     sprints: document.querySelectorAll('.sprint-row')
                 };
 
-                // Función genérica para filtrar tablas
+                // Función genérica para filtrar tablas (usa DataTables si está disponible)
                 function filterTable(tableType, searchColumns) {
                     try {
                         const searchInput = searchInputs[tableType];
                         const rows = tableRows[tableType];
+                        // Si DataTables está activo, delegar búsqueda a su API
+                        const tableIdMap = {
+                            usuarios: '#usuariosTable',
+                            proyectos: '#proyectosTable',
+                            historial: '#historialTable',
+                            sprints:   '#sprintsTable'
+                        };
+                        if (window.jQuery && $.fn && $.fn.DataTable) {
+                            const sel = tableIdMap[tableType];
+                            if (sel && $(sel).length && $(sel).hasClass('dataTable')) {
+                                const dt = $(sel).DataTable();
+                                dt.search((searchInput?.value || '').trim()).draw();
+                                return; // Evitar filtrado manual
+                            }
+                        }
                         
                         if (!searchInput || !rows) return;
                         
@@ -1775,4 +1909,122 @@
     
     <!-- Script externo para estadísticas -->
     <script src="{{ asset('js/estadisticas-proy.js') }}"></script>
+
+    <!-- jQuery (necesario para DataTables) - Local -->
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <!-- DataTables JS + integración Bootstrap 5 - Local -->
+    <script src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Evitar doble init
+            if (!window.jQuery || !$.fn || !$.fn.DataTable) {
+                console.error('DataTables no está disponible.');
+                return;
+            }
+
+            // Utilidad para validar columnas (evita _DT_CellIndex)
+            function hasConsistentColumns(table) {
+                try {
+                    const headCols = table.querySelectorAll('thead th').length;
+                    const rows = table.querySelectorAll('tbody tr');
+                    for (const row of rows) {
+                        // Ignorar filas de mensajes personalizados
+                        if (row.classList.contains('no-results-message')) continue;
+                        const cells = row.querySelectorAll('td').length;
+                        if (cells > 0 && cells !== headCols) return false;
+                    }
+                    return true;
+                } catch (e) {
+                    return true;
+                }
+            }
+
+            const commonOpts = {
+                paging: true,
+                searching: false, // buscamos con inputs personalizados
+                ordering: false,
+                info: true,
+                lengthChange: true,
+                lengthMenu: [ [5, 10, 20, 30], [5, 10, 20, 30] ],
+                pageLength: 10,
+                pagingType: 'full_numbers',
+                language: {
+                    emptyTable: 'No hay datos disponibles en la tabla',
+                    zeroRecords: 'No se encontraron resultados',
+                    lengthMenu: '_MENU_',
+                    info: 'Mostrando _START_ a _END_ de _TOTAL_',
+                    infoEmpty: 'Mostrando 0 a 0 de 0',
+                    infoFiltered: '(filtrado de _MAX_)',
+                    search: 'Buscar:',
+                    searchPlaceholder: '',
+                    loadingRecords: 'Cargando...',
+                    processing: 'Procesando...',
+                    paginate: {
+                        first: '«',
+                        previous: '‹',
+                        next: '›',
+                        last: '»'
+                    }
+                },
+                // l=length, t=table, i=info, p=pagination (ocultamos f=filter)
+                dom: 'ltip',
+                initComplete: function () {
+                    try {
+                        const api = this.api();
+                        const tableId = api.table().node().id; // e.g., 'usuariosTable'
+                        const wrapper = $(api.table().container()); // .dataTables_wrapper
+                        const lengthDiv = wrapper.find('div.dataTables_length');
+                        const map = {
+                            'usuariosTable': '#usuariosLengthContainer',
+                            'proyectosTable': '#proyectosLengthContainer',
+                            'historialTable': '#historialLengthContainer',
+                            'sprintsTable':   '#sprintsLengthContainer'
+                        };
+                        const targetSelector = map[tableId];
+                        const target = targetSelector ? document.querySelector(targetSelector) : null;
+                        if (target && lengthDiv.length) {
+                            lengthDiv.addClass('mb-0');
+                            // Ajuste visual
+                            lengthDiv.find('label').addClass('mb-0 d-flex align-items-center gap-2');
+                            lengthDiv.find('select')
+                                .addClass('form-select form-select-sm')
+                                .css({ width: 'auto' });
+                            target.innerHTML = '';
+                            target.appendChild(lengthDiv.get(0));
+                        }
+                    } catch (err) {
+                        console.warn('No se pudo mover el selector de longitud:', err);
+                    }
+                }
+            };
+
+            const tables = [
+                { id: '#usuariosTable', searchInput: '#searchUsuarios' },
+                { id: '#proyectosTable', searchInput: '#searchProyectos' },
+                { id: '#historialTable', searchInput: '#searchHistorial' },
+                { id: '#sprintsTable', searchInput: '#searchSprints' },
+            ];
+
+            tables.forEach(cfg => {
+                const el = document.querySelector(cfg.id);
+                if (!el) return;
+                if (!hasConsistentColumns(el)) {
+                    console.warn('Columnas inconsistentes en', cfg.id, '— se omite DataTables');
+                    return;
+                }
+                try {
+                    const dt = $(cfg.id).DataTable(commonOpts);
+                    // Conectar buscador personalizado a DataTables (aunque searching:false, usamos API)
+                    const input = document.querySelector(cfg.searchInput);
+                    if (input) {
+                        input.addEventListener('input', () => dt.search(input.value).draw());
+                    }
+                } catch (e) {
+                    console.error('Error inicializando DataTable para', cfg.id, e);
+                }
+            });
+        });
+    </script>
 @stop

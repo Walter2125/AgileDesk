@@ -22,10 +22,10 @@ class AdminController extends Controller
     public function index(Request $request, $projectId = null)
     {
         // Obtener datos administrativos básicos
-        $usuarios = User::where('usertype', '!=', 'admin')->paginate(5, ['*'], 'usuarios_page');
-        $proyectos = Project::with('creator', 'users')->paginate(5, ['*'], 'proyectos_page');
-        $historial = HistorialCambio::paginate(5, ['*'], 'historial_page');
-        $sprints = Sprint::with('proyecto')->paginate(5, ['*'], 'sprints_page');
+    $usuarios = User::where('usertype', '!=', 'admin')->get();
+    $proyectos = Project::with('creator', 'users')->get();
+    $historial = HistorialCambio::orderByDesc('created_at')->get();
+    $sprints = Sprint::with('proyecto')->get();
 
         // Lógica para estadísticas de proyecto (similar a UserController)
         if (!$projectId) {
@@ -574,27 +574,32 @@ class AdminController extends Controller
             if ($hasHistorias || $hasUsers) {
                 // Si tiene datos asociados, hacer soft delete
                 $project->delete();
-                
-                // Registrar en el historial de cambios
-                HistorialCambio::create([
-                    'user_id' => Auth::id(),
-                    'accion' => 'delete',
-                    'modelo' => 'Project',
-                    'modelo_id' => $projectId,
-                    'detalles' => "Proyecto '{$projectName}' eliminado (soft delete) - tenía datos asociados"
-                ]);
-                
+
+                // Registrar en el historial de cambios (usa helper que setea 'fecha' y 'usuario')
+                HistorialCambio::registrar(
+                    'delete',
+                    "Proyecto '{$projectName}' eliminado (soft delete) - tenía datos asociados",
+                    $projectId
+                );
+
                 Log::info("Proyecto eliminado (soft delete) por admin: {$projectName} (ID: {$projectId})");
-                
-                return redirect()->route('homeadmin')->with('warning', 
+
+                return redirect()->route('homeadmin')->with('warning',
                     "Proyecto '{$projectName}' eliminado exitosamente. Se mantuvieron los datos asociados y puede ser restaurado si es necesario.");
             } else {
                 // Si no tiene datos asociados, eliminar permanentemente
                 $project->forceDelete();
-                
+
+                // Registrar en historial también la eliminación permanente
+                HistorialCambio::registrar(
+                    'delete',
+                    "Proyecto '{$projectName}' eliminado permanentemente - sin datos asociados",
+                    $projectId
+                );
+
                 Log::info("Proyecto eliminado permanentemente por admin: {$projectName} (ID: {$projectId})");
-                
-                return redirect()->route('homeadmin')->with('success', 
+
+                return redirect()->route('homeadmin')->with('success',
                     "Proyecto '{$projectName}' eliminado permanentemente. No tenía datos asociados.");
             }
             
