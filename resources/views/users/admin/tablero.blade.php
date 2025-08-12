@@ -11,6 +11,12 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap CSS -->
+
+
+<!-- Bootstrap Bundle JS (incluye Popper para dropdowns, tooltips, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
     @php
@@ -170,7 +176,7 @@
                                                             &#x22EE; {{-- ⋮ --}}
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="{{ route('historias.edit', $historia->id) }}">Editar</a></li>
+                                                            <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
                                                                 <button type="button" class="dropdown-item text-danger"
                                                                         data-bs-toggle="modal"

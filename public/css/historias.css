@@ -1,89 +1,75 @@
-.descripcion-limitada {
-    display:-webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 4.5em;
-    line-height: 1.5em;
-    word-break: break-word;
-    overflow-wrap: break-word;
+
+#tituloInput {
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px !important;
 }
 
-input[readonly].form-control,
-textarea[readonly].form-control,
-select[disabled].form-control {
-    background-color: #fff !important;
-    color: #212529 !important;
-    cursor: default;
+.formulario-editable {
+    border-radius: 10px !important;   
+    height: 45px;                     
+    font-size: 1rem;                  
+    background-color: #f5f5f5;        /* gris claro uniforme */
+    border: 1px solid #ced4da;        
+    padding: 0.5rem 0.75rem;
     box-shadow: none;
-    border: 1px solid #ced4da;
-
-    height: auto;
-    min-height: calc(2.25rem + 0.75rem);
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 0.375rem;
-    opacity: 1 !important;
-    filter: none !important; 
-    overflow: hidden;
-    resize: none;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
+    transition: all 0.2s ease-in-out;
+    color: #495057;                   /* texto gris oscuro */
 }
 
-/* editables */
-input.form-control:not([readonly]),
-textarea.form-control:not([readonly]),
-select.form-control:not([disabled]) {
-    background-color: white;
-    color: #212529;
-    height: calc(2.25rem + 0.75rem);
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 0.375rem;
-    border: 1px solid #ced4da;
-    cursor: text;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    overflow: hidden;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
+/* Estilos para campos readonly */
+.formulario-editable[readonly],
+.formulario-editable:read-only {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    cursor: text !important;
+    border: 1px solid #ced4da !important;
 }
 
+/* Estilos para campos disabled */
+.formulario-editable:disabled,
+.formulario-editable[disabled] {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    border: 1px solid #e9ecef !important;
+}
 
-input.form-control:not([readonly]):focus,
-textarea.form-control:not([readonly]):focus,
-select.form-control:not([disabled]):focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+/* Estilos específicos para campos problemáticos */
+input[name="trabajo_estimado"].formulario-editable,
+input[name="trabajo_estimado"].formulario-editable[readonly],
+input[type="text"].formulario-editable:read-only {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+}
+
+/* inputs number sin flechas */
+input[type=number].formulario-editable {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: none;
+}
+
+/* foco para edición */
+.formulario-editable:focus {
+    border-color: #0d6efd;
+    background-color: #ffffff !important;
     outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-
-textarea.form-control:not([readonly]) {
-    resize: vertical;
-    min-height: calc(2.25rem + 0.75rem);
-}
-#trabajo_estimado::-webkit-inner-spin-button, 
-#trabajo_estimado::-webkit-outer-spin-button { 
+/* selects sin flechas predeterminadas */
+select.formulario-editable {
+    appearance: none;
     -webkit-appearance: none;
-    margin: 0; 
-    opacity: 0;
-    pointer-events: none;
+    -moz-appearance: none;
+    background-image: none;
 }
 
 #trabajo_estimado {
     -moz-appearance: textfield;
 }
-
-
-
 
 .mi-container {
     background-color: #ffff;
