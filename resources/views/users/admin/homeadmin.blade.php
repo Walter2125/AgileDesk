@@ -852,8 +852,11 @@
                                     <td title="{{ $sprint->nombre }}">{{ $sprint->nombre }}</td>
                                     <td title="{{ $sprint->proyecto->name ?? 'N/A' }}">{{ $sprint->proyecto->name ?? 'N/A' }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('sprints.index', ['project' => $sprint->proyecto->id]) }}" class="btn btn-outline-secondary px-2 py-1">
-                                            <i class="bi bi-eye"></i>
+                                        <a href="{{ $sprint->proyecto 
+                                            ? route('sprints.index', ['project' => $sprint->proyecto->id]) 
+                                            : '#' }}" 
+                                            class="btn btn-outline-secondary px-2 py-1">
+                                        <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -897,10 +900,18 @@
                         </div>
                     </div>
                     <!-- Botón de historial -->
-                    <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
-                       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
-                        <i class="bi bi-clock-history me-1"></i> Ver Historial
-                    </a>
+                    @if(auth()->user()->es_admin)
+    <a href="{{ route('users.admin.historial', $proyecto_actual->id) }}" 
+       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+        <i class="bi bi-clock-history me-1"></i> Ver Historial
+    </a>
+@else
+    <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
+       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+        <i class="bi bi-clock-history me-1"></i> Ver Historial
+    </a>
+@endif
+
                 </div>
                 
                 <h2 class="current-project-title">

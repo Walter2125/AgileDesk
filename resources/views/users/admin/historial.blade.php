@@ -97,7 +97,7 @@
             @endif
 
             <div class="d-flex justify-content-end mt-4">
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                <a href="{{ route('homeadmin') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-1"></i> Volver
                 </a>
             </div>

@@ -243,9 +243,166 @@ h1.page-title {
     border-bottom: none !important;
     outline: none !important;
 }
+.btn-three-dots {
+    background: transparent;
+    color: #000;
+    font-size: 1.2rem;
+    line-height: 1;
+    border-radius: 50%;
+    padding: 0.25rem 0.4rem;
+    border: none;
+}
+
+.btn-three-dots:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.menu-three-dots {
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+}
+
+.menu-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+/* Estilos base para las tarjetas de proyecto */
+.project-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la lista de integrantes */
+.contributors-ranking {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.contributor-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.contributor-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 12px;
+    background-color: #f6f8fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #24292e;
+}
+
+.contributor-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.contributor-name {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #24292e;
+}
+
+.contributor-email {
+    margin: 0;
+    font-size: 12px;
+    color: #586069;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilos para el ranking */
+.contributor-rank {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #f6f8fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #586069;
+}
+
+.contributor-rank.top-1 {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.contributor-rank.top-2 {
+    background-color: #c0c0c0;
+    color: #000;
+}
+
+.contributor-rank.top-3 {
+    background-color: #cd7f32;
+    color: #000;
+}
+
+/* Estilos para el modal */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e1e4e8;
+    background-color: #f6f8fa;
+}
+
+/* Corrección para el parpadeo */
+* {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
 
 </style>
 @endsection
+
 
 @section('content')
 <div class="container projects-container">
@@ -278,76 +435,86 @@ h1.page-title {
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">
     @forelse($allProjects as $project)
-        <div class="mb-3 p-3 border rounded shadow-sm bg-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="mb-1 text-blanck">{{ $project->name }}</h5>
-                    <small class="text-muted">
-                        {{ $project->created_at->format('d/m/Y') }}
-                        @if($project->category)
-                            | {{ $project->category->name }}
-                        @endif
-                    </small>
-                </div>
-                <div class="action-buttons">
-                    <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    @if (auth()->check() && auth()->user()->usertype == 'admin')
-                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button"
-                            class="btn btn-delete"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalConfirmarEliminarProyecto"
-                            data-action="{{ route('projects.destroy', $project->id) }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-
-                        </form>
+    <div class="mb-3 p-3 border rounded shadow-sm bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1 text-black">{{ $project->name }}</h5>
+                <small class="text-muted">
+                    {{ $project->created_at->format('d/m/Y') }}
+                    @if($project->category)
+                        | {{ $project->category->name }}
                     @endif
-                </div>
+                </small>
             </div>
-            @if($project->descripcion)
-                <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button" data-bs-toggle="collapse" data-bs-target="#desc-{{ $project->id }}">
-                    Mostrar descripción
+    <div class="action-buttons">
+        <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
+            <i class="fas fa-eye"></i>
+        </a>
+        @if (auth()->check() && auth()->user()->usertype == 'admin')
+            <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
+                <i class="fas fa-edit"></i>
+            </a>
+            <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="button"
+                        class="btn btn-delete"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirmarEliminarProyecto"
+                        data-action="{{ route('projects.destroy', $project->id) }}">
+                    <i class="fas fa-trash"></i>
                 </button>
-                <div class="collapse mt-2" id="desc-{{ $project->id }}">
-                    <p class="mb-0 text-muted">{{ $project->descripcion }}</p>
-                </div>
-            @endif
-        </div>
-        {{-- Modal Confirmar Eliminar --}}
-            <div class="modal fade" id="modalConfirmarEliminarProyecto{{ $project->id }}" tabindex="-1" aria-labelledby="modalEliminarLabel{{ $project->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <form method="POST" action="{{ route('projects.destroy', $project->id) }}">
-                        @csrf
-                        @method('DELETE')
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-danger" id="modalEliminarLabel{{ $project->id }}">Confirmar eliminación</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>¿Seguro que deseas eliminar el proyecto <strong>{{ $project->name }}</strong>? Esta acción no se puede deshacer.</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-    @empty
-        <p class="text-muted">No hay proyectos para mostrar.</p>
-    @endforelse
+            </form>
+        @endif
     </div>
 </div>
+
+        @if($project->descripcion)
+            <button class="btn btn-sm btn-link mt-2 p-0 text-decoration-none text-info" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#desc-{{ $project->id }}">
+                Mostrar descripción
+            </button>
+            <div class="collapse mt-2" id="desc-{{ $project->id }}">
+                <p class="mb-0 text-muted">{{ $project->descripcion }}</p>
+            </div>
+        @endif
+    </div>
+
+    {{-- Modal Confirmación de Eliminación --}}
+    <div class="modal fade" id="confirmDeleteProjectModal{{ $project->id }}" tabindex="-1"
+         aria-labelledby="confirmDeleteProjectLabel{{ $project->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <h5 class="modal-title text-danger" id="confirmDeleteProjectLabel{{ $project->id }}">
+                            Confirmar Eliminación
+                        </h5>
+                        <h5 class="modal-title text-danger">¿Deseas eliminar este proyecto?</h5>
+                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                        <div class="alert alert-danger d-flex align-items-center mt-3">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>
+                            <div>"<strong>{{ $project->name }}</strong>" será eliminado permanentemente.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@empty
+    <p class="text-muted">No hay proyectos para mostrar.</p>
+@endforelse
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -362,6 +529,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 @endsection
-
-<!-- Scripts Bootstrap 5 (si no los tienes ya cargados en tu layout) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

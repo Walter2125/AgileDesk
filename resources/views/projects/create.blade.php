@@ -58,11 +58,18 @@
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="mb-3">
-                    <label for="codigo" class="form-label">Código del Proyecto</label>
-                    <input type="text" name="codigo" id="codigo" class="form-control" required maxlength="10">
-                    <small class="form-text text-muted">Debe ser un código único (por ejemplo: PRJ001).</small>
-                </div>
+    <label for="codigo" class="form-label">Código del Proyecto</label>
+    <input type="text" name="codigo" id="codigo" 
+           class="form-control @error('codigo') is-invalid @enderror" 
+           value="{{ old('codigo') }}" required maxlength="6">
+    <small class="form-text text-muted">Debe ser un código único (por ejemplo: PROY01).</small>
+    @error('codigo')
+        <span class="invalid-feedback d-block">{{ $message }}</span>
+    @enderror
+</div>
+
 
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
