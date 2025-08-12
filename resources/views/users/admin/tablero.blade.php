@@ -11,6 +11,7 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
     @php
@@ -231,19 +232,17 @@
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading{{ $columna->id }}">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ $columna->id }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ $columna->id }}">
+                                        <button class="accordion-button collapsed accordion-toggle"
+                                                type="button"
+                                                data-target="#collapse{{ $columna->id }}">
                                             {{ $columna->nombre }}
                                         </button>
                                     </h2>
+
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
-
-                                    <div class="accordion-body">
+                                        <div class="accordion-body">
                                             <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
                                                class="btn btn-sm btn-primary mb-3 w-100">
                                                 Agregar historias
@@ -272,6 +271,8 @@
                         </div>
                     </div>
                     {{-- FIN: Accordion para móvil --}}
+
+
 
 
                 </div>
@@ -758,6 +759,36 @@
                         window.location.href = url.toString(); // recarga la página con el sprint seleccionado
                     }
                 </script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.querySelectorAll('.accordion-toggle').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
+                                const targetSelector = this.getAttribute('data-target');
+                                const target = document.querySelector(targetSelector);
+                                if (!target) return;
+
+                                const isOpen = target.classList.contains('show');
+
+                                // Cerrar todos los paneles
+                                document.querySelectorAll('.accordion-collapse').forEach(function (panel) {
+                                    panel.classList.remove('show');
+                                });
+                                document.querySelectorAll('.accordion-button').forEach(function (b) {
+                                    b.classList.add('collapsed');
+                                });
+
+                                // Si estaba cerrado, lo abrimos
+                                if (!isOpen) {
+                                    target.classList.add('show');
+                                    this.classList.remove('collapsed');
+                                }
+                            });
+                        });
+                    });
+                </script>
+
+
+
 
 
 
@@ -1149,13 +1180,6 @@
                             align-items: center;
                         }
                     }
-
-
-
-
-
-
-
                 </style>
 
 
