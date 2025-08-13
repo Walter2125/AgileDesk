@@ -39,6 +39,13 @@ class NewPasswordController extends Controller
                 new UnahEmailRule()
             ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'token.required' => 'El token de restablecimiento es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debe proporcionar una dirección de correo electrónico válida.',
+            'email.lowercase' => 'El correo electrónico debe estar en minúsculas.',
+            'password.required' => 'La nueva contraseña es obligatoria.',
+            'password.confirmed' => 'La confirmación de contraseña no coincide.',
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
@@ -60,8 +67,8 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', $status)
+                    ? redirect()->route('login')->with('success', 'Tu contraseña ha sido restablecida. Ahora puedes iniciar sesión con tu nueva contraseña.')
                     : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => $status]);
+                        ->withErrors(['email' => trans($status)]);
     }
 }

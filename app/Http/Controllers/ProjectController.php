@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
     public function create(Request $request)
     {
-        $users = User::where('usertype', '!=', 'admin')
+        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
@@ -137,7 +137,7 @@ class ProjectController extends Controller
         $query = $request->input('query');
 
         $users = User::where('name', 'like', "%{$query}%")
-            ->where('usertype', '!=', 'admin')
+            ->whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->where('id', '!=', Auth::id())
@@ -158,7 +158,12 @@ class ProjectController extends Controller
 {
     $user = Auth::user();
 
-    $projects = $user->projects()->with(['tareas', 'historias', 'sprints'])->get();
+    // Superadmin puede ver todos los proyectos, admin solo los suyos
+    if ($user->isSuperAdmin()) {
+        $projects = Project::with(['tareas', 'historias', 'sprints', 'creator', 'users'])->get();
+    } else {
+        $projects = $user->projects()->with(['tareas', 'historias', 'sprints'])->get();
+    }
 
     $sorted = $projects->sortByDesc(function ($project) {
         return max([
@@ -181,11 +186,12 @@ class ProjectController extends Controller
     {
         $project = Project::with('users')->findOrFail($id);
 
-        if (Auth::id() !== $project->user_id) {
+        // Superadmin puede editar cualquier proyecto, admin solo sus propios proyectos
+        if (!Auth::user()->isSuperAdmin() && Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        $users = User::where('usertype', '!=', 'admin')
+        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->where('id', '!=', $project->user_id)
@@ -228,7 +234,8 @@ class ProjectController extends Controller
         ]);
 
 
-        if (Auth::id() !== $project->user_id) {
+        // Superadmin puede editar cualquier proyecto, admin solo sus propios proyectos
+        if (!Auth::user()->isSuperAdmin() && Auth::id() !== $project->user_id) {
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
@@ -274,10 +281,14 @@ class ProjectController extends Controller
             : redirect()->route('projects.my')->with('error', 'Proyecto no encontrado.');
     }
 
-    if (Auth::user()->usertype != 'admin') {
+    // Superadmin puede eliminar cualquier proyecto, admin solo puede eliminar si es el dueño
+    $canDelete = Auth::user()->isSuperAdmin() || 
+                 (Auth::user()->usertype == 'admin' && Auth::id() === $project->user_id);
+
+    if (!$canDelete) {
         return $request->expectsJson()
             ? response()->json(['error' => 'No tienes permiso para eliminar este proyecto.'], 403)
-            : redirect()->route('projects.my')->with('error', 'No tienes permiso.');
+            : redirect()->route('projects.my')->with('error', 'No tienes permiso para eliminar este proyecto.');
     }
 
     try {
@@ -295,7 +306,7 @@ class ProjectController extends Controller
 
     public function listUsers(Request $request)
     {
-        $users = User::where('usertype', '!=', 'admin')
+        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
@@ -322,7 +333,7 @@ class ProjectController extends Controller
 
     public function cambiarColor(Request $request, Project $project)
     {
-        if (auth()->id() !== $project->user_id) {
+        if (Auth::id() !== $project->user_id) {
             return response()->json(['error' => 'No tienes permiso para cambiar el color.'], 403);
         }
 

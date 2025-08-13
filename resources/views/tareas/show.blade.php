@@ -36,7 +36,14 @@
         background-color: #ffffff;
         border: 1px solid #ccc;
         font-weight: normal;
-        white-space: nowrap; /* Evita que el texto salte en columnas pequeñas */
+        white-space: nowrap; /* Por defecto, sin saltos */
+    }
+
+    /* Permitir que Nombre y Descripción salten de línea y crezcan hacia abajo */
+    .table td.nombre,
+    .table td.descripcion {
+        white-space: normal;       /* Permitir salto de línea */
+        word-break: break-word;    /* Cortar palabras largas */
     }
 
     @media (max-width: 768px) {
@@ -196,8 +203,8 @@
                                     {{ $tarea->completada ? 'checked' : '' }}>
                             </td>
                             <td>{{ $tarea->id }}</td>
-                            <td>{{ $tarea->nombre }}</td>
-                            <td>{{ $tarea->descripcion }}</td>
+                            <td class="nombre">{{ $tarea->nombre }}</td>
+                            <td class="descripcion">{{ $tarea->descripcion }}</td>
                             <td>{{ $tarea->actividad }}</td>
                             <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
                             <td class="text-center">
@@ -251,7 +258,7 @@
                 </h5>
                 <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-
+            
             <div class="modal-body">
                 <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -273,7 +280,6 @@
         </div>
     </div>
 </div>
-
 
 {{-- ✅ Scripts para el modal (como en sprints/proyectos) --}}
 @push('js')

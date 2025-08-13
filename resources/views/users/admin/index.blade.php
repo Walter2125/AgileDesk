@@ -461,11 +461,17 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-people"></i> Todos los Usuarios
-                        </a>
+                        @if(Auth::user()->isSuperAdmin())
+                            <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-people me-1"></i> Todos los Usuarios
+                            </a>
+                        @else
+                            <a href="{{ route('admin.users.manage') }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-people me-1"></i> Todos los Usuarios
+                            </a>
+                        @endif
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
-                            <i class="bi bi-archive"></i> Eliminados
+                            <i class="bi bi-archive me-1"></i> Eliminados
                         </a>
                     </div>
                 </div>
@@ -511,15 +517,27 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex gap-1 justify-content-center" role="group">
-                                                    <!-- Botón para aprobar usuario -->
-                                                    <button type="button" class="btn btn-outline-success px-2 py-1"
-                                                            data-bs-toggle="modal" data-bs-target="#approveModal"
-                                                            data-user-id="{{ $user->id }}"
-                                                            data-user-name="{{ $user->name }}"
-                                                            data-user-email="{{ $user->email }}"
-                                                            title="Aprobar">
-                                                        <i class="bi bi-check-circle"></i>
-                                                    </button>
+                                                    @if(Auth::user()->isSuperAdmin())
+                                                        <!-- Botón para aprobar usuario con asignación de rol -->
+                                                        <button type="button" class="btn btn-outline-success px-2 py-1"
+                                                                data-bs-toggle="modal" data-bs-target="#approveModal"
+                                                                data-user-id="{{ $user->id }}"
+                                                                data-user-name="{{ $user->name }}"
+                                                                data-user-email="{{ $user->email }}"
+                                                                title="Aprobar y Asignar Rol">
+                                                            <i class="bi bi-check-circle"></i>
+                                                        </button>
+                                                    @else
+                                                        <!-- Botón para aprobar usuario (admin normal) -->
+                                                        <button type="button" class="btn btn-outline-success px-2 py-1"
+                                                                data-bs-toggle="modal" data-bs-target="#approveModal"
+                                                                data-user-id="{{ $user->id }}"
+                                                                data-user-name="{{ $user->name }}"
+                                                                data-user-email="{{ $user->email }}"
+                                                                title="Aprobar">
+                                                            <i class="bi bi-check-circle"></i>
+                                                        </button>
+                                                    @endif
 
                                                     <!-- Botón para rechazar usuario -->
                                                     <button type="button" class="btn btn-outline-danger px-2 py-1"
@@ -553,7 +571,11 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">
                     <i class="bi bi-check-circle text-success"></i>
-                    Aprobar Usuario
+                    @if(Auth::user()->isSuperAdmin())
+                        Aprobar Usuario y Asignar Rol
+                    @else
+                        Aprobar Usuario
+                    @endif
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -561,17 +583,61 @@
                 @csrf
                 @method('POST')
                 <input type="hidden" name="user_id" id="approveUserId" value="">
+            <form method="POST" id="approveUserForm" action="#">
+                @csrf
+                @method('POST')
+                <input type="hidden" name="user_id" id="approveUserId" value="">
                 <div class="modal-body">
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
-                        <strong>¿Está seguro de que desea aprobar el siguiente usuario?</strong>
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Aprobación de Usuario</strong>
                     </div>
-                    <p>El usuario recibirá acceso completo a la plataforma y podrá colaborar en proyectos.</p>
+                    
+                    <p class="mb-3">El usuario recibirá acceso a la plataforma según el rol asignado.</p>
+                    
+                    <!-- Información del usuario -->
+                    <div class="mb-3">
+                        <strong>Usuario:</strong> <span id="approveUserInfo"></span>
+                    </div>
+                    
+                    @if(Auth::user()->isSuperAdmin())
+                        <!-- Selector de rol (solo para superadmin) -->
+                        <div class="mb-3">
+                            <label for="userRole" class="form-label">
+                                <strong>Asignar Rol:</strong>
+                            </label>
+                            <select class="form-select" id="userRole" name="role" required>
+                                <option value="">Seleccionar rol...</option>
+                                <option value="collaborator">Colaborador</option>
+                                <option value="admin">Administrador</option>
+                                <option value="superadmin">Superadministrador</option>
+                            </select>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <strong>Colaborador:</strong> Puede participar en proyectos asignados.<br>
+                                    <strong>Administrador:</strong> Puede crear y gestionar sus propios proyectos.<br>
+                                    <strong>Superadministrador:</strong> Acceso total al sistema.
+                                </small>
+                            </div>
+                        </div>
+                    @else
+                        <!-- Rol fijo para administradores normales -->
+                        <input type="hidden" name="role" value="collaborator">
+                        <div class="alert alert-secondary">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Este usuario será aprobado como <strong>Colaborador</strong>.
+                        </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" id="approveSubmitBtn" class="btn btn-success">
-                        <i class="bi bi-check-circle"></i> Aprobar Usuario
+                        <i class="bi bi-check-circle me-1"></i> 
+                        @if(Auth::user()->isSuperAdmin())
+                            Aprobar y Asignar Rol
+                        @else
+                            Aprobar Usuario
+                        @endif
                     </button>
                 </div>
             </form>
@@ -585,7 +651,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="rejectModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>
                     Rechazar Usuario
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -596,7 +662,7 @@
                 <input type="hidden" name="user_id" id="rejectUserId" value="">
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle"></i>
+                        <i class="bi bi-exclamation-triangle me-1"></i>
                         <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                     </div>
                     <p>¿Está seguro de que desea rechazar el siguiente usuario?</p>
@@ -604,7 +670,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" id="rejectSubmitBtn" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Rechazar Usuario
+                        <i class="bi bi-trash3 me-1"></i> Rechazar Usuario
                     </button>
                 </div>
             </form>
@@ -840,6 +906,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Guardar el ID del usuario actual
             currentApproveUserId = userId;
 
+            // Mostrar información del usuario
+            const userInfo = document.getElementById('approveUserInfo');
+            if (userInfo) {
+                userInfo.textContent = `${userName} (${userEmail})`;
+            }
+
             // Actualizar la acción del formulario
             if (approveUserForm) {
                 const newAction = `/admin/users/${userId}/approve`;
@@ -847,6 +919,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 approveUserForm.action = newAction;
                 const approveHidden = document.getElementById('approveUserId');
                 if (approveHidden) approveHidden.value = userId;
+            }
+
+            // Resetear el selector de rol si existe
+            const roleSelect = document.getElementById('userRole');
+            if (roleSelect) {
+                roleSelect.value = '';
+                // Marcar el selector como requerido visualmente
+                roleSelect.classList.remove('is-valid', 'is-invalid');
             }
 
             // Habilitar botón de envío
@@ -895,6 +975,17 @@ document.addEventListener('DOMContentLoaded', function() {
         approveUserForm.addEventListener('submit', function(e) {
             e.preventDefault(); // Prevenir envío normal del formulario
             
+            // Validar selección de rol para superadmin
+            const roleSelect = document.getElementById('userRole');
+            if (roleSelect && !roleSelect.value) {
+                roleSelect.classList.add('is-invalid');
+                roleSelect.focus();
+                return false;
+            } else if (roleSelect) {
+                roleSelect.classList.remove('is-invalid');
+                roleSelect.classList.add('is-valid');
+            }
+            
             // Asegurar action correcto si aún es placeholder '#'
             if (this.action.endsWith('#') || this.action.includes('undefined')) {
                 const hiddenId = document.getElementById('approveUserId')?.value;
@@ -911,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Agregar indicador de carga
             if (approveSubmitBtn) {
                 approveSubmitBtn.classList.add('loading');
-                approveSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Aprobando...';
+                approveSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
                 approveSubmitBtn.disabled = true;
             }
 
@@ -999,7 +1090,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Resetear botón
                 if (approveSubmitBtn) {
                     approveSubmitBtn.classList.remove('loading');
-                    approveSubmitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Aprobar Usuario';
+                    const isSuperAdmin = {{ Auth::user()->isSuperAdmin() ? 'true' : 'false' }};
+                    const buttonText = isSuperAdmin ? 'Aprobar y Asignar Rol' : 'Aprobar Usuario';
+                    approveSubmitBtn.innerHTML = `<i class="bi bi-check-circle"></i> ${buttonText}`;
                     approveSubmitBtn.disabled = false;
                 }
                 
@@ -1050,7 +1143,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Resetear botón
                 if (approveSubmitBtn) {
                     approveSubmitBtn.classList.remove('loading');
-                    approveSubmitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Aprobar Usuario';
+                    // Determinar texto del botón según el rol del usuario
+                    const isSuperAdmin = {{ Auth::user()->isSuperAdmin() ? 'true' : 'false' }};
+                    const buttonText = isSuperAdmin ? 'Aprobar y Asignar Rol' : 'Aprobar Usuario';
+                    approveSubmitBtn.innerHTML = `<i class="bi bi-check-circle"></i> ${buttonText}`;
                     approveSubmitBtn.disabled = false;
                 }
             });

@@ -1326,6 +1326,9 @@
                         </div>
                     </div>
 
+                    <!-- Componente unificado de notificaciones -->
+                    @include('components.notifications')
+
                     {{ $slot }}
                     <!-- Div invisible para forzar scroll en tablets -->
                     <div class="scroll-spacer" style="height: 150vh; width: 1px; visibility: hidden; pointer-events: none;"></div>

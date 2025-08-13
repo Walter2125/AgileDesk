@@ -12,23 +12,30 @@ class IsApproved
     {
         $user = $request->user();
 
-        // Cambiado de $user->role a $user->usertype
-        if ($user->usertype === 'collaborator' && $user->is_rejected) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Tu solicitud fue rechazada.']);
+        // Superadmin y admin tienen acceso completo sin verificaciones adicionales
+        if (in_array($user->usertype, ['superadmin', 'admin'])) {
+            return $next($request);
         }
 
-        if ($user->usertype === 'collaborator' && ! $user->is_approved) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+        // Solo aplicar verificaciones de aprobación a colaboradores
+        if ($user->usertype === 'collaborator') {
+            if ($user->is_rejected) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
-            return redirect()->route('login')
-                ->withErrors(['email' => 'Tu cuenta aún no ha sido aprobada.']);
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Tu solicitud fue rechazada.']);
+            }
+
+            if (!$user->is_approved) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Tu cuenta aún no ha sido aprobada.']);
+            }
         }
 
         return $next($request);
