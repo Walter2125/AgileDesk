@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Validation\Rule;
+
 
 class ProjectController extends Controller
 {
@@ -31,20 +33,22 @@ class ProjectController extends Controller
         return view('projects.create', compact('users', 'selectedUsers'));
     }
 
-    public function store(Request $request)
+
+   public function store(Request $request)
 {
-    $request->validate([
+    $rules = [
         'name' => [
             'required',
-            'unique:nuevo_proyecto,name',
             'max:30',
-            'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
+            'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/',
+            Rule::unique('nuevo_proyecto', 'name'),
+        
         ],
         'codigo' => [
             'required',
             'string',
             'max:6',
-            'unique:nuevo_proyecto,codigo',
+            Rule::unique('nuevo_proyecto', 'codigo'),
             'regex:/^[a-zA-Z0-9]+$/'
         ],
         'descripcion' => [
@@ -56,7 +60,33 @@ class ProjectController extends Controller
         'fecha_inicio' => 'required|date',
         'fecha_fin'    => 'required|date|after_or_equal:fecha_inicio',
         'selected_users' => 'required|array|min:1',
-    ]);
+    ];
+
+    $messages = [
+        'name.required' => 'El nombre del proyecto es obligatorio.',
+        'name.unique'   => 'El nombre del proyecto ya existe.',
+        'name.max'      => 'El nombre del proyecto no puede superar :max caracteres.',
+        'codigo.required' => 'El código del proyecto es obligatorio.',
+        'codigo.unique'   => 'El código del proyecto ya existe.',
+        'codigo.regex' => 'El código del proyecto solo puede contener letras y números, sin espacios ni caracteres especiales.',
+        'descripcion.max' => 'La descripción no puede superar :max caracteres.',
+        'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+        'fecha_fin.required' => 'La fecha de finalización es obligatoria.',
+        'fecha_fin.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+        'selected_users.required' => 'Debe seleccionar al menos un usuario.',
+        'selected_users.min' => 'Debe seleccionar al menos un usuario.',
+    ];
+
+    $attributes = [
+        'name' => 'nombre del proyecto',
+        'codigo' => 'código del proyecto',
+        'descripcion' => 'descripción',
+        'fecha_inicio' => 'fecha de inicio',
+        'fecha_fin' => 'fecha de finalización',
+        'selected_users' => 'usuarios seleccionados',
+    ];
+
+    $request->validate($rules, $messages, $attributes);
 
     try {
         DB::beginTransaction();

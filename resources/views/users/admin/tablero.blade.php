@@ -11,12 +11,8 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap CSS -->
 
-
-<!-- Bootstrap Bundle JS (incluye Popper para dropdowns, tooltips, etc.) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
     @php
@@ -30,7 +26,7 @@
     <div class="container-fluid px-3 py-0 tablero-wrapper">
         <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
             <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
-                <!-- columnas -->
+
             </div>
         </div>
     </div>
@@ -77,22 +73,18 @@
                         </button>
                     </div>
 
-
-                    @if($tablero->sprints && $tablero->sprints->count())
-                        <select class="form-select"
-                                id="sprintSelect"
-                                aria-label="Seleccionar sprint"
-                                style="min-width: 200px; max-width: 240px; height: 40px; border-radius: 0.375rem;"
-                                onchange="seleccionarSprint(this)">
-                            <option disabled {{ empty($sprintSeleccionado) ? 'selected' : '' }}>Selecciona un sprint</option>
-                            @foreach($tablero->sprints as $sprint)
-                                <option value="{{ $sprint->id }}" {{ (isset($sprintSeleccionado) && $sprintSeleccionado == $sprint->id) ? 'selected' : '' }}>
+                    <form method="GET" class="d-flex">
+                        <select name="sprint_id" id="sprintSelect" class="form-select"
+                                style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                                onchange="this.form.submit()">
+                            <option value="">Todas las Historias</option>
+                            @foreach ($tablero->sprints as $sprint)
+                                <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
                                     {{ $sprint->nombre }}
                                 </option>
                             @endforeach
                         </select>
-                    @endif
-
+                    </form>
 
 
                     <div class="d-flex gap-2 ms-auto">
@@ -172,9 +164,11 @@
                                                         </strong>
 
                                                     @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
+                                                            <div class="descripcion-limitada" 
+                                                                style="word-break: break-word; overflow-wrap: break-word; white-space: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
+
                                                         @endif
 
                                                     </a>
@@ -248,19 +242,49 @@
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="heading{{ $columna->id }}">
-                                        <button class="accordion-button collapsed" type="button"
+                                        <button class="accordion-button collapsed accordion-toggle d-flex align-items-center"
+                                                type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#collapse{{ $columna->id }}"
                                                 aria-expanded="false"
                                                 aria-controls="collapse{{ $columna->id }}">
-                                            {{ $columna->nombre }}
+
+                                            {{-- Menú de tres puntitos (reutilizado de escritorio) --}}
+                                            <div class="me-2">
+                                                <div class="menu-wrapper">
+                                                    <input type="checkbox" class="toggler" id="toggle-mobile-{{ $columna->id }}" />
+                                                    <div class="dots">
+                                                        <div></div>
+                                                    </div>
+                                                    <div class="menu">
+                                                        <ul>
+                                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
+                                                            <li>
+                                                                <a href="#" class="link"
+                                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                                    Editar nombre
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" class="link"
+                                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                                    Eliminar columna
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Nombre de la columna --}}
+                                            <span class="flex-grow-1">{{ $columna->nombre }}</span>
                                         </button>
                                     </h2>
+
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
-
-                                    <div class="accordion-body">
+                                        <div class="accordion-body">
                                             <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
                                                class="btn btn-sm btn-primary mb-3 w-100">
                                                 Agregar historias
@@ -289,6 +313,9 @@
                         </div>
                     </div>
                     {{-- FIN: Accordion para móvil --}}
+
+
+
 
 
                 </div>
@@ -417,7 +444,7 @@
                         });
                     });
 
-                    
+
                 </script>
 
                 <!-- Modal Bootstrap para agregar columna -->
@@ -443,6 +470,9 @@
                     </div>
                 </div>
 
+
+
+                <!-- Modal para crear sprint -->
                 <!-- Modal para crear sprint -->
                 <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -451,21 +481,35 @@
                             <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
 
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalCrearSprintLabel">Crear Sprint <span id="numeroSprint"></span></h5>
+                                <h5 class="modal-title" id="modalCrearSprintLabel">
+                                    Crear Sprint <span id="numeroSprint"></span>
+                                </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
 
                             <div class="modal-body">
+                                {{-- Mensajes de error en letras rojas --}}
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div class="mb-3">
                                     <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
+                                           value="{{ old('fecha_inicio') }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="fecha_fin" class="form-label">Fecha de fin</label>
-                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
+                                           value="{{ old('fecha_fin') }}" required>
                                 </div>
                             </div>
-
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -474,6 +518,16 @@
                         </form>
                     </div>
                 </div>
+
+                {{-- Script para reabrir el modal si hay errores --}}
+                @if ($errors->any())
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var myModal = new bootstrap.Modal(document.getElementById('modalCrearSprint'));
+                            myModal.show();
+                        });
+                    </script>
+                @endif
 
 
                 <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
@@ -490,15 +544,20 @@
                                 <div class="modal-body">
                                     <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
                                 </div>
-                                <div class="modal-footer justify-content-end gap-2">
-                                    <button type="button" class="btn btn-outline-danger" onclick="enviarFormularioEliminar('eliminar_todo')">
+                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
                                         Borrar columna y sus historias
                                     </button>
-                                    <button type="button" class="btn btn-outline-warning" onclick="enviarFormularioEliminar('solo_columna')">
+                                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
                                         Borrar columna, conservar historias
                                     </button>
+                                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
+                                        Cancelar
+                                    </button>
                                 </div>
+
                             </div>
+
 
                         </form>
                     </div>
@@ -614,25 +673,6 @@
                     });
                 </script>
                 <script>
-                    document.getElementById('sprintSelect').addEventListener('change', function () {
-                        const sprintId = this.value;
-                        const url = new URL(window.location.href);
-
-                        if (sprintId) {
-                            // Si selecciona un sprint específico, actualiza el parámetro
-                            url.searchParams.set('sprint_id', sprintId);
-                        } else {
-                            // Si selecciona "Ningún Sprint", elimina el parámetro para mostrar todos
-                            url.searchParams.delete('sprint_id');
-                        }
-
-                        // Redirige a la nueva URL
-                        window.location.href = url.toString();
-                    });
-
-                </script>
-                <script>
-
                     document.addEventListener('DOMContentLoaded', function () {
                         const inputNombre = document.getElementById('inputNombreColumna');
                         inputNombre.addEventListener('input', function () {
@@ -647,9 +687,8 @@
                         columnaIdParaEliminar = columnaId;
                         const form = document.getElementById('formEliminarColumna');
 
-                        // Asegurar que la URL comience con "/" para que sea una ruta absoluta
-                        // y agregar el prefijo de administrador para acceder a la ruta correcta
-                        form.action = /admin/columnas/${columnaId};
+                        // Asignar la ruta al action del formulario con template literal
+                        form.action = `/admin/columnas/${columnaId}`;
 
                         // Resetea el input modo por si acaso
                         document.getElementById('modoEliminar').value = '';
@@ -665,6 +704,7 @@
                         document.getElementById('formEliminarColumna').submit();
                     }
                 </script>
+
 
 
 
@@ -768,13 +808,37 @@
                 </script>
 
                 <script>
-                    function seleccionarSprint(select) {
-                        const sprintId = select.value;
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('sprint', sprintId); // agrega el parámetro sprint a la URL
-                        window.location.href = url.toString(); // recarga la página con el sprint seleccionado
-                    }
+                    document.addEventListener('DOMContentLoaded', function () {
+                        document.querySelectorAll('.accordion-toggle').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
+                                const targetSelector = this.getAttribute('data-target');
+                                const target = document.querySelector(targetSelector);
+                                if (!target) return;
+
+                                const isOpen = target.classList.contains('show');
+
+                                // Cerrar todos los paneles
+                                document.querySelectorAll('.accordion-collapse').forEach(function (panel) {
+                                    panel.classList.remove('show');
+                                });
+                                document.querySelectorAll('.accordion-button').forEach(function (b) {
+                                    b.classList.add('collapsed');
+                                });
+
+                                // Si estaba cerrado, lo abrimos
+                                if (!isOpen) {
+                                    target.classList.add('show');
+                                    this.classList.remove('collapsed');
+                                }
+                            });
+                        });
+                    });
+
+
                 </script>
+
+
+
 
 
 
@@ -1121,8 +1185,91 @@
                             height: 38px !important;
                         }
                     }
+                    @media (max-width: 576px) {
+                        #buscadorHistorias {
+                            flex: 1 1 auto; /* Que el input crezca y ocupe todo el espacio disponible */
+                        }
+                        .limpiar-busqueda {
+                            padding: 0 8px; /* Botón más compacto */
+                            flex: 0 0 auto; /* No crecer más de lo necesario */
+                        }
+                        .input-group-text {
+                            flex: 0 0 auto; /* Mantiene el ícono de lupa del mismo tamaño */
+                        }
+                    }
 
+                    @media (max-width: 576px) {
+                        .input-group.w-100 {
+                            display: flex !important;
+                            width: 100% !important;
+                        }
 
+                        .input-group.w-100 > .input-group-text {
+                            flex: 0 0 40px !important;
+                            width: 40px !important;
+                            min-width: 40px !important;
+                            display: flex !important;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        .input-group.w-100 > #buscadorHistorias,
+                        .input-group.w-100 > .form-control {
+                            flex: 1 1 auto !important;
+                            min-width: 0 !important;
+                            width: auto !important;
+                        }
+
+                        .input-group.w-100 > .limpiar-busqueda {
+                            flex: 0 0 40px !important;
+                            width: 40px !important;
+                            min-width: 40px !important;
+                            padding: 0 !important;
+                            display: flex !important;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                    }
+                    .accordion-button:focus,
+                    .accordion-button:active {
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+                    /* Ajustar menú en móvil */
+                    @media (max-width: 767.98px) {
+                        .menu-wrapper {
+                            transform: scale(0.9);
+                        }
+                    }
+
+                    /* Evitar modales cortados en móvil */
+                    @media (max-width: 767.98px) {
+                        .modal-dialog {
+                            margin: 0.5rem auto;
+                            max-width: 95% !important;
+                        }
+                        .modal-content {
+                            border-radius: 8px;
+                        }
+
+                        /* Móvil: abrir menú hacia la derecha */
+                        @media (max-width: 767.98px) {
+                            .kanban-accordion .menu {
+                                left: 0 !important;
+                                right: auto !important;
+                                transform: translateY(0) translateX(0) !important;
+                            }
+                        }
+
+                        /* PC: mantener hacia la izquierda (como está ahora) */
+                        @media (min-width: 768px) {
+                            .menu {
+                                right: 0 !important;
+                                left: auto !important;
+                            }
+                        }
+
+                    }
 
 
 

@@ -106,13 +106,15 @@
             </div>
 
             <!-- Botones -->
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-end mb-3 mt-4">
             <a href="{{ route('historias.show', $historia->id) }}" 
-            class="inline-block border border-gray-500 rounded font-bold text-gray-400 text-base px-3 py-2 transition duration-300 ease-in-out hover:bg-gray-600 hover:no-underline hover:text-white mr-3 normal-case">
-            Cancelar
+            class="btn btn-secondary btn-form-actions me-2">
+            <i class="bi bi-x-lg me-2"></i> Cancelar
             </a>                
-            <button type="submit" class="inline-block bg-blue-400 border border-blue-300 rounded font-bold text-white text-base px-3 py-2 transition duration-300 ease-in-out hover:no-underline hover:bg-blue-600 mr-3 normal-case">Guardar Cambios</button>
+            <button type="submit" class="btn btn-primary btn-form-actions"><i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar Cambios</button>
             </div>
+
+           
         </form>
     </div>
 </div>

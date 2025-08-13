@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
 @section('title', 'Elementos Eliminados - Agile Desk')
+    @section('mensaje-superior')
+        Elementos Eliminados
+    @endsection
 
 @section('styles')
+<!-- DataTables Bootstrap 5 CSS - Local -->
+<link rel="stylesheet" href="{{ asset('vendor/datatables/css/dataTables.bootstrap5.min.css') }}">
 <style>
     .filter-section {
         background-color: #f8f9fa;
@@ -31,9 +36,21 @@
     .badge-projects { background-color: #f3e5f5; color: #4a148c; }
     .badge-historias { background-color: #e8f5e8; color: #1b5e20; }
     .badge-tareas { background-color: #fff3e0; color: #e65100; }
+    .badge-comentarios { background-color: #f0f0f0; color: #2c3e50; }
     
     .actions-cell {
         white-space: nowrap;
+    }
+    
+    .description-cell {
+        max-width: 300px;
+        word-wrap: break-word;
+        white-space: normal;
+        cursor: help;
+    }
+    
+    .description-cell:hover {
+        background-color: #f8f9fa;
     }
     
     .table-responsive {
@@ -104,6 +121,106 @@
         background-color: #0d6efd;
         border-color: #0d6efd;
     }
+
+    /* Estilos para DataTables */
+    .dataTables_wrapper .dataTables_paginate {
+        display: flex;
+        justify-content: center;
+        float: none !important;
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .pagination {
+        gap: 14px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .page-item {
+        margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .page-link {
+        background: transparent;
+        color: #6c757d;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 4px 10px;
+        line-height: 1.25;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+        background: #0d6efd;
+        color: #ffffff;
+        border-color: #0d6efd;
+        border-width: 2px;
+        box-shadow: none;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+        color: #a3aab2;
+        opacity: 0.6;
+        border-color: transparent;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .page-link:hover {
+        color: #495057;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+
+    /* Altura del selector de longitud - más bajo y con bordes redondeados */
+    #deletedItemsTable_length .form-select,
+    #deletedItemsTable_length select {
+        height: 36px !important; /* Más bajo que el original */
+        padding: 6px 32px 6px 12px !important; /* Padding derecho mayor para el icono */
+        line-height: 1.25;
+        border-radius: 8px !important; /* Bordes redondeados */
+        border: 1px solid #dee2e6 !important;
+        font-size: 0.875rem !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 8px center !important;
+        background-size: 12px 12px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+    }
+    
+    #deletedItemsTable_length .form-select:focus,
+    #deletedItemsTable_length select:focus {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+    }
+    
+    #deletedItemsTable_length label { 
+        margin-bottom: 0;
+        font-weight: 400 !important;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    /* Espaciado inferior de la página */
+    .page-bottom-spacing {
+        padding-bottom: 4rem;
+    }
+
+    /* Contenedor para el selector de longitud */
+    .datatable-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Estilos para tooltips de descripción */
+    .tooltip-inner {
+        max-width: 400px;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
 </style>
 @stop
 
@@ -111,10 +228,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">Elementos Eliminados</h1>
-            </div>
-
             <!-- Filtros -->
             <div class="filter-section">
                 <form method="GET" action="{{ route('admin.soft-deleted') }}" id="filterForm" class="row g-3">
@@ -126,6 +239,7 @@
                             <option value="projects" {{ $type === 'projects' ? 'selected' : '' }}>Proyectos</option>
                             <option value="historias" {{ $type === 'historias' ? 'selected' : '' }}>Historias</option>
                             <option value="tareas" {{ $type === 'tareas' ? 'selected' : '' }}>Tareas</option>
+                            <option value="comentarios" {{ $type === 'comentarios' ? 'selected' : '' }}>Comentarios</option>
                         </select>
                     </div>
                     
@@ -157,16 +271,21 @@
 
             <!-- Resultados -->
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="card-title mb-0">
                         <i class="bi bi-trash"></i>
                         Elementos Eliminados ({{ $deletedItemsPaginated->total() }})
                     </h5>
+                    <!-- Selector de longitud de DataTables -->
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0" style="font-size: 0.875rem; color: #6c757d; white-space: nowrap;">Mostrar:</label>
+                        <div id="deletedItemsLengthContainer"></div>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     @if($deletedItemsPaginated->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover mb-0" id="deletedItemsTable">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>
@@ -179,8 +298,8 @@
                                 </thead>
                                 <tbody>
                                     @foreach($deletedItemsPaginated as $item)
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ ($deletedItemsPaginated->currentPage() - 1) * $deletedItemsPaginated->perPage() + $loop->iteration }}</td>
+                                        <tr class="deleted-item-row">
+                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                             <td>
                                                 <span class="type-badge badge-{{ $item['type'] }}">
                                                     {{ $item['type_label'] }}
@@ -189,8 +308,11 @@
                                             <td>
                                                 <strong>{{ $item['name'] }}</strong>
                                             </td>
-                                            <td class="text-muted">
-                                                {{ Str::limit($item['description'], 50) }}
+                                            <td class="text-muted description-cell" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="{{ $item['full_description'] ?? $item['description'] }}">
+                                                {{ Str::limit($item['description'], 80) }}
                                             </td>
                                             <td>
                                                 <small class="text-muted">
@@ -231,13 +353,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <!-- Paginación -->
-                        @if($deletedItemsPaginated->hasPages())
-                            <div class="d-flex justify-content-center mt-3 mb-3">
-                                {{ $deletedItemsPaginated->links() }}
-                            </div>
-                        @endif
+                        {{-- Paginación manejada por DataTables --}}
                     @else
                         <div class="empty-state">
                             <i class="bi bi-inbox"></i>
@@ -253,6 +369,8 @@
                     @endif
                 </div>
             </div>
+            <!-- Espaciado inferior adicional -->
+            <div class="page-bottom-spacing"></div>
         </div>
     </div>
 </div>
@@ -323,34 +441,115 @@
 @stop
 
 @section('scripts')
+<!-- jQuery (necesario para DataTables) - Local -->
+<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+<!-- DataTables JS + integración Bootstrap 5 - Local -->
+<script src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Configuración para DataTables
+    if (window.jQuery && $.fn && $.fn.DataTable) {
+        // Configuración común de DataTables
+        const commonOpts = {
+            paging: true,
+            searching: false, // deshabilitar búsqueda para evitar que aparezca
+            ordering: true,
+            info: true,
+            lengthChange: true,
+            lengthMenu: [ [5, 10, 20, 30], [5, 10, 20, 30] ],
+            pageLength: 10,
+            pagingType: 'full_numbers',
+            language: {
+                emptyTable: 'No hay elementos eliminados disponibles',
+                zeroRecords: 'No se encontraron resultados',
+                lengthMenu: '_MENU_ elementos',
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ elementos',
+                infoEmpty: 'Mostrando 0 a 0 de 0 elementos',
+                infoFiltered: '(filtrado de _MAX_ elementos totales)',
+                search: 'Buscar:',
+                searchPlaceholder: 'Filtrar elementos...',
+                loadingRecords: 'Cargando...',
+                processing: 'Procesando...',
+                paginate: {
+                    first: '«',
+                    previous: '‹',
+                    next: '›',
+                    last: '»'
+                }
+            },
+            dom: 'ltip', // l=length, t=table, i=info, p=pagination (sin filtro)
+            initComplete: function () {
+                try {
+                    const api = this.api();
+                    const wrapper = $(api.table().container());
+                    const lengthDiv = wrapper.find('div.dataTables_length');
+                    const target = document.querySelector('#deletedItemsLengthContainer');
+                    
+                    if (target && lengthDiv.length) {
+                        lengthDiv.addClass('mb-0');
+                        lengthDiv.find('label').addClass('mb-0 d-flex align-items-center gap-2');
+                        lengthDiv.find('select')
+                            .addClass('form-select form-select-sm')
+                            .css({ width: 'auto' });
+                        target.innerHTML = '';
+                        target.appendChild(lengthDiv.get(0));
+                    }
+                } catch (err) {
+                    console.warn('No se pudo mover el selector de longitud:', err);
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: [5] }, // Deshabilitar ordenamiento en columna de acciones
+                { className: 'text-center', targets: [0, 5] } // Centrar columnas específicas
+            ]
+        };
+
+        // Inicializar DataTable para elementos eliminados
+        const deletedTable = $('#deletedItemsTable');
+        if (deletedTable.length) {
+            try {
+                const dt = deletedTable.DataTable(commonOpts);
+            } catch (e) {
+                console.error('Error inicializando DataTable para elementos eliminados:', e);
+            }
+        }
+    } else {
+        console.error('DataTables no está disponible.');
+    }
+
+    // Funcionalidad de filtros del formulario (mantener la funcionalidad existente)
     let filterTimeout;
     const filterForm = document.getElementById('filterForm');
     const autoFilterElements = document.querySelectorAll('.auto-filter');
     
+    // Inicializar tooltips de Bootstrap
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true,
+            trigger: 'hover focus'
+        });
+    });
+    
     // Función para aplicar filtros automáticamente
     function applyFilters() {
-        // Agregar indicador de carga
         document.body.style.cursor = 'wait';
-        
-        // Enviar formulario
         filterForm.submit();
     }
     
     // Función debounce para evitar muchas peticiones
     function debounceFilter() {
         clearTimeout(filterTimeout);
-        filterTimeout = setTimeout(applyFilters, 500); // Esperar 500ms después de que el usuario deje de escribir
+        filterTimeout = setTimeout(applyFilters, 500);
     }
     
     // Agregar event listeners a todos los elementos de filtro
     autoFilterElements.forEach(element => {
         if (element.type === 'text') {
-            // Para campos de texto, usar debounce
             element.addEventListener('input', debounceFilter);
         } else {
-            // Para selects y fechas, aplicar inmediatamente
             element.addEventListener('change', applyFilters);
         }
     });
@@ -384,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const modalItemName = deleteModal.querySelector('#deleteItemName');
             const modalForm = deleteModal.querySelector('#deleteForm');
             
-            modalItemName.textContent = name;
+            if (modalItemName) modalItemName.textContent = name;
             modalForm.action = `/admin/soft-deleted/permanent-delete/${type}/${id}`;
         });
     }
