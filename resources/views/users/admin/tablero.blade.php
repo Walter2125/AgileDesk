@@ -268,9 +268,6 @@
                                         <span class="flex-grow-1 text-truncate fw-semibold">
                         {{ $columna->nombre }}
                     </span>
-
-                                        {{-- Botón de colapsar --}}
-                                        {{-- Botón de colapsar --}}
                                         <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
                                                 type="button"
                                                 data-bs-target="#collapse{{ $columna->id }}">
@@ -440,6 +437,25 @@
                         });
                     });
 
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Evitar que el clic en el menú cierre el acordeón
+                        document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+                            dropdown.addEventListener('click', function (e) {
+                                e.stopPropagation(); // Detiene la propagación del evento
+                            });
+                        });
+
+                        // Asegurar que los menús se abran correctamente
+                        document.querySelectorAll('.dropdown-toggle').forEach(function (toggle) {
+                            toggle.addEventListener('click', function (e) {
+                                const dropdownMenu = this.nextElementSibling;
+                                if (dropdownMenu) {
+                                    dropdownMenu.classList.toggle('show');
+                                }
+                            });
+                        });
+                    });
+
 
                 </script>
 
@@ -592,6 +608,25 @@
                 </div>
 
                 <script>
+
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Evitar que el clic en el menú cierre el acordeón
+                        document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+                            dropdown.addEventListener('click', function (e) {
+                                e.stopPropagation(); // Detiene la propagación del evento
+                            });
+                        });
+
+                        // Asegurar que los menús se abran correctamente
+                        document.querySelectorAll('.dropdown-toggle').forEach(function (toggle) {
+                            toggle.addEventListener('click', function (e) {
+                                const dropdownMenu = this.nextElementSibling;
+                                if (dropdownMenu) {
+                                    dropdownMenu.classList.toggle('show');
+                                }
+                            });
+                        });
+                    });
 
 
                     document.addEventListener("DOMContentLoaded", function () {
@@ -867,6 +902,7 @@
                         z-index: 1000;
                     }
 
+
                     /* Checkbox invisible */
                     .toggler {
                         position: absolute;
@@ -907,6 +943,16 @@
                         background: #777;
                         border-radius: 50%;
                         transition: 0.4s ease;
+                    }
+
+                    .dropdown-menu {
+                        z-index: 1055; /* Asegúrate de que sea mayor que otros elementos */
+                        position: absolute; /* Asegura que el menú se posicione correctamente */
+                        transform: translateY(0); /* Evita que se corte por transformaciones */
+                    }
+
+                    .kanban-columna {
+                        overflow: visible !important; /* Permite que el menú sea visible fuera del contenedor */
                     }
 
                     /* Posición vertical inicial (alineados) */
