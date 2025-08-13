@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 
     @php
@@ -107,26 +108,32 @@
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
 
-                                    <div class="menu-wrapper">
-                                        <input type="checkbox" class="toggler" id="toggle-{{ $columna->id }}" />
-                                        <div class="dots">
-                                            <div></div>
-                                        </div>
-                                        <div class="menu">
-                                            <ul>
-                                                <li><span class="link disabled"><strong>Acciones</strong></span></li>
-                                                <li>
-                                                    <a href="#" class="link"
-                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
-                                                        Editar nombre
-                                                    </a>
-
-                                                </li>
-                                                <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
-                                            </ul>
-                                        </div>
+                                    {{-- Menú de tres puntitos con Bootstrap --}}
+                                    <div class="dropdown ms-2">
+                                        <button class="btn btn-link text-dark p-0" type="button" id="menuOpciones{{ $columna->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical fs-5"></i> {{-- Icono Bootstrap --}}
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuOpciones{{ $columna->id }}">
+                                            <li class="dropdown-header">Acciones</li>
+                                            <li>
+                                                <a href="#"
+                                                   class="dropdown-item"
+                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                    Editar nombre
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#"
+                                                   class="dropdown-item text-danger"
+                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                    Eliminar columna
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
+
                                 </div>
+
 
 
                                 <div class="p-2 border-bottom flex-shrink-0">
@@ -222,52 +229,57 @@
                         @endforeach
                     </div>
 
-
-                    {{-- INICIO: Accordion para móvil --}}
                     <div class="kanban-accordion">
                         <div class="accordion" id="accordionKanban">
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading{{ $columna->id }}">
-                                        <button class="accordion-button collapsed accordion-toggle d-flex align-items-center"
+
+                                    {{-- HEADER --}}
+                                    <div class="accordion-header d-flex align-items-center w-100 px-3 py-2 gap-2" id="heading{{ $columna->id }}">
+
+                                        {{-- Menú de tres puntitos --}}
+                                        <div class="dropdown flex-shrink-0">
+                                            <button class="btn btn-link text-dark p-0" type="button"
+                                                    id="menuOpcionesMovil{{ $columna->id }}"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical fs-5"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="menuOpcionesMovil{{ $columna->id }}">
+                                                <li class="dropdown-header">Acciones</li>
+                                                <li>
+                                                    <a href="#"
+                                                       class="dropdown-item"
+                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                        Editar nombre
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"
+                                                       class="dropdown-item text-danger"
+                                                       onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                        Eliminar columna
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        {{-- Título --}}
+                                        <span class="flex-grow-1 text-truncate fw-semibold">
+                        {{ $columna->nombre }}
+                    </span>
+
+                                        {{-- Botón de colapsar --}}
+                                        {{-- Botón de colapsar --}}
+                                        <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
                                                 type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ $columna->id }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ $columna->id }}">
-
-                                            {{-- Menú de tres puntitos (reutilizado de escritorio) --}}
-                                            <div class="me-2">
-                                                <div class="menu-wrapper">
-                                                    <input type="checkbox" class="toggler" id="toggle-mobile-{{ $columna->id }}" />
-                                                    <div class="dots">
-                                                        <div></div>
-                                                    </div>
-                                                    <div class="menu">
-                                                        <ul>
-                                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
-                                                            <li>
-                                                                <a href="#" class="link"
-                                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
-                                                                    Editar nombre
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" class="link"
-                                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
-                                                                    Eliminar columna
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Nombre de la columna --}}
-                                            <span class="flex-grow-1">{{ $columna->nombre }}</span>
+                                                data-bs-target="#collapse{{ $columna->id }}">
+                                            <i class="bi bi-chevron-down fs-5"></i>
                                         </button>
-                                    </h2>
 
+                                    </div>
+
+                                    {{-- CUERPO DEL COLLAPSE --}}
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
@@ -287,7 +299,9 @@
                                                             <p>{{ $historia->descripcion }}</p>
                                                         @endif
                                                         <a href="{{ route('historias.edit', $historia->id) }}"
-                                                           class="btn btn-outline-secondary btn-sm">Editar</a>
+                                                           class="btn btn-outline-secondary btn-sm">
+                                                            Editar
+                                                        </a>
                                                     </div>
                                                 </div>
                                             @empty
@@ -295,19 +309,14 @@
                                             @endforelse
                                         </div>
                                     </div>
+
                                 </div>
                             @endforeach
                         </div>
                     </div>
-                    {{-- FIN: Accordion para móvil --}}
 
 
-
-
-
-                </div>
-
-                {{-- Scripts existentes --}}
+                    {{-- Scripts existentes --}}
                 <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 
                 <script>
@@ -621,9 +630,42 @@
                     });
                 </script>
 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Al hacer click en cualquier botón de colapsar
+                            document.querySelectorAll('.collapse-toggle-btn').forEach(btn => {
+                                btn.addEventListener('click', function (e) {
+                                    const targetSelector = this.getAttribute('data-bs-target');
+                                    const collapseEl = document.querySelector(targetSelector);
+
+                                    if (!collapseEl) return;
+
+                                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
+
+                                    // Si está abierto, ciérralo. Si está cerrado, ábrelo.
+                                    if (collapseEl.classList.contains('show')) {
+                                        bsCollapse.hide();
+                                        this.setAttribute('aria-expanded', 'false');
+                                    } else {
+                                        bsCollapse.show();
+                                        this.setAttribute('aria-expanded', 'true');
+                                    }
+                                });
+                            });
+
+                            // Evitar que los clicks en dropdowns cierren o interfieran
+                            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                                dropdown.addEventListener('click', function (e) {
+                                    e.stopPropagation();
+                                });
+                            });
+                        });
+                    </script>
 
 
-                <script>
+
+
+                    <script>
                     // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                     document.addEventListener('DOMContentLoaded', function () {
                         const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
@@ -691,6 +733,8 @@
                         document.getElementById('formEliminarColumna').submit();
                     }
                 </script>
+
+
 
 
 
@@ -786,43 +830,16 @@
                         const form = document.getElementById('formEditarColumna');
                         const input = document.getElementById('inputNombreColumna');
 
-                        form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
+                        // Usar template literal correcto
+                        form.action = `/columnas/${id}`;
                         input.value = nombre;
 
                         const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));
                         modal.show();
                     }
-                </script>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        document.querySelectorAll('.accordion-toggle').forEach(function (btn) {
-                            btn.addEventListener('click', function () {
-                                const targetSelector = this.getAttribute('data-target');
-                                const target = document.querySelector(targetSelector);
-                                if (!target) return;
-
-                                const isOpen = target.classList.contains('show');
-
-                                // Cerrar todos los paneles
-                                document.querySelectorAll('.accordion-collapse').forEach(function (panel) {
-                                    panel.classList.remove('show');
-                                });
-                                document.querySelectorAll('.accordion-button').forEach(function (b) {
-                                    b.classList.add('collapsed');
-                                });
-
-                                // Si estaba cerrado, lo abrimos
-                                if (!isOpen) {
-                                    target.classList.add('show');
-                                    this.classList.remove('collapsed');
-                                }
-                            });
-                        });
-                    });
-
 
                 </script>
+
 
 
 
@@ -1257,11 +1274,19 @@
                         }
 
                     }
+                    /* Forzar color negro en el título del acordeón móvil */
+                    .kanban-accordion .accordion-header span {
+                        color: #000 !important;
+                    }
+                    .kanban-accordion .accordion-header span {
+                        color: #000 !important;
+                        font-weight: 600; /* seminegrita */
+                    }
+
 
 
 
                 </style>
-
 
 
 
