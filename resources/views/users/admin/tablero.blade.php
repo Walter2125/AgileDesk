@@ -24,6 +24,24 @@
 
     @endphp
 
+    @if (session('success'))
+        <div class="alert alert-success mt-2" id="success-alert">
+            {{ session('success') }}
+        </div>
+        <script>
+            setTimeout(function () {
+                const alert = document.getElementById('success-alert');
+                if (alert) {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }
+            }, 3000);
+        </script>
+    @endif
+
+
+
     <div class="container-fluid px-3 py-0 tablero-wrapper">
         <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
             <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
@@ -59,25 +77,6 @@
                 </select>
             </form>
         @endif
-
-
-    @if (session('success'))
-                <div class="alert alert-success mt-2" id="success-alert">
-                    {{ session('success') }}
-                </div>
-                <script>
-                    setTimeout(function () {
-                        const alert = document.getElementById('success-alert');
-                        if (alert) {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
-                        }
-                    }, 3000);
-                </script>
-            @endif
-
-
 
 
 
