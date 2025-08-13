@@ -552,7 +552,7 @@ body {
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos recientes
-        @if (auth()->check() && auth()->user()->usertype == 'admin')
+        @if (auth()->check() && (auth()->user()->usertype == 'admin' || auth()->user()->isSuperAdmin()))
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
