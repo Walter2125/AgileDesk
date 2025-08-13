@@ -116,9 +116,16 @@
     <label for="descripcion" class="form-label fw-bold">
         Descripción <span class="text-danger">*</span>
     </label>
-    <textarea name="descripcion" id="descripcion"
-              class="form-control @error('descripcion') is-invalid @enderror"
-              maxlength="250" required>{{ old('descripcion') }}</textarea>
+    <textarea 
+        name="descripcion" 
+        id="descripcion"
+        class="form-control @error('descripcion') is-invalid @enderror"
+        maxlength="350" 
+        required
+        oninvalid="this.setCustomValidity('Por favor, ingresa una descripción (máximo 350 caracteres)')"
+        oninput="this.setCustomValidity('')"
+    >{{ old('descripcion') }}</textarea>
+
     @error('descripcion')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror

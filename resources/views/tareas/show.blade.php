@@ -36,7 +36,14 @@
         background-color: #ffffff;
         border: 1px solid #ccc;
         font-weight: normal;
-        white-space: nowrap; /* Evita que el texto salte en columnas pequeñas */
+        white-space: nowrap; /* Por defecto, sin saltos */
+    }
+
+    /* Permitir que Nombre y Descripción salten de línea y crezcan hacia abajo */
+    .table td.nombre,
+    .table td.descripcion {
+        white-space: normal;       /* Permitir salto de línea */
+        word-break: break-word;    /* Cortar palabras largas */
     }
 
     @media (max-width: 768px) {
@@ -135,38 +142,45 @@
 @endsection
 
 @section('content')
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@if(session('success'))
-            <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
-                {{ session('success') }}
-                <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const alert = document.getElementById('success-alert');
-                    if (alert) {
-                        setTimeout(function () {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
-                        }, 3000);
-                    }
-                });
-            </script>
+@if (session('success'))
+    <div id="success-alert" 
+         class="alert alert-success alert-dismissible fade show mt-2" 
+         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+         
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="bi bi-check-circle me-2"></i>
+                <span>{{ session('success') }}</span>
             </div>
-        @endif
-        @if(session('deleted'))
-            <div class="alert alert-info">{{ session('deleted') }}</div>
-        @endif
+            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(function () {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }, 3000);
+            }
+        });
+    </script>
+@endif
+
+@if(session('deleted'))
+    <div class="alert alert-info">{{ session('deleted') }}</div>
+@endif
 
 <div class="container py-4" style="max-width: 1200px;">
     <div class="card p-5 mb-5">
-
-        
-
         <div class="mb-4">
             <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
             <div class="progress">
@@ -200,8 +214,8 @@
                                     {{ $tarea->completada ? 'checked' : '' }}>
                             </td>
                             <td>{{ $tarea->id }}</td>
-                            <td>{{ $tarea->nombre }}</td>
-                            <td>{{ $tarea->descripcion }}</td>
+                            <td class="nombre">{{ $tarea->nombre }}</td>
+                            <td class="descripcion">{{ $tarea->descripcion }}</td>
                             <td>{{ $tarea->actividad }}</td>
                             <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
                             <td class="text-center">
@@ -238,7 +252,7 @@
         </div>
     </div>
 
-    {{-- Aquí van los modales, fuera de la tabla --}}
+    {{-- Modales --}}
     @foreach ($tareas as $tarea)
         <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $tarea->id }}" aria-hidden="true">
             <div class="modal-dialog">
@@ -246,14 +260,11 @@
                     <div class="modal-header border-bottom-0">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-
                     <div class="modal-body text-center">
                         <div class="mb-4">
                             <h5 class="modal-title text-danger" id="deleteModalLabel{{ $tarea->id }}">Confirmar Eliminación</h5>
                             <h5 class="modal-title text-danger">¿Deseas eliminar esta tarea?</h5>
-
                             <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-
                             <div class="alert alert-danger d-flex align-items-center mt-3">
                                 <i class="bi bi-exclamation-circle-fill me-2"></i>
                                 <div>
@@ -261,7 +272,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
                             <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
@@ -277,7 +287,7 @@
     @endforeach
 </div>
 
-{{-- Scripts existentes --}}
+{{-- Scripts --}}
 <script>
     function actualizarBarraProgreso() {
         const checkboxes = document.querySelectorAll('.tarea-checkbox');

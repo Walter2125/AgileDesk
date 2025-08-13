@@ -296,12 +296,35 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
    
-        @if (session('success'))
-            <div id="success-alert" class="alert alert-success alert-dismissible fade show mt-2">
+@if (session('success'))
+    <div id="success-alert" 
+         class="alert alert-success alert-dismissible fade show mt-2" 
+         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+         
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
                 <i class="bi bi-check-circle me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                <span>{{ session('success') }}</span>
             </div>
+
+            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(function () {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = 0;
+                    setTimeout(() => alert.remove(), 500);
+                }, 3000);
+            }
+        });
+    </script>
+@endif
+
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     const alert = document.getElementById('success-alert');
@@ -315,6 +338,7 @@
                 });
             </script>
         @endif
+
    
     @if ($errors->any())
         <div class="alert alert-danger mt-2">
