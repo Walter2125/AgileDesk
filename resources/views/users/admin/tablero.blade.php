@@ -288,6 +288,7 @@
 
                                             @forelse ($columna->historias as $historia)
                                                 {{-- Tarjeta móvil con botones a la derecha --}}
+                                                {{-- Tarjeta móvil con descripción con ellipsis y botones a la derecha --}}
                                                 <div class="card mb-2 p-2 text-dark position-relative" data-historia-id="{{ $historia->id }}">
 
                                                     {{-- Contenido clickeable --}}
@@ -295,8 +296,14 @@
                                                         <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
                                                             {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
                                                         </strong>
+
                                                         @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word;">
+                                                            <div class="descripcion-limitada" style="
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
+            ">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
                                                         @endif
@@ -319,6 +326,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
+
 
 
                                             @empty
