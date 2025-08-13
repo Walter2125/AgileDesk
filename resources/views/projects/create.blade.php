@@ -42,7 +42,7 @@
                         class="form-control @error('name') is-invalid @enderror"
                         name="name"
                         value="{{ old('name') }}"
-                        required maxlength="30" autofocus>
+                        required maxlength="50" autofocus>
                     @error('name')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror

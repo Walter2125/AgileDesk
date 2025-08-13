@@ -1461,6 +1461,7 @@
 </script>
 @endpush
 
+
 @section('scripts')
 <script src="{{ asset('vendor/chart.js/chart.min.js') }}"></script>
     <script>

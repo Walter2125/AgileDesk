@@ -39,7 +39,7 @@ class ProjectController extends Controller
     $rules = [
         'name' => [
             'required',
-            'max:30',
+            'max:50',
             'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/',
             Rule::unique('nuevo_proyecto', 'name'),
         
@@ -205,7 +205,7 @@ class ProjectController extends Controller
         $request->validate([
             'name' => [
         'required',
-        'max:30',
+        'max:50',
         'unique:nuevo_proyecto,name,' . $id,
         'regex:/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/'
     ],
