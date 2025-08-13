@@ -35,36 +35,38 @@
     border: 1px solid #e9ecef !important;
 }
 
-/* INPUTS NUMBER - NUNCA MOSTRAR FLECHAS (en ningún estado) */
+/*input*/
 input[type="number"].formulario-editable {
     -webkit-appearance: none !important;
     -moz-appearance: textfield !important;
     appearance: none !important;
 }
 
-/* Para Firefox */
 input[type="number"].formulario-editable::-webkit-outer-spin-button,
 input[type="number"].formulario-editable::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
 }
 
-/* Para Chrome/Safari */
+
 input[type="number"].formulario-editable::-webkit-inner-spin-button,
 input[type="number"].formulario-editable::-webkit-outer-spin-button {
     -webkit-appearance: none !important;
     margin: 0 !important;
 }
 
-/* SELECTS - FLECHAS SOLO EN EDITABLES */
+/* select*/
 select.formulario-editable:not([readonly]):not(:disabled) {
     appearance: auto !important;
     -webkit-appearance: menulist !important;
     -moz-appearance: menulist !important;
     background-image: initial !important;
+    
+     width: 100%; 
+  max-width: 100%;
 }
 
-/* SELECTS - SIN FLECHAS EN NO EDITABLES */
+/* spiner sin flecha */
 select.formulario-editable[readonly],
 select.formulario-editable:disabled {
     appearance: none !important;
@@ -81,7 +83,7 @@ select.formulario-editable:disabled {
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* Estilos específicos */
+/* Estilos especifico */
 input[name="trabajo_estimado"].formulario-editable,
 input[name="trabajo_estimado"].formulario-editable[readonly],
 input[type="text"].formulario-editable:read-only {
@@ -250,21 +252,21 @@ textarea.formulario-editable {
     resize: vertical;
 }
 
-/* Inputs number - ocultar flechas */
+/* Input*/
 input[type="number"].formulario-editable {
     -webkit-appearance: none;
     -moz-appearance: textfield;
     appearance: none;
 }
 
-/* Para navegadores WebKit (Chrome, Safari) */
+/* Para navegadores*/
 input[type="number"].formulario-editable::-webkit-outer-spin-button,
 input[type="number"].formulario-editable::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* Selects - mostrar flecha */
+/* Select */
 select.formulario-editable {
     appearance: auto;
     -webkit-appearance: menulist;
@@ -273,7 +275,7 @@ select.formulario-editable {
     padding-right: 2rem; /* Espacio para la flecha */
 }
 
-/* Botones consistentes */
+/* Botones  */
 .btn-form-actions {
     min-width: 120px;
     padding: 0.5rem 1.25rem;
@@ -281,7 +283,7 @@ select.formulario-editable {
     transition: all 0.2s ease;
 }
 
-/* Estilo para etiquetas de formulario */
+/* Estilo  */
 .form-label {
     font-weight: 500;
     margin-bottom: 0.5rem;
@@ -293,7 +295,7 @@ select.formulario-editable {
 
 .descripcion-limitada {
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Número máximo de líneas */
+    -webkit-line-clamp: 3; /*3lineas */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
