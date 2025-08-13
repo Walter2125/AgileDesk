@@ -33,31 +33,32 @@
     </div>
 
     <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
-
         <div class="input-group w-100">
-                    <span class="input-group-text" style="height: 40px">
-                    <i class="bi bi-search"></i>
-                                            </span>
-            <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
+    <span class="input-group-text" style="height: 40px">
+        <i class="bi bi-search"></i>
+    </span>
+            <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px">
             <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
-        <form method="GET" class="d-flex">
-            <select name="sprint_id" id="sprintSelect" class="form-select"
-                    style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
-                    onchange="this.form.submit()">
-                <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
-                    Todas las Historias
-                </option>
-                @foreach ($tablero->sprints as $sprint)
-                    <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
-                        {{ $sprint->nombre }}
-                    </option>
-                @endforeach
-            </select>
-        </form>
 
+        @if ($tablero->sprints->count() > 0)
+            <form method="GET" class="d-flex mt-2">
+                <select name="sprint_id" id="sprintSelect" class="form-select"
+                        style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                        onchange="this.form.submit()">
+                    <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
+                        Todas las Historias
+                    </option>
+                    @foreach ($tablero->sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        @endif
 
 
     @if (session('success'))
