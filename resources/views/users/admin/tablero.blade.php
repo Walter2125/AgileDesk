@@ -287,20 +287,40 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                <div class="card mb-2">
-                                                    <div class="card-body">
-                                                        <h6 class="card-title">
+                                                {{-- Tarjeta móvil con botones a la derecha --}}
+                                                <div class="card mb-2 p-2 text-dark position-relative" data-historia-id="{{ $historia->id }}">
+
+                                                    {{-- Contenido clickeable --}}
+                                                    <div class="mb-2">
+                                                        <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
                                                             {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
-                                                        </h6>
+                                                        </strong>
                                                         @if ($historia->descripcion)
-                                                            <p>{{ $historia->descripcion }}</p>
+                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word;">
+                                                                Descripción: {{ $historia->descripcion }}
+                                                            </div>
                                                         @endif
-                                                        <a href="{{ route('historias.edit', $historia->id) }}"
-                                                           class="btn btn-outline-secondary btn-sm">
+                                                    </div>
+
+                                                    {{-- Botones pequeños alineados a la derecha --}}
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <!-- Botón Editar -->
+                                                        <a href="{{ route('historias.show', $historia->id) }}"
+                                                           class="btn btn-sm btn-outline-secondary">
                                                             Editar
                                                         </a>
+
+                                                        <!-- Botón Eliminar -->
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                            Eliminar
+                                                        </button>
                                                     </div>
                                                 </div>
+
+
                                             @empty
                                                 <p class="text-muted">No hay historias en esta columna.</p>
                                             @endforelse
