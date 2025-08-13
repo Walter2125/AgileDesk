@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -25,8 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-      Paginator::useBootstrap();
-      // Project::observe(ProjectObserver::class); // Observer comentado - problema de autoload
+        // Forzar idioma español en toda la aplicación
+        App::setLocale('es');
+        
+        Paginator::useBootstrap();
+        // Project::observe(ProjectObserver::class); // Observer comentado - problema de autoload
 
         View::composer('*', function ($view) {
             $route = request()->route();

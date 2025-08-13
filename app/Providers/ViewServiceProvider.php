@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Historia;
 use App\Models\Project;
 use App\Models\Columna;
@@ -411,16 +412,39 @@ class ViewServiceProvider extends ServiceProvider
                     ['label' => 'Panel de Administración'],
                 ],
 
+                // Historial del sistema
+                'historial.sistema' => [
+                    ['label' => 'Inicio', 'url' => route('dashboard')],
+                    ['label' => 'Historial del Sistema'],
+                ],
+                'historial.limpiar' => [
+                    ['label' => 'Inicio', 'url' => route('dashboard')],
+                    ['label' => 'Panel de Administración', 'url' => route('homeadmin')],
+                    ['label' => 'Historial del Sistema', 'url' => route('historial.sistema')],
+                    ['label' => 'Limpiar Historial'],
+                ],
+
                 // Usuarios administrativos
                 'admin.users' => [
                     ['label' => 'Inicio', 'url' => route('homeadmin')],
                     ['label' => 'Usuarios del Sistema'],
                 ],
-                'admin.users.index' => [
+                'admin.users.manage' => [
                     ['label' => 'Inicio', 'url' => route('homeadmin')],
-                    ['label' => 'Usuarios del Sistema', 'url' => route('admin.users')],
-                    ['label' => 'Usuarios Pendientes'],
+                    ['label' => 'Usuarios del Sistema'],
                 ],
+                'admin.users.index' => function() {
+                    // Determinar breadcrumbs según el rol del usuario
+                    $baseUrl = Auth::user() && Auth::user()->isSuperAdmin() 
+                        ? route('admin.users') 
+                        : route('admin.users.manage');
+                        
+                    return [
+                        ['label' => 'Inicio', 'url' => route('homeadmin')],
+                        ['label' => 'Usuarios del Sistema', 'url' => $baseUrl],
+                        ['label' => 'Usuarios Pendientes'],
+                    ];
+                },
                 'admin.soft-deleted' => [
                     ['label' => 'Inicio', 'url' => route('homeadmin')],
                     ['label' => 'Elementos Eliminados'],

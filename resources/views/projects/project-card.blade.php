@@ -20,12 +20,15 @@
      x-transition 
      x-cloak
      class="menu-three-dots"
-     style="z-index: 20; width: 160px;">
+     style="z-index: 1050; width: 160px;">
     
     <button class="menu-item" @click.prevent="showColor = !showColor">
         Cambiar color
     </button>
-    <button class="menu-item" data-bs-toggle="modal" data-bs-target="#modal-integrantes-{{ $project->id }}">
+    <button class="menu-item" 
+            @click="open = false" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-integrantes-{{ $project->id }}">
         Ver integrantes
     </button>
 
@@ -49,6 +52,14 @@
                     <div class="project-code">
                         <strong>Código:</strong> {{ $project->codigo }}
                     </div>
+                    @if(Auth::user()->isSuperAdmin() && $project->creator)
+                        <div class="project-creator mt-1">
+                            <small class="text-muted">
+                                <i class="fas fa-user-crown"></i>
+                                <strong>Creado por:</strong> {{ $project->creator->name }}
+                            </small>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -72,7 +83,7 @@
                     <i class="fas fa-eye"></i> Ver
                 </a>
 
-                @if(auth()->id() === $project->user_id)
+                @if(auth()->user()->isSuperAdmin() || auth()->id() === $project->user_id)
                     <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
