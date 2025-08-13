@@ -291,3 +291,12 @@ select.formulario-editable {
 
 /*fin*/
 
+.descripcion-limitada {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Número máximo de líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+

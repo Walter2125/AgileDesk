@@ -153,9 +153,11 @@
                                                         </strong>
 
                                                     @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
+                                                            <div class="descripcion-limitada" 
+                                                                style="word-break: break-word; overflow-wrap: break-word; white-space: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
+
                                                         @endif
 
                                                     </a>
