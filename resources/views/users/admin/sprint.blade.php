@@ -60,32 +60,17 @@
                     </div>
                 </div>
             @empty
-                <div class="alert alert-info">
-                    No hay sprints registrados en este proyecto.
+                <div class="card mb-3" style="background-color: #e6f4ff; border: 1px solid #b3daff;">
+                    <div class="card-body text-primary">
+                        No hay sprints registrados en este proyecto.
+                    </div>
                 </div>
-            @endforelse
+            @endempty
+
+
         </div>
 
     </div>
-    <script>
-        document.querySelectorAll('.sidebar a').forEach(link => {
-            link.addEventListener('click', () => {
-                const sidebar = document.querySelector('.sidebar-collapse'); // Ajusta selector
-                if (window.innerWidth < 768) {
-                    sidebar.classList.remove('show');
-                }
-            });
-        });
-
-    </script>
-    <style>
-    @media (min-width: 768px) {
-    .boton-wrapper {
-    position: relative;
-    right: -20px;
-    }
-    }
-    </style>
 
 
 @endsection

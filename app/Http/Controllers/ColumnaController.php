@@ -15,14 +15,24 @@ class ColumnaController extends Controller
     {
         $tablero = Tablero::with('columnas')->findOrFail($tableroId);
 
-
         if ($tablero->columnas->count() >= 9) {
             return redirect()->back()->withErrors('No se pueden crear más de 9 columnas en un tablero.');
         }
 
         $request->validate([
-            'nombre' => ['required', 'string', 'max:255', 'regex:/^[^\d]+$/'],
+            'nombre' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[^\d]+$/', // prohíbe números
+                Rule::unique('columnas')->where(function ($query) use ($tablero) {
+                    return $query->where('tablero_id', $tablero->id);
+                }),
+            ],
             'posicion' => 'nullable|integer|min:1|max:9',
+        ], [
+            'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
+            'nombre.regex' => 'El nombre no debe contener números.',
         ]);
 
         Columna::create([
@@ -35,8 +45,8 @@ class ColumnaController extends Controller
             'project' => $tablero->proyecto_id,
             'tablero' => $tablero->id,
         ])->with('success', 'Columna creada exitosamente.');
-
     }
+
 
     // Mostrar formulario de edición
     public function edit(Columna $columna)
