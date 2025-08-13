@@ -287,13 +287,12 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                {{-- Tarjeta móvil con botones a la derecha --}}
                                                 {{-- Tarjeta móvil con descripción con ellipsis y botones a la derecha --}}
-                                                <div class="card mb-2 p-2 text-dark position-relative" data-historia-id="{{ $historia->id }}">
+                                                <div class="card mb-2 p-2 text-dark position-relative card-historia"
+                                                     data-href="{{ route('historias.show', $historia->id) }}"
+                                                     style="cursor:pointer; z-index: 0;">
 
-                                                    {{-- Contenido clickeable --}}
-                                                    <div class="mb-2">
-                                                        <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
+                                                <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
                                                             {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
                                                         </strong>
 
@@ -307,7 +306,7 @@
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
                                                         @endif
-                                                    </div>
+                                                    </a>
 
                                                     {{-- Botones pequeños alineados a la derecha --}}
                                                     <div class="d-flex justify-content-end gap-2">
@@ -902,6 +901,38 @@
                     }
 
                 </script>
+                    <script>
+                        document.querySelectorAll('.card-historia').forEach(card => {
+                            card.addEventListener('click', function(e) {
+                                // Evitar que los botones o enlaces internos disparen el redireccionamiento
+                                if (!e.target.closest('a') && !e.target.closest('button')) {
+                                    window.location.href = this.dataset.href;
+                                }
+                            });
+                        });
+                    </script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Detecta clicks o toques en todo el documento
+                            ['click', 'touchstart'].forEach(eventType => {
+                                document.addEventListener(eventType, function (e) {
+                                    // Evitar que botones, enlaces o inputs disparen la navegación
+                                    if (e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target]')) {
+                                        return;
+                                    }
+
+                                    // Buscar si se hizo click/toque dentro de una tarjeta historia
+                                    const card = e.target.closest('.card-historia');
+                                    if (card) {
+                                        const href = card.dataset.href;
+                                        if (href) {
+                                            window.location.href = href;
+                                        }
+                                    }
+                                }, { passive: true });
+                            });
+                        });
+                    </script>
 
 
 
@@ -909,7 +940,9 @@
 
 
 
-                <style>
+
+
+                    <style>
 
                     .kanban-columna {
                         min-width: 0 !important;
