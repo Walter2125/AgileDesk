@@ -132,11 +132,41 @@ html:not(.dark-mode) .btn-dark {
   color: #fff !important;
 }
 
-body:not(.dark-mode) .alert,
-html:not(.dark-mode) .alert {
+/* No sobreescribir colores de alertas contextuales en modo claro */
+body:not(.dark-mode) .alert:not(.alert-success):not(.alert-danger):not(.alert-warning):not(.alert-info),
+html:not(.dark-mode) .alert:not(.alert-success):not(.alert-danger):not(.alert-warning):not(.alert-info) {
   color: #212529 !important;
   background-color: #f8f9fa !important;
   border-color: #dee2e6 !important;
+}
+
+/* Restaurar colores Bootstrap para alertas contextuales en modo claro */
+body:not(.dark-mode) .alert-success,
+html:not(.dark-mode) .alert-success {
+  background-color: #d1e7dd !important;
+  color: #0f5132 !important;
+  border-color: #badbcc !important;
+}
+
+body:not(.dark-mode) .alert-danger,
+html:not(.dark-mode) .alert-danger {
+  background-color: #f8d7da !important;
+  color: #842029 !important;
+  border-color: #f5c2c7 !important;
+}
+
+body:not(.dark-mode) .alert-warning,
+html:not(.dark-mode) .alert-warning {
+  background-color: #fff3cd !important;
+  color: #664d03 !important;
+  border-color: #ffecb5 !important;
+}
+
+body:not(.dark-mode) .alert-info,
+html:not(.dark-mode) .alert-info {
+  background-color: #cff4fc !important;
+  color: #055160 !important;
+  border-color: #b6effb !important;
 }
 
 body:not(.dark-mode) .badge.bg-primary,

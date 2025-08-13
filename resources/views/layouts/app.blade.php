@@ -1649,6 +1649,10 @@
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
                      </a>
+                    <a href="{{ route('admin.users') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span class="sidebar-text">Usuarios</span>
+                    </a>
 
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">

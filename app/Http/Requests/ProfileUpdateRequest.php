@@ -37,7 +37,8 @@ class ProfileUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // Custom messages can be added here if needed
-        ];
+        'name.unique' => 'El nombre del proyecto ya existe.',
+        'name.required' => 'El nombre del proyecto es obligatorio.',
+    ];
     }
 }
