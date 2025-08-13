@@ -335,7 +335,7 @@
         <div class="mb-0" style="font-weight: bold; width: 100%;">
           <label class="form-label rounded">Nombre de la Historia</label>
             <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 1000px;"
                 title="{{ $historia->nombre }}">
                 H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
             </h2>
@@ -439,10 +439,7 @@
              maxlength="5000"
             data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
     </div>
-    </div>
-
-
-    <div class="d-flex justify-content-end mb-3">
+     <div class="d-flex justify-content-end mb-3">
     <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
         Cancelar
     </button>
@@ -450,6 +447,10 @@
         <i class="bi bi-save"></i> Actualizar
     </button>
 </div>
+    </div>
+
+
+   
 
     
 </form>
@@ -458,65 +459,6 @@
     @method('DELETE')
 </form>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('textarea[readonly]').forEach(textarea => {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        });
-
-        const btnEditar = document.getElementById('btnEditar');
-        const btnGuardar = document.getElementById('btnGuardar');
-        const btnCancelar = document.getElementById('btnCancelar');
-        const tituloTexto = document.getElementById('tituloTexto');
-        const tituloInput = document.getElementById('tituloInput');
-        const editableFields = document.querySelectorAll('[data-editable="true"]');
-        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
-
-        btnEditar.addEventListener('click', function (e) {
-            e.preventDefault();
-            tituloTexto.classList.add('d-none');
-            tituloInput.classList.remove('d-none');
-            editableFields.forEach(field => {
-                field.removeAttribute('readonly');
-                field.removeAttribute('disabled');
-                if (field.tagName === 'TEXTAREA') {
-                    field.style.height = 'auto';
-                    field.style.height = field.scrollHeight + 'px';
-                }
-            });
-            btnGuardar.classList.remove('d-none');
-            btnCancelar.classList.remove('d-none');  // Mostrar botón Cancelar
-            if (dropdownMenuContainer) {
-                dropdownMenuContainer.classList.add('d-none');
-            }
-        });
-
-        btnCancelar.addEventListener('click', function () {
-            // Revertir al modo sólo lectura / deshabilitado
-            tituloTexto.classList.remove('d-none');
-            tituloInput.classList.add('d-none');
-            editableFields.forEach(field => {
-                field.setAttribute('readonly', true);
-                field.setAttribute('disabled', true);
-                if (field.tagName === 'TEXTAREA') {
-                    field.style.height = 'auto';
-                    field.style.height = field.scrollHeight + 'px';
-                }
-            });
-            btnGuardar.classList.add('d-none');
-            btnCancelar.classList.add('d-none');
-            if (dropdownMenuContainer) {
-                dropdownMenuContainer.classList.remove('d-none');
-            }
-        });
-
-        const form = document.getElementById('formHistoria');
-        form.addEventListener('submit', function () {
-            console.log('Formulario enviado');
-        });
-    });
-</script>
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -1022,5 +964,65 @@
 
     // Cargar estado al abrir la página
     window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('textarea[readonly]').forEach(textarea => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        });
+
+        const btnEditar = document.getElementById('btnEditar');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const tituloTexto = document.getElementById('tituloTexto');
+        const tituloInput = document.getElementById('tituloInput');
+        const editableFields = document.querySelectorAll('[data-editable="true"]');
+        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+
+        btnEditar.addEventListener('click', function (e) {
+            e.preventDefault();
+            tituloTexto.classList.add('d-none');
+            tituloInput.classList.remove('d-none');
+            editableFields.forEach(field => {
+                field.removeAttribute('readonly');
+                field.removeAttribute('disabled');
+                if (field.tagName === 'TEXTAREA') {
+                    field.style.height = 'auto';
+                    field.style.height = field.scrollHeight + 'px';
+                }
+            });
+            btnGuardar.classList.remove('d-none');
+            btnCancelar.classList.remove('d-none');  // Mostrar botón Cancelar
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.add('d-none');
+            }
+        });
+
+        btnCancelar.addEventListener('click', function () {
+            // Revertir al modo sólo lectura / deshabilitado
+            tituloTexto.classList.remove('d-none');
+            tituloInput.classList.add('d-none');
+            editableFields.forEach(field => {
+                field.setAttribute('readonly', true);
+                field.setAttribute('disabled', true);
+                if (field.tagName === 'TEXTAREA') {
+                    field.style.height = 'auto';
+                    field.style.height = field.scrollHeight + 'px';
+                }
+            });
+            btnGuardar.classList.add('d-none');
+            btnCancelar.classList.add('d-none');
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.remove('d-none');
+            }
+        });
+
+        const form = document.getElementById('formHistoria');
+        form.addEventListener('submit', function () {
+            console.log('Formulario enviado');
+        });
+    });
 </script>
 @endsection
