@@ -286,6 +286,11 @@
 
 
 @section('content')
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+@endpush
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -332,37 +337,33 @@
     @method('PATCH')
     <div class="row mb-3">
 
-    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="font-weight: bold; width: 100%;">
-          <label class="form-label rounded">Nombre de la Historia</label>
-            <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 1000px;"
-                title="{{ $historia->nombre }}">
-                H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-            </h2>
-            <input id="tituloInput" type="text" name="nombre" maxlength="100"
-    class="form-control formulario-editable rounded d-none"
-    value="{{ old('nombre', $historia->nombre) }}"
-    data-editable="true" />
+                <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                    <div class="mb-0" style="font-weight: bold; width: 100%;">
+                    <label class="form-label rounded">Nombre de la Historia</label>
+                        <h2 id="tituloTexto" class="historia-title rounded"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 1000px;"
+                            title="{{ $historia->nombre }}">
+                            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                        </h2>
+                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                class="form-control formulario-editable rounded d-none"
+                value="{{ old('nombre', $historia->nombre) }}"
+                data-editable="true" />
+                </div>
 
-    
-
-
-        </div>
-
-        <div class="d-flex align-items-center">
-            <div id="dropdownMenuContainer" class="dropdown me-3">
-                <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
-                    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-                </ul>
-            </div>
-        </div>
+                    <div class="d-flex align-items-center">
+                        <div id="dropdownMenuContainer" class="dropdown me-3">
+                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
+                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                            </ul>
+                        </div>
+                    </div>
     </div>
 
     
@@ -375,11 +376,11 @@
 
                    <select name="usuario_id" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="">-- Seleccionar usuario --</option>
-    @foreach($usuarios as $usuario)
-        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-            {{ $usuario->name }}
-        </option>
-    @endforeach
+                @foreach($usuarios as $usuario)
+                    <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                        {{ $usuario->name }}
+                    </option>
+                @endforeach
 
                 </select>
             </div>
@@ -435,29 +436,23 @@
                     readonly>
             </div>
         </div>
+                <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-control formulario-editable" name="descripcion"
+                    maxlength="5000"
+                    data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+                 </div>
+            <div class="d-flex justify-content-end mb-3">
+            <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
+                <i class="bi bi-x-lg me-2"></i> Cancelar
+            </button>
+    
+            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
+                <i class="bi bi-arrow-repeat me-2"></i> Actualizar</button>
         
             </div>
         </div>
         
-    <div class="mb-3">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control formulario-editable" name="descripcion"
-            maxlength="5000"
-            data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
-    </div>
-    <div class="d-flex justify-content-end mb-3">
-    <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
-        Cancelar
-    </button>
-    <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
-        <i class="bi bi-save"></i> Actualizar
-    </button>
-</div>
-    </div>
-
-
-   
-
 </form>
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
     @csrf
@@ -499,6 +494,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
 {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
 <div class="mb-0">
@@ -1051,4 +1047,6 @@
         });
     });
 </script>
+</div>
+</div>
 @endsection
