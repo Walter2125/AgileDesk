@@ -11,9 +11,9 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
 
 
     @php
@@ -237,37 +237,30 @@
                                     {{-- HEADER --}}
                                     <div class="accordion-header d-flex align-items-center w-100 px-3 py-2 gap-2" id="heading{{ $columna->id }}">
 
-                                        {{-- Menú de tres puntitos --}}
-                                        <div class="dropdown flex-shrink-0">
-                                            <button class="btn btn-link text-dark p-0" type="button"
-                                                    id="menuOpcionesMovil{{ $columna->id }}"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical fs-5"></i>
+                                        {{-- Menú contextual columna (reemplaza los 3 puntos) --}}
+                                        <div class="position-relative">
+                                            <button type="button" class="btn btn-sm btn-light dropdown-toggle-menu" aria-expanded="false">
+                                                &#x22EE; {{-- ⋮ --}}
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end"
-                                                aria-labelledby="menuOpcionesMovil{{ $columna->id }}">
-                                                <li class="dropdown-header">Acciones</li>
-                                                <li>
-                                                    <a href="#"
-                                                       class="dropdown-item"
-                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
-                                                        Editar nombre
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#"
-                                                       class="dropdown-item text-danger"
-                                                       onclick="abrirModalEliminarColumna({{ $columna->id }})">
-                                                        Eliminar columna
-                                                    </a>
-                                                </li>
-                                            </ul>
+
+                                            <div class="menu-contextual-columna position-absolute shadow rounded bg-white p-2">
+                                                <a href="#" class="dropdown-item"
+                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                    Editar nombre
+                                                </a>
+                                                <a href="#" class="dropdown-item text-danger"
+                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                    Eliminar columna
+                                                </a>
+                                            </div>
                                         </div>
 
                                         {{-- Título --}}
-                                        <span class="flex-grow-1 text-truncate fw-semibold">
+                                        <span class="flex-grow-1 text-truncate fw-semibold ms-2">
                         {{ $columna->nombre }}
                     </span>
+
+                                        {{-- Botón collapse --}}
                                         <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
                                                 type="button"
                                                 data-bs-target="#collapse{{ $columna->id }}">
@@ -287,47 +280,33 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                {{-- Tarjeta móvil con descripción con ellipsis y botones a la derecha --}}
+                                                {{-- Tarjeta de historia --}}
                                                 <div class="card mb-2 p-2 text-dark position-relative card-historia"
                                                      data-href="{{ route('historias.show', $historia->id) }}"
                                                      style="cursor:pointer; z-index: 0;">
+                                                    <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
+                                                        {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                    </strong>
+                                                    @if ($historia->descripcion)
+                                                        <div class="descripcion-limitada" style="
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        white-space: nowrap;
+                                        max-width: 100%;
+                                    ">
+                                                            Descripción: {{ $historia->descripcion }}
+                                                        </div>
+                                                    @endif
 
-                                                <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
-                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
-                                                        </strong>
-
-                                                        @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" style="
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-width: 100%;
-            ">
-                                                                Descripción: {{ $historia->descripcion }}
-                                                            </div>
-                                                        @endif
-                                                    </a>
-
-                                                    {{-- Botones pequeños alineados a la derecha --}}
-                                                    <div class="d-flex justify-content-end gap-2">
-                                                        <!-- Botón Editar -->
-                                                        <a href="{{ route('historias.show', $historia->id) }}"
-                                                           class="btn btn-sm btn-outline-secondary">
+                                                    <div class="d-flex justify-content-end gap-2 mt-2">
+                                                        <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
                                                             Editar
                                                         </a>
-
-                                                        <!-- Botón Eliminar -->
-                                                        <button type="button"
-                                                                class="btn btn-sm btn-outline-danger"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">
                                                             Eliminar
                                                         </button>
                                                     </div>
                                                 </div>
-
-
-
                                             @empty
                                                 <p class="text-muted">No hay historias en esta columna.</p>
                                             @endforelse
@@ -339,6 +318,85 @@
                         </div>
                     </div>
 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Menú contextual columnas
+                            document.querySelectorAll('.dropdown-toggle-menu').forEach(button => {
+                                button.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    const menu = this.nextElementSibling;
+                                    document.querySelectorAll('.menu-contextual-columna').forEach(m => {
+                                        if (m !== menu) m.classList.remove('show');
+                                    });
+                                    menu.classList.toggle('show');
+                                });
+                            });
+
+                            document.addEventListener('click', function () {
+                                document.querySelectorAll('.menu-contextual-columna').forEach(menu => menu.classList.remove('show'));
+                            });
+
+                            // Click en la tarjeta abre show
+                            document.querySelectorAll('.card-historia').forEach(card => {
+                                card.addEventListener('click', function(e) {
+                                    if(e.target.closest('button, a')) return;
+                                    const href = this.dataset.href;
+                                    if(href) window.location.href = href;
+                                });
+                            });
+                        });
+                    </script>
+
+                    <style>
+                        /* Menú contextual columna */
+                        .menu-contextual-columna {
+                            display: none;
+                            position: absolute;
+                            top: 100%; /* justo debajo del botón */
+                            right: 0; /* alineado a la derecha por defecto */
+                            min-width: 160px; /* ancho mínimo */
+                            background-color: #fff;
+                            border-radius: 6px;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                            padding: 8px 0; /* espacio arriba y abajo */
+                            z-index: 2000;
+                        }
+
+                        /* Cada opción del menú */
+                        .menu-contextual-columna li {
+                            list-style: none;
+                            margin: 0;
+                            padding: 6px 16px; /* espacio interno de cada opción */
+                            cursor: pointer;
+                            transition: background 0.2s;
+                        }
+
+                        .menu-contextual-columna li:hover {
+                            background-color: #f0f0f0;
+                        }
+
+                        /* Mostrar el menú */
+                        .menu-contextual-columna.show {
+                            display: block;
+                        }
+
+                        /* Móvil: abrir hacia la izquierda si hay poco espacio */
+                        @media (max-width: 767.98px) {
+                            .menu-contextual-columna {
+                                right: auto;
+                                left: 0;
+                            }
+                        }
+
+                        /* Ellipsis para títulos */
+                        .ellipsis-nombre {
+                            display: block;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            width: 100%;
+                        }
+                    </style>
 
                     {{-- Scripts existentes --}}
                 <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
@@ -876,6 +934,7 @@
 
 
                 </script>
+
                 <script>
                     document.addEventListener('click', function (e) {
                         document.querySelectorAll('.toggler').forEach(function (checkbox) {
@@ -911,13 +970,27 @@
                             });
                         });
                     </script>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Evita que el click del collapse afecte al dropdown
+                            document.querySelectorAll('.collapse-toggle-btn').forEach(btn => {
+                                btn.addEventListener('click', function(e){
+                                    e.stopPropagation(); // el click del collapse no afectará al dropdown
+                                });
+                            });
+                        });
+                    </script>
+
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             // Detecta clicks o toques en todo el documento
                             ['click', 'touchstart'].forEach(eventType => {
                                 document.addEventListener(eventType, function (e) {
                                     // Evitar que botones, enlaces o inputs disparen la navegación
-                                    if (e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target]')) {
+                                    if (
+                                        e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target], .menu-wrapper, .dropdown-menu')
+                                    ) {
                                         return;
                                     }
 
@@ -943,6 +1016,32 @@
 
 
                     <style>
+                        /* Estilos del menú contextual */
+                        .menu-contextual {
+                            position: absolute;
+                            background: #fff;
+                            border: 1px solid #ccc;
+                            border-radius: 6px;
+                            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                            z-index: 1055;
+                            padding: 10px;
+                            display: none;
+                        }
+
+                        .menu-contextual ul {
+                            list-style: none;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .menu-contextual ul li {
+                            padding: 8px 12px;
+                            cursor: pointer;
+                        }
+
+                        .menu-contextual ul li:hover {
+                            background: #f0f0f0;
+                        }
 
                     .kanban-columna {
                         min-width: 0 !important;
