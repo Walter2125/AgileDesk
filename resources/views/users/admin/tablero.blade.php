@@ -67,7 +67,9 @@
                         <select name="sprint_id" id="sprintSelect" class="form-select"
                                 style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
                                 onchange="this.form.submit()">
-                            <option value="">Todas las Historias</option>
+                            <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
+                                Todas las Historias
+                            </option>
                             @foreach ($tablero->sprints as $sprint)
                                 <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
                                     {{ $sprint->nombre }}
@@ -75,6 +77,7 @@
                             @endforeach
                         </select>
                     </form>
+
 
 
                     <div class="d-flex gap-2 ms-auto">
