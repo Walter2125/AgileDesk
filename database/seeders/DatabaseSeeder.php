@@ -13,8 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            CompleteProjectSeeder::class,
-        ]);
+        // Comentamos el seeder que crea usuarios admin automáticamente
+        // El primer usuario registrado se convertirá automáticamente en superadmin
+        
+        // $this->call([
+        //     CompleteProjectSeeder::class,
+        // ]);
+        
+        $this->command->info('🎉 Base de datos preparada para el nuevo sistema de roles');
+        $this->command->info('📋 El primer usuario que se registre será automáticamente superadministrador');
+        $this->command->warn('⚠️ Asegúrate de registrar el primer usuario con cuidado');
     }
 }
