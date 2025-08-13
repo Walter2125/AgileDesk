@@ -380,19 +380,7 @@ body {
     </script>
 @endif
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const alert = document.getElementById('success-alert');
-                    if (alert) {
-                        setTimeout(function () {
-                            alert.style.transition = "opacity 0.10s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 1000);
-                        }, 3000);
-                    }
-                });
-            </script>
-        @endif
+        
 
    
     @if ($errors->any())
@@ -929,28 +917,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                   </div>
                 @endforeach
-
-                <!-- Modal Editar Comentario -->
-                <div id="editarComentarioModal{{ $comentario->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-                  <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-                    <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf @method('PUT')
-                      <div class="mb-4 text-center">
-                        <i class="bi bi-pencil-square text-warning fs-1"></i>
-                        <h4 class="fw-bold text-dark">Editar Comentario</h4>
-                        <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
-                      </div>
-                      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
-                      <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
-                        <button type="submit" class="btn btn-primary text-white">
-                          <i class="bi bi-save-fill me-1"></i> Actualizar
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              @endforeach
 
               <!-- Modal Editar Comentario -->
               <div class="modal fade" id="editarComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="editarComentarioModalLabel{{ $comentario->id }}" aria-hidden="true">
