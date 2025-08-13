@@ -325,24 +325,24 @@
    
 <div class="card-body">
 
-         
-<form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
-    @csrf
-    @method('PATCH')
-    <div class="row mb-3">
 
-    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="font-weight: bold; width: 100%;">
-          <label class="form-label rounded">Nombre de la Historia</label>
-            <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                title="{{ $historia->nombre }}">
-                H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-            </h2>
-            <input id="tituloInput" type="text" name="nombre" maxlength="100"
-    class="form-control formulario-editable rounded d-none"
-    value="{{ old('nombre', $historia->nombre) }}"
-    data-editable="true" />
+    <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
+        @csrf
+        @method('PATCH')
+        <div class="row mb-3">
+
+            <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                <div class="mb-0" style="font-weight: bold; width: 100%;">
+                    <label class="form-label rounded">Nombre de la Historia</label>
+                    <h2 id="tituloTexto" class="historia-title rounded"
+                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        title="{{ $historia->nombre }}">
+                        H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                    </h2>
+                    <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                           class="form-control formulario-editable rounded d-none"
+                           value="{{ old('nombre', $historia->nombre) }}"
+                           data-editable="true" />
 
     
 
