@@ -843,10 +843,10 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-folder me-1"></i> Ver Todos
-                        </a>
-                    </div>
+                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
+                        <i class="bi bi-folder"></i> Ver Todos
+                    </a>
+                </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -1501,19 +1501,19 @@
         const deleteProjectModal = document.getElementById('deleteProjectModal');
         const deleteProjectForm = document.getElementById('deleteProjectForm');
         if (deleteProjectModal && deleteProjectForm) {
-            deleteProjectModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
+        deleteProjectModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
                 const projectId = button?.getAttribute('data-project-id');
                 const projectName = button?.getAttribute('data-project-name') || '';
                 // Guardar nombre (por si se quiere usar en el contenido)
-                deleteProjectForm.dataset.projectName = projectName;
-                // Configurar la acción del formulario
+            deleteProjectForm.dataset.projectName = projectName;
+            // Configurar la acción del formulario
                 if (projectId) {
-                    deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
+            deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
                 }
-            });
+        });
             // Sin confirm() adicional: el modal ya actúa como confirmación
-        }
+            }
 
         // Manejo del modal de eliminación de usuarios regulares
         const deleteUserModal = document.getElementById('deleteUserModal');
@@ -1560,6 +1560,7 @@
     });
 </script>
 @endpush
+
 
 @section('scripts')
 <script src="{{ asset('vendor/chart.js/chart.min.js') }}"></script>

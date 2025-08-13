@@ -107,16 +107,14 @@
             <div class="d-flex justify-content-end mb-3 mt-4">
             <a href="{{ route('tableros.show', ['project' => $proyecto->id]) }}"
                class="btn btn-secondary btn-form-actions me-2">
-               Cancelar
+              <i class="bi bi-x-lg me-2"></i> Cancelar
             </a>
             <button type="submit" class="btn btn-primary btn-form-actions">
-                <i class="bi bi-save me-1"></i> Guardar
+                <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar
             </button>
             </div>
         </div>
-
         
-
         
     </form>
 </div>

@@ -116,9 +116,16 @@
     <label for="descripcion" class="form-label fw-bold">
         Descripción <span class="text-danger">*</span>
     </label>
-    <textarea name="descripcion" id="descripcion"
-              class="form-control @error('descripcion') is-invalid @enderror"
-              maxlength="250" required>{{ old('descripcion') }}</textarea>
+    <textarea 
+        name="descripcion" 
+        id="descripcion"
+        class="form-control @error('descripcion') is-invalid @enderror"
+        maxlength="350" 
+        required
+        oninvalid="this.setCustomValidity('Por favor, ingresa una descripción (máximo 350 caracteres)')"
+        oninput="this.setCustomValidity('')"
+    >{{ old('descripcion') }}</textarea>
+
     @error('descripcion')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -140,14 +147,17 @@
                 @enderror
             </div>
 
-            <div class="d-flex justify-content-between">
-                <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Cancelar
+            <div class="d-flex justify-content-end mb-3 mt-4">
+                <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-secondary btn-form-actions me-2">
+                    <i class="bi bi-x-lg me-2"></i> Cancelar
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-lg"></i> Guardar
+                   <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar
                 </button>
             </div>
+
+            
+
         </form>
     </div>
 </div>

@@ -117,15 +117,15 @@
             </div>
 
             <!-- Botones -->
-            <div class="d-flex justify-content-between">
-                <a href="{{ route('historias.show', $historia->id) }}" 
-                   class="btn btn-outline-secondary">
-                    Cancelar
-                </a>                
-                <button type="submit" class="btn btn-primary">
-                    Guardar Cambios
-                </button>
+            <div class="d-flex justify-content-end mb-3 mt-4">
+            <a href="{{ route('historias.show', $historia->id) }}" 
+            class="btn btn-secondary btn-form-actions me-2">
+            <i class="bi bi-x-lg me-2"></i> Cancelar
+            </a>                
+            <button type="submit" class="btn btn-primary btn-form-actions"><i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar Cambios</button>
             </div>
+
+           
         </form>
     </div>
 </div>
