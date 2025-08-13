@@ -147,20 +147,9 @@
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@if (session('success'))
-    <div id="success-alert" 
-         class="alert alert-success alert-dismissible fade show mt-2" 
-         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-         
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="bi bi-check-circle me-2"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-
-    </div>
+@if(session('success'))
+<div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
+    {{ session('success') }}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const alert = document.getElementById('success-alert');
@@ -173,10 +162,10 @@
             }
         });
     </script>
+</div>
 @endif
-
 @if(session('deleted'))
-    <div class="alert alert-info">{{ session('deleted') }}</div>
+<div class="alert alert-info">{{ session('deleted') }}</div>
 @endif
 
 <div class="container py-4" style="max-width: 1200px;">
@@ -190,7 +179,7 @@
             </div>
         </div>
 
-        <!-- Tabla envuelta en un contenedor responsivo -->
+        <!-- Tabla -->
         <div class="table-responsive">
             <table class="table table-hover table-bordered text-dark">
                 <thead>
@@ -223,8 +212,12 @@
                                     class="btn btn-outline-warning btn-sm" title="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                <button class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteTareaModal"
+                                    data-tarea-id="{{ $tarea->id }}"
+                                    data-tarea-nombre="{{ $tarea->nombre }}"
+                                    title="Eliminar">
                                     <i class="bi bi-trash3"></i>
                                 </button>
                             </td>
@@ -251,43 +244,64 @@
             </a>
         </div>
     </div>
-
-    {{-- Modales --}}
-    @foreach ($tareas as $tarea)
-        <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $tarea->id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content rounded-4 shadow">
-                    <div class="modal-header border-bottom-0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="mb-4">
-                            <h5 class="modal-title text-danger" id="deleteModalLabel{{ $tarea->id }}">Confirmar Eliminación</h5>
-                            <h5 class="modal-title text-danger">¿Deseas eliminar esta tarea?</h5>
-                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                            <div class="alert alert-danger d-flex align-items-center mt-3">
-                                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                <div>
-                                    "<strong>{{ $tarea->nombre }}</strong>" será eliminada permanentemente.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                            <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
 </div>
 
-{{-- Scripts --}}
+<!-- Modal para confirmar eliminación de tarea -->
+<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center"> <!-- Centramos todo -->
+            
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
+            </div>
+
+            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ✅ Scripts para el modal (como en sprints/proyectos) --}}
+@push('js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteTareaModal = document.getElementById('deleteTareaModal');
+    const deleteTareaForm = document.getElementById('deleteTareaForm');
+    const deleteTareaText = document.getElementById('deleteTareaText');
+
+    deleteTareaModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const tareaId = button.getAttribute('data-tarea-id');
+        const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
+
+        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
+        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+    });
+});
+</script>
+@endpush
+
+{{-- ✅ Scripts de la barra de progreso (repuestos tal cual) --}}
 <script>
     function actualizarBarraProgreso() {
         const checkboxes = document.querySelectorAll('.tarea-checkbox');
@@ -323,7 +337,12 @@
                 } else {
                     alert('Error al guardar el progreso.');
                     checkbox.checked = !checkbox.checked;
+                    actualizarBarraProgreso();
                 }
+            }).catch(() => {
+                alert('Error de red.');
+                checkbox.checked = !checkbox.checked;
+                actualizarBarraProgreso();
             });
         }
     });
@@ -346,6 +365,8 @@
                 cb.checked = estados[id];
             }
         });
+        // Asegura que la barra refleje el estado cargado
+        actualizarBarraProgreso();
     }
 
     document.addEventListener('change', function (e) {
@@ -363,4 +384,17 @@
 
     window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
 </script>
+
+@push('css')
+<style>
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+.modal-header {
+    border-bottom: 1px solid #e1e4e8;
+    background-color: #f6f8fa;
+}
+</style>
+@endpush
 @endsection
