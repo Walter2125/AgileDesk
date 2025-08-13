@@ -338,36 +338,36 @@
     <div class="row mb-3">
 
                 <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-                    <div class="mb-0" style="font-weight: bold; width: 100%;">
-                    <label class="form-label rounded">Nombre de la Historia</label>
-                        <h2 id="tituloTexto" class="historia-title rounded"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 1000px;"
-                            title="{{ $historia->nombre }}">
-                            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-                        </h2>
-                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                class="form-control formulario-editable rounded d-none"
-                value="{{ old('nombre', $historia->nombre) }}"
-                data-editable="true" />
-                </div>
-
-                    <div class="d-flex align-items-center">
-                        <div id="dropdownMenuContainer" class="dropdown me-3">
-                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
-                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-                            </ul>
-                        </div>
-                    </div>
+    <div class="mb-0 flex-grow-1" style="font-weight: bold; min-width: 0;">
+        <label class="form-label rounded">Nombre de la Historia</label>
+        <h2 id="tituloTexto" class="historia-title rounded"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            title="{{ $historia->nombre }}">
+            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+        </h2>
+        <input id="tituloInput" type="text" name="nombre" maxlength="100"
+            class="form-control formulario-editable rounded d-none"
+            value="{{ old('nombre', $historia->nombre) }}"
+            data-editable="true" />
     </div>
 
+    <div class="d-flex align-items-center">
+        <div id="dropdownMenuContainer" class="dropdown me-3">
+            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
+                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
     
-        <div class="col-md-6 ">
+        <div class="col-lg-6 col-md-12">
        
           
             <div class="mb-3">

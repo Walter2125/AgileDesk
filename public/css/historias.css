@@ -62,6 +62,8 @@ select.formulario-editable:not([readonly]):not(:disabled) {
     -webkit-appearance: menulist !important;
     -moz-appearance: menulist !important;
     background-image: initial !important;
+     width: 100%; /* para que ocupe todo el ancho del contenedor */
+  max-width: 100%;
 }
 
 /* SELECTS - SIN FLECHAS EN NO EDITABLES */
