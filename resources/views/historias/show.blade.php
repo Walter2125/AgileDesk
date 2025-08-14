@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     @if($tareas->isEmpty())
         {{-- Si no hay tareas, que el ojito vaya al index --}}
-        <a href="{{ route('tareas.index', $historia->id) }}"
+        <a href="{{ route('tareas.show', $historia->id) }}"
            class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
            style="width: 40px; height: 40px;"
            title="Ver lista de tareas">
@@ -717,7 +717,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </h4>
           <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2"
             onclick="document.getElementById('nuevoComentarioModal').classList.remove('d-none')">
-            <i class="bi bi-chat-left-text me-1"></i> Comentar
+            <i class="bi bi-chat-left-text me-2"></i> Comentar
           </button>
         </div>
 
@@ -809,7 +809,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
                       <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
                         <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-                          @csrf @method('PUT')
+                          @csrf 
+                          @method('PUT')
                           <div class="mb-4 text-center">
                             <i class="bi bi-pencil-square text-warning fs-1"></i>
                             <h4 class="fw-bold text-dark">Editar Respuesta</h4>
@@ -935,9 +936,9 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <!-- Modal Nuevo Comentario -->
-    <div id="nuevoComentarioModal" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-      <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+    <div id="nuevoComentarioModal"    class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
+    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
           @csrf
           <div class="mb-4 text-center">
             <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
