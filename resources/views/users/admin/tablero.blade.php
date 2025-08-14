@@ -319,10 +319,13 @@
                                                     @endif
 
                                                     <div class="d-flex justify-content-end gap-2 mt-2">
-                                                        <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
+                                                        <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
                                                             Editar
                                                         </a>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteHistoriaModal{{ $historia->id }}">
                                                             Eliminar
                                                         </button>
                                                     </div>
@@ -1559,6 +1562,22 @@
                         color: #000 !important;
                         font-weight: 600; /* seminegrita */
                     }
+                    @media (max-width: 767.98px) {
+                        .modal[id^="deleteHistoriaModal"] {
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            right: 0 !important;
+                            bottom: 0 !important;
+                            z-index: 2000 !important;
+                            display: block;
+                        }
+                        .modal[id^="deleteHistoriaModal"] .modal-dialog {
+                            margin: 1rem auto !important;
+                            max-width: 95% !important;
+                        }
+                    }
+
 
 
 
