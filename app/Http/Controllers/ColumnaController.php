@@ -6,6 +6,7 @@ use App\Models\Columna;
 use App\Models\Tablero;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 
 class ColumnaController extends Controller
@@ -16,24 +17,36 @@ class ColumnaController extends Controller
         $tablero = Tablero::with('columnas')->findOrFail($tableroId);
 
         if ($tablero->columnas->count() >= 9) {
-            return redirect()->back()->withErrors('No se pueden crear más de 9 columnas en un tablero.');
+            return redirect()->back()
+                ->withErrors(['nombre' => 'No se pueden crear más de 9 columnas en un tablero.'], 'crearColumna')
+                ->withInput();
         }
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => [
                 'required',
                 'string',
-                'max:50',
-                'regex:/^[^\d]+$/', // prohíbe números
+                'max:30',
+                'regex:/^[^\d]+$/',
+                'not_regex:/^\s*$/',
                 Rule::unique('columnas')->where(function ($query) use ($tablero) {
                     return $query->where('tablero_id', $tablero->id);
                 }),
             ],
             'posicion' => 'nullable|integer|min:1|max:9',
         ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max' => 'El nombre no puede tener más de 30 caracteres.',
             'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
             'nombre.regex' => 'El nombre no debe contener números.',
+            'nombre.not_regex' => 'El nombre no puede estar vacío o contener solo espacios.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'crearColumna')
+                ->withInput();
+        }
 
         Columna::create([
             'nombre' => $request->nombre,
@@ -46,6 +59,7 @@ class ColumnaController extends Controller
             'tablero' => $tablero->id,
         ])->with('success', 'Columna creada exitosamente.');
     }
+
 
 
     // Mostrar formulario de edición

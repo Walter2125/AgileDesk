@@ -11,18 +11,20 @@
         <div class="mb-3 d-flex flex-column flex-md-row justify-content-end gap-2 mx-n3 mx-md-n4">
 
             <!-- Select Sprint -->
-            <form method="GET" class="d-flex">
-                <select name="sprint_id" class="form-select"
-                        style="max-height: 38px; height: 38px; width: 250px;border-radius: 0.375rem"
-                        onchange="this.form.submit()">
-                    <option value="">Todas las Historias</option>
-                    @foreach ($proyecto->sprints as $sprint)
-                        <option value="{{ $sprint->id }}" {{ $sprintId == $sprint->id ? 'selected' : '' }}>
-                            {{ $sprint->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </form>
+            @if($proyecto->sprints->count() > 0)
+                <form method="GET" class="d-flex">
+                    <select name="sprint_id" class="form-select"
+                            style="max-height: 38px; height: 38px; width: 250px;border-radius: 0.375rem"
+                            onchange="this.form.submit()">
+                        <option value="">Todas las Historias</option>
+                        @foreach ($proyecto->sprints as $sprint)
+                            <option value="{{ $sprint->id }}" {{ $sprintId == $sprint->id ? 'selected' : '' }}>
+                                {{ $sprint->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            @endif
 
             <!-- Botón Agregar Historia -->
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"

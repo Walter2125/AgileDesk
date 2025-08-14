@@ -557,89 +557,98 @@
                 </script>
 
                 <!-- Modal Bootstrap para agregar columna -->
-                <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
-                            @csrf
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Agregar nueva columna</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="nombre" class="form-label">Nombre de la columna</label>
-                                    <input type="text" name="nombre" id="nombre" class="form-control" required maxlength="30">
+                    <!-- Modal Agregar Columna -->
+                    <div class="modal fade" id="modalAgregarColumna" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Agregar nueva columna</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-
-
-                <!-- Modal para crear sprint -->
-                <!-- Modal para crear sprint -->
-                <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
-                            @csrf
-                            <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
-
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalCrearSprintLabel">
-                                    Crear Sprint <span id="numeroSprint"></span>
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                {{-- Mensajes de error en letras rojas --}}
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul class="mb-0">
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
+                                <div class="modal-body">
+                                    @if ($errors->crearColumna->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->crearColumna->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre de la columna</label>
+                                        <input type="text" name="nombre" id="nombre" class="form-control"
+                                               value="{{ old('nombre') }}" required maxlength="30">
                                     </div>
-                                @endif
-
-                                <div class="mb-3">
-                                    <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
-                                           value="{{ old('fecha_inicio') }}" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="fecha_fin" class="form-label">Fecha de fin</label>
-                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
-                                           value="{{ old('fecha_fin') }}" required>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
                                 </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear sprint</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
-                {{-- Script para reabrir el modal si hay errores --}}
-                @if ($errors->any())
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            var myModal = new bootstrap.Modal(document.getElementById('modalCrearSprint'));
-                            myModal.show();
-                        });
-                    </script>
-                @endif
+                    <!-- Modal Crear Sprint -->
+                    <div class="modal fade" id="modalCrearSprint" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
+                                @csrf
+                                <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Crear Sprint</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @if ($errors->crearSprint->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->crearSprint->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                    <div class="mb-3">
+                                        <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+                                        <input type="date" name="fecha_inicio" id="fecha_inicio"
+                                               class="form-control" value="{{ old('fecha_inicio') }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fecha_fin" class="form-label">Fecha de fin</label>
+                                        <input type="date" name="fecha_fin" id="fecha_fin"
+                                               class="form-control" value="{{ old('fecha_fin') }}" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear sprint</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Script para reabrir modal según errores -->
+                    @if ($errors->crearColumna->any())
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                new bootstrap.Modal(document.getElementById('modalAgregarColumna')).show();
+                            });
+                        </script>
+                    @endif
+
+                    @if ($errors->crearSprint->any())
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                new bootstrap.Modal(document.getElementById('modalCrearSprint')).show();
+                            });
+                        </script>
+                    @endif
 
 
-                <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+
+                    <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <form id="formEliminarColumna" method="POST" action="">
                             @csrf
@@ -672,39 +681,48 @@
                     </div>
                 </div>
 
-                <!-- Modal para editar nombre de columna -->
-                <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form id="formEditarColumna" method="POST" action="">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="inputNombreColumna" class="form-label">Nombre</label>
-                                        <input type="text"
-                                               name="nombre"
-                                               id="inputNombreColumna"
-                                               class="form-control"
-                                               placeholder="Nombre de la columna"
-                                               maxlength="50"
-                                               required>
+                    <!-- Modal para editar nombre de columna -->
+                    <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="formEditarColumna" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="inputNombreColumna" class="form-label">Nombre</label>
+                                            <input type="text"
+                                                   name="nombre"
+                                                   id="inputNombreColumna"
+                                                   class="form-control"
+                                                   placeholder="Nombre de la columna"
+                                                   maxlength="50"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
-                <script>
+                    <script>
+                        function abrirModalEditarColumna(id, nombre) {
+                            const form = document.getElementById('formEditarColumna');
+                            form.action = `/columnas/${id}`; // Ruta a update
+                            document.getElementById('inputNombreColumna').value = nombre;
+                            new bootstrap.Modal(document.getElementById('modalEditarColumna')).show();
+                        }
+                    </script>
+
+                    <script>
 
                     document.addEventListener('DOMContentLoaded', function () {
                         // Evitar que el clic en el menú cierre el acordeón
