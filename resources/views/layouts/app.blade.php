@@ -464,6 +464,17 @@
     
     /* Mediaquery para dispositivos móviles */
     @media (max-width: 768px) {
+        .sidebar-wrapper {
+            position: static; /* o relative, según el contexto */
+            display: block !important;
+            transform: none !important;
+            left: 0;
+            top: 0;
+            height: auto;
+            z-index: auto;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
         .content-wrapper {
             padding: 0 !important;
             margin: 0 !important;
@@ -1204,16 +1215,26 @@
             display: block;
         }
         /* Mejorar el área de usuario en tablets */
-        .user-info {
-            padding: 0.5rem 0.25rem;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            font-size: 1rem;
-            line-height: 1;
-        }
+         .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Espacio entre avatar y texto */
+        padding: 0.5rem 0.75rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 50%;
+        font-size: 1rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eee; /* o tu color base */
+        color: #333;            /* contraste del texto */
+    }
     }
 
     /* Pantallas grandes (desktops, 992px y más) */
