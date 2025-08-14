@@ -51,7 +51,7 @@
                     <div class="card mb-2 p-3" style="transition: box-shadow 0.2s; cursor: pointer; width: 100%;">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <strong>{{ $historia->nombre }}</strong><br>
+                                <strong> {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}</strong><br>
                                 <small class="text-muted">Prioridad: {{ $historia->prioridad }}</small><br>
                                 <small class="text-muted">
                                     Estado:
