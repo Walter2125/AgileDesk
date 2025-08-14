@@ -15,10 +15,10 @@
 
 
 @if (session('success'))
-    <div id="success-alert" 
-         class="alert alert-success alert-dismissible fade show mt-2" 
+    <div id="success-alert"
+         class="alert alert-success alert-dismissible fade show mt-2"
          style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-         
+
         <div style="display: flex; align-items: center;">
             <i class="bi bi-check-circle me-2"></i>
             <span>{{ session('success') }}</span>
@@ -51,33 +51,6 @@
     @endphp
 
     <div class="container-fluid px-3 py-0 tablero-wrapper">
-        @if (session('success'))
-            <div id="success-alert"
-                 class="alert alert-success alert-dismissible fade show mt-2"
-                 style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center;">
-                        <i class="bi bi-check-circle me-2"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                </div>
-
-            </div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const alert = document.getElementById('success-alert');
-                    if (alert) {
-                        setTimeout(function () {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
-                        }, 3000);
-                    }
-                });
-            </script>
-        @endif
         <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
             <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
