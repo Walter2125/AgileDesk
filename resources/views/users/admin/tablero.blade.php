@@ -33,6 +33,7 @@
     </div>
 
     <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
+
         <div class="input-group w-100">
     <span class="input-group-text" style="height: 40px">
         <i class="bi bi-search"></i>
@@ -59,6 +60,8 @@
                 </select>
             </form>
         @endif
+
+
 
 
 
@@ -553,6 +556,9 @@
                     </div>
                 </div>
 
+
+
+                <!-- Modal para crear sprint -->
                 <!-- Modal para crear sprint -->
                 <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">

@@ -160,6 +160,29 @@
         color: #6c757d;
         white-space: nowrap;
     }
+    .card-header .dataTables_length select {
+        text-align: center !important;
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem !important;
+        border: 2px solid #ced4da !important;
+        border-radius: 0.375rem !important;
+        background-color: #fff !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        transition: all 0.15s ease-in-out !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 16px 12px !important;
+    }
+    
+    .card-header .dataTables_length select:focus {
+        border-color: #4a90e2 !important;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
+        outline: none !important;
+    }
+    
+    .card-header .dataTables_length select:hover {
+        border-color: #4a90e2 !important;
+    }
 
     /* Estilos para badges de rol */
     .badge-admin {
@@ -170,6 +193,27 @@
     .badge-collaborator {
         background-color: #0d6efd;
         color: white;
+    }
+
+    /* Nuevos estilos para los badges de roles usando clases Bootstrap */
+    .bg-danger {
+        background-color: #dc3545 !important;
+    }
+    
+    .bg-warning {
+        background-color: #ffc107 !important;
+    }
+    
+    .bg-primary {
+        background-color: #0d6efd !important;
+    }
+    
+    .text-dark {
+        color: #212529 !important;
+    }
+    
+    .text-white {
+        color: #ffffff !important;
     }
 
     /* Espaciado inferior */
@@ -214,10 +258,10 @@
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-clock"></i> Usuarios Pendientes
+                            <i class="bi bi-clock me-1"></i> Usuarios Pendientes
                         </a>
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
-                            <i class="bi bi-archive"></i> Eliminados
+                            <i class="bi bi-archive me-1"></i> Eliminados
                         </a>
                     </div>
                 </div>
@@ -247,24 +291,37 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
-                                                    $roleLabel = $user->usertype === 'admin' ? 'Administrador' : 'Colaborador';
-                                                    $badgeClass = $user->usertype === 'admin' ? 'badge-admin' : 'badge-collaborator';
+                                                    // Si el usuario está pendiente (no aprobado ni rechazado), mostrar "En proceso"
+                                                    if (!$user->is_approved && !$user->is_rejected && $user->usertype !== 'superadmin' && $user->usertype !== 'admin') {
+                                                        $roleData = ['label' => 'En proceso', 'class' => 'bg-info text-white'];
+                                                    } else {
+                                                        $roleData = match($user->usertype) {
+                                                            'superadmin' => ['label' => 'Superadministrador', 'class' => 'bg-danger text-white'],
+                                                            'admin' => ['label' => 'Administrador', 'class' => 'bg-warning text-dark'],
+                                                            'collaborator' => ['label' => 'Colaborador', 'class' => 'bg-primary text-white'],
+                                                            default => ['label' => 'Usuario', 'class' => 'bg-secondary text-white']
+                                                        };
+                                                    }
                                                 @endphp
-                                                <span class="badge {{ $badgeClass }}">{{ $roleLabel }}</span>
+                                                <span class="badge {{ $roleData['class'] }}">{{ $roleData['label'] }}</span>
                                             </td>
                                             <td class="text-center">
-                                                @if($user->usertype === 'admin')
+                                                @if($user->usertype === 'superadmin')
                                                     <span class="status-approved">
-                                                        <i class="bi bi-shield-check"></i> Activo
+                                                        <i class="bi bi-shield-fill me-1"></i> Superadmin
+                                                    </span>
+                                                @elseif($user->usertype === 'admin')
+                                                    <span class="status-approved">
+                                                        <i class="bi bi-shield-check me-1"></i> Activo
                                                     </span>
                                                 @else
                                                     @if($user->is_approved)
                                                         <span class="status-approved">
-                                                            <i class="bi bi-check-circle"></i> Aprobado
+                                                            <i class="bi bi-check-circle me-1"></i> Aprobado
                                                         </span>
                                                     @elseif($user->is_rejected)
                                                         <span class="status-rejected">
-                                                            <i class="bi bi-x-circle"></i> Rechazado
+                                                            <i class="bi bi-x-circle me-1"></i> Rechazado
                                                         </span>
                                                     @else
                                                         <span class="status-pending">

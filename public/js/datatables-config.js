@@ -13,7 +13,7 @@ const DataTablesConfig = {
             ordering: true,
             info: false, // Ocultar información por defecto
             lengthChange: true,
-            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "Todos"] ],
+            lengthMenu: [ [5, 10, 20, 30], [5, 10, 20, 30] ],
             pageLength: 10,
             pagingType: 'full_numbers',
             language: {

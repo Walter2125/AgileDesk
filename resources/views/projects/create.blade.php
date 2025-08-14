@@ -124,10 +124,11 @@
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary me-2">Guardar Proyecto</button>
-                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary me-2"> <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar Proyecto</button>
+                    <a href="{{ route('projects.my') }}" class="btn btn-secondary btn-form-actions me-2"> <i class="bi bi-x-lg me-2"></i>Cancelar</a>
                 </div>
             </form>
+            
         </div>
     </div>
 </div>

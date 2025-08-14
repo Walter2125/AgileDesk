@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\Sprint;
 use App\Models\HistorialCambio;
 use App\Models\Project;
@@ -22,11 +23,33 @@ class AdminController extends Controller
     use AuthorizesRequests;
     public function index(Request $request, $projectId = null)
     {
-        // Obtener datos administrativos básicos
-    $usuarios = User::where('usertype', '!=', 'admin')->get();
-    $proyectos = Project::with('creator', 'users')->get();
-    $historial = HistorialCambio::orderByDesc('created_at')->get();
-    $sprints = Sprint::with('proyecto')->get();
+        $currentUser = Auth::user();
+        
+        // Obtener datos administrativos básicos según el rol
+        if ($currentUser->isSuperAdmin()) {
+            // Superadmin ve todos los usuarios y proyectos
+            $usuarios = User::where('usertype', '!=', 'superadmin')->get();
+            $proyectos = Project::with('creator', 'users')->get();
+            $historial = HistorialCambio::orderByDesc('created_at')->get();
+            $sprints = Sprint::with('proyecto')->get();
+        } else {
+            // Admin solo ve usuarios de sus proyectos y sus propios proyectos
+            $adminProjects = Project::where('user_id', $currentUser->id)->pluck('id');
+            $usuarios = User::whereHas('projects', function($query) use ($adminProjects) {
+                $query->whereIn('project_id', $adminProjects);
+            })->where('usertype', '!=', 'superadmin')->get();
+            $proyectos = Project::where('user_id', $currentUser->id)->with('creator', 'users')->get();
+            
+            // Filtrar historial solo de proyectos del admin
+            $historial = HistorialCambio::whereIn('proyecto_id', $adminProjects)
+                ->orderByDesc('created_at')
+                ->get();
+            
+            // Filtrar sprints solo de proyectos del admin
+            $sprints = Sprint::whereIn('proyecto_id', $adminProjects)
+                ->with('proyecto')
+                ->get();
+        }
 
         // Lógica para estadísticas de proyecto (similar a UserController)
         if (!$projectId) {
@@ -39,7 +62,7 @@ class AdminController extends Controller
             $projectId = session('admin_selected_project_id');
         }
         if (!$projectId) {
-            $firstProject = Project::first();
+            $firstProject = $proyectos->first();
             if ($firstProject) {
                 $projectId = $firstProject->id;
             }
@@ -51,7 +74,17 @@ class AdminController extends Controller
         // Obtener proyecto y validar
         $project = $projectId ? Project::with('users')->find($projectId) : null;
         
-        if (!$projectId || !$project) {
+        // Validar que el proyecto existe y el usuario tiene acceso
+        $hasAccess = false;
+        if ($project) {
+            if ($currentUser->isSuperAdmin()) {
+                $hasAccess = true; // Superadmin tiene acceso a todos los proyectos
+            } else {
+                $hasAccess = $project->user_id == $currentUser->id; // Admin solo a sus proyectos
+            }
+        }
+        
+        if (!$projectId || !$project || !$hasAccess) {
             // Configurar breadcrumbs
             $breadcrumbs = [
                 [
@@ -65,7 +98,7 @@ class AdminController extends Controller
                 compact('usuarios', 'proyectos', 'historial', 'sprints'),
                 [
                     'estadisticas' => collect(),
-                    'proyectos_usuario' => Project::all(), // Admin puede ver todos
+                    'proyectos_usuario' => $proyectos, // Filtrado según el rol del usuario
                     'proyecto_actual' => null,
                     'user_contributions' => [],
                     'columnas_ordenadas' => [],
@@ -246,7 +279,7 @@ class AdminController extends Controller
             compact('usuarios', 'proyectos', 'historial', 'sprints'),
             [
                 'estadisticas' => $estadisticas,
-                'proyectos_usuario' => Project::all(), // Admin puede ver todos los proyectos
+                'proyectos_usuario' => $proyectos, // Filtrado según el rol del usuario
                 'proyecto_actual' => $project,
                 'user_contributions' => $userContributions,
                 'columnas_ordenadas' => $columnas->toArray(), // Pasar columnas ordenadas
@@ -274,14 +307,104 @@ class AdminController extends Controller
      */
     public function deleteUser(User $user)
     {
-        // Verificar que no sea un admin
+        // Solo los superadministradores pueden eliminar usuarios administradores
+        if ($user->usertype === 'admin' && !Auth::user()->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'Solo los superadministradores pueden eliminar usuarios administradores.');
+        }
+        
+        // Si es un administrador, eliminar todos sus recursos en cascada
         if ($user->usertype === 'admin') {
-            return redirect()->back()->with('error', 'No se pueden eliminar usuarios administradores.');
+            return $this->deleteAdminWithCascade($user);
         }
         
         $user->delete();
         
         return redirect()->back()->with('success', 'Usuario eliminado exitosamente.');
+    }
+    
+    /**
+     * Eliminar un administrador con todos sus recursos en cascada
+     */
+    private function deleteAdminWithCascade(User $admin)
+    {
+        try {
+            DB::transaction(function () use ($admin) {
+                // Eliminar proyectos creados por el administrador
+                $projects = Project::where('created_by', $admin->id)->get();
+                foreach ($projects as $project) {
+                    // Eliminar sprints del proyecto
+                    Sprint::where('project_id', $project->id)->delete();
+                    
+                    // Eliminar historias del proyecto
+                    $historias = Historia::where('project_id', $project->id)->get();
+                    foreach ($historias as $historia) {
+                        // Eliminar tareas de la historia
+                        Tarea::where('historia_id', $historia->id)->delete();
+                        // Eliminar comentarios de la historia
+                        Comentario::where('historia_id', $historia->id)->delete();
+                    }
+                    Historia::where('project_id', $project->id)->delete();
+                    
+                    // Eliminar columnas del proyecto
+                    Columna::where('tablero_id', $project->id)->delete();
+                    
+                    // Eliminar el proyecto
+                    $project->delete();
+                }
+                
+                // Eliminar comentarios creados directamente por el administrador
+                Comentario::where('user_id', $admin->id)->delete();
+                
+                // Eliminar tareas asignadas o creadas por el administrador
+                Tarea::where('assigned_to', $admin->id)->delete();
+                
+                // Eliminar historias creadas por el administrador (que no estén en sus proyectos)
+                Historia::where('created_by', $admin->id)->delete();
+                
+                // Finalmente, eliminar el usuario administrador
+                $admin->delete();
+            });
+            
+            return redirect()->back()->with('success', 'Administrador y todos sus recursos asociados han sido eliminados exitosamente.');
+            
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar administrador en cascada: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el administrador: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Obtener estadísticas de recursos de un administrador
+     * (Opcional: para mostrar en el modal la cantidad exacta de elementos)
+     */
+    public function getAdminResourceStats(User $admin)
+    {
+        $projects = Project::where('created_by', $admin->id)->count();
+        $historias = Historia::whereIn('project_id', 
+            Project::where('created_by', $admin->id)->pluck('id')
+        )->count();
+        $tareas = Tarea::whereIn('historia_id', 
+            Historia::whereIn('project_id', 
+                Project::where('created_by', $admin->id)->pluck('id')
+            )->pluck('id')
+        )->count();
+        $comentarios = Comentario::where('user_id', $admin->id)->count();
+        $columnas = Columna::whereIn('tablero_id', 
+            Project::where('created_by', $admin->id)->pluck('id')
+        )->count();
+        $sprints = Sprint::whereIn('project_id', 
+            Project::where('created_by', $admin->id)->pluck('id')
+        )->count();
+
+        return [
+            'projects' => $projects,
+            'historias' => $historias,
+            'tareas' => $tareas,
+            'comentarios' => $comentarios,
+            'columnas' => $columnas,
+            'sprints' => $sprints,
+            'total' => $projects + $historias + $tareas + $comentarios + $columnas + $sprints
+        ];
     }
     
     /**
@@ -322,8 +445,23 @@ class AdminController extends Controller
 
         // Obtener usuarios eliminados
         if ($type === 'all' || $type === 'users') {
-            $users = User::onlyTrashed()
-                ->where('usertype', '!=', 'admin')
+            $currentUser = Auth::user();
+            
+            $userQuery = User::onlyTrashed();
+            
+            // Aplicar filtros de rol según el usuario actual
+            if ($currentUser->isSuperAdmin()) {
+                // Superadmin ve todos los usuarios eliminados excepto otros superadmin
+                $userQuery->where('usertype', '!=', 'superadmin');
+            } else {
+                // Admin solo ve usuarios de sus proyectos
+                $adminProjects = Project::where('user_id', $currentUser->id)->pluck('id');
+                $userQuery->whereHas('projects', function($query) use ($adminProjects) {
+                    $query->whereIn('project_id', $adminProjects);
+                })->where('usertype', '!=', 'superadmin');
+            }
+            
+            $users = $userQuery
                 ->when($search, function ($query) use ($search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%")
@@ -338,6 +476,14 @@ class AdminController extends Controller
                 })
                 ->get()
                 ->map(function ($user) {
+                    // Obtener etiqueta de rol
+                    $roleLabel = match($user->usertype) {
+                        'superadmin' => 'Superadministrador',
+                        'admin' => 'Administrador',
+                        'collaborator' => 'Colaborador',
+                        default => ucfirst($user->usertype)
+                    };
+                    
                     return [
                         'id' => $user->id,
                         'type' => 'users',
@@ -345,6 +491,8 @@ class AdminController extends Controller
                         'name' => $user->name,
                         'description' => $user->email,
                         'full_description' => $user->email,
+                        'role' => $user->usertype,
+                        'role_label' => $roleLabel,
                         'deleted_at' => $user->deleted_at,
                         'model' => $user
                     ];
@@ -354,7 +502,15 @@ class AdminController extends Controller
 
         // Obtener proyectos eliminados
         if ($type === 'all' || $type === 'projects') {
-            $projects = Project::onlyTrashed()
+            $currentUser = Auth::user();
+            $projectQuery = Project::onlyTrashed();
+            
+            // Filtrar por rol: admin solo ve sus propios proyectos
+            if (!$currentUser->isSuperAdmin()) {
+                $projectQuery->where('user_id', $currentUser->id);
+            }
+            
+            $projects = $projectQuery
                 ->when($search, function ($query) use ($search) {
                     $query->where(function ($q) use ($search) {
                         $q->where('name', 'like', "%{$search}%")
@@ -386,8 +542,16 @@ class AdminController extends Controller
 
         // Obtener historias eliminadas
         if ($type === 'all' || $type === 'historias') {
-            $historias = Historia::onlyTrashed()
-                ->with(['proyecto'])
+            $currentUser = Auth::user();
+            $historiaQuery = Historia::onlyTrashed()->with(['proyecto']);
+            
+            // Filtrar por rol: admin solo ve historias de sus proyectos
+            if (!$currentUser->isSuperAdmin()) {
+                $adminProjects = Project::where('user_id', $currentUser->id)->pluck('id');
+                $historiaQuery->whereIn('proyecto_id', $adminProjects);
+            }
+            
+            $historias = $historiaQuery
                 ->when($search, function ($query) use ($search) {
                     $query->where('nombre', 'like', "%{$search}%");
                 })
@@ -416,8 +580,18 @@ class AdminController extends Controller
 
         // Obtener tareas eliminadas
         if ($type === 'all' || $type === 'tareas') {
-            $tareas = Tarea::onlyTrashed()
-                ->with(['historia'])
+            $currentUser = Auth::user();
+            $tareaQuery = Tarea::onlyTrashed()->with(['historia']);
+            
+            // Filtrar por rol: admin solo ve tareas de historias de sus proyectos
+            if (!$currentUser->isSuperAdmin()) {
+                $adminProjects = Project::where('user_id', $currentUser->id)->pluck('id');
+                $tareaQuery->whereHas('historia', function($query) use ($adminProjects) {
+                    $query->whereIn('proyecto_id', $adminProjects);
+                });
+            }
+            
+            $tareas = $tareaQuery
                 ->when($search, function ($query) use ($search) {
                     $query->where('nombre', 'like', "%{$search}%");
                 })
@@ -446,8 +620,18 @@ class AdminController extends Controller
 
         // Obtener comentarios eliminados
         if ($type === 'all' || $type === 'comentarios') {
-            $comentarios = Comentario::onlyTrashed()
-                ->with(['historia', 'user'])
+            $currentUser = Auth::user();
+            $comentarioQuery = Comentario::onlyTrashed()->with(['historia', 'user']);
+            
+            // Filtrar por rol: admin solo ve comentarios de historias de sus proyectos
+            if (!$currentUser->isSuperAdmin()) {
+                $adminProjects = Project::where('user_id', $currentUser->id)->pluck('id');
+                $comentarioQuery->whereHas('historia', function($query) use ($adminProjects) {
+                    $query->whereIn('proyecto_id', $adminProjects);
+                });
+            }
+            
+            $comentarios = $comentarioQuery
                 ->when($search, function ($query) use ($search) {
                     $query->where('contenido', 'like', "%{$search}%");
                 })
@@ -553,6 +737,14 @@ class AdminController extends Controller
         try {
             $modelClass = $this->getModelClass($model);
             $item = $modelClass::onlyTrashed()->findOrFail($id);
+            
+            // Validaciones específicas para usuarios
+            if ($model === 'users') {
+                // Solo los superadministradores pueden eliminar permanentemente usuarios administradores
+                if ($item->usertype === 'admin' && !Auth::user()->isSuperAdmin()) {
+                    return redirect()->back()->with('error', 'Solo los superadministradores pueden eliminar permanentemente usuarios administradores.');
+                }
+            }
             
             $item->forceDelete();
             

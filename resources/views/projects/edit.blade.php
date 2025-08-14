@@ -110,9 +110,10 @@
                     </div>
 
                     <div class="form-group mt-4">
-                        <button type="submit" class="btn btn-primary me-2">Actualizar Proyecto</button>
-                        <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary me-2"><i class="bi bi-arrow-repeat me-2"></i> Actualizar</button>
+                        <a href="{{ route('projects.my') }}" class="btn btn-secondary"><i class="bi bi-x-lg me-2"></i> Cancelar</a>
                     </div>
+                 
                 </form>
             </div>
         </div>

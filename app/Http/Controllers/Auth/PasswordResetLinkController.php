@@ -32,6 +32,10 @@ class PasswordResetLinkController extends Controller
                 'email',
                 new UnahEmailRule()
             ],
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debe proporcionar una dirección de correo electrónico válida.',
+            'email.lowercase' => 'El correo electrónico debe estar en minúsculas.',
         ]);
 
         // We will send the password reset link to this user. Once we have attempted
@@ -42,8 +46,8 @@ class PasswordResetLinkController extends Controller
         );
 
         return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', $status)
+                    ? back()->with('success', 'Te hemos enviado por correo electrónico el enlace para restablecer tu contraseña.')
                     : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => $status]);
+                        ->withErrors(['email' => trans($status)]);
     }
 }

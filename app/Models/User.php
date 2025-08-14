@@ -62,11 +62,35 @@ class User extends Authenticatable
     }
 
     /**
+     * Helper para comprobar si el usuario es superadministrador.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->usertype === 'superadmin';
+    }
+
+    /**
      * Helper para comprobar si el usuario es administrador.
      */
     public function isAdmin(): bool
     {
         return $this->usertype === 'admin';
+    }
+
+    /**
+     * Helper para comprobar si el usuario es colaborador.
+     */
+    public function isCollaborator(): bool
+    {
+        return $this->usertype === 'collaborator';
+    }
+
+    /**
+     * Helper para comprobar si el usuario tiene privilegios administrativos.
+     */
+    public function hasAdminPrivileges(): bool
+    {
+        return in_array($this->usertype, ['superadmin', 'admin']);
     }
 
     /**

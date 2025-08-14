@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\HistorialCambio;
 use Illuminate\Http\Request;
 use App\Models\Project; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HistorialCambioController extends Controller
 {
@@ -33,11 +35,95 @@ class HistorialCambioController extends Controller
 
         return view('historial.index', compact('historial'));
     }
-    
 
+    /**
+     * Vista de historial del sistema completo (Solo superadministradores)
+     */
+    public function sistema(Request $request)
+    {
+        // Verificar que el usuario sea superadministrador
+        if (!Auth::user()->isSuperAdmin()) {
+            abort(403, 'No tienes permisos para acceder a esta vista.');
+        }
+
+        // Obtener todos los registros para DataTables
+        $historial = HistorialCambio::with('proyecto')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Obtener datos para los filtros (aunque no se usen en la nueva implementación)
+        $proyectos = Project::orderBy('name')->get();
+        $acciones = HistorialCambio::select('accion')
+            ->distinct()
+            ->orderBy('accion')
+            ->pluck('accion');
+
+        // Estadísticas rápidas
+        $stats = [
+            'total_cambios' => HistorialCambio::count(),
+            'cambios_hoy' => HistorialCambio::whereDate('created_at', today())->count(),
+            'cambios_semana' => HistorialCambio::where('created_at', '>=', now()->subDays(7))->count(),
+            'usuarios_activos' => HistorialCambio::distinct('usuario')->count('usuario'),
+        ];
+
+        return view('users.admin.historial-sistema', compact('historial', 'proyectos', 'acciones', 'stats'));
+    }
+
+    /**
+     * Limpiar historial del sistema por antigüedad (Solo superadministradores)
+     */
+    public function limpiarHistorial(Request $request)
+    {
+        // Verificar que el usuario sea superadministrador
+        if (!Auth::user()->isSuperAdmin()) {
+            abort(403, 'No tienes permisos para realizar esta acción.');
+        }
+
+        $request->validate([
+            'dias' => 'required|integer|min:1'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $diasAntiguedad = $request->input('dias');
+            $fechaLimite = now()->subDays($diasAntiguedad);
+            
+            // Contar registros antes de eliminar
+            $totalRegistros = HistorialCambio::where('created_at', '<', $fechaLimite)->count();
+            
+            if ($totalRegistros > 0) {
+                // Eliminar registros antiguos
+                HistorialCambio::where('created_at', '<', $fechaLimite)->delete();
+
+                // Registrar la acción de limpieza
+                HistorialCambio::create([
+                    'fecha' => now(),
+                    'usuario' => Auth::user()->name,
+                    'accion' => 'Limpieza de historial',
+                    'detalles' => "Se eliminaron {$totalRegistros} registros del historial con más de {$diasAntiguedad} días de antigüedad",
+                    'sprint' => null,
+                    'proyecto_id' => null
+                ]);
+
+                $mensaje = "Historial limpiado exitosamente. Se eliminaron {$totalRegistros} registros con más de {$diasAntiguedad} días de antigüedad.";
+            } else {
+                $mensaje = "No se encontraron registros con más de {$diasAntiguedad} días de antigüedad para eliminar.";
+            }
+
+            DB::commit();
+
+            return redirect()->route('historial.sistema')->with('success', $mensaje);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('historial.sistema')
+                ->with('error', 'Error al limpiar el historial: ' . $e->getMessage());
+        }
+    }
    public function porProyecto(Project $project, Request $request)
 {
-    $user = auth()->user();
+    $user = Auth::user();
 
     if (!$user->isAdmin() && !$user->projects->contains($project->id)) {
         abort(403, 'No tienes acceso a este proyecto');
@@ -68,6 +154,5 @@ class HistorialCambioController extends Controller
         return view('users.colaboradores.historial', compact('historial', 'project'));
     }
 }
-
 
 }
