@@ -813,8 +813,14 @@
         justify-content: center !important;
         align-items: center !important;
     }
-    body.sidebar-collapsed .user-info .sidebar-text {
-        display: none !important;
+    @media (max-width: 991.98px) {
+        body.sidebar-collapsed .user-info .sidebar-text {
+            display: flex !important;
+            flex-direction: column;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     /* Limita el ancho para evitar desbordamiento */
