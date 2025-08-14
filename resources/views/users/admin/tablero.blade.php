@@ -189,47 +189,54 @@
                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
-                                                                <button type="button" class="dropdown-item text-danger"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                                <a class="dropdown-item"
+                                                                   href="#"
+                                                                   data-bs-toggle="modal"
+                                                                   data-bs-target="#deleteHistoriaModal"
+                                                                   data-historia-id="{{ $historia->id }}"
+                                                                   data-historia-nombre="{{ $historia->nombre }}">
                                                                     Eliminar
-                                                                </button>
+                                                                </a>
                                                             </li>
+
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {{-- Modal Confirmación --}}
-                                            <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
-                                                 aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content rounded-4 shadow">
-                                                        <div class="modal-header border-bottom-0">
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+                                            <!-- Modal para confirmar eliminación de historia -->
+                                            <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content text-center"> <!-- Centramos todo -->
+                                                        <div class="modal-header justify-content-center">
+                                                            <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                                                                <i class="bi bi-exclamation-triangle text-danger"></i>
+                                                                Confirmar Eliminación Permanente
+                                                            </h5>
                                                         </div>
-                                                        <div class="modal-body text-center">
-                                                            <div class="mb-4">
-                                                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
-                                                                <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
-                                                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                                                                <div class="alert alert-danger d-flex align-items-center mt-3">
-                                                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                                                    <div>"<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.</div>
-                                                                </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                                                <i class="bi bi-exclamation-triangle"></i>
+                                                                <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                                                             </div>
-                                                            <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                                                </form>
-                                                            </div>
+                                                            <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+
                                         </div>
 
                                     @endforeach
@@ -241,6 +248,7 @@
                         @endforeach
                     </div>
 
+                </div>
                     <div class="kanban-accordion">
                         <div class="accordion" id="accordionKanban">
                             @foreach($tablero->columnas as $columna)
@@ -648,26 +656,39 @@
 
 
 
-                    <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                <!-- Modal Confirmar Eliminar Columna -->
+                <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
                         <form id="formEliminarColumna" method="POST" action="">
                             @csrf
                             @method('DELETE')
                             <input type="hidden" name="modo" id="modoEliminar">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="eliminarColumnaLabel">Eliminar columna</h5>
+
+                            <div class="modal-content border-0 rounded-4 shadow">
+
+                                <!-- Encabezado -->
+                                <div class="modal-header border-bottom">
+                                    <h5 class="modal-title text-black" id="eliminarColumnaLabel">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> Eliminar Columna
+                                    </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
+
+                                <!-- Cuerpo -->
+                                <div class="modal-body text-center">
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                    <p class="mt-3" id="mensajeEliminarColumna">
+                                        ¿Qué deseas hacer con las historias de esta columna?
+                                    </p>
                                 </div>
+
+                                <!-- Footer con opciones -->
                                 <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
                                     <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
-                                        Borrar columna y sus historias
+                                        <i class="bi bi-trash3"></i>   Borrar columna y sus historias
                                     </button>
                                     <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
-                                        Borrar columna, conservar historias
+                                        <i class="bi bi-columns-gap"></i>   Borrar columna, conservar historias
                                     </button>
                                     <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
                                         Cancelar
@@ -675,13 +696,33 @@
                                 </div>
 
                             </div>
-
-
                         </form>
                     </div>
                 </div>
 
-                    <!-- Modal para editar nombre de columna -->
+                @push('css')
+                    <style>
+                        .modal-content {
+                            border-radius: 12px;
+                        }
+                        .modal-header {
+                            background-color: #f8f9fa;
+                        }
+                    </style>
+                @endpush
+
+                @push('js')
+                    <script>
+                        function enviarFormularioEliminar(modo) {
+                            document.getElementById('modoEliminar').value = modo;
+                            document.getElementById('formEliminarColumna').submit();
+                        }
+                    </script>
+                @endpush
+
+
+
+                <!-- Modal para editar nombre de columna -->
                     <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <form id="formEditarColumna" method="POST">
