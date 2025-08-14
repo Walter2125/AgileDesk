@@ -18,7 +18,7 @@ class RoleMiddleware
      * @param  string  $role
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         // Si no está autenticado, redirigir al login con mensaje
         if (!Auth::check()) {
@@ -28,8 +28,32 @@ class RoleMiddleware
             ]);
         }
         
-        // Verificar si el usuario tiene el rol requerido
-        if (Auth::user()->usertype !== $role) {
+        $user = Auth::user();
+        
+        // Verificar si el usuario tiene alguno de los roles permitidos
+        $hasPermission = false;
+        
+        foreach ($roles as $role) {
+            // Superadmin tiene acceso a todo
+            if ($user->usertype === 'superadmin') {
+                $hasPermission = true;
+                break;
+            }
+            
+            // Verificar rol específico
+            if ($user->usertype === $role) {
+                $hasPermission = true;
+                break;
+            }
+            
+            // Admin puede acceder a rutas de collaborator también
+            if ($role === 'collaborator' && $user->usertype === 'admin') {
+                $hasPermission = true;
+                break;
+            }
+        }
+        
+        if (!$hasPermission) {
             // Guardar el mensaje de error en la sesión con una clave diferente
             // que será persistente durante múltiples redirecciones
             Session::flash('persistent_error', 'Acceso restringido');
@@ -54,8 +78,9 @@ class RoleMiddleware
         $userType = Auth::user()->usertype ?? 'guest';
         
         return match($userType) {
+            'superadmin' => 'homeadmin',
             'admin' => 'homeadmin',
-            'user' => 'homeuser',
+            'collaborator' => 'homeuser',
             default => 'dashboard', // Ruta por defecto para otros tipos de usuario
         };   
     }

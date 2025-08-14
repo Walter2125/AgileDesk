@@ -23,24 +23,26 @@ class SprintController extends Controller
         $tablero = Tablero::with(['sprints', 'columnas.historias'])->where('proyecto_id', $projectId)->firstOrFail();
         $sprintId = $request->query('sprint_id');
 
+        // Filtrar historias por sprint si hay
         if (!empty($sprintId)) {
-            // Filtrar historias por sprint
             $tablero->columnas->each(function ($columna) use ($sprintId) {
                 $columna->historias = $columna->historias->where('sprint_id', $sprintId)->values();
             });
         } else {
-            // Mostrar todas las historias (sin filtrar)
             $tablero->columnas->each(function ($columna) {
-                $columna->historias = $columna->historias->values(); // Asegúrate de no filtrar
+                $columna->historias = $columna->historias->values(); // todas
             });
         }
 
+        // Pasar el sprint seleccionado a la vista
         return view('users.admin.tablero', [
             'tablero' => $tablero,
-            'project' => $tablero->project,
-            'sprintSeleccionado' => $sprintId
+            'sprintId' => $sprintId
         ]);
     }
+
+
+
 
 
     /**

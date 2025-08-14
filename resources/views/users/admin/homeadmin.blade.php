@@ -579,6 +579,7 @@
             padding-top: 4px;
             padding-bottom: 4px;
             line-height: 1.25;
+            border-radius: 8px !important;
         }
         #usuariosTable_length label { margin-bottom: 0; }
 
@@ -589,6 +590,7 @@
             padding-top: 4px;
             padding-bottom: 4px;
             line-height: 1.25;
+            border-radius: 8px !important;
         }
         #proyectosTable_length label { margin-bottom: 0; }
 
@@ -599,6 +601,7 @@
             padding-top: 4px;
             padding-bottom: 4px;
             line-height: 1.25;
+            border-radius: 8px !important;
         }
         #historialTable_length label { margin-bottom: 0; }
 
@@ -609,6 +612,7 @@
             padding-top: 4px;
             padding-bottom: 4px;
             line-height: 1.25;
+            border-radius: 8px !important;
         }
         #sprintsTable_length label { margin-bottom: 0; }
     </style>
@@ -621,7 +625,7 @@
     {{-- Alertas para operaciones CRUD --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-            <i class="bi bi-check-circle me-2"></i>
+            <i class="bi bi-check-circle me-1"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -639,7 +643,7 @@
     
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
-            <i class="bi bi-exclamation-circle me-2"></i>
+            <i class="bi bi-exclamation-circle me-1"></i>
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -657,7 +661,7 @@
 
     @if(session('warning'))
         <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning-alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>
+            <i class="bi bi-exclamation-triangle me-1"></i>
             {{ session('warning') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -675,7 +679,7 @@
 
     @if(session('info'))
         <div class="alert alert-info alert-dismissible fade show" role="alert" id="info-alert">
-            <i class="bi bi-info-circle me-2"></i>
+            <i class="bi bi-info-circle me-1"></i>
             {{ session('info') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -709,11 +713,20 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
-                        <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-people"></i> Ver Todos
-                        </a>
+                        @if(Auth::user()->isSuperAdmin())
+                            <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-people me-1"></i> Ver Todos
+                            </a>
+                            <a href="{{ route('historial.sistema') }}" class="btn btn-outline-primary px-2 py-2">
+                                <i class="bi bi-clock-history me-1"></i> Historial Sistema
+                            </a>
+                        @else
+                            <a href="{{ route('admin.users.manage') }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-people me-1"></i> Ver Todos
+                            </a>
+                        @endif
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
-                            <i class="bi bi-archive"></i> Todos los Eliminados
+                            <i class="bi bi-archive me-1"></i> Todos los Eliminados
                         </a>
                     </div>
                 </div>
@@ -758,10 +771,16 @@
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1 justify-content-center" role="group">
-                                            <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-1">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            @if($usuario->usertype !== 'admin')
+                                            @if(Auth::user()->isSuperAdmin())
+                                                <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-1">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('admin.users.manage') }}" class="btn btn-outline-secondary px-2 py-1">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            @endif
+                                            @if($usuario->usertype !== 'admin' || Auth::user()->isSuperAdmin())
                                                 @if($usuario->trashed())
                                                     <!-- Botón para restaurar usuario -->
                                                     <button type="button" class="btn btn-outline-success px-2 py-1" 
@@ -773,13 +792,25 @@
                                                     </button>
                                                 @else
                                                     <!-- Botón para eliminar usuario -->
-                                                    <button type="button" class="btn btn-outline-danger px-2 py-1" 
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#deleteUserModal"
-                                                            data-user-id="{{ $usuario->id }}"
-                                                            data-user-name="{{ $usuario->name }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                                    @if($usuario->usertype === 'admin')
+                                                        <!-- Modal específico para administradores -->
+                                                        <button type="button" class="btn btn-outline-danger px-2 py-1" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#deleteAdminModal"
+                                                                data-user-id="{{ $usuario->id }}"
+                                                                data-user-name="{{ $usuario->name }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    @else
+                                                        <!-- Modal normal para colaboradores -->
+                                                        <button type="button" class="btn btn-outline-danger px-2 py-1" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#deleteUserModal"
+                                                                data-user-id="{{ $usuario->id }}"
+                                                                data-user-name="{{ $usuario->name }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                             @endif
                                         </div>
@@ -812,10 +843,10 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-folder"></i> Ver Todos
-                        </a>
-                    </div>
+                    <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
+                        <i class="bi bi-folder"></i> Ver Todos
+                    </a>
+                </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -889,11 +920,19 @@
                             </button>
                         </div>
                     </div>
-                    <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <a href="{{ route('historial.index') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-clock-history"></i> Ver Todo
-                        </a>
-                    </div>
+                    @if(Auth::user()->isSuperAdmin())
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <a href="{{ route('historial.sistema') }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-clock-history me-1"></i> Ver Todo
+                            </a>
+                        </div>
+                    @elseif(Auth::user()->usertype === 'admin')
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <a href="{{ route('users.admin.historial', $proyecto_actual->id ?? 0) }}" class="btn btn-outline-secondary px-2 py-2">
+                                <i class="bi bi-clock-history me-1"></i> Ver Todo
+                            </a>
+                        </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -1018,17 +1057,19 @@
                         </div>
                     </div>
                     <!-- Botón de historial -->
-                    @if(auth()->user()->es_admin)
-    <a href="{{ route('users.admin.historial', $proyecto_actual->id) }}" 
-       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
-        <i class="bi bi-clock-history me-1"></i> Ver Historial
-    </a>
-@else
-    <a href="{{ route('users.colaboradores.historial', $proyecto_actual->id) }}" 
-       class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
-        <i class="bi bi-clock-history me-1"></i> Ver Historial
-    </a>
-@endif
+                     @if(Auth::user()->isSuperAdmin())
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <a href="{{ route('historial.sistema') }}" class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+                                <i class="bi bi-clock-history me-1"></i> Historial
+                            </a>
+                        </div>
+                    @elseif(Auth::user()->usertype === 'admin')
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <a href="{{ route('users.admin.historial', $proyecto_actual->id ?? 0) }}" class="btn btn-outline-primary d-flex align-items-center" style="height: 38px; padding: 0 16px;">
+                                <i class="bi bi-clock-history me-1"></i> Historial
+                            </a>
+                        </div>
+                    @endif
 
                 </div>
                 
@@ -1231,6 +1272,7 @@
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
                 <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
+                <p><strong id="deleteUserName"></strong></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -1239,6 +1281,40 @@
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para confirmar eliminación de administrador (con advertencia de cascada) -->
+<div class="modal fade" id="deleteAdminModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger-subtle">
+                <h5 class="modal-title" id="deleteAdminModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>
+                    Confirmar Eliminación de Administrador
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <strong>¡ADVERTENCIA CRÍTICA!</strong> Esta acción eliminará en cascada todos los recursos creados por este administrador.
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Cancelar
+                </button>
+                <form id="deleteAdminForm" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteAdminBtn">
+                        <i class="bi bi-exclamation-triangle me-1"></i> Eliminar Administrador y sus Recursos
                     </button>
                 </form>
             </div>
@@ -1405,19 +1481,19 @@
 
     // Funciones específicas para acciones de proyectos
     function showProjectSuccess(message) {
-        showNotification(`<i class="bi bi-check-circle me-2"></i>${message}`, 'success');
+        showNotification(`<i class="bi bi-check-circle me-1"></i>${message}`, 'success');
     }
 
     function showProjectError(message) {
-        showNotification(`<i class="bi bi-exclamation-triangle me-2"></i>${message}`, 'danger');
+        showNotification(`<i class="bi bi-exclamation-triangle me-1"></i>${message}`, 'danger');
     }
 
     function showProjectWarning(message) {
-        showNotification(`<i class="bi bi-exclamation-circle me-2"></i>${message}`, 'warning');
+        showNotification(`<i class="bi bi-exclamation-circle me-1"></i>${message}`, 'warning');
     }
 
     function showProjectInfo(message) {
-        showNotification(`<i class="bi bi-info-circle me-2"></i>${message}`, 'info');
+        showNotification(`<i class="bi bi-info-circle me-1"></i>${message}`, 'info');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1425,41 +1501,66 @@
         const deleteProjectModal = document.getElementById('deleteProjectModal');
         const deleteProjectForm = document.getElementById('deleteProjectForm');
         if (deleteProjectModal && deleteProjectForm) {
-            deleteProjectModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
+        deleteProjectModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
                 const projectId = button?.getAttribute('data-project-id');
                 const projectName = button?.getAttribute('data-project-name') || '';
                 // Guardar nombre (por si se quiere usar en el contenido)
-                deleteProjectForm.dataset.projectName = projectName;
-                // Configurar la acción del formulario
+            deleteProjectForm.dataset.projectName = projectName;
+            // Configurar la acción del formulario
                 if (projectId) {
-                    deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
+            deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
                 }
-            });
+        });
             // Sin confirm() adicional: el modal ya actúa como confirmación
-        }
+            }
 
-        // Manejo del modal de eliminación
+        // Manejo del modal de eliminación de usuarios regulares
         const deleteUserModal = document.getElementById('deleteUserModal');
         const deleteUserForm = document.getElementById('deleteUserForm');
         
-        deleteUserModal.addEventListener('show.bs.modal', function(event) {
-            const button = event.relatedTarget;
-            const userId = button.getAttribute('data-user-id');
-            const userName = button.getAttribute('data-user-name');
-            
-            // Actualizar el contenido del modal
-            const deleteUserNameEl = document.getElementById('deleteUserName');
-            if (deleteUserNameEl) {
-                deleteUserNameEl.textContent = userName;
-            }
-            
-            // Actualizar la acción del formulario
-            deleteUserForm.action = `/admin/users/${userId}/delete`;
-        });
+        if (deleteUserModal && deleteUserForm) {
+            deleteUserModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-user-id');
+                const userName = button.getAttribute('data-user-name');
+                
+                // Actualizar el contenido del modal
+                const deleteUserNameEl = document.getElementById('deleteUserName');
+                if (deleteUserNameEl) {
+                    deleteUserNameEl.textContent = userName;
+                }
+                
+                // Actualizar la acción del formulario
+                deleteUserForm.action = `/admin/users/${userId}/delete`;
+            });
+        }
+
+        // Manejo del modal de eliminación de administradores
+        const deleteAdminModal = document.getElementById('deleteAdminModal');
+        const deleteAdminForm = document.getElementById('deleteAdminForm');
+        const confirmDeleteAdminBtn = document.getElementById('confirmDeleteAdminBtn');
+        
+        if (deleteAdminModal && deleteAdminForm && confirmDeleteAdminBtn) {
+            deleteAdminModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-user-id');
+                const userName = button.getAttribute('data-user-name');
+                
+                // Actualizar el contenido del modal
+                const deleteAdminNameEl = document.getElementById('deleteAdminName');
+                if (deleteAdminNameEl) {
+                    deleteAdminNameEl.textContent = userName;
+                }
+                
+                // Actualizar la acción del formulario
+                deleteAdminForm.action = `/admin/users/${userId}/delete`;
+            });
+        }
     });
 </script>
 @endpush
+
 
 @section('scripts')
 <script src="{{ asset('vendor/chart.js/chart.min.js') }}"></script>

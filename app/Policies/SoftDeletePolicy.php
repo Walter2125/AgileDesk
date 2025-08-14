@@ -11,7 +11,7 @@ class SoftDeletePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->usertype === 'admin';
+        return in_array($user->usertype, ['superadmin', 'admin']);
     }
 
     /**
@@ -19,7 +19,7 @@ class SoftDeletePolicy
      */
     public function restore(User $user): bool
     {
-        return $user->usertype === 'admin';
+        return in_array($user->usertype, ['superadmin', 'admin']);
     }
 
     /**
@@ -27,6 +27,6 @@ class SoftDeletePolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->usertype === 'admin';
+        return in_array($user->usertype, ['superadmin', 'admin']);
     }
 }

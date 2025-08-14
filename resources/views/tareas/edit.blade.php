@@ -37,27 +37,38 @@
 
     .btn {
         transition: all 0.2s ease-in-out;
+        text-decoration: none !important;
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
     }
 
     .btn-outline-secondary {
-        color: #6c757d;
-        border-color: #6c757d;
+        color: #6c757d !important;
+        border: 1px solid #6c757d !important;
+        background-color: transparent !important;
     }
 
     .btn-outline-secondary:hover {
-        background-color: #6c757d;
-        color: #ffffff;
+        background-color: #6c757d !important;
+        color: #ffffff !important;
+        border-color: #6c757d !important;
     }
 
     .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: #ffffff;
+        background-color: #007bff !important;
+        border: 1px solid #007bff !important;
+        color: #ffffff !important;
     }
 
     .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #004b9a;
+        background-color: #0056b3 !important;
+        border-color: #004b9a !important;
+        color: #ffffff !important;
     }
 </style>
 @endsection

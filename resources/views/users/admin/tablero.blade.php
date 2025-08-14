@@ -11,8 +11,9 @@
     <div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1055; width: auto; max-width: 350px;"></div>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
     @php
@@ -30,6 +31,32 @@
             </div>
         </div>
     </div>
+
+    <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
+
+        <div class="input-group w-100">
+                    <span class="input-group-text" style="height: 40px">
+                    <i class="bi bi-search"></i>
+                                            </span>
+            <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
+            <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="GET" class="d-flex">
+            <select name="sprint_id" id="sprintSelect" class="form-select"
+                    style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                    onchange="this.form.submit()">
+                <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
+                    Todas las Historias
+                </option>
+                @foreach ($tablero->sprints as $sprint)
+                    <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
+                        {{ $sprint->nombre }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
 
 
 
@@ -61,30 +88,8 @@
     </script>
 @endif
 
-                <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
 
-                <div class="input-group w-100">
-                    <span class="input-group-text" style="height: 40px">
-                    <i class="bi bi-search"></i>
-                                            </span>
-                        <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
-                        <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
 
-                    <form method="GET" class="d-flex">
-                        <select name="sprint_id" id="sprintSelect" class="form-select"
-                                style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
-                                onchange="this.form.submit()">
-                            <option value="">Todas las Historias</option>
-                            @foreach ($tablero->sprints as $sprint)
-                                <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
-                                    {{ $sprint->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </form>
 
 
                     <div class="d-flex gap-2 ms-auto">
@@ -118,26 +123,32 @@
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
 
-                                    <div class="menu-wrapper">
-                                        <input type="checkbox" class="toggler" id="toggle-{{ $columna->id }}" />
-                                        <div class="dots">
-                                            <div></div>
-                                        </div>
-                                        <div class="menu">
-                                            <ul>
-                                                <li><span class="link disabled"><strong>Acciones</strong></span></li>
-                                                <li>
-                                                    <a href="#" class="link"
-                                                       onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
-                                                        Editar nombre
-                                                    </a>
-
-                                                </li>
-                                                <li><a href="#" class="link" onclick="abrirModalEliminarColumna({{ $columna->id }})">Eliminar columna</a></li>
-                                            </ul>
-                                        </div>
+                                    {{-- Menú de tres puntitos con Bootstrap --}}
+                                    <div class="dropdown ms-2">
+                                        <button class="btn btn-link text-dark p-0" type="button" id="menuOpciones{{ $columna->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical fs-5"></i> {{-- Icono Bootstrap --}}
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuOpciones{{ $columna->id }}">
+                                            <li class="dropdown-header">Acciones</li>
+                                            <li>
+                                                <a href="#"
+                                                   class="dropdown-item"
+                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                    Editar nombre
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#"
+                                                   class="dropdown-item text-danger"
+                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                    Eliminar columna
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
+
                                 </div>
+
 
 
                                 <div class="p-2 border-bottom flex-shrink-0">
@@ -183,47 +194,52 @@
                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
-                                                                <button type="button" class="dropdown-item text-danger"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#confirmDeleteModal{{ $historia->id }}">
-                                                                    Eliminar
-                                                                </button>
-                                                            </li>
+    <a class="dropdown-item"
+       href="#"
+       data-bs-toggle="modal"
+       data-bs-target="#deleteHistoriaModal"
+       data-historia-id="{{ $historia->id }}"
+       data-historia-nombre="{{ $historia->nombre }}">
+       Eliminar
+    </a>
+</li>
+
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
+<!-- Modal para confirmar eliminación de historia -->
+<div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center"> <!-- Centramos todo -->
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+            </div>
+            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                                            {{-- Modal Confirmación --}}
-                                            <div class="modal fade" id="confirmDeleteModal{{ $historia->id }}" tabindex="-1"
-                                                 aria-labelledby="confirmDeleteLabel{{ $historia->id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content rounded-4 shadow">
-                                                        <div class="modal-header border-bottom-0">
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                                        </div>
-                                                        <div class="modal-body text-center">
-                                                            <div class="mb-4">
-                                                                <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $historia->id }}">Confirmar Eliminación</h5>
-                                                                <h5 class="modal-title text-danger">¿Deseas eliminar esta historia?</h5>
-                                                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                                                                <div class="alert alert-danger d-flex align-items-center mt-3">
-                                                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                                                    <div>"<strong>{{ $historia->nombre }}</strong>" será eliminada permanentemente.</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                                                                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
 
                                     @endforeach
@@ -235,52 +251,47 @@
                         @endforeach
                     </div>
 
-
-                    {{-- INICIO: Accordion para móvil --}}
                     <div class="kanban-accordion">
                         <div class="accordion" id="accordionKanban">
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading{{ $columna->id }}">
-                                        <button class="accordion-button collapsed accordion-toggle d-flex align-items-center"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ $columna->id }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ $columna->id }}">
 
-                                            {{-- Menú de tres puntitos (reutilizado de escritorio) --}}
-                                            <div class="me-2">
-                                                <div class="menu-wrapper">
-                                                    <input type="checkbox" class="toggler" id="toggle-mobile-{{ $columna->id }}" />
-                                                    <div class="dots">
-                                                        <div></div>
-                                                    </div>
-                                                    <div class="menu">
-                                                        <ul>
-                                                            <li><span class="link disabled"><strong>Acciones</strong></span></li>
-                                                            <li>
-                                                                <a href="#" class="link"
-                                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
-                                                                    Editar nombre
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" class="link"
-                                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
-                                                                    Eliminar columna
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                    {{-- HEADER --}}
+                                    <div class="accordion-header d-flex align-items-center w-100 px-3 py-2 gap-2" id="heading{{ $columna->id }}">
+
+                                        {{-- Menú contextual columna (reemplaza los 3 puntos) --}}
+                                        <div class="position-relative">
+                                            <button type="button" class="btn btn-sm btn-light dropdown-toggle-menu" aria-expanded="false">
+                                                &#x22EE; {{-- ⋮ --}}
+                                            </button>
+
+                                            <div class="menu-contextual-columna position-absolute shadow rounded bg-white p-2">
+                                                <a href="#" class="dropdown-item"
+                                                   onclick="abrirModalEditarColumna({{ $columna->id }}, '{{ addslashes($columna->nombre) }}')">
+                                                    Editar nombre
+                                                </a>
+                                                <a href="#" class="dropdown-item text-danger"
+                                                   onclick="abrirModalEliminarColumna({{ $columna->id }})">
+                                                    Eliminar columna
+                                                </a>
                                             </div>
+                                        </div>
 
-                                            {{-- Nombre de la columna --}}
-                                            <span class="flex-grow-1">{{ $columna->nombre }}</span>
+                                        {{-- Título --}}
+                                        <span class="flex-grow-1 text-truncate fw-semibold ms-2">
+                        {{ $columna->nombre }}
+                    </span>
+
+                                        {{-- Botón collapse --}}
+                                        <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
+                                                type="button"
+                                                data-bs-target="#collapse{{ $columna->id }}">
+                                            <i class="bi bi-chevron-down fs-5"></i>
                                         </button>
-                                    </h2>
 
+                                    </div>
+
+                                    {{-- CUERPO DEL COLLAPSE --}}
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
@@ -291,16 +302,31 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                <div class="card mb-2">
-                                                    <div class="card-body">
-                                                        <h6 class="card-title">
-                                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
-                                                        </h6>
-                                                        @if ($historia->descripcion)
-                                                            <p>{{ $historia->descripcion }}</p>
-                                                        @endif
-                                                        <a href="{{ route('historias.edit', $historia->id) }}"
-                                                           class="btn btn-outline-secondary btn-sm">Editar</a>
+                                                {{-- Tarjeta de historia --}}
+                                                <div class="card mb-2 p-2 text-dark position-relative card-historia"
+                                                     data-href="{{ route('historias.show', $historia->id) }}"
+                                                     style="cursor:pointer; z-index: 0;">
+                                                    <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
+                                                        {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                    </strong>
+                                                    @if ($historia->descripcion)
+                                                        <div class="descripcion-limitada" style="
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        white-space: nowrap;
+                                        max-width: 100%;
+                                    ">
+                                                            Descripción: {{ $historia->descripcion }}
+                                                        </div>
+                                                    @endif
+
+                                                    <div class="d-flex justify-content-end gap-2 mt-2">
+                                                        <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
+                                                            Editar
+                                                        </a>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                            Eliminar
+                                                        </button>
                                                     </div>
                                                 </div>
                                             @empty
@@ -308,19 +334,95 @@
                                             @endforelse
                                         </div>
                                     </div>
+
                                 </div>
                             @endforeach
                         </div>
                     </div>
                     {{-- FIN: Accordion para móvil --}}
-
-
-
-
-
                 </div>
 
-                {{-- Scripts existentes --}}
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Menú contextual columnas
+                            document.querySelectorAll('.dropdown-toggle-menu').forEach(button => {
+                                button.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    const menu = this.nextElementSibling;
+                                    document.querySelectorAll('.menu-contextual-columna').forEach(m => {
+                                        if (m !== menu) m.classList.remove('show');
+                                    });
+                                    menu.classList.toggle('show');
+                                });
+                            });
+
+                            document.addEventListener('click', function () {
+                                document.querySelectorAll('.menu-contextual-columna').forEach(menu => menu.classList.remove('show'));
+                            });
+
+                            // Click en la tarjeta abre show
+                            document.querySelectorAll('.card-historia').forEach(card => {
+                                card.addEventListener('click', function(e) {
+                                    if(e.target.closest('button, a')) return;
+                                    const href = this.dataset.href;
+                                    if(href) window.location.href = href;
+                                });
+                            });
+                        });
+                    </script>
+
+                    <style>
+                        /* Menú contextual columna */
+                        .menu-contextual-columna {
+                            display: none;
+                            position: absolute;
+                            top: 100%; /* justo debajo del botón */
+                            right: 0; /* alineado a la derecha por defecto */
+                            min-width: 160px; /* ancho mínimo */
+                            background-color: #fff;
+                            border-radius: 6px;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                            padding: 8px 0; /* espacio arriba y abajo */
+                            z-index: 2000;
+                        }
+
+                        /* Cada opción del menú */
+                        .menu-contextual-columna li {
+                            list-style: none;
+                            margin: 0;
+                            padding: 6px 16px; /* espacio interno de cada opción */
+                            cursor: pointer;
+                            transition: background 0.2s;
+                        }
+
+                        .menu-contextual-columna li:hover {
+                            background-color: #f0f0f0;
+                        }
+
+                        /* Mostrar el menú */
+                        .menu-contextual-columna.show {
+                            display: block;
+                        }
+
+                        /* Móvil: abrir hacia la izquierda si hay poco espacio */
+                        @media (max-width: 767.98px) {
+                            .menu-contextual-columna {
+                                right: auto;
+                                left: 0;
+                            }
+                        }
+
+                        /* Ellipsis para títulos */
+                        .ellipsis-nombre {
+                            display: block;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            width: 100%;
+                        }
+                    </style>
+
+                    {{-- Scripts existentes --}}
                 <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 
                 <script>
@@ -444,6 +546,25 @@
                         });
                     });
 
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Evitar que el clic en el menú cierre el acordeón
+                        document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+                            dropdown.addEventListener('click', function (e) {
+                                e.stopPropagation(); // Detiene la propagación del evento
+                            });
+                        });
+
+                        // Asegurar que los menús se abran correctamente
+                        document.querySelectorAll('.dropdown-toggle').forEach(function (toggle) {
+                            toggle.addEventListener('click', function (e) {
+                                const dropdownMenu = this.nextElementSibling;
+                                if (dropdownMenu) {
+                                    dropdownMenu.classList.toggle('show');
+                                }
+                            });
+                        });
+                    });
+
 
                 </script>
 
@@ -470,9 +591,6 @@
                     </div>
                 </div>
 
-
-
-                <!-- Modal para crear sprint -->
                 <!-- Modal para crear sprint -->
                 <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -530,38 +648,70 @@
                 @endif
 
 
-                <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form id="formEliminarColumna" method="POST" action="">
-                            @csrf
-                            @method('DELETE')
-                            <input type="hidden" name="modo" id="modoEliminar">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="eliminarColumnaLabel">Eliminar columna</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p id="mensajeEliminarColumna">¿Qué deseas hacer con las historias de esta columna?</p>
-                                </div>
-                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
-                                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
-                                        Borrar columna y sus historias
-                                    </button>
-                                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
-                                        Borrar columna, conservar historias
-                                    </button>
-                                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
-                                        Cancelar
-                                    </button>
-                                </div>
+              <!-- Modal Confirmar Eliminar Columna -->
+<div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="formEliminarColumna" method="POST" action="">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="modo" id="modoEliminar">
 
-                            </div>
+            <div class="modal-content border-0 rounded-4 shadow">
 
-
-                        </form>
-                    </div>
+                <!-- Encabezado -->
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title text-black" id="eliminarColumnaLabel">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Eliminar Columna
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
+
+                <!-- Cuerpo -->
+                <div class="modal-body text-center">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                    <p class="mt-3" id="mensajeEliminarColumna">
+                        ¿Qué deseas hacer con las historias de esta columna?
+                    </p>
+                </div>
+
+                <!-- Footer con opciones -->
+                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
+                        <i class="bi bi-trash3"></i> Borrar columna y sus historias
+                    </button>
+                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
+                        <i class="bi bi-columns-gap"></i> Borrar columna, conservar historias
+                    </button>
+                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@push('css')
+<style>
+.modal-content {
+    border-radius: 12px;
+}
+.modal-header {
+    background-color: #f8f9fa;
+}
+</style>
+@endpush
+
+@push('js')
+<script>
+function enviarFormularioEliminar(modo) {
+    document.getElementById('modoEliminar').value = modo;
+    document.getElementById('formEliminarColumna').submit();
+}
+</script>
+@endpush
+
 
                 <!-- Modal para editar nombre de columna -->
                 <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
@@ -597,6 +747,24 @@
 
                 <script>
 
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Evitar que el clic en el menú cierre el acordeón
+                        document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+                            dropdown.addEventListener('click', function (e) {
+                                e.stopPropagation(); // Detiene la propagación del evento
+                            });
+                        });
+
+                        // Asegurar que los menús se abran correctamente
+                        document.querySelectorAll('.dropdown-toggle').forEach(function (toggle) {
+                            toggle.addEventListener('click', function (e) {
+                                const dropdownMenu = this.nextElementSibling;
+                                if (dropdownMenu) {
+                                    dropdownMenu.classList.toggle('show');
+                                }
+                            });
+                        });
+                    });
 
                     document.addEventListener("DOMContentLoaded", function () {
                         document.querySelectorAll(".editable-title").forEach(input => {
@@ -634,9 +802,42 @@
                     });
                 </script>
 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Al hacer click en cualquier botón de colapsar
+                            document.querySelectorAll('.collapse-toggle-btn').forEach(btn => {
+                                btn.addEventListener('click', function (e) {
+                                    const targetSelector = this.getAttribute('data-bs-target');
+                                    const collapseEl = document.querySelector(targetSelector);
+
+                                    if (!collapseEl) return;
+
+                                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
+
+                                    // Si está abierto, ciérralo. Si está cerrado, ábrelo.
+                                    if (collapseEl.classList.contains('show')) {
+                                        bsCollapse.hide();
+                                        this.setAttribute('aria-expanded', 'false');
+                                    } else {
+                                        bsCollapse.show();
+                                        this.setAttribute('aria-expanded', 'true');
+                                    }
+                                });
+                            });
+
+                            // Evitar que los clicks en dropdowns cierren o interfieran
+                            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                                dropdown.addEventListener('click', function (e) {
+                                    e.stopPropagation();
+                                });
+                            });
+                        });
+                    </script>
 
 
-                <script>
+
+
+                    <script>
                     // que en funcion del sprint actual o sea de las fechas esas sean las historias que me salgan al entrar al tablero , que esas sean las que aparezcan
                     document.addEventListener('DOMContentLoaded', function () {
                         const btnAbrirCrearSprint = document.getElementById('btnAbrirCrearSprint');
@@ -704,6 +905,8 @@
                         document.getElementById('formEliminarColumna').submit();
                     }
                 </script>
+
+
 
 
 
@@ -783,6 +986,7 @@
 
 
                 </script>
+
                 <script>
                     document.addEventListener('click', function (e) {
                         document.querySelectorAll('.toggler').forEach(function (checkbox) {
@@ -799,50 +1003,103 @@
                         const form = document.getElementById('formEditarColumna');
                         const input = document.getElementById('inputNombreColumna');
 
-                        form.action = /columnas/${id}; // Asegúrate que esta ruta está definida
+                        // Usar template literal correcto
+                        form.action = `/columnas/${id}`;
                         input.value = nombre;
 
                         const modal = new bootstrap.Modal(document.getElementById('modalEditarColumna'));
                         modal.show();
                     }
+
                 </script>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        document.querySelectorAll('.accordion-toggle').forEach(function (btn) {
-                            btn.addEventListener('click', function () {
-                                const targetSelector = this.getAttribute('data-target');
-                                const target = document.querySelector(targetSelector);
-                                if (!target) return;
-
-                                const isOpen = target.classList.contains('show');
-
-                                // Cerrar todos los paneles
-                                document.querySelectorAll('.accordion-collapse').forEach(function (panel) {
-                                    panel.classList.remove('show');
-                                });
-                                document.querySelectorAll('.accordion-button').forEach(function (b) {
-                                    b.classList.add('collapsed');
-                                });
-
-                                // Si estaba cerrado, lo abrimos
-                                if (!isOpen) {
-                                    target.classList.add('show');
-                                    this.classList.remove('collapsed');
+                    <script>
+                        document.querySelectorAll('.card-historia').forEach(card => {
+                            card.addEventListener('click', function(e) {
+                                // Evitar que los botones o enlaces internos disparen el redireccionamiento
+                                if (!e.target.closest('a') && !e.target.closest('button')) {
+                                    window.location.href = this.dataset.href;
                                 }
                             });
                         });
-                    });
+                    </script>
 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Evita que el click del collapse afecte al dropdown
+                            document.querySelectorAll('.collapse-toggle-btn').forEach(btn => {
+                                btn.addEventListener('click', function(e){
+                                    e.stopPropagation(); // el click del collapse no afectará al dropdown
+                                });
+                            });
+                        });
+                    </script>
 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Detecta clicks o toques en todo el documento
+                            ['click', 'touchstart'].forEach(eventType => {
+                                document.addEventListener(eventType, function (e) {
+                                    // Evitar que botones, enlaces o inputs disparen la navegación
+                                    if (
+                                        e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target], .menu-wrapper, .dropdown-menu')
+                                    ) {
+                                        return;
+                                    }
+
+                                    // Buscar si se hizo click/toque dentro de una tarjeta historia
+                                    const card = e.target.closest('.card-historia');
+                                    if (card) {
+                                        const href = card.dataset.href;
+                                        if (href) {
+                                            window.location.href = href;
+                                        }
+                                    }
+                                }, { passive: true });
+                            });
+                        });
+                    </script>
                 </script>
 
-
-
-
-
-
                 <style>
+                     
+                    .modal-body p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.modal-footer .btn {
+    min-width: 180px; /* Botones uniformes */
+}
+
+
+
+                    <style>
+                        /* Estilos del menú contextual */
+                        .menu-contextual {
+                            position: absolute;
+                            background: #fff;
+                            border: 1px solid #ccc;
+                            border-radius: 6px;
+                            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                            z-index: 1055;
+                            padding: 10px;
+                            display: none;
+                        }
+
+                        .menu-contextual ul {
+                            list-style: none;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .menu-contextual ul li {
+                            padding: 8px 12px;
+                            cursor: pointer;
+                        }
+
+                        .menu-contextual ul li:hover {
+                            background: #f0f0f0;
+                        }
 
                     .kanban-columna {
                         min-width: 0 !important;
@@ -862,6 +1119,7 @@
                         display: inline-block;
                         z-index: 1000;
                     }
+
 
                     /* Checkbox invisible */
                     .toggler {
@@ -903,6 +1161,16 @@
                         background: #777;
                         border-radius: 50%;
                         transition: 0.4s ease;
+                    }
+
+                    .dropdown-menu {
+                        z-index: 1055; /* Asegúrate de que sea mayor que otros elementos */
+                        position: absolute; /* Asegura que el menú se posicione correctamente */
+                        transform: translateY(0); /* Evita que se corte por transformaciones */
+                    }
+
+                    .kanban-columna {
+                        overflow: visible !important; /* Permite que el menú sea visible fuera del contenedor */
                     }
 
                     /* Posición vertical inicial (alineados) */
@@ -1270,18 +1538,15 @@
                         }
 
                     }
-
-
+                    /* Forzar color negro en el título del acordeón móvil */
+                    .kanban-accordion .accordion-header span {
+                        color: #000 !important;
+                    }
+                    .kanban-accordion .accordion-header span {
+                        color: #000 !important;
+                        font-weight: 600; /* seminegrita */
+                    }
 
                 </style>
-
-
-
-
-
-
-
-
-
 
 @endsection

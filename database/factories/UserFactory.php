@@ -36,9 +36,23 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'usertype' => 'user',
+            'usertype' => 'collaborator',
             'is_approved' => true,
         ];
+    }
+
+    /**
+     * Usuario superadministrador
+     */
+    public function superadmin()
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Superadministrador ' . fake()->lastName(),
+            'email' => 'superadmin@unah.hn',
+            'usertype' => 'superadmin',
+            'is_approved' => true,
+            'is_rejected' => false,
+        ]);
     }
 
     /**
@@ -48,8 +62,22 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'name' => 'Administrador ' . fake()->lastName(),
+            'email' => fake()->unique()->safeEmail(),
             'usertype' => 'admin',
-            'email' => 'admin' . fake()->numberBetween(1, 99) . '@unah.hn',
+            'is_approved' => true,
+            'is_rejected' => false,
+        ]);
+    }
+
+    /**
+     * Usuario colaborador
+     */
+    public function collaborator()
+    {
+        return $this->state(fn (array $attributes) => [
+            'usertype' => 'collaborator',
+            'is_approved' => false,
+            'is_rejected' => false,
         ]);
     }
 
