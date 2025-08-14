@@ -865,7 +865,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
                       <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
                         <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-                          @csrf @method('PUT')
+                          @csrf 
+                          @method('PUT')
                           <div class="mb-4 text-center">
                             <i class="bi bi-pencil-square text-warning fs-1"></i>
                             <h4 class="fw-bold text-dark">Editar Respuesta</h4>
@@ -923,7 +924,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div id="editarComentarioModal{{ $comentario->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
                   <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
                     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf @method('PUT')
+                      @csrf 
+                      @method('PUT')
                       <div class="mb-4 text-center">
                         <i class="bi bi-pencil-square text-warning fs-1"></i>
                         <h4 class="fw-bold text-dark">Editar Comentario</h4>
@@ -954,7 +956,8 @@ document.addEventListener('DOMContentLoaded', function() {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf @method('PUT')
+                      @csrf 
+                      @method('PUT')
                       <div class="modal-body pt-0">
                         <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $comentario->contenido }}</textarea>
                       </div>
@@ -1002,8 +1005,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                   </div>
                 </div>
+              <!-- Cierre del recuadro del comentario principal -->
 
-              </div> <!-- Cierre del recuadro del comentario principal -->
+              </div> 
             @endforeach
 
           @else
