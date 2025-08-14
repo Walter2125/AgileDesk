@@ -1709,6 +1709,10 @@
                                 <i class="bi bi-person-lines-fill"></i>
                                 <span class="sidebar-text">Usuarios</span>
                             </a>
+                            <a href="{{ route('historial.sistema') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
+                                <i class="bi bi-clock-history"></i>
+                                <span class="sidebar-text">Historial</span>
+                            </a>
                         @else
                             <a href="{{ route('admin.users.manage') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
                                 <i class="bi bi-person-lines-fill"></i>

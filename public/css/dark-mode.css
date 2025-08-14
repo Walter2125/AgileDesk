@@ -1,3 +1,55 @@
+.dark-mode #usersTable_length select,
+.dark-mode #usersLengthContainer select {
+    background-color: #23272b !important;
+    color: #f8f9fa !important;
+    border: 1.5px solid #444 !important;
+    box-shadow: none !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    border-radius: 0.375rem !important;
+    text-align: center !important;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.dark-mode #usersTable_length select:focus,
+.dark-mode #usersLengthContainer select:focus {
+    border-color: #4a90e2 !important;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
+    outline: none !important;
+}
+.dark-mode #usersTable_length label,
+.dark-mode #usersLengthContainer label {
+    color: #f8f9fa !important;
+}
+/* Select de paginación DataTables en modo oscuro */
+.dark-mode .dataTables_length select,
+.dark-mode #historialTable_length select,
+.dark-mode #usuariosTable_length select {
+    background-color: #23272b !important;
+    color: #f8f9fa !important;
+    border: 1.5px solid #444 !important;
+    box-shadow: none !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    border-radius: 0.375rem !important;
+    text-align: center !important;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.dark-mode .dataTables_length select:focus,
+.dark-mode #historialTable_length select:focus,
+.dark-mode #usuariosTable_length select:focus {
+    border-color: #4a90e2 !important;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
+    outline: none !important;
+}
+.dark-mode .dataTables_length label,
+.dark-mode #historialTable_length label,
+.dark-mode #usuariosTable_length label {
+    color: #f8f9fa !important;
+}
 /* Combobox (select) específico del tablero en modo oscuro */
 .dark-mode #sprintSelect,
 .dark-mode #sprintSelect.form-select {

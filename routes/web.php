@@ -197,6 +197,7 @@ Route::middleware(['auth', 'role:superadmin'])
         
         // Asignación de roles (solo superadmin)
         Route::post('/users/{user}/assign-role', [AdminUserController::class, 'assignRole'])->name('admin.users.assign-role');
+        Route::patch('/users/{user}/role', [AdminUserController::class, 'assignRole'])->name('admin.users.update-role');
         
         // Acceso total a gestión de usuarios
         Route::delete('/users/{user}/force-delete', [AdminController::class, 'forceDeleteUser'])->name('admin.users.force-delete');

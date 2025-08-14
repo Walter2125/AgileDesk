@@ -95,6 +95,44 @@ class ViewServiceProvider extends ServiceProvider
                 'dashboard' => [
                     ['label' => 'Inicio', 'url' => route('dashboard')],
                 ],
+                // Historial de cambios para colaboradores
+                'users.colaboradores.historial' => function() use ($currentRoute) {
+                    $projectParam = $currentRoute ? $currentRoute->parameter('project') : null;
+                    $project = null;
+                    if (is_numeric($projectParam)) {
+                        $project = \App\Models\Project::find($projectParam);
+                    } elseif (is_object($projectParam)) {
+                        $project = $projectParam;
+                    }
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                    ];
+                    if ($project) {
+                        $breadcrumbs[] = ['label' => $project->name, 'url' => route('users.colaboradores.historial', ['project' => $project->id])];
+                    } else {
+                        $breadcrumbs[] = ['label' => 'Historial de Cambios'];
+                    }
+                    return $breadcrumbs;
+                },
+                // Historial de cambios de usuario admin
+                'users.admin.historial' => function() use ($currentRoute) {
+                    $projectParam = $currentRoute ? $currentRoute->parameter('project') : null;
+                    $project = null;
+                    if (is_numeric($projectParam)) {
+                        $project = \App\Models\Project::find($projectParam);
+                    } elseif (is_object($projectParam)) {
+                        $project = $projectParam;
+                    }
+                    $breadcrumbs = [
+                        ['label' => 'Inicio', 'url' => route('dashboard')],
+                    ];
+                    if ($project) {
+                        $breadcrumbs[] = ['label' => $project->name, 'url' => route('users.admin.historial', ['project' => $project->id])];
+                    } else {
+                        $breadcrumbs[] = ['label' => 'Historial de Cambios'];
+                    }
+                    return $breadcrumbs;
+                },
 
                 // Home user / profile
                 'profile.edit' => [
