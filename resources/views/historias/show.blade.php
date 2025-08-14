@@ -784,9 +784,11 @@ document.addEventListener('DOMContentLoaded', function() {
                   @if(Auth::id() === $comentario->user_id)
                     <div class="btn-group btn-group-sm">
                       <button class="btn btn-outline-secondary px-2 py-1"
-                        onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('d-none')">
+                        data-bs-toggle="modal"
+                        data-bs-target="#editarComentarioModal{{ $comentario->id }}">
                         <i class="bi bi-pencil-square fs-5"></i>
                       </button>
+
                       <button type="button"
                         class="btn btn-outline-danger btn-sm px-2 py-1"
                         title="Eliminar Comentario"
