@@ -584,12 +584,32 @@ body {
 @section('content')
 <div class="container-fluid projects-container">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   
+    
+@if (session('success'))
+    <div id="success-alert" 
+         class="alert alert-success alert-dismissible fade show mt-2" 
+         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+         
+        <div style="display: flex; align-items: center;">
+            <i class="bi bi-check-circle me-2"></i>
+            <span>{{ session('success') }}</span>
         </div>
-    @endif
+
+         </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(function () {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 3000);
+            }
+        });
+    </script>
+@endif
 
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
@@ -627,10 +647,12 @@ body {
         <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
             <i class="fas fa-eye"></i>
         </a>
-        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isSuperAdmin()))
+        @can('update', $project)
             <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
                 <i class="fas fa-edit"></i>
             </a>
+        @endcan
+        @can('delete', $project)
             <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
@@ -645,7 +667,7 @@ body {
 </button>
 
             </form>
-        @endif
+        @endcan
     </div>
 </div>
 

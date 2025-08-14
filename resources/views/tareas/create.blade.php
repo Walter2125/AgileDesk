@@ -152,7 +152,7 @@
                     <i class="bi bi-x-lg me-2"></i> Cancelar
                 </a>
                 <button type="submit" class="btn btn-primary">
-                   <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar
+                   <i class="bi bi-cloud-arrow-up-fill me-2"></i> Guardar
                 </button>
             </div>
 

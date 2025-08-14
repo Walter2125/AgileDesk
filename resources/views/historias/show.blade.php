@@ -271,36 +271,6 @@
   .toggle-btn.active::after {
     transform: rotate(225deg); /* para cuando se despliega */
   }
-
-    /* Custom modals that respect sidebar */
-    .custom-modal {
-        margin-left: var(--sidebar-width, 250px);
-        width: calc(100% - var(--sidebar-width, 250px));
-    }
-
-    /* Sidebar collapsed state for modals */
-    body.sidebar-collapsed .custom-modal {
-        margin-left: var(--sidebar-collapsed-width, 56px);
-        width: calc(100% - var(--sidebar-collapsed-width, 56px));
-    }
-
-    /* Mobile responsive - modals cover full screen */
-    @media (max-width: 991.98px) {
-        .custom-modal {
-            margin-left: 0 !important;
-            width: 100% !important;
-        }
-    }
-
-    .modal-body p {
-    margin-top: 10px;
-    font-size: 16px;
-}
-
-.modal-footer .btn {
-    min-width: 180px; /* Botones uniformes */
-}
-
 </style>
 
 <style>
@@ -313,31 +283,6 @@
  </style>   
  
 @endsection
-
-@push('css')
-<style>
-.modal-content {
-    border: none;
-    border-radius: 12px;
-}
-.modal-header {
-    border-bottom: 1px solid #e1e4e8;
-    background-color: #f6f8fa;
-}
-* {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-html {
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
-body {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-}
-</style>
-@endpush
 
 
 @section('content')
@@ -352,46 +297,42 @@ body {
 
    
 @if (session('success'))
-    <div id="success-alert" 
-         class="alert alert-success alert-dismissible fade show mt-2" 
-         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-         
-        <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div id="success-alert" 
+          class="alert alert-success alert-dismissible fade show mt-2" 
+          style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+          
+          <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center;">
                 <i class="bi bi-check-circle me-2"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-
-            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-
+                {{ session('success') }}
+                 </div>
+                 
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+          </div>
+      </div>
+        @endif
+   
+   @if ($errors->any())
+    <div class="alert alert-danger mt-2">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li> <!-- aquí ya se reemplazan :min, :max automáticamente -->
+            @endforeach
+        </ul>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(function () {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }, 3000);
-            }
-        });
-    </script>
 @endif
 
-        
-
-   
-    @if ($errors->any())
-        <div class="alert alert-danger mt-2">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
 <div class="container-fluid-m-2 mi-container m-2">
    
@@ -404,37 +345,43 @@ body {
     @method('PATCH')
     <div class="row mb-3">
 
-                <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-    <div class="mb-0 flex-grow-1" style="font-weight: bold; min-width: 0;">
-        <label class="form-label rounded">Nombre de la Historia</label>
-        <h2 id="tituloTexto" class="historia-title rounded"
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-            title="{{ $historia->nombre }}">
-            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-        </h2>
-        <input id="tituloInput" type="text" name="nombre" maxlength="100"
-            class="form-control formulario-editable rounded d-none"
-            value="{{ old('nombre', $historia->nombre) }}"
-            data-editable="true" />
-    </div>
+                <div class="mb-4 d-flex justify-content-between align-items-center rounded gap-2">
+                    <div class="flex-grow-1" style="min-width: 0; font-weight: bold;">
+                        <label class="form-label rounded">Nombre de la Historia</label>
+                        <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate"
+                            title="{{ $historia->nombre }}">
+                            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                        </h2>
+                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                              class="form-control formulario-editable rounded d-none"
+                              value="{{ old('nombre', $historia->nombre) }}"
+                              data-editable="true" />
+                    </div>
 
-    <div class="d-flex align-items-center">
-        <div id="dropdownMenuContainer" class="dropdown me-3">
-            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
-                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-    
-        <div class="col-lg-6 col-md-12">
+                    <div class="flex-shrink-0">
+                        <div id="dropdownMenuContainer" class="dropdown">
+                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+    <li>
+        <button type="button" 
+                class="dropdown-item " 
+                data-bs-toggle="modal"
+                data-bs-target="#deleteHistoriaModal"
+                data-historia-id="{{ $historia->id }}" 
+                data-historia-nombre="{{ $historia->nombre }}">
+             Eliminar
+        </button>
+    </li>
+    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+</ul>
+                        </div>
+                    </div>
+                </div>
+        <div class="col-lg-6 col-md-12 ">
        
           
             <div class="mb-3">
@@ -519,8 +466,14 @@ body {
         
             </div>
         </div>
+        
+</form>
+<form action="{{ route('historias.destroy', $historia->id) }}" method="post">
+    @csrf
+    @method('DELETE')
+</form>
 
-    </form>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -560,15 +513,7 @@ body {
     });
 </script>
 
-<button type="button"
-        class="btn btn-delete"
-        title="Eliminar Historia"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteHistoriaModal"
-        data-historia-id="{{ $historia->id }}"
-        data-historia-nombre="{{ $historia->nombre }}">
-    <i class="fas fa-trash"></i>
-</button>
+
 
 <!-- Modal para confirmar eliminación de historia -->
 <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
@@ -762,7 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </h4>
           <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2"
             onclick="document.getElementById('nuevoComentarioModal').classList.remove('d-none')">
-            <i class="bi bi-chat-left-text me-1"></i> Comentar
+            <i class="bi bi-chat-left-text me-2"></i> Comentar
           </button>
         </div>
 
@@ -854,7 +799,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
                       <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
                         <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-                          @csrf @method('PUT')
+                          @csrf 
+                          @method('PUT')
                           <div class="mb-4 text-center">
                             <i class="bi bi-pencil-square text-warning fs-1"></i>
                             <h4 class="fw-bold text-dark">Editar Respuesta</h4>
@@ -978,9 +924,9 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <!-- Modal Nuevo Comentario -->
-    <div id="nuevoComentarioModal" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-      <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+    <div id="nuevoComentarioModal"    class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
+    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
           @csrf
           <div class="mb-4 text-center">
             <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>

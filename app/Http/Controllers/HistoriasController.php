@@ -93,67 +93,76 @@ class HistoriasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => [
-                'required', 'string', 'min:3', 'max:100',
-                Rule::unique('historias')->where(function ($query) use ($request) {
-                    return $query->where('proyecto_id', $request->proyecto_id);
-                }),
-            ],
-            'trabajo_estimado' => 'nullable|integer|min:0',
-            'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:5000',
-            'proyecto_id' => 'required|exists:nuevo_proyecto,id',
-            'columna_id' => 'nullable|exists:columnas,id',
-            'tablero_id' => 'exists:tableros,id',
-            'usuario_id' => 'nullable|exists:users,id',
-            'sprint_id' => 'nullable|exists:sprints,id',
-        ], [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-            'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
-            'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
-            'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
-            'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
-            'prioridad.required' => 'Debe seleccionar una prioridad.',
-            'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
-        ]);
+   public function store(Request $request)
+{
+    // Validación con mensajes personalizados
+    $request->validate([
+        'nombre' => [
+            'required',
+            'string',
+            'min:3',
+            'max:100',
+            Rule::unique('historias')->where(function ($query) use ($request) {
+                return $query->where('proyecto_id', $request->proyecto_id);
+            }),
+        ],
+        'trabajo_estimado' => 'nullable|integer|min:0',
+        'prioridad' => 'required|in:Alta,Media,Baja',
+        'descripcion' => 'nullable|string|max:5000',
+        'proyecto_id' => 'required|exists:nuevo_proyecto,id',
+        'columna_id' => 'nullable|exists:columnas,id',
+        'tablero_id' => 'nullable|exists:tableros,id',
+        'usuario_id' => 'nullable|exists:users,id',
+        'sprint_id' => 'nullable|exists:sprints,id',
+    ], [
+        'nombre.required' => 'El nombre es obligatorio.',
+        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+        'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+        'nombre.unique' => 'El nombre ya existe, por favor elige otro.',
+        'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+        'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+        'prioridad.required' => 'Debe seleccionar una prioridad.',
+        'prioridad.in' => 'La prioridad debe ser Alta, Media o Baja.',
+        'descripcion.max' => 'La descripción no puede exceder los :max caracteres.',
+    ]);
 
-        $columna = null;
-        if ($request->columna_id) {
-            $columna = Columna::with('tablero')->findOrFail($request->columna_id);
-        }
-
-        $historia = new Historia();
-        $historia->nombre = $request->nombre;
-        $historia->trabajo_estimado = $request->trabajo_estimado;
-        $historia->prioridad = $request->prioridad;
-        $historia->descripcion = $request->descripcion;
-        $historia->proyecto_id = $request->proyecto_id;
-        $historia->columna_id = $request->columna_id;
-        $historia->tablero_id = $request->tablero_id;
-        $historia->usuario_id = $request->usuario_id;
-        $historia->sprint_id = $request->sprint_id;
-
-        // Solución: Generar un código único
-        $historia->codigo = 'H-' . uniqid();
-
-        $historia->save();
-
-        HistorialCambio::create([
-            'fecha' => now(),
-            'usuario' => Auth::user()->name,
-            'accion' => 'Creación de Historia',
-            'detalles' => 'Historia "' . $historia->nombre . '" creada',
-            'sprint' => $historia->sprint_id,
-            'proyecto_id' => $historia->proyecto_id
-        ]);
-
-        return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
-            ->with('success', 'Historia creada con éxito');
+    // Obtener columna si se proporciona
+    $columna = null;
+    if ($request->columna_id) {
+        $columna = Columna::with('tablero')->findOrFail($request->columna_id);
     }
+
+    // Crear historia
+    $historia = new Historia();
+    $historia->nombre = $request->nombre;
+    $historia->trabajo_estimado = $request->trabajo_estimado;
+    $historia->prioridad = $request->prioridad;
+    $historia->descripcion = $request->descripcion;
+    $historia->proyecto_id = $request->proyecto_id;
+    $historia->columna_id = $request->columna_id;
+    $historia->tablero_id = $request->tablero_id;
+    $historia->usuario_id = $request->usuario_id;
+    $historia->sprint_id = $request->sprint_id;
+
+    // Generar código único
+    $historia->codigo = 'H-' . uniqid();
+
+    $historia->save();
+
+    // Guardar historial de cambios
+    HistorialCambio::create([
+        'fecha' => now(),
+        'usuario' => Auth::user()->name,
+        'accion' => 'Creación de Historia',
+        'detalles' => 'Historia "' . $historia->nombre . '" creada',
+        'sprint' => $historia->sprint_id,
+        'proyecto_id' => $historia->proyecto_id
+    ]);
+
+    // Redirigir con mensaje de éxito
+    return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
+        ->with('success', 'Historia creada con éxito');
+}
 
 
     protected function obtenerProjectIdDeOtraForma(Historia $historia)
@@ -233,79 +242,80 @@ class HistoriasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Historia $historia)
-    {
-        // Guardar valores antiguos para el historial
-        $valoresAntiguos = [
-            'nombre' => $historia->nombre,
-            'trabajo_estimado' => $historia->trabajo_estimado,
-            'prioridad' => $historia->prioridad,
-            'descripcion' => $historia->descripcion,
-            'usuario_id' => $historia->usuario_id,
-            'sprint_id' => $historia->sprint_id,
-            'columna_id' => $historia->columna_id
-        ];
+ public function update(Request $request, Historia $historia)
+{
+    // Guardar valores antiguos para historial
+    $valoresAntiguos = $historia->only([
+        'nombre', 'trabajo_estimado', 'prioridad',
+        'descripcion', 'usuario_id', 'sprint_id', 'columna_id'
+    ]);
 
-        $request->validate([
-            'nombre' => ['required','string','min:3','max:255',
-                Rule::unique('historias')
-                    ->where(function ($query) use ($request) {
-                        return $query->where('proyecto_id', $request->proyecto_id);
-                    })
-                    ->ignore($historia->id),
-            ],
-            'trabajo_estimado' => 'nullable|integer|min:0',
-            'prioridad' => 'required|in:Alta,Media,Baja',
-            'descripcion' => 'nullable|string|max:5000',
-            'usuario_id' => 'nullable|exists:users,id',
-            'sprint_id' => 'nullable|exists:sprints,id',
-            'columna_id' => 'nullable|exists:columnas,id',
+    // Validación
+    $request->validate([
+    'nombre' => [
+        'required', 'string', 'min:3', 'max:255',
+        Rule::unique('historias')
+            ->where(fn($query) => $query->where('proyecto_id', $historia->proyecto_id))
+            ->ignore($historia->id),
+    ],
+    'trabajo_estimado' => 'nullable|integer|min:0',
+    'prioridad' => 'nullable|in:Alta,Media,Baja',
+    'descripcion' => 'nullable|string|max:5000',
+    'proyecto_id' => 'nullable|exists:nuevo_proyecto,id',
+    'columna_id' => 'nullable|exists:columnas,id',
+    'tablero_id' => 'nullable|exists:tableros,id',
+    'usuario_id' => 'nullable|exists:users,id',
+    'sprint_id' => 'nullable|exists:sprints,id',
+], [
+    'nombre.required' => 'El nombre es obligatorio.',
+    'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
+    'nombre.max' => 'El nombre no puede exceder los :max caracteres.',
+    'nombre.unique' => 'El nombre ya existe en este proyecto.',
+    'trabajo_estimado.integer' => 'El trabajo estimado debe ser un número entero.',
+    'trabajo_estimado.min' => 'El trabajo estimado no puede ser negativo.',
+    'descripcion.max' => 'La descripción no puede exceder los 5000 caracteres.',
+]);
+
+
+
+    // Actualizar historia
+    $historia->update($request->only([
+        'nombre', 'trabajo_estimado', 'prioridad',
+        'descripcion', 'usuario_id', 'sprint_id', 'columna_id'
+    ]));
+
+    // Registrar cambios en historial
+    $usuarioAntiguo = $valoresAntiguos['usuario_id'] ? User::find($valoresAntiguos['usuario_id'])->name : 'Sin asignar';
+    $usuarioNuevo = $request->usuario_id ? User::find($request->usuario_id)->name : 'Sin asignar';
+    $columnaAntigua = $valoresAntiguos['columna_id'] ? Columna::find($valoresAntiguos['columna_id'])->nombre : 'Sin asignar';
+    $columnaNueva = $request->columna_id ? Columna::find($request->columna_id)->nombre : 'Sin asignar';
+
+    HistorialCambio::create([
+        'fecha' => now(),
+        'usuario' => Auth::user()->name,
+        'accion' => 'Edición de Historia',
+        'detalles' => $this->generarDetallesCambios([
+            'nombre' => $valoresAntiguos['nombre'],
+            'trabajo_estimado' => $valoresAntiguos['trabajo_estimado'],
+            'prioridad' => $valoresAntiguos['prioridad'],
+            'usuario' => $usuarioAntiguo,
+            'columna' => $columnaAntigua
         ], [
-            // ... (mensajes de validación existentes)
-        ]);
-
-        // Actualizar la historia
-        $historia->update([
             'nombre' => $request->nombre,
             'trabajo_estimado' => $request->trabajo_estimado,
             'prioridad' => $request->prioridad,
-            'descripcion' => $request->descripcion,
-            'usuario_id' => $request->usuario_id,
-            'sprint_id' => $request->sprint_id,
-            'columna_id' => $request->columna_id,
-        ]);
+            'usuario' => $usuarioNuevo,
+            'columna' => $columnaNueva
+        ]),
+        'sprint' => $historia->sprint_id,
+        'proyecto_id' => $historia->proyecto_id
+    ]);
 
-        // Obtener nombres de usuarios y columnas para el historial
-        $usuarioAntiguo = $valoresAntiguos['usuario_id'] ? User::find($valoresAntiguos['usuario_id'])->name : 'Sin asignar';
-        $usuarioNuevo = $request->usuario_id ? User::find($request->usuario_id)->name : 'Sin asignar';
-        $columnaAntigua = Columna::find($valoresAntiguos['columna_id'])->nombre;
-        $columnaNueva = Columna::find($request->columna_id)->nombre;
+    return redirect()->route('historias.show', $historia->id)
+        ->with('success', 'Historia editada con éxito');
+}
 
-        // Registrar en el historial
-        HistorialCambio::create([
-            'fecha' => now(),
-            'usuario' => Auth::user()->name,
-            'accion' => 'Edición de Historia',
-            'detalles' => $this->generarDetallesCambios([
-                'nombre' => $valoresAntiguos['nombre'],
-                'trabajo_estimado' => $valoresAntiguos['trabajo_estimado'],
-                'prioridad' => $valoresAntiguos['prioridad'],
-                'usuario' => $usuarioAntiguo,
-                'columna' => $columnaAntigua
-            ], [
-                'nombre' => $request->nombre,
-                'trabajo_estimado' => $request->trabajo_estimado,
-                'prioridad' => $request->prioridad,
-                'usuario' => $usuarioNuevo,
-                'columna' => $columnaNueva
-            ]),
-            'sprint' => $historia->sprint_id,
-            'proyecto_id' => $historia->proyecto_id
-        ]);
 
-        return redirect()->route('historias.show', $historia->id)
-            ->with('success', 'Historia editada con éxito');
-    }
     private function generarDetallesCambios($antes, $despues)
     {
         $cambios = [];

@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('mensaje-superior')
@@ -147,9 +148,20 @@
 <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@if(session('success'))
-<div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mt-2 shadow-md">
-    {{ session('success') }}
+@if (session('success'))
+    <div id="success-alert" 
+         class="alert alert-success alert-dismissible fade show mt-2" 
+         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+         
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="bi bi-check-circle me-2"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+
+    </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const alert = document.getElementById('success-alert');
@@ -162,10 +174,10 @@
             }
         });
     </script>
-</div>
 @endif
+
 @if(session('deleted'))
-<div class="alert alert-info">{{ session('deleted') }}</div>
+    <div class="alert alert-info">{{ session('deleted') }}</div>
 @endif
 
 <div class="container py-4" style="max-width: 1200px;">
@@ -179,7 +191,7 @@
             </div>
         </div>
 
-        <!-- Tabla -->
+        <!-- Tabla envuelta en un contenedor responsivo -->
         <div class="table-responsive">
             <table class="table table-hover table-bordered text-dark">
                 <thead>
@@ -218,6 +230,7 @@
                                     data-tarea-id="{{ $tarea->id }}"
                                     data-tarea-nombre="{{ $tarea->nombre }}"
                                     title="Eliminar">
+
                                     <i class="bi bi-trash3"></i>
                                 </button>
                             </td>
@@ -250,7 +263,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    @endforeach
 </div>
                     @empty
                         <tr>
@@ -278,27 +291,7 @@
 </div>
 
 
-{{-- ✅ Scripts para el modal (como en sprints/proyectos) --}}
-@push('js')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteTareaModal = document.getElementById('deleteTareaModal');
-    const deleteTareaForm = document.getElementById('deleteTareaForm');
-    const deleteTareaText = document.getElementById('deleteTareaText');
-
-    deleteTareaModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const tareaId = button.getAttribute('data-tarea-id');
-        const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
-
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
-    });
-});
-</script>
-@endpush
-
-{{-- ✅ Scripts de la barra de progreso (repuestos tal cual) --}}
+{{-- Scripts --}}
 <script>
     function actualizarBarraProgreso() {
         const checkboxes = document.querySelectorAll('.tarea-checkbox');
@@ -334,12 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     alert('Error al guardar el progreso.');
                     checkbox.checked = !checkbox.checked;
-                    actualizarBarraProgreso();
                 }
-            }).catch(() => {
-                alert('Error de red.');
-                checkbox.checked = !checkbox.checked;
-                actualizarBarraProgreso();
             });
         }
     });
@@ -362,8 +350,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 cb.checked = estados[id];
             }
         });
-        // Asegura que la barra refleje el estado cargado
-        actualizarBarraProgreso();
     }
 
     document.addEventListener('change', function (e) {
@@ -381,17 +367,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
 </script>
-
-@push('css')
-<style>
-.modal-content {
-    border: none;
-    border-radius: 12px;
-}
-.modal-header {
-    border-bottom: 1px solid #e1e4e8;
-    background-color: #f6f8fa;
-}
-</style>
-@endpush
 @endsection
