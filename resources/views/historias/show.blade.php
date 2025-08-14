@@ -325,20 +325,9 @@
     </script>
 @endif
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const alert = document.getElementById('success-alert');
-                    if (alert) {
-                        setTimeout(function () {
-                            alert.style.transition = "opacity 0.10s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 1000);
-                        }, 3000);
-                    }
-                });
-            </script>
-        @endif
-
+            
+              
+          
    
     @if ($errors->any())
         <div class="alert alert-danger mt-2">
