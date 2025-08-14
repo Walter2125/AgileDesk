@@ -658,6 +658,15 @@
         .navbar-optimized {
             margin-bottom: 0 !important;
         }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* En tablets, mostrar nombre de app */
@@ -982,6 +991,16 @@
         body.sidebar-collapsed .alerts-container {
             left: 0 !important;
         }
+
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* Animación de entrada para alertas */
@@ -1155,6 +1174,15 @@
 
         .sidebar-heading .app-name {
             display: inline-block !important;
+        }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
     }
 
