@@ -323,15 +323,16 @@
       </div>
         @endif
    
-    @if ($errors->any())
-        <div class="alert alert-danger mt-2">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+   @if ($errors->any())
+    <div class="alert alert-danger mt-2">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li> <!-- aquí ya se reemplazan :min, :max automáticamente -->
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 
 <div class="container-fluid-m-2 mi-container m-2">
    

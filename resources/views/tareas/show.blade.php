@@ -236,11 +236,12 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('historias.show', ['historia' => $historia->id]) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Atrás
+            <a href="{{ route('historias.show', ['historia' => $historia->id]) }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"> </i> Atrás
             </a>
+            
             <a href="{{ route('tareas.index', $historia->id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Nueva Tarea
+                <i class="bi bi-plus-lg me-2"></i> Nueva Tarea
             </a>
         </div>
     </div>
