@@ -13,9 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-
-
-
     @php
         $colCount = $tablero->columnas->count();
                 $widthStyle = ($colCount <= 4)
@@ -25,6 +22,33 @@
     @endphp
 
     <div class="container-fluid px-3 py-0 tablero-wrapper">
+        @if (session('success'))
+            <div id="success-alert"
+                 class="alert alert-success alert-dismissible fade show mt-2"
+                 style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+        @endif
         <div class="overflow-auto pb-3" style="width: 100%; white-space: nowrap;">
             <div id="kanban-board" class="d-flex flex-nowrap w-100" style="gap: 1rem;">
 
@@ -44,8 +68,9 @@
             </button>
         </div>
 
+        {{-- Mostrar solo si hay sprints --}}
         @if ($tablero->sprints->count() > 0)
-            <form method="GET" class="d-flex mt-2">
+            <form method="GET" class="d-flex">
                 <select name="sprint_id" id="sprintSelect" class="form-select"
                         style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
                         onchange="this.form.submit()">
@@ -61,28 +86,24 @@
             </form>
         @endif
 
+        <div class="d-flex gap-2 ms-auto">
+            <button class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCrearSprint"
+                    id="btnAbrirCrearSprint"
+                    style="height: 40px">
+                Crear sprint
+            </button>
 
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalAgregarColumna"
+                    style="height: 40px">
+                Agregar columna
+            </button>
+        </div>
 
-
-
-
-                    <div class="d-flex gap-2 ms-auto">
-                    <button class="btn btn-outline-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalCrearSprint"
-                            id="btnAbrirCrearSprint"
-                            style="height: 40px">
-                        Crear sprint
-                    </button>
-
-                    <button class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalAgregarColumna"
-                            style="height: 40px">
-                        Agregar columna
-                    </button>
-                </div>
-            </div>
+    </div>
 
             <div class="w-100 mt-3">
 
@@ -149,9 +170,11 @@
                                                         </strong>
 
                                                     @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" style="word-break: break-word; overflow-wrap: break-word; max-width: 100%;">
+                                                            <div class="descripcion-limitada"
+                                                                style="word-break: break-word; overflow-wrap: break-word; white-space: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
+
                                                         @endif
 
                                                     </a>

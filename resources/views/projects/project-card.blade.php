@@ -87,17 +87,16 @@
                     <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button"
-                                class="btn btn-delete"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalConfirmarEliminarProyecto"
-                                data-action="{{ route('projects.destroy', $project->id) }}">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+                    <button type="button"
+        class="btn btn-delete"
+        title="Eliminar Proyecto"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteProjectModal"
+        data-project-id="{{ $project->id }}"
+        data-project-name="{{ $project->name }}">
+    <i class="fas fa-trash"></i> Eliminar
+</button>
+
                 @endif
             </div>
         </div>
@@ -169,40 +168,82 @@
     </div>
 </div>
 
-<!-- Modal Eliminar Proyecto -->
-<div class="modal fade" id="modalConfirmarEliminarProyecto" tabindex="-1" aria-labelledby="eliminarProyectoLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form id="formEliminarProyecto" method="POST" action="">
-            @csrf
-            @method('DELETE')
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eliminarProyectoLabel">Eliminar proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</p>
-                </div>
-                <div class="modal-footer justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-outline-danger">Eliminar</button>
-                </div>
+<!-- Modal para confirmar eliminación de proyecto -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center"> 
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
             </div>
-        </form>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteProjectText">¿Está seguro de que desea eliminar este proyecto?</p>
+            </div>
+            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
+
+@push('js')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const modalEliminar = document.getElementById('modalConfirmarEliminarProyecto');
-    modalEliminar.addEventListener('show.bs.modal', function (event) {
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteProjectModal = document.getElementById('deleteProjectModal');
+    const deleteProjectForm = document.getElementById('deleteProjectForm');
+    const deleteProjectText = document.getElementById('deleteProjectText');
+
+    deleteProjectModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
-        const action = button.getAttribute('data-action');
-        const form = document.getElementById('formEliminarProyecto');
-        form.setAttribute('action', action);
+        const projectId = button.getAttribute('data-project-id');
+        const projectName = button.getAttribute('data-project-name') || '';
+
+        deleteProjectText.textContent = `¿Está seguro de que desea eliminar el proyecto "${projectName}"?`;
+        deleteProjectForm.action = `/projects/${projectId}`;
     });
 });
 </script>
+@endpush
+
+@push('css')
+<style>
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+.modal-header {
+    border-bottom: 1px solid #e1e4e8;
+    background-color: #f6f8fa;
+}
+* {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+</style>
+@endpush
+
 
 <script>
     function colorPicker(projectId, url, initialColor) {
@@ -253,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">

@@ -466,6 +466,48 @@ body {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
+.modal-body p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.modal-footer .btn {
+    min-width: 180px; /* Botones del mismo ancho */
+}
+
+.projects-container {
+    margin-top: 2rem;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+@media (min-width: 992px) {
+    .projects-container {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+.container-fluid.projects-container {
+    padding-left: var(--bs-gutter-x, 1.5rem) !important;
+    padding-right: var(--bs-gutter-x, 1.5rem) !important;
+}
+
+/* Forzar misma alineación que la barra superior */
+.container-fluid.projects-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100%; /* o el mismo valor que use tu barra */
+}
+
+/* Si la barra usa un max-width (por ejemplo en Bootstrap container) */
+@media (min-width: 1200px) {
+    .container-fluid.projects-container {
+        max-width: 1140px; /* ajusta según el tamaño de tu barra */
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 
 /* Asegurar que el dropdown del sidebar funcione correctamente */
 .user-dropdown .dropdown-menu {
@@ -540,7 +582,7 @@ body {
 
 
 @section('content')
-<div class="container projects-container">
+<div class="container-fluid projects-container">
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
@@ -552,7 +594,7 @@ body {
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos recientes
-        @if (auth()->check() && auth()->user()->usertype == 'admin')
+        @if (auth()->check() && (auth()->user()->usertype == 'admin' || auth()->user()->isSuperAdmin()))
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
@@ -593,12 +635,15 @@ body {
                 @csrf
                 @method('DELETE')
                 <button type="button"
-                        class="btn btn-delete"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalConfirmarEliminarProyecto"
-                        data-action="{{ route('projects.destroy', $project->id) }}">
-                    <i class="fas fa-trash"></i>
-                </button>
+        class="btn btn-delete"
+        title="Eliminar Proyecto"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteProjectModal"
+        data-project-id="{{ $project->id }}"
+        data-project-name="{{ $project->name }}">
+    <i class="fas fa-trash"></i>
+</button>
+
             </form>
         @endif
     </div>
@@ -614,43 +659,43 @@ body {
             </div>
         @endif
     </div>
-
-    {{-- Modal Confirmación de Eliminación --}}
-    <div class="modal fade" id="confirmDeleteProjectModal{{ $project->id }}" tabindex="-1"
-         aria-labelledby="confirmDeleteProjectLabel{{ $project->id }}" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content rounded-4 shadow">
-                <div class="modal-header border-bottom-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<!-- Modal para confirmar eliminación de proyecto -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center"> 
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
-                <div class="modal-body text-center">
-                    <div class="mb-4">
-                        <h5 class="modal-title text-danger" id="confirmDeleteProjectLabel{{ $project->id }}">
-                            Confirmar Eliminación
-                        </h5>
-                        <h5 class="modal-title text-danger">¿Deseas eliminar este proyecto?</h5>
-                        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                        <div class="alert alert-danger d-flex align-items-center mt-3">
-                            <i class="bi bi-exclamation-circle-fill me-2"></i>
-                            <div>"<strong>{{ $project->name }}</strong>" será eliminado permanentemente.</div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-end gap-4 align-items-center mb-3">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
+                <p id="deleteProjectText">¿Está seguro de que desea eliminar este proyecto?</p>
+            </div>
+            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+
 @empty
     <p class="text-muted">No hay proyectos para mostrar.</p>
 @endforelse
 
+@push('js')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Script original para modal de eliminación
@@ -794,5 +839,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+@endpush
+
+@push('css')
+<style>
+.modal-content {
+    border: none;
+    border-radius: 12px;
+}
+.modal-header {
+    border-bottom: 1px solid #e1e4e8;
+    background-color: #f6f8fa;
+}
+* {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+</style>
+@endpush
 
 @endsection
