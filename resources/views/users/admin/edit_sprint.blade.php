@@ -13,13 +13,13 @@
                 @csrf
                 @method('PUT')
 
-                {{-- Nombre del sprint (solo lectura) --}}
+
                 <div class="mb-3">
                     <label class="form-label">Nombre del Sprint</label>
                     <input type="text" class="form-control" value="{{ $sprint->nombre }}" disabled>
                 </div>
 
-                {{-- Fecha de inicio --}}
+
                 <div class="mb-3">
                     <label class="form-label">Fecha de Inicio</label>
                     <input type="date"
@@ -32,7 +32,7 @@
                     @enderror
                 </div>
 
-                {{-- Fecha de fin --}}
+
                 <div class="mb-3">
                     <label class="form-label">Fecha de Fin</label>
                     <input type="date"

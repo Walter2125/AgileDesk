@@ -11,7 +11,7 @@
 
         </div>
 
-        <!-- Lista de Sprints, ocupando todo el ancho -->
+
         <div class="mx-n3 mx-md-n4">
             @forelse ($proyecto->sprints as $sprint)
                 <div class="card mb-2 p-3">
@@ -76,10 +76,10 @@
     </div>
 </div>
 
-<!-- Modal para confirmar eliminación de sprint -->
+
 <div class="modal fade" id="deleteSprintModal" tabindex="-1" aria-labelledby="deleteSprintModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center"> <!-- Centramos todo -->
+        <div class="modal-content text-center">
 
             <div class="modal-header justify-content-center position-relative">
                 <h5 class="modal-title" id="deleteProjectModalLabel">
