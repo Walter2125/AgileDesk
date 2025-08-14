@@ -70,7 +70,6 @@
             </button>
         </div>
 
-        {{-- Mostrar solo si hay sprints --}}
         @if ($tablero->sprints->count() > 0)
             <form method="GET" class="d-flex">
                 <select name="sprint_id" id="sprintSelect" class="form-select"
@@ -120,10 +119,10 @@
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
 
-                                    {{-- Menú de tres puntitos con Bootstrap --}}
+
                                     <div class="dropdown ms-2">
                                         <button class="btn btn-link text-dark p-0" type="button" id="menuOpciones{{ $columna->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical fs-5"></i> {{-- Icono Bootstrap --}}
+                                            <i class="bi bi-three-dots-vertical fs-5"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuOpciones{{ $columna->id }}">
                                             <li class="dropdown-header">Acciones</li>
@@ -163,7 +162,7 @@
                                              data-historia-id="{{ $historia->id }}">
 
                                             <div class="d-flex justify-content-between align-items-start">
-                                                {{-- Columna 1: Contenido --}}
+
                                                 <div style="flex: 1; min-width: 0;">
                                                     <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
 
@@ -182,7 +181,7 @@
                                                     </a>
                                                 </div>
 
-                                                {{-- Columna 2: Menú --}}
+
                                                 <div class="ms-2">
                                                     <div class="dropdown">
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -256,10 +255,9 @@
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
 
-                                    {{-- HEADER --}}
+
                                     <div class="accordion-header d-flex align-items-center w-100 px-3 py-2 gap-2" id="heading{{ $columna->id }}">
 
-                                        {{-- Menú contextual columna (reemplaza los 3 puntos) --}}
                                         <div class="position-relative">
                                             <button type="button" class="btn btn-sm btn-light dropdown-toggle-menu" aria-expanded="false">
                                                 &#x22EE; {{-- ⋮ --}}
@@ -277,12 +275,12 @@
                                             </div>
                                         </div>
 
-                                        {{-- Título --}}
+
                                         <span class="flex-grow-1 text-truncate fw-semibold ms-2">
                         {{ $columna->nombre }}
                     </span>
 
-                                        {{-- Botón collapse --}}
+
                                         <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
                                                 type="button"
                                                 data-bs-target="#collapse{{ $columna->id }}">
@@ -291,7 +289,7 @@
 
                                     </div>
 
-                                    {{-- CUERPO DEL COLLAPSE --}}
+
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
@@ -302,7 +300,7 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                {{-- Tarjeta de historia --}}
+
                                                 <div class="card mb-2 p-2 text-dark position-relative card-historia"
                                                      data-href="{{ route('historias.show', $historia->id) }}"
                                                      style="cursor:pointer; z-index: 0;">
@@ -478,7 +476,7 @@
                         }
                     </style>
 
-                    {{-- Scripts existentes --}}
+
                 <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 
                 <script>

@@ -7,10 +7,9 @@
 @section('content')
     <div class="container-fluid mt-4 px-4">
 
-        <!-- Contenedor de filtros y botones -->
+
         <div class="mb-3 d-flex flex-column flex-md-row justify-content-end gap-2 mx-n3 mx-md-n4">
 
-            <!-- Select Sprint -->
             @if($proyecto->sprints->count() > 0)
                 <form method="GET" class="d-flex">
                     <select name="sprint_id" class="form-select"
@@ -26,14 +25,14 @@
                 </form>
             @endif
 
-            <!-- Botón Agregar Historia -->
+
             <a href="{{ route('historias.create', ['proyecto' => $proyecto->id]) }}"
                class="btn btn-primary d-flex align-items-center"
                style="height: 38px;">
                 Agregar Historia
             </a>
 
-            <!-- Botón Exportar PDF -->
+
             @if(auth()->user()->usertype === 'admin')
                 <a href="{{ route('backlog.export-pdf', ['project' => $proyecto->id, 'sprint_id' => $sprintId]) }}"
                    class="btn btn-secondary d-flex align-items-center"
@@ -44,7 +43,7 @@
             @endif
         </div>
 
-        <!-- Lista de historias -->
+
         <div class="mt-4 mx-n3 mx-md-n4">
             @forelse ($historias as $historia)
                 <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark">
@@ -80,7 +79,6 @@
                 width: 100% !important;
             }
 
-            /* Esto asegura que no quede más pequeño por padding interno del form */
             form.d-flex {
                 width: 100%;
             }
