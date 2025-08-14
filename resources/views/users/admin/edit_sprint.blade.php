@@ -7,23 +7,42 @@
 @section('content')
     <div class="container mt-4">
         <div class="card p-4">
+
+
             <form action="{{ route('sprints.update', $sprint->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
+                {{-- Nombre del sprint (solo lectura) --}}
                 <div class="mb-3">
                     <label class="form-label">Nombre del Sprint</label>
                     <input type="text" class="form-control" value="{{ $sprint->nombre }}" disabled>
                 </div>
 
+                {{-- Fecha de inicio --}}
                 <div class="mb-3">
                     <label class="form-label">Fecha de Inicio</label>
-                    <input type="date" name="fecha_inicio" class="form-control" value="{{ $sprint->fecha_inicio }}" required>
+                    <input type="date"
+                           name="fecha_inicio"
+                           class="form-control"
+                           value="{{ old('fecha_inicio', $sprint->fecha_inicio) }}"
+                           required>
+                    @error('fecha_inicio', 'editarSprint')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
+                {{-- Fecha de fin --}}
                 <div class="mb-3">
                     <label class="form-label">Fecha de Fin</label>
-                    <input type="date" name="fecha_fin" class="form-control" value="{{ $sprint->fecha_fin }}" required>
+                    <input type="date"
+                           name="fecha_fin"
+                           class="form-control"
+                           value="{{ old('fecha_fin', $sprint->fecha_fin) }}"
+                           required>
+                    @error('fecha_fin', 'editarSprint')
+                    <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="d-flex justify-content-between">
