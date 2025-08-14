@@ -65,13 +65,31 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        @empty
+            <div class="alert alert-info">
+                No hay sprints registrados en este proyecto.
+            </div>
+        @endforelse
+    </div>
+</div>
 
+<!-- Modal para confirmar eliminación de sprint -->
+<div class="modal fade" id="deleteSprintModal" tabindex="-1" aria-labelledby="deleteSprintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center"> <!-- Centramos todo -->
 
-            @empty
-                <div class="card mb-3" style="background-color: #e6f4ff; border: 1px solid #b3daff;">
-                    <div class="card-body text-primary">
-                        No hay sprints registrados en este proyecto.
-                    </div>
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
             @endempty
 
