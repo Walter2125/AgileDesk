@@ -35,14 +35,16 @@ class HistorialCambioController extends Controller
     }
     
 
-    public function porProyecto(Project $project, Request $request)
+   public function porProyecto(Project $project, Request $request)
 {
-    if (!auth()->user()->projects->contains($project->id)) {
+    $user = auth()->user();
+
+    if (!$user->isAdmin() && !$user->projects->contains($project->id)) {
         abort(403, 'No tienes acceso a este proyecto');
     }
 
     $query = HistorialCambio::where('proyecto_id', $project->id)
-        ->with('proyecto') // Carga la relación para evitar N+1
+        ->with('proyecto')
         ->orderBy('fecha', 'desc');
 
     if ($request->filled('busqueda')) {
@@ -60,7 +62,11 @@ class HistorialCambioController extends Controller
 
     $historial = $query->paginate(10)->appends($request->query());
 
-    return view('users.colaboradores.historial', compact('historial', 'project'));
+    if ($user->isAdmin()) {
+        return view('users.admin.historial', compact('project', 'historial'));
+    } else {
+        return view('users.colaboradores.historial', compact('historial', 'project'));
+    }
 }
 
 

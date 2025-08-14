@@ -174,11 +174,19 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
         // Gestión de usuarios
-        Route::get('/miembros',    [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('/miembros',    [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
 
         // Operaciones exclusivas de administradores para columnas
         Route::delete('columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
+
+       // Historial por proyecto (para administradores)
+      Route::get('/users/admin/{project}/historial', 
+      [HistorialCambioController::class, 'porProyecto'])
+          ->name('users.admin.historial')
+          ->where('project', '[0-9]+');
+
+        
 });
 
 // Rutas de autenticación

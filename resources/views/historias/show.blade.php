@@ -286,6 +286,11 @@
 
 
 @section('content')
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/historias.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+@endpush
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -299,25 +304,22 @@
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center;">
                 <i class="bi bi-check-circle me-2"></i>
-                <span>{{ session('success') }}</span>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(function () {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }, 3000);
-            }
-        });
-    </script>
-@endif
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+        @endif
    
     @if ($errors->any())
         <div class="alert alert-danger mt-2">
@@ -333,61 +335,65 @@
    
 <div class="card-body">
 
-         <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
+
+         
+<form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
+    <div class="row mb-3">
 
-    <div class="mb-4 d-flex justify-content-between align-items-center rounded">
-        <div class="mb-0" style="max-width: 600px; width: 100%;">
-            <h2 id="tituloTexto" class="historia-title rounded"
-                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                title="{{ $historia->nombre }}">
-                H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-            </h2>
-
-            <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                class="form-control form-control-lg rounded d-none"
+                <div class="mb-4 d-flex justify-content-between align-items-center rounded">
+                    <div class="mb-0" style="font-weight: bold; width: 100%;">
+                    <label class="form-label rounded">Nombre de la Historia</label>
+                        <h2 id="tituloTexto" class="historia-title rounded"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 1000px;"
+                            title="{{ $historia->nombre }}">
+                            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                        </h2>
+                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                class="form-control formulario-editable rounded d-none"
                 value="{{ old('nombre', $historia->nombre) }}"
-                data-editable="true"
-                style="font-weight: bold;" />
-        </div>
+                data-editable="true" />
+                </div>
 
-        <div class="d-flex align-items-center">
-            <div id="dropdownMenuContainer" class="dropdown me-3">
-                <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-                    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
-                    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-                </ul>
-            </div>
-        </div>
+                    <div class="d-flex align-items-center">
+                        <div id="dropdownMenuContainer" class="dropdown me-3">
+                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
+                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteHistoriaModal{{ $historia->id }}">Borrar</button></li>
+                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                            </ul>
+                        </div>
+                    </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
+    
+        <div class="col-md-6 ">
+       
+          
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
       
 
-                <select name="usuario_id" class="form-control rounded" data-editable="true" disabled>
+                   <select name="usuario_id" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="">-- Seleccionar usuario --</option>
-    @foreach($usuarios as $usuario)
-        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-            {{ $usuario->name }}
-        </option>
-    @endforeach
+                @foreach($usuarios as $usuario)
+                    <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                        {{ $usuario->name }}
+                    </option>
+                @endforeach
 
                 </select>
             </div>
 
             <div class="mb-3">
                 <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-select rounded" data-editable="true" disabled>
-                    <option value="">Sin Estado</option>
+                <select name="columna_id" class="form-control formulario-editable" data-editable="true" disabled>
+                     <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
                         <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
                             {{ $columna->nombre }}
@@ -398,7 +404,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-select rounded" data-editable="true" disabled>
+                 <select name="prioridad" class="form-control formulario-editable" data-editable="true" disabled>
                     <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
                     <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
                     <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
@@ -409,14 +415,16 @@
         <div class="col-lg-6 col-md-12">
             <div class="mb-3">
                 <label class="form-label rounded">Horas estimadas</label>
-                <input type="number" class="form-control rounded" name="trabajo_estimado"
+                <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
                     value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
                     data-editable="true" readonly>
+                    
+                    
             </div>
 
             <div class="mb-3">
                 <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-select rounded" data-editable="true" disabled>
+                <select name="sprint_id" class="form-control formulario-editable" data-editable="true" disabled >
                     <option value="">Ningún Sprint</option>
                     @foreach ($sprints as $sprint)
                         <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -428,70 +436,34 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control rounded"
+                <input type="text" class="form-control formulario-editable"
                     value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
                     readonly>
             </div>
         </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion"
-             maxlength="5000"
-            data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
-    </div>
-
-    <div class="d-flex justify-content-end mb-3">
-        <button id="btnGuardar" type="submit"
-            class="btn btn-primary d-none">
-            <i class="bi bi-save"></i> Actualizar
-        </button>
-    </div>
+                <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-control formulario-editable" name="descripcion"
+                    maxlength="5000"
+                    data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
+                 </div>
+            <div class="d-flex justify-content-end mb-3">
+            <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
+                <i class="bi bi-x-lg me-2"></i> Cancelar
+            </button>
+    
+            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
+                <i class="bi bi-arrow-repeat me-2"></i> Actualizar</button>
+        
+            </div>
+        </div>
+        
 </form>
-
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
     @csrf
     @method('DELETE')
 </form>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-     document.querySelectorAll('textarea[readonly]').forEach(textarea => {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    });
-        const btnEditar = document.getElementById('btnEditar');
-        const btnGuardar = document.getElementById('btnGuardar');
-        const tituloTexto = document.getElementById('tituloTexto');
-        const tituloInput = document.getElementById('tituloInput');
-        const editableFields = document.querySelectorAll('[data-editable="true"]');
-        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
-
-        btnEditar.addEventListener('click', function (e) {
-            e.preventDefault();
-            tituloTexto.classList.add('d-none');
-            tituloInput.classList.remove('d-none');
-            editableFields.forEach(field => {
-                field.removeAttribute('readonly');
-                field.removeAttribute('disabled');
-              if (field.tagName === 'TEXTAREA') {
-            field.style.height = 'auto';
-            field.style.height = field.scrollHeight + 'px';
-        }
-    });
-            btnGuardar.classList.remove('d-none');
-            if (dropdownMenuContainer) {
-                dropdownMenuContainer.classList.add('d-none');
-            }
-        });
-
-        const form = document.getElementById('formHistoria');
-        form.addEventListener('submit', function () {
-            console.log('Formulario enviado');
-        });
-    });
-</script>
        
                             <div class="modal fade" id="deleteHistoriaModal{{ $historia->id }}" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel{{ $historia->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -527,7 +499,8 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
+
 {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
 <div class="mb-0">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
@@ -578,10 +551,10 @@
 
                                 <div class="d-flex justify-content-end gap-2 mt-2">
                                     <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
-                                        <i class="bi bi-pencil-square"></i> 
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-outline-danger btn-sm p-1 px-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
-                                        <i class="bi bi-trash3"></i> 
+                                        <i class="bi bi-trash3"></i>
                                     </button>
                                 </div>
                             </div>
@@ -652,7 +625,7 @@
         <div class="card-body bg-light px-4 py-3 scroll-comentarios">
       <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
         <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
-        <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
+        <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#nuevoComentarioModal">
           <i class="bi bi-chat-left-text me-1"></i> Comentar
         </button>
       </div>
@@ -668,8 +641,8 @@
                 </div>
                 @if(Auth::id() === $comentario->user_id)
                   <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
-                      <i class="bi bi-pencil-square fs-5"></i>
+                                        <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal{{ $comentario->id }}">
+                      <i class="bi bi-pencil"></i>
                     </button>
                     <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
                       <i class="bi bi-trash fs-5"></i>
@@ -709,7 +682,7 @@
                     </div>
                     @if(Auth::id() === $respuesta->user_id)
                       <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $respuesta->id }}').classList.remove('hidden')">
+                        <button class="btn btn-outline-secondary px-2 py-1" data-bs-toggle="modal" data-bs-target="#editarComentarioModal{{ $respuesta->id }}">
                           <i class="bi bi-pencil-square fs-5"></i>
                         </button>
                         <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
@@ -721,23 +694,30 @@
                   <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
 
                   <!-- Modal Editar Respuesta -->
-<div id="editarComentarioModal{{ $respuesta->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
-    <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-      @csrf @method('PUT')
-      <div class="mb-4 text-center">
-        <i class="bi bi-pencil-square text-warning fs-1"></i>
-        <h4 class="fw-bold text-dark">Editar Respuesta</h4>
-        <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
+<div class="modal fade" id="editarComentarioModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarComentarioModalLabel{{ $respuesta->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header border-0 text-center pb-0">
+        <div class="w-100 text-center">
+          <i class="bi bi-pencil-square text-warning fs-1"></i>
+          <h4 class="modal-title fw-bold text-dark" id="editarComentarioModalLabel{{ $respuesta->id }}">Editar Respuesta</h4>
+          <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
-        <button type="submit" class="btn btn-primary text-white">
-          <i class="bi bi-save-fill me-1"></i> Actualizar
-        </button>
-      </div>
-    </form>
+      <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+        @csrf @method('PUT')
+        <div class="modal-body pt-0">
+          <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $respuesta->contenido }}</textarea>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary text-white">
+            <i class="bi bi-save-fill me-1"></i> Actualizar
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -767,25 +747,32 @@
               @endforeach
 
               <!-- Modal Editar Comentario -->
-              <div id="editarComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
-    <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-      @csrf @method('PUT')
-      <div class="mb-4 text-center">
-        <i class="bi bi-pencil-square text-warning fs-1"></i>
-        <h4 class="fw-bold text-dark">Editar Comentario</h4>
-        <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
-      </div>
-      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
-        <button type="submit" class="btn btn-primary text-white">
-          <i class="bi bi-save-fill me-1"></i> Actualizar
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+              <div class="modal fade" id="editarComentarioModal{{ $comentario->id }}" tabindex="-1" aria-labelledby="editarComentarioModalLabel{{ $comentario->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content border-0 rounded-4 shadow-lg">
+                    <div class="modal-header border-0 text-center pb-0">
+                      <div class="w-100 text-center">
+                        <i class="bi bi-pencil-square text-warning fs-1"></i>
+                        <h4 class="modal-title fw-bold text-dark" id="editarComentarioModalLabel{{ $comentario->id }}">Editar Comentario</h4>
+                        <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
+                      </div>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
+                      @csrf @method('PUT')
+                      <div class="modal-body pt-0">
+                        <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $comentario->contenido }}</textarea>
+                      </div>
+                      <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary text-white">
+                          <i class="bi bi-save-fill me-1"></i> Actualizar
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
 
               <!-- Modal Confirmar Eliminar Comentario -->
               <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1">
@@ -819,25 +806,32 @@
     </div>
 
  <!-- Modal Nuevo Comentario -->
-<div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
-    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
-      @csrf
-      <div class="mb-4 text-center">
-        <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
-        <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
-        <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
+<div class="modal fade" id="nuevoComentarioModal" tabindex="-1" aria-labelledby="nuevoComentarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header border-0 text-center pb-0">
+        <div class="w-100 text-center">
+          <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
+          <h4 class="modal-title fw-bold mb-0 text-dark" id="nuevoComentarioModalLabel">Nuevo Comentario</h4>
+          <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="form-group mb-4">
-        <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-4 w-full" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
-      </div>
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">Cancelar</button>
-        <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
-          <i class="bi bi-send-fill me-1"></i> Publicar
-        </button>
-      </div>
-    </form>
+      <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+        @csrf
+        <div class="modal-body pt-0">
+          <div class="form-group">
+            <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-3 w-100" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+            <i class="bi bi-send-fill me-1"></i> Publicar
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -998,4 +992,66 @@
     // Cargar estado al abrir la página
     window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('textarea[readonly]').forEach(textarea => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        });
+
+        const btnEditar = document.getElementById('btnEditar');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const tituloTexto = document.getElementById('tituloTexto');
+        const tituloInput = document.getElementById('tituloInput');
+        const editableFields = document.querySelectorAll('[data-editable="true"]');
+        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+
+        btnEditar.addEventListener('click', function (e) {
+            e.preventDefault();
+            tituloTexto.classList.add('d-none');
+            tituloInput.classList.remove('d-none');
+            editableFields.forEach(field => {
+                field.removeAttribute('readonly');
+                field.removeAttribute('disabled');
+                if (field.tagName === 'TEXTAREA') {
+                    field.style.height = 'auto';
+                    field.style.height = field.scrollHeight + 'px';
+                }
+            });
+            btnGuardar.classList.remove('d-none');
+            btnCancelar.classList.remove('d-none');  // Mostrar botón Cancelar
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.add('d-none');
+            }
+        });
+
+        btnCancelar.addEventListener('click', function () {
+            // Revertir al modo sólo lectura / deshabilitado
+            tituloTexto.classList.remove('d-none');
+            tituloInput.classList.add('d-none');
+            editableFields.forEach(field => {
+                field.setAttribute('readonly', true);
+                field.setAttribute('disabled', true);
+                if (field.tagName === 'TEXTAREA') {
+                    field.style.height = 'auto';
+                    field.style.height = field.scrollHeight + 'px';
+                }
+            });
+            btnGuardar.classList.add('d-none');
+            btnCancelar.classList.add('d-none');
+            if (dropdownMenuContainer) {
+                dropdownMenuContainer.classList.remove('d-none');
+            }
+        });
+
+        const form = document.getElementById('formHistoria');
+        form.addEventListener('submit', function () {
+            console.log('Formulario enviado');
+        });
+    });
+</script>
+</div>
+</div>
 @endsection

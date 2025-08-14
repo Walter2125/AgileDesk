@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comentario extends Model
 {
+    use SoftDeletes;
 
 protected $fillable = ['historia_id', 'user_id', 'contenido', 'parent_id']; 
  

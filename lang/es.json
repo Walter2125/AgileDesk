@@ -70,6 +70,7 @@
     "The given data was invalid.": "Los datos proporcionados no son válidos.",
     "The response is not a streamed response.": "La respuesta no es una respuesta transmitida.",
     "The response is not a view.": "La respuesta no es una vista.",
+    "These credentials do not match our records.": "Estas credenciales no coinciden con nuestros registros.",
     "This action is unauthorized.": "Esta acción no está autorizada.",
     "This is a secure area of the application. Please confirm your password before continuing.": "Esta es un área segura de la aplicación. Confirme su contraseña antes de continuar.",
     "This password reset link will expire in :count minutes.": "Este enlace de restablecimiento de contraseña expirará en :count minutos.",
@@ -85,6 +86,5 @@
     "You're logged in!": "¡Usted está conectado!",
     "Your account has been deleted.": "Su cuenta ha sido eliminada.",
     "Your email address is not verified.": "Su dirección de correo electrónico no está verificada.",
-    "These credentials do not match our records.": "Estas credenciales no coinciden con nuestros registros.",
     "Your email address is unverified.": "Su dirección de correo electrónico no está verificada."
 }
