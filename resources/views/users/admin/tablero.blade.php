@@ -578,21 +578,20 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
-                                    @if ($errors->crearColumna->any())
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                @foreach ($errors->crearColumna->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
                                     <div class="mb-3">
                                         <label for="nombre" class="form-label">Nombre de la columna</label>
                                         <input type="text" name="nombre" id="nombre" class="form-control"
                                                value="{{ old('nombre') }}" required maxlength="30">
                                     </div>
+                                    @if ($errors->crearColumna->any())
+                                        <ul class="text-danger" style="list-style: none; padding: 0;">
+                                            @foreach ($errors->crearColumna->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" class="btn btn-primary">Crear</button>
@@ -612,15 +611,6 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
-                                    @if ($errors->crearSprint->any())
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                @foreach ($errors->crearSprint->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
                                     <div class="mb-3">
                                         <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
                                         <input type="date" name="fecha_inicio" id="fecha_inicio"
@@ -631,6 +621,14 @@
                                         <input type="date" name="fecha_fin" id="fecha_fin"
                                                class="form-control" value="{{ old('fecha_fin') }}" required>
                                     </div>
+
+                                    @if ($errors->crearSprint->any())
+                                        <ul class="text-danger" style="list-style: none; padding: 0;">
+                                            @foreach ($errors->crearSprint->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -699,11 +697,14 @@
                                 </div>
 
                             </div>
+
                         </form>
                     </div>
                 </div>
 
-                @push('css')
+
+
+            @push('css')
                     <style>
                         .modal-content {
                             border-radius: 12px;
@@ -742,11 +743,15 @@
                                             <input type="text"
                                                    name="nombre"
                                                    id="inputNombreColumna"
-                                                   class="form-control"
+                                                   class="form-control @error('nombre', 'editarColumna') is-invalid @enderror"
                                                    placeholder="Nombre de la columna"
-                                                   maxlength="50"
+                                                   maxlength="30"
                                                    required>
+                                            @error('nombre', 'editarColumna')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -756,6 +761,14 @@
                             </form>
                         </div>
                     </div>
+
+                @if ($errors->editarColumna->any())
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            new bootstrap.Modal(document.getElementById('modalEditarColumna')).show();
+                        });
+                    </script>
+                @endif
 
                     <script>
                         function abrirModalEditarColumna(id, nombre) {
@@ -1577,6 +1590,22 @@
                             max-width: 95% !important;
                         }
                     }
+                    @media (max-width: 767.98px) {
+                        .modal[id^="deleteHistoriaModal"] {
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            right: 0 !important;
+                            bottom: 0 !important;
+                            z-index: 2000 !important;
+                            display: block; /* asegura que no dependa del flujo del accordion */
+                        }
+                        .modal[id^="deleteHistoriaModal"] .modal-dialog {
+                            margin: 1rem auto !important;
+                            max-width: 95% !important;
+                        }
+                    }
+
 
 
 

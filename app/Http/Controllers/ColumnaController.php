@@ -73,11 +73,11 @@ class ColumnaController extends Controller
     {
         $columna = Columna::findOrFail($id);
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => [
                 'required',
                 'max:50',
-                'regex:/^[^\d]*$/', // Evita números
+                'regex:/^[^\d]*$/',
                 Rule::unique('columnas')->ignore($columna->id)->where(function ($query) use ($columna) {
                     return $query->where('tablero_id', $columna->tablero_id);
                 }),
@@ -87,6 +87,12 @@ class ColumnaController extends Controller
             'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
             'nombre.regex' => 'El nombre no debe contener números.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'editarColumna')
+                ->withInput();
+        }
 
         $columna->nombre = $request->nombre;
         $columna->save();

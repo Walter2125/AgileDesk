@@ -104,18 +104,31 @@ class SprintController extends Controller
 
     public function update(Request $request, Sprint $sprint)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
+        ], [
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_fin.required' => 'La fecha de fin es obligatoria.',
+            'fecha_fin.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'editarSprint')
+                ->withInput()
+                ->with('sprint_id', $sprint->id);
+        }
 
         $sprint->update([
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
 
-        return redirect()->route('sprints.index', $sprint->proyecto_id)->with('success', 'Sprint actualizado correctamente.');
+        return redirect()->route('sprints.index', $sprint->proyecto_id)
+            ->with('success', 'Sprint actualizado correctamente.');
     }
+
 
 
 
