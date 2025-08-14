@@ -688,6 +688,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
+
 {{-- BOTÓN: COMENTARIOS --}}
 <div class="mb-0">
   <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
@@ -707,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </h4>
           <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2"
             onclick="document.getElementById('nuevoComentarioModal').classList.remove('d-none')">
-            <i class="bi bi-chat-left-text me-2"></i> Comentar
+            <i class="bi bi-chat-left-text me-1"></i> Comentar
           </button>
         </div>
 
@@ -729,9 +730,11 @@ document.addEventListener('DOMContentLoaded', function() {
                   @if(Auth::id() === $comentario->user_id)
                     <div class="btn-group btn-group-sm">
                       <button class="btn btn-outline-secondary px-2 py-1"
-                        onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('d-none')">
+                        data-bs-toggle="modal"
+                        data-bs-target="#editarComentarioModal{{ $comentario->id }}">
                         <i class="bi bi-pencil-square fs-5"></i>
                       </button>
+
                       <button type="button"
                         class="btn btn-outline-danger btn-sm px-2 py-1"
                         title="Eliminar Comentario"
@@ -796,26 +799,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
 
                     <!-- Modal Editar Respuesta -->
-                    <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-                      <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-                        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-                          @csrf 
-                          @method('PUT')
-                          <div class="mb-4 text-center">
-                            <i class="bi bi-pencil-square text-warning fs-1"></i>
-                            <h4 class="fw-bold text-dark">Editar Respuesta</h4>
-                            <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
-                          </div>
-                          <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
-                          <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
-                            <button type="submit" class="btn btn-primary text-white">
-                              <i class="bi bi-save-fill me-1"></i> Actualizar
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
+<div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+  <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: auto;">
+    <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+      @csrf
+      @method('PUT')
+
+      <!-- Encabezado -->
+      <div class="mb-4 text-center">
+        <i class="bi bi-pencil-square text-warning fs-1"></i>
+        <h4 class="fw-bold text-dark">Editar Respuesta</h4>
+        <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
+      </div>
+
+      <!-- Textarea -->
+      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
+
+      <!-- Botones -->
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
+        <button type="submit" class="btn btn-primary text-white">
+          <i class="bi bi-save-fill me-1"></i> Actualizar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
                     <!-- Modal Eliminar Respuesta (único por respuesta) -->
                     <div class="modal fade" id="deleteRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="deleteRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true">
@@ -866,7 +875,8 @@ document.addEventListener('DOMContentLoaded', function() {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf @method('PUT')
+                      @csrf 
+                      @method('PUT')
                       <div class="modal-body pt-0">
                         <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $comentario->contenido }}</textarea>
                       </div>
@@ -924,9 +934,9 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <!-- Modal Nuevo Comentario -->
-    <div id="nuevoComentarioModal"    class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-  <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+    <div id="nuevoComentarioModal" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+      <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
+        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
           @csrf
           <div class="mb-4 text-center">
             <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
@@ -947,39 +957,46 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
-
 {{-- MODALES PARA RESPUESTAS (FUERA DEL ACORDEÓN) --}}
 @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
   @foreach ($comentario->respuestas as $respuesta)
     <!-- Modal Editar Respuesta -->
-    <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content rounded-4 shadow">
-          <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
-              <i class="bi bi-pencil-square text-warning me-2"></i>
-              Editar Respuesta
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-              @csrf @method('PUT')
-              <div class="mb-3">
-                <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
-                <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
-              </div>
-              <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-save-fill me-1"></i> Actualizar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+<div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      
+      <!-- Header -->
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
+          <i class="bi bi-pencil-square text-warning me-2"></i>
+          Editar Respuesta
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+          @csrf
+          @method('PUT')
+
+          <div class="mb-3">
+            <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
+            <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save-fill me-1"></i> Actualizar
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
+  </div>
+</div>
 
   <!-- Modal único para eliminar Comentario -->
 <div class="modal fade" id="deleteComentarioModal" tabindex="-1" aria-labelledby="deleteComentarioModalLabel" aria-hidden="true">
@@ -1014,7 +1031,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-
   @endforeach
 @endforeach
 @push('js')

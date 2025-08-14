@@ -583,38 +583,39 @@ body {
 
 @section('content')
 <div class="container-fluid projects-container">
-
-   
-    
 @if (session('success'))
-    <div id="success-alert" 
-         class="alert alert-success alert-dismissible fade show mt-2" 
-         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-         
-        <div style="display: flex; align-items: center;">
-            <i class="bi bi-check-circle me-2"></i>
-            <span>{{ session('success') }}</span>
-        </div>
+        <div id="success-alert" 
+          class="alert alert-success alert-dismissible fade show mt-2" 
+          style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+          
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <i class="bi bi-check-circle me-2"></i>
+                {{ session('success') }}
+                 </div>
+                 
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const alert = document.getElementById('success-alert');
+                    if (alert) {
+                        setTimeout(function () {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 500);
+                        }, 3000);
+                    }
+                });
+            </script>
+          </div>
+      </div>
+        @endif
+   
 
-         </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(function () {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 3000);
-            }
-        });
-    </script>
-@endif
 
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos recientes
-        @if (auth()->check() && auth()->user()->usertype == 'admin')
+        @if (auth()->check() && (auth()->user()->usertype == 'admin' || auth()->user()->isSuperAdmin()))
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
@@ -724,7 +725,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEliminar = document.getElementById('modalConfirmarEliminarProyecto');
     if (modalEliminar) {
         modalEliminar.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
+            const button = event.relatedTarget;
             const action = button.getAttribute('data-action');
             const form = document.getElementById('formEliminarProyecto');
             if (form) {
@@ -799,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Cerrar dropdowns de Alpine.js
                 document.querySelectorAll('[x-data*="open"]').forEach(dropdown => {
-                    if (dropdown.__x && dropdown.__x.$data && dropdown.__x.$data.open) {
+                    if (dropdown._x && dropdown.x.$data && dropdown._x.$data.open) {
                         dropdown.__x.$data.open = false;
                     }
                 });
@@ -852,7 +853,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const dropdowns = document.querySelectorAll('[x-data]');
                 dropdowns.forEach(dropdown => {
                     // No cerrar el dropdown del sidebar
-                    if (!dropdown.closest('.user-dropdown') && dropdown.__x && dropdown.__x.$data.open) {
+                    if (!dropdown.closest('.user-dropdown') && dropdown._x && dropdown._x.$data.open) {
                         dropdown.__x.$data.open = false;
                     }
                 });
