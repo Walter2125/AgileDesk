@@ -323,11 +323,15 @@
                                                             Editar
                                                         </a>
                                                         <button type="button"
-                                                                class="btn btn-sm btn-outline-danger"
+                                                                class="btn btn-sm btn-outline-danger btn-open-accordion-modal"
+                                                                data-historia-id="{{ $historia->id }}"
+                                                                data-historia-nombre="{{ addslashes($historia->nombre) }}"
                                                                 data-bs-toggle="modal"
-                                                                data-bs-target="#deleteHistoriaModal{{ $historia->id }}">
+                                                                data-bs-target="#deleteHistoriaAccordionModal">
                                                             Eliminar
                                                         </button>
+
+
                                                     </div>
                                                 </div>
                                             @empty
@@ -339,9 +343,60 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        <div class="modal fade" id="deleteHistoriaAccordionModal" tabindex="-1" aria-labelledby="deleteHistoriaAccordionModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content text-center">
+                                    <div class="modal-header justify-content-center">
+                                        <h5 class="modal-title" id="deleteHistoriaAccordionModalLabel">
+                                            <i class="bi bi-exclamation-triangle text-danger"></i>
+                                            Confirmar Eliminación
+                                        </h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                        </div>
+                                        <p id="deleteHistoriaAccordionText">¿Está seguro de que desea eliminar esta historia?</p>
+                                    </div>
+                                    <div class="modal-footer justify-content-center">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="#" method="POST" id="deleteHistoriaAccordionForm" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <script>
+                <script>
+                    document.querySelectorAll('.btn-open-accordion-modal').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const historiaId = this.dataset.historiaId;
+                            const historiaNombre = this.dataset.historiaNombre;
+
+                            // Cambiar el texto del modal
+                            document.getElementById('deleteHistoriaAccordionText').textContent =
+                                `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+
+                            // Actualizar el action del form
+                            const form = document.getElementById('deleteHistoriaAccordionForm');
+                            form.action = `/historias/${historiaId}`;
+                        });
+                    });
+                </script>
+
+
+
+
+                <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             // Menú contextual columnas
                             document.querySelectorAll('.dropdown-toggle-menu').forEach(button => {
@@ -1611,7 +1666,9 @@
 
 
 
+
                 </style>
+
 
 
 

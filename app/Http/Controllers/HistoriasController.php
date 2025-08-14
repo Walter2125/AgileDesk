@@ -246,7 +246,7 @@ class HistoriasController extends Controller
 {
     // Guardar valores antiguos para historial
     $valoresAntiguos = $historia->only([
-        'nombre', 'trabajo_estimado', 'prioridad', 
+        'nombre', 'trabajo_estimado', 'prioridad',
         'descripcion', 'usuario_id', 'sprint_id', 'columna_id'
     ]);
 
@@ -280,7 +280,7 @@ class HistoriasController extends Controller
 
     // Actualizar historia
     $historia->update($request->only([
-        'nombre', 'trabajo_estimado', 'prioridad', 
+        'nombre', 'trabajo_estimado', 'prioridad',
         'descripcion', 'usuario_id', 'sprint_id', 'columna_id'
     ]));
 
