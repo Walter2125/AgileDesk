@@ -91,13 +91,26 @@ return redirect()->route('historias.show', $historia->id)
         return redirect()->route('historias.show', $historia->id)->with('success', 'Tarea eliminada con éxito.');
     }
 
-    public function lista(Historia $historia)
-    {
-        $tablero = $this->cargarTablero($historia);
-        $tareas = $historia->tareas()->with('user')->paginate(5);
+    public function lista(Historia $historia, $tareaId = null)
+{
+    $tablero = $this->cargarTablero($historia);
+    $tareas = $historia->tareas()->with('user')->paginate(5);
 
-        return view('tareas.show', compact('tareas', 'historia'));
+    if ($tareas->isEmpty()) {
+        // Si no hay tareas, mostrar la vista vacía
+        return view('tareas.show', [
+            'tareas' => $tareas,
+            'historia' => $historia,
+            'tablero' => $tablero
+        ]);
     }
+
+    $tareaSeleccionada = $tareaId && $tareaId != 0
+        ? $tareas->where('id', $tareaId)->first()
+        : $tareas->first();
+
+    return view('tareas.show', compact('tareas', 'tareaSeleccionada', 'historia', 'tablero'));
+}
     public function toggleCompletada(Request $request, $id)
 {
     $tarea = Tarea::findOrFail($id);

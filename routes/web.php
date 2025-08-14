@@ -204,6 +204,8 @@ Route::middleware(['auth', 'role:superadmin'])
         // Historial completo del sistema
         Route::get('/historial-sistema', [HistorialCambioController::class, 'sistema'])->name('historial.sistema');
         Route::delete('/historial-sistema/limpiar', [HistorialCambioController::class, 'limpiarHistorial'])->name('historial.limpiar');
+
+        Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
     });
 
 // Rutas de autenticación

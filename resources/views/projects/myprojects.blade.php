@@ -594,7 +594,7 @@ body {
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos recientes
-        @if (auth()->check() && (auth()->user()->usertype == 'admin' || auth()->user()->isSuperAdmin()))
+        @if (auth()->check() && auth()->user()->usertype == 'admin')
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalEliminar = document.getElementById('modalConfirmarEliminarProyecto');
     if (modalEliminar) {
         modalEliminar.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
+        const button = event.relatedTarget;
             const action = button.getAttribute('data-action');
             const form = document.getElementById('formEliminarProyecto');
             if (form) {

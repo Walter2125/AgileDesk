@@ -52,7 +52,6 @@
                     <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body">

@@ -693,7 +693,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body">
@@ -723,6 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
             @endif
 {{-- Botones finales --}}
 <div class="ms-3 mb-3">
+    {{-- Botón para crear tarea --}}
     <a href="{{ route('tareas.index', $historia->id) }}"
        class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
        style="width: 40px; height: 40px;"
@@ -730,23 +730,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <i class="bi bi-plus-lg"></i>
     </a>
 
-    @if($tareas->isEmpty())
-        {{-- Si no hay tareas, que el ojito vaya al index --}}
-        <a href="{{ route('tareas.index', $historia->id) }}"
-           class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-           style="width: 40px; height: 40px;"
-           title="Ver lista de tareas">
-            <i class="bi bi-eye"></i>
-        </a>
-    @else
-        {{-- Si hay tareas, que el ojito vaya al show --}}
-        <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id]) }}"
-           class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-           style="width: 40px; height: 40px;"
-           title="Ver lista de tareas">
-            <i class="bi bi-eye"></i>
-        </a>
-    @endif
+    {{-- Ojito que siempre va a la lista --}}
+    <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id ?? 0]) }}"
+       class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
+       style="width: 40px; height: 40px;"
+       title="Ver lista de tareas">
+        <i class="bi bi-eye"></i>
+    </a>
 </div>
 
         </div>
@@ -890,7 +880,6 @@ document.addEventListener('DOMContentLoaded', function() {
                               <i class="bi bi-exclamation-triangle"></i>
                               Confirmar Eliminación Permanente
                             </h5>
-                            <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                           </div>
 
                           <div class="modal-body">
@@ -955,7 +944,6 @@ document.addEventListener('DOMContentLoaded', function() {
                           <i class="bi bi-exclamation-triangle"></i>
                           Confirmar Eliminación Permanente
                         </h5>
-                        <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                       </div>
 
                       <div class="modal-body">
@@ -1057,7 +1045,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="bi bi-exclamation-triangle"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body">

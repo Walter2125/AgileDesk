@@ -212,7 +212,7 @@
                                     class="btn btn-outline-warning btn-sm" title="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <button class="btn btn-outline-danger btn-sm"
+                               <button class="btn btn-outline-danger btn-sm"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteTareaModal"
                                     data-tarea-id="{{ $tarea->id }}"
@@ -222,10 +222,41 @@
                                 </button>
                             </td>
                         </tr>
+                        <!-- Modal para confirmar eliminación de tarea -->
+<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
                     @empty
                         <tr>
                             <td colspan="7" class="text-center text-muted">No hay tareas registradas.</td>
                         </tr>
+                        
                     @endforelse
                 </tbody>
             </table>
@@ -246,40 +277,6 @@
     </div>
 </div>
 
-<!-- Modal para confirmar eliminación de tarea -->
-<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center"> <!-- Centramos todo -->
-            
-            <div class="modal-header justify-content-center position-relative">
-                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger"></i>
-                    Confirmar Eliminación Permanente
-                </h5>
-                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                </div>
-                <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
-            </div>
-
-            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 {{-- ✅ Scripts para el modal (como en sprints/proyectos) --}}
 @push('js')
