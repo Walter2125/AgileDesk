@@ -647,10 +647,12 @@ body {
         <a href="{{ route('tableros.show', $project->id) }}" class="btn btn-view">
             <i class="fas fa-eye"></i>
         </a>
-        @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isSuperAdmin()))
+        @can('update', $project)
             <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
                 <i class="fas fa-edit"></i>
             </a>
+        @endcan
+        @can('delete', $project)
             <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
@@ -665,7 +667,7 @@ body {
 </button>
 
             </form>
-        @endif
+        @endcan
     </div>
 </div>
 

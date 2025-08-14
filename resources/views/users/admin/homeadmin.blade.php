@@ -627,7 +627,6 @@
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
             <i class="bi bi-check-circle me-1"></i>
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
         <script>
             setTimeout(function () {
@@ -645,7 +644,6 @@
         <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
             <i class="bi bi-exclamation-circle me-1"></i>
             {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
         <script>
             setTimeout(function () {
@@ -663,7 +661,6 @@
         <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning-alert">
             <i class="bi bi-exclamation-triangle me-1"></i>
             {{ session('warning') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
         <script>
             setTimeout(function () {
@@ -681,7 +678,6 @@
         <div class="alert alert-info alert-dismissible fade show" role="alert" id="info-alert">
             <i class="bi bi-info-circle me-1"></i>
             {{ session('info') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
         <script>
             setTimeout(function () {
@@ -714,11 +710,8 @@
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
                         @if(Auth::user()->isSuperAdmin())
-                            <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary px-2 py-2">
+                            <a href="{{ route('admin.users') }}" class="btn btn-outline-primary px-2 py-2">
                                 <i class="bi bi-people me-1"></i> Ver Todos
-                            </a>
-                            <a href="{{ route('historial.sistema') }}" class="btn btn-outline-primary px-2 py-2">
-                                <i class="bi bi-clock-history me-1"></i> Historial Sistema
                             </a>
                         @else
                             <a href="{{ route('admin.users.manage') }}" class="btn btn-outline-secondary px-2 py-2">
@@ -844,7 +837,7 @@
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap">
                     <a href="{{ route('projects.my') }}" class="btn btn-outline-secondary px-2 py-2">
-                        <i class="bi bi-folder"></i> Ver Todos
+                        <i class="bi bi-folder me-1"></i> Ver Todos
                     </a>
                 </div>
                 </div>
@@ -1264,7 +1257,6 @@
                     <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
@@ -1272,7 +1264,6 @@
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
                 <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
-                <p><strong id="deleteUserName"></strong></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -1292,19 +1283,18 @@
 <div class="modal fade" id="deleteAdminModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-danger-subtle">
+            <div class="modal-header">
                 <h5 class="modal-title" id="deleteAdminModalLabel">
                     <i class="bi bi-exclamation-triangle text-danger me-1"></i>
-                    Confirmar Eliminación de Administrador
+                    Confirmar Eliminación
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <i class="bi bi-exclamation-triangle me-1"></i>
-                    <strong>¡ADVERTENCIA CRÍTICA!</strong> Esta acción eliminará en cascada todos los recursos creados por este administrador.
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
-                
+                <p>¿Está seguro de que desea eliminar al siguiente administrador y todos sus recursos asociados?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -1333,7 +1323,6 @@
                     <i class="bi bi-arrow-clockwise text-success"></i>
                     Confirmar Restauración
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea restaurar el siguiente elemento?</p>
@@ -1365,7 +1354,6 @@
                     <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
@@ -1460,7 +1448,7 @@
         alertElement.style.position = 'relative';
         alertElement.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            <button type="button" class=" " data-bs-dismiss="alert" aria-label="Cerrar"></button>
         `;
         
         container.appendChild(alertElement);
