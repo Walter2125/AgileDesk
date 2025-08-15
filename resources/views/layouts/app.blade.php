@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
 
     <title>{{ config('app.name', 'Agile-Desk') }}</title>
     <script>
@@ -126,23 +126,23 @@
         font-weight: bold;
         margin: 0 0.5rem;
     }
-    
+
     .breadcrumb-item {
         display: inline-flex;
         align-items: center;
     }
-    
+
     .breadcrumb-item a {
         color: var(--bs-primary, #0d6efd);
         text-decoration: none;
         transition: color 0.2s;
     }
-    
+
     .breadcrumb-item a:hover {
         color: var(--bs-primary-dark, #0a58ca);
         text-decoration: underline;
     }
-    
+
     .breadcrumb-item.active {
         color: #6c757d;
         font-weight: 500;
@@ -153,11 +153,11 @@
         .navbar-optimized .d-lg-flex {
             display: none !important;
         }
-        
+
         .navbar-optimized .d-lg-none {
             display: flex !important;
         }
-        
+
         .navbar-sidebar-header {
             margin-left: 0 !important;
         }
@@ -167,7 +167,7 @@
         .navbar-optimized .d-lg-flex {
             display: flex !important;
         }
-        
+
         .navbar-optimized .d-lg-none {
             display: none !important;
         }
@@ -444,13 +444,13 @@
         padding-left: 0rem;
         padding-right: 0rem;
     }
-    
+
     /* Asegurar que el main use toda la altura disponible */
     main {
         min-height: calc(100vh - 56px); /* Altura completa menos navbar */
         width: 100%;
     }
-    
+
     /* Para páginas con contenido dinámico */
     .content-area {
         min-height: calc(100vh - 120px); /* Altura menos navbar y breadcrumbs */
@@ -461,7 +461,7 @@
     * {
         scroll-behavior: smooth;
     }
-    
+
     /* Mediaquery para dispositivos móviles */
     @media (max-width: 768px) {
         .sidebar-wrapper {
@@ -479,25 +479,25 @@
             padding: 0 !important;
             margin: 0 !important;
         }
-        
+
         .container-fluid.content-area {
             padding: 0.5rem !important;
         }
-        
+
         .main-content {
             padding: 0 !important;
             margin: 0 !important;
         }
-        
+
         .breadcrumb-container {
             padding: 0.25rem 0.5rem !important;
         }
-        
+
         #page-content-wrapper {
             margin-left: 0 !important;
         }
     }
-    
+
     /* Asegurar que todos los elementos usen el ancho completo */
     html, body {
         width: 100%;
@@ -506,7 +506,7 @@
         margin: 0;
         padding: 0;
     }
-    
+
     /* Layout completo sin espacios innecesarios */
     .container-fluid.content-area {
         padding: 0.75rem;
@@ -516,13 +516,13 @@
         max-width: none !important;
         margin-top: 0;
     }
-    
+
     /* Asegurar que todos los encabezados no tengan margen superior */
     h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
         margin-top: 0;
         padding-top: 0;
     }
-    
+
     /* Contenido de página completo */
     .content-wrapper {
         width: 100%;
@@ -531,7 +531,7 @@
         padding: 0 !important;
         margin: 0 !important;
     }
-    
+
     /* Estilos para el contenido principal */
     .main-content {
         display: flex;
@@ -540,18 +540,18 @@
         margin: 0 !important;
         width: 100%;
     }
-    
+
     /* Contenedor de migas de pan */
     .breadcrumb-container {
         margin-top: 0;
         padding-top: 0.5rem;
     }
-    
+
     /* Asegurar que las tarjetas y contenedores tengan ancho completo */
     .card, .table-responsive {
         width: 100% !important;
     }
-    
+
     /* Elementos de interfaz siempre visibles */
     .row {
         width: 100% !important;
@@ -638,23 +638,23 @@
             display: none;
         }
     }
-    
+
     /* Ajustes específicos para pantallas pequeñas */
     @media (max-width: 767.98px) {
         #page-content-wrapper {
             padding-top: 0 !important;
             margin-top: 0 !important;
         }
-        
+
         .breadcrumb-container {
             padding-top: 0 !important;
             margin-top: 0.25rem !important;
         }
-        
+
         .content-area {
             padding-top: 0.25rem !important;
         }
-        
+
         .navbar-optimized {
             margin-bottom: 0 !important;
         }
@@ -674,7 +674,7 @@
         body.sidebar-collapsed .sidebar-heading span {
             display: inline-block;
         }
-        
+
         /* Asegurar que el contenido use toda la pantalla en móviles */
         #page-content-wrapper {
             margin-left: 0 !important;
@@ -682,24 +682,24 @@
             margin-top: 0 !important;
             padding-top: 0 !important;
         }
-        
+
         .content-wrapper {
             padding: 0 !important;
             margin-top: 0 !important;
         }
-        
+
         .container-fluid {
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
             max-width: 100% !important;
         }
-        
+
         main {
             min-height: calc(100vh - 56px) !important;
             padding-top: 0 !important;
             margin-top: 0 !important;
         }
-        
+
         .breadcrumb-container {
             padding-top: 0.25rem !important;
             padding-bottom: 0 !important;
@@ -1016,7 +1016,7 @@
         .alerts-container {
             left: 0 !important;
         }
-        
+
         body.sidebar-collapsed .alerts-container {
             left: 0 !important;
         }
@@ -1615,17 +1615,17 @@
     }
     /* ========================================================================
        ALINEACIÓN PERFECTA: NAVBAR Y SIDEBAR-HEADING
-       ======================================================================== 
-       
+       ========================================================================
+
        Ambos elementos deben tener EXACTAMENTE la misma altura para mantener
        la alineación visual perfecta:
-       
+
        - height: 4rem (64px)
-       - min-height: 4rem 
+       - min-height: 4rem
        - max-height: 4rem
        - box-sizing: border-box
        - padding: 0 var(--navbar-padding-x)
-       
+
        Esto asegura que el navbar y el sidebar-heading estén perfectamente
        alineados independientemente del contenido o sistema operativo.
        ======================================================================== */
@@ -1697,19 +1697,19 @@
 /* ========================================================================
        ALINEACIÓN CONSISTENTE ENTRE BREADCRUMBS Y CONTENIDO
        ======================================================================== */
-    
+
     /* Asegurar que todo el contenido use el mismo padding lateral que las migas de pan */
     .content-section {
         /* El contenido principal ya está dentro de un contenedor con padding: 0 var(--navbar-padding-x) */
         /* Esto garantiza que esté alineado con las migas de pan */
     }
-    
+
     /* Para elementos que necesiten alineación específica con las breadcrumbs */
     .breadcrumb-aligned {
         padding-left: var(--navbar-padding-x);
         padding-right: var(--navbar-padding-x);
     }
-    
+
     /* Asegurar que las tarjetas y contenido principal mantengan la alineación */
     .container-fluid.content-area .card,
     .container-fluid.content-area .table-responsive,
@@ -1764,7 +1764,7 @@
         <div id="sidebar-wrapper">
             <div class="sidebar-content">
 
-                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between"> 
+                <div class="sidebar-heading text-white d-flex align-items-center justify-content-between">
 
                         <span>
                             <i class="bi bi-columns-gap"></i>
@@ -1823,7 +1823,7 @@
                     <!-- otros botones comentados por ahora -->
 
                      </a>
-                     
+
 
                 </div>
 
@@ -1868,7 +1868,7 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             @include('layouts.navigation')
-            
+
             <!-- Main Content -->
             <div class="content-wrapper">
                 <!-- Page Content -->
@@ -2083,8 +2083,8 @@
                 css += `
                     /* Ajustes específicos para Linux */
                     html { font-size: 17px !important; }
-                    .sidebar-heading { 
-                        font-size: 1.6rem !important; 
+                    .sidebar-heading {
+                        font-size: 1.6rem !important;
                         height: 4rem !important;
                         min-height: 4rem !important;
                         max-height: 4rem !important;
@@ -2107,8 +2107,8 @@
                 css += `
                     /* Ajustes específicos para Firefox en Linux */
                     html { font-size: 18px !important; }
-                    .sidebar-heading { 
-                        font-size: 1.7rem !important; 
+                    .sidebar-heading {
+                        font-size: 1.7rem !important;
                         height: 4rem !important;
                         min-height: 4rem !important;
                         max-height: 4rem !important;
@@ -2122,8 +2122,8 @@
                 css += `
                     /* Ajustes para DPI bajo */
                     html { font-size: 18px !important; }
-                    .sidebar-heading { 
-                        font-size: 1.75rem !important; 
+                    .sidebar-heading {
+                        font-size: 1.75rem !important;
                         height: 4rem !important;
                         min-height: 4rem !important;
                         max-height: 4rem !important;
@@ -2183,7 +2183,23 @@
         window.addEventListener('resize', adjust);
         adjust();
     });
+    document.addEventListener("DOMContentLoaded", function() {
+        const dropdownDiv = document.querySelector('.dropdown');
+
+        function ajustarDropdown() {
+            if (window.innerWidth < 768) {
+                dropdownDiv.classList.add('dropup');
+            } else {
+                dropdownDiv.classList.remove('dropup');
+            }
+        }
+
+        ajustarDropdown();
+        window.addEventListener('resize', ajustarDropdown);
+    });
+
     </script>
+
 
 </body>
 </html>
