@@ -26,17 +26,17 @@
             padding-left: 10px;
             padding-right: 10px;
         }
-        
+
         .historia-header {
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .historia-header .titulo-container {
             max-width: 100% !important;
             width: 100% !important;
         }
-        
+
         .historia-header .actions-container {
             align-self: flex-end;
             width: auto;
@@ -47,7 +47,7 @@
         .card-body {
             padding: 1rem 0.5rem;
         }
-        
+
         .btn-group .btn {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
@@ -280,8 +280,8 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
- </style>   
- 
+ </style>
+
 @endsection
 
 
@@ -295,18 +295,18 @@
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-   
+
 @if (session('success'))
-        <div id="success-alert" 
-          class="alert alert-success alert-dismissible fade show mt-2" 
+        <div id="success-alert"
+          class="alert alert-success alert-dismissible fade show mt-2"
           style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-          
+
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center;">
                 <i class="bi bi-check-circle me-2"></i>
                 {{ session('success') }}
                  </div>
-                 
+
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     const alert = document.getElementById('success-alert');
@@ -322,7 +322,7 @@
           </div>
       </div>
         @endif
-   
+
    @if ($errors->any())
     <div class="alert alert-danger mt-2">
         <ul class="mb-0">
@@ -335,11 +335,11 @@
 
 
 <div class="container-fluid-m-2 mi-container m-2">
-   
+
 <div class="card-body">
 
 
-         
+
 <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
@@ -348,7 +348,7 @@
         <div class="mb-4 rounded gap-2">
             <label class="form-label rounded d-flex justify-content-between align-items-center">
                 Nombre de la Historia
-        
+
                     <div id="dropdownMenuContainer" class="dropdown ms-2">
                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
@@ -356,11 +356,11 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
                             <li>
-                                <button type="button" 
-                                        class="dropdown-item" 
+                                <button type="button"
+                                        class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteHistoriaModal"
-                                        data-historia-id="{{ $historia->id }}" 
+                                        data-historia-id="{{ $historia->id }}"
                                         data-historia-nombre="{{ $historia->nombre }}">
                                     Eliminar
                                 </button>
@@ -370,16 +370,16 @@
                     </div>
             </label>
 
-            
+
             <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
                 <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
                     title="Haz clic para editar">
                     {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
                 </h2>
-                
+
             </div>
 
-            
+
             <input id="tituloInput" type="text" name="nombre" maxlength="100"
                   class="form-control formulario-editable rounded d-none mt-2"
                   value="{{ old('nombre', $historia->nombre) }}"
@@ -540,8 +540,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
-        deleteHistoriaForm.action = /historias/${historiaId};
+        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+        deleteHistoriaForm.action = `/historias/${historiaId}`;
     });
 });
 </script>
@@ -615,7 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center"> <!-- Centramos todo -->
-            
+
             <div class="modal-header justify-content-center position-relative">
                 <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
                     <i class="bi bi-exclamation-triangle text-danger"></i>
@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf 
+                      @csrf
                       @method('PUT')
                       <div class="modal-body pt-0">
                         <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $comentario->contenido }}</textarea>
@@ -918,11 +918,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
     <!-- Modal Nuevo Comentario -->
   <!-- Modal Nuevo Comentario -->
-<div id="nuevoComentarioModal" 
-     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center 
-            bg-black bg-opacity-50 d-none custom-modal" 
+<div id="nuevoComentarioModal"
+     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center
+            bg-black bg-opacity-50 d-none custom-modal"
      style="z-index: 1050;">
-  
+
   <div class="bg-white border-0 rounded-4 shadow-lg p-4 w-100" style="max-width: 600px; margin: 1rem;">
     <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
       @csrf
@@ -932,13 +932,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
       </div>
       <div class="form-group mb-4">
-        <textarea name="contenido" id="contenido" 
-                  class="form-control rounded-4 border border-info shadow-sm p-3 w-100" 
+        <textarea name="contenido" id="contenido"
+                  class="form-control rounded-4 border border-info shadow-sm p-3 w-100"
                   rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
       </div>
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" 
-                class="btn btn-outline-secondary rounded-3 px-4 py-2" 
+        <button type="button"
+                class="btn btn-outline-secondary rounded-3 px-4 py-2"
                 onclick="document.getElementById('nuevoComentarioModal').classList.add('d-none')">
           Cancelar
         </button>
@@ -958,7 +958,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content rounded-4 shadow">
-      
+
       <!-- Header -->
       <div class="modal-header border-bottom-0">
         <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
@@ -996,7 +996,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="modal fade" id="deleteComentarioModal" tabindex="-1" aria-labelledby="deleteComentarioModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow text-center">
-            
+
             <div class="modal-header justify-content-center position-relative border-bottom-0">
                 <h5 class="modal-title fs-4 fw-bold text-danger" id="deleteComentarioModalLabel">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -1041,8 +1041,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const button = event.relatedTarget;
         const respuestaId = button.getAttribute('data-respuesta-id');
 
-        deleteRespuestaText.textContent = ¿Está seguro de que desea eliminar esta respuesta?;
+
+
+        deleteRespuestaText.textContent = "¿Está seguro de que desea eliminar esta respuesta?";
         deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
+
     });
 });
 </script>
@@ -1073,8 +1076,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const button = event.relatedTarget;
         const comentarioId = button.getAttribute('data-comentario-id');
 
-        deleteComentarioText.textContent = ¿Está seguro de que desea eliminar este comentario?;
+        deleteComentarioText.textContent = "¿Está seguro de que desea eliminar este comentario?";
         deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
+
     });
 });
 </script>
@@ -1103,8 +1107,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
-        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
+        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
+        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+
     });
 });
 </script>
@@ -1211,8 +1216,9 @@ document.addEventListener('DOMContentLoaded', function() {
             guardarEstadoCheckbox(tareaId, estaMarcado);
 
             // Sincronizar checkboxes con el mismo data-id en la misma página
-            document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"])
-                    .forEach(cb => cb.checked = estaMarcado);
+            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+                .forEach(cb => cb.checked = estaMarcado);
+
         }
     });
 
