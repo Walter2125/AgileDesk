@@ -341,57 +341,12 @@
     @method('PATCH')
     <div class="row mb-3">
 
-<<<<<<< HEAD
        <div class="mb-4 rounded gap-2">
    
     <div class="d-flex align-items-center justify-content-between mb-1">
         <label class="form-label mb-0 fw-bold">
             Nombre de la Historia
         </label>
-
-        <div id="dropdownMenuContainer" class="dropdown">
-            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                <li>
-                    <button type="button"
-                            class="dropdown-item"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteHistoriaModal"
-                            data-historia-id="{{ $historia->id }}"
-                            data-historia-nombre="{{ $historia->nombre }}">
-                        Eliminar
-                    </button>
-                </li>
-                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-            </ul>
-        </div>
-    </div>
-
-  
-    <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
-        <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
-            title="Haz clic para editar">
-            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} 
-            <span id="nombreTexto">{{ $historia->nombre }}</span>
-        </h2>
-    </div>
-
-   
-    <input id="tituloInput" type="text" name="nombre" maxlength="100"
-          class="form-control formulario-editable rounded d-none mt-1"
-          value="{{ old('nombre', $historia->nombre) }}"
-          data-editable="true" />
-</div>
-
-=======
-        <div class="mb-4 rounded gap-2">
-           <div class="d-flex align-items-center justify-content-between mb-1">
-                      <label class="form-label mb-0 fw-bold">
-                          Nombre de la Historia
-                      </label>
 
                       <div id="dropdownMenuContainer" class="dropdown">
                           <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -413,6 +368,26 @@
                           </ul>
                       </div>
                   </div>
+        <div id="dropdownMenuContainer" class="dropdown">
+            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                <li>
+                    <button type="button"
+                            class="dropdown-item"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteHistoriaModal"
+                            data-historia-id="{{ $historia->id }}"
+                            data-historia-nombre="{{ $historia->nombre }}">
+                        Eliminar
+                    </button>
+                </li>
+                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+            </ul>
+        </div>
+    </div>
 
                 
                   <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
@@ -422,6 +397,14 @@
                           <span id="nombreTexto">{{ $historia->nombre }}</span>
                       </h2>
                   </div>
+  
+    <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
+        <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
+            title="Haz clic para editar">
+            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} 
+            <span id="nombreTexto">{{ $historia->nombre }}</span>
+        </h2>
+    </div>
 
                 
                   <input id="tituloInput" type="text" name="nombre" maxlength="100"
@@ -429,7 +412,13 @@
                         value="{{ old('nombre', $historia->nombre) }}"
                         data-editable="true" />
               </div>
->>>>>>> main
+   
+    <input id="tituloInput" type="text" name="nombre" maxlength="100"
+          class="form-control formulario-editable rounded d-none mt-1"
+          value="{{ old('nombre', $historia->nombre) }}"
+          data-editable="true" />
+</div>
+
 
 
         <div class="col-lg-6 col-md-12">
