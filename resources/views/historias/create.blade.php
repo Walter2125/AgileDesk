@@ -54,17 +54,19 @@
                     </select>
                 </div>
 
-                <div class="mb-3">
+               <div class="mb-3">
                     <label class="form-label">Estado</label>
                     <select name="columna_id" class="form-control formulario-editable">
                         <option value="">Sin Estado</option>
-                        @foreach ($columnas as $columna)
-                            <option value="{{ $columna->id }}" {{ old('columna_id') == $columna->id ? 'selected' : '' }}>
-                                {{ $columna->nombre }}
+                        @foreach ($columnas as $c)
+                            <option value="{{ $c->id }}"
+                                {{ (old('columna_id') == $c->id) || (isset($columna) && $columna->id == $c->id) ? 'selected' : '' }}>
+                                {{ $c->nombre }}
                             </option>
                         @endforeach
                     </select>
                 </div>
+
             </div>
 
             <!-- Columna Derecha -->

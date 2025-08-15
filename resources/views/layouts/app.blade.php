@@ -464,6 +464,17 @@
     
     /* Mediaquery para dispositivos móviles */
     @media (max-width: 768px) {
+        .sidebar-wrapper {
+            position: static; /* o relative, según el contexto */
+            display: block !important;
+            transform: none !important;
+            left: 0;
+            top: 0;
+            height: auto;
+            z-index: auto;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
         .content-wrapper {
             padding: 0 !important;
             margin: 0 !important;
@@ -647,6 +658,15 @@
         .navbar-optimized {
             margin-bottom: 0 !important;
         }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* En tablets, mostrar nombre de app */
@@ -712,7 +732,24 @@
     .user-dropdown {
         position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-        margin-top: auto;
+        /* margin-top:auto removido para evitar que desaparezca en móviles */
+        padding-bottom: .5rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .sidebar .user-dropdown {
+            position: sticky;
+            bottom: 0;
+            background: rgba(0,0,0,0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding-top: .5rem;
+            z-index: 1200;
+        }
+        .sidebar .user-dropdown .dropdown-menu {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
     }
 
     .user-info {
@@ -793,8 +830,14 @@
         justify-content: center !important;
         align-items: center !important;
     }
-    body.sidebar-collapsed .user-info .sidebar-text {
-        display: none !important;
+    @media (max-width: 991.98px) {
+        body.sidebar-collapsed .user-info .sidebar-text {
+            display: flex !important;
+            flex-direction: column;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -935,6 +978,12 @@
         to { opacity: 1; }
     }
 
+    @media (max-height: 600px) {
+        .user-dropdown .dropdown-menu {
+            max-height: 55vh;
+        }
+    }
+
     /* Asegurar que las alertas sean visibles por encima del navbar */
     .alert {
         position: relative !important;
@@ -970,6 +1019,16 @@
         
         body.sidebar-collapsed .alerts-container {
             left: 0 !important;
+        }
+
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
     }
 
@@ -1145,6 +1204,15 @@
         .sidebar-heading .app-name {
             display: inline-block !important;
         }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* Pantallas medianas y pequeñas */
@@ -1204,16 +1272,26 @@
             display: block;
         }
         /* Mejorar el área de usuario en tablets */
-        .user-info {
-            padding: 0.5rem 0.25rem;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            font-size: 1rem;
-            line-height: 1;
-        }
+         .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Espacio entre avatar y texto */
+        padding: 0.5rem 0.75rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 50%;
+        font-size: 1rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eee; /* o tu color base */
+        color: #333;            /* contraste del texto */
+    }
     }
 
     /* Pantallas grandes (desktops, 992px y más) */
@@ -1709,6 +1787,10 @@
                                 <i class="bi bi-person-lines-fill"></i>
                                 <span class="sidebar-text">Usuarios</span>
                             </a>
+                            <a href="{{ route('historial.sistema') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
+                                <i class="bi bi-clock-history"></i>
+                                <span class="sidebar-text">Historial</span>
+                            </a>
                         @else
                             <a href="{{ route('admin.users.manage') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
                                 <i class="bi bi-person-lines-fill"></i>
@@ -1745,8 +1827,8 @@
 
                 </div>
 
-                <!-- User dropdown in sidebar -->
-                <div class="user-dropdown mt-auto">
+                <!-- User dropdown in sidebar (ajustado para móviles) -->
+                <div class="user-dropdown">
                     <div class="dropdown">
                         <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
                                 type="button"
@@ -2065,6 +2147,43 @@
     <!-- <script src="bootstrap.bundle.min.js"></script> -->
     <script src="{{ asset('js/dark-mode.js') }}"></script>
     <script src="{{ asset('js/breadcrumb-fix.js') }}"></script>
+
+    <script>
+    // Ajuste dinámico: evitar que el menú de usuario quede fuera de la pantalla en móviles
+    document.addEventListener('DOMContentLoaded', function(){
+        const wrapper = document.querySelector('.user-dropdown .dropdown');
+        const toggle = document.getElementById('userDropdown');
+        if(!wrapper || !toggle) return;
+
+        function adjust(){
+            if(window.innerWidth > 992){
+                wrapper.classList.remove('dropup');
+                return;
+            }
+            const menu = wrapper.querySelector('.dropdown-menu');
+            if(!menu) return;
+            // Mostrar temporalmente para medir
+            const prevDisplay = menu.style.display;
+            const prevVis = menu.style.visibility;
+            menu.style.display='block';
+            menu.style.visibility='hidden';
+            const menuHeight = menu.offsetHeight;
+            menu.style.display=prevDisplay;
+            menu.style.visibility=prevVis;
+            const toggleRect = toggle.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - toggleRect.bottom;
+            const spaceAbove = toggleRect.top;
+            if(menuHeight > spaceBelow && spaceAbove > spaceBelow){
+                wrapper.classList.add('dropup');
+            } else {
+                wrapper.classList.remove('dropup');
+            }
+        }
+        toggle.addEventListener('click', ()=> setTimeout(adjust, 60));
+        window.addEventListener('resize', adjust);
+        adjust();
+    });
+    </script>
 
 </body>
 </html>

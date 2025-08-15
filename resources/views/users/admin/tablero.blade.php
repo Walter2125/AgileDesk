@@ -14,6 +14,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
+@if (session('success'))
+    <div id="success-alert"
+         class="alert alert-success alert-dismissible fade show mt-2"
+         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
+
+        <div style="display: flex; align-items: center;">
+            <i class="bi bi-check-circle me-2"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+
+        </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                setTimeout(function () {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 3000);
+            }
+        });
+    </script>
+@endif
+
+
 
 
     @php
@@ -35,80 +61,54 @@
     <div class="d-flex align-items-center gap-3 w-100 flex-nowrap kanban-toolbar" style="padding-bottom: 1rem; overflow-x: auto;">
 
         <div class="input-group w-100">
-                    <span class="input-group-text" style="height: 40px">
-                    <i class="bi bi-search"></i>
-                                            </span>
-            <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px" >
+    <span class="input-group-text" style="height: 40px">
+        <i class="bi bi-search"></i>
+    </span>
+            <input type="text" id="buscadorHistorias" class="form-control" placeholder="Buscar historia por nombre..." style="height: 40px">
             <button class="btn btn-outline-secondary limpiar-busqueda" type="button" id="limpiarBusqueda" style="height: 40px">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
-        <form method="GET" class="d-flex">
-            <select name="sprint_id" id="sprintSelect" class="form-select"
-                    style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
-                    onchange="this.form.submit()">
-                <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
-                    Todas las Historias
-                </option>
-                @foreach ($tablero->sprints as $sprint)
-                    <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
-                        {{ $sprint->nombre }}
+
+        @if ($tablero->sprints->count() > 0)
+            <form method="GET" class="d-flex">
+                <select name="sprint_id" id="sprintSelect" class="form-select"
+                        style="max-height: 38px; height: 38px; width: 250px; border-radius: 0.375rem;"
+                        onchange="this.form.submit()">
+                    <option value="" {{ request('sprint_id') == '' ? 'selected' : '' }}>
+                        Todas las Historias
                     </option>
-                @endforeach
-            </select>
-        </form>
+                    @foreach ($tablero->sprints as $sprint)
+                        <option value="{{ $sprint->id }}" {{ request('sprint_id') == $sprint->id ? 'selected' : '' }}>
+                            {{ $sprint->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        @endif
 
+        @if(auth()->user()->usertype === 'admin' || auth()->user()->usertype === 'superadmin')
+            <div class="d-flex gap-2 ms-auto">
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint"
+                        style="height: 40px">
+                    Crear sprint
+                </button>
 
-
-@if (session('success'))
-    <div id="success-alert" 
-         class="alert alert-success alert-dismissible fade show mt-2" 
-         style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-         
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center;">
-                <i class="bi bi-check-circle me-2"></i>
-                <span>{{ session('success') }}</span>
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna"
+                        style="height: 40px">
+                    Agregar columna
+                </button>
             </div>
-            <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
+        @endif
+
+
 
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                setTimeout(function () {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = 0;
-                    setTimeout(() => alert.remove(), 500);
-                }, 3000);
-            }
-        });
-    </script>
-@endif
-
-
-
-
-
-                    <div class="d-flex gap-2 ms-auto">
-                    <button class="btn btn-outline-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalCrearSprint"
-                            id="btnAbrirCrearSprint"
-                            style="height: 40px">
-                        Crear sprint
-                    </button>
-
-                    <button class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalAgregarColumna"
-                            style="height: 40px">
-                        Agregar columna
-                    </button>
-                </div>
-            </div>
 
             <div class="w-100 mt-3">
 
@@ -123,10 +123,10 @@
                                 <div class="d-flex justify-content-between align-items-start bg-light p-2 border-bottom flex-shrink-0">
                                     <strong>{{ $columna->nombre }}</strong>
 
-                                    {{-- Menú de tres puntitos con Bootstrap --}}
+
                                     <div class="dropdown ms-2">
                                         <button class="btn btn-link text-dark p-0" type="button" id="menuOpciones{{ $columna->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical fs-5"></i> {{-- Icono Bootstrap --}}
+                                            <i class="bi bi-three-dots-vertical fs-5"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuOpciones{{ $columna->id }}">
                                             <li class="dropdown-header">Acciones</li>
@@ -152,21 +152,18 @@
 
 
                                 <div class="p-2 border-bottom flex-shrink-0">
-                                    <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
-                                       class="btn btn-sm btn-primary w-100">
-                                        Agregar historias
-                                    </a>
+                                    <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"class="btn btn-sm btn-primary w-100">Agregar historias</a>
                                 </div>
 
 
                                 <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                     @foreach ($columna->historias as $historia)
-                                        <div class="card mb-4 p-2 text-dark position-relative"
+                                        <div class="card mb-2 p-2 text-dark position-relative"
                                              style="width: 100%; word-break: break-word; overflow-wrap: break-word; max-width: 100%;"
                                              data-historia-id="{{ $historia->id }}">
 
                                             <div class="d-flex justify-content-between align-items-start">
-                                                {{-- Columna 1: Contenido --}}
+
                                                 <div style="flex: 1; min-width: 0;">
                                                     <a href="{{ route('historias.show', $historia->id) }}" class="text-decoration-none text-dark d-block">
 
@@ -175,7 +172,7 @@
                                                         </strong>
 
                                                     @if ($historia->descripcion)
-                                                            <div class="descripcion-limitada" 
+                                                            <div class="descripcion-limitada"
                                                                 style="word-break: break-word; overflow-wrap: break-word; white-space: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis;">
                                                                 Descripción: {{ $historia->descripcion }}
                                                             </div>
@@ -185,59 +182,26 @@
                                                     </a>
                                                 </div>
 
-                                                {{-- Columna 2: Menú --}}
+
                                                 <div class="ms-2">
                                                     <div class="dropdown">
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             &#x22EE; {{-- ⋮ --}}
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
-    <a class="dropdown-item"
-       href="#"
-       data-bs-toggle="modal"
-       data-bs-target="#deleteHistoriaModal"
-       data-historia-id="{{ $historia->id }}"
-       data-historia-nombre="{{ $historia->nombre }}">
-       Eliminar
-    </a>
-</li>
-
+                                                                <a class="dropdown-item"href="#" data-bs-toggle="modal"data-bs-target="#deleteHistoriaModal"  data-historia-id="{{ $historia->id }}"data-historia-nombre="{{ $historia->nombre }}">
+                                                                    Eliminar
+                                                                </a>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
-<!-- Modal para confirmar eliminación de historia -->
-<div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center"> <!-- Centramos todo -->
-            <div class="modal-header justify-content-center">
-                <h5 class="modal-title" id="deleteHistoriaModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger"></i>
-                    Confirmar Eliminación Permanente
-                </h5>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                </div>
-                <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
-            </div>
-            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+
+                                            
 
 
                                         </div>
@@ -250,16 +214,17 @@
                             </div>
                         @endforeach
                     </div>
+                   
 
+                </div>
                     <div class="kanban-accordion">
                         <div class="accordion" id="accordionKanban">
                             @foreach($tablero->columnas as $columna)
                                 <div class="accordion-item">
 
-                                    {{-- HEADER --}}
+
                                     <div class="accordion-header d-flex align-items-center w-100 px-3 py-2 gap-2" id="heading{{ $columna->id }}">
 
-                                        {{-- Menú contextual columna (reemplaza los 3 puntos) --}}
                                         <div class="position-relative">
                                             <button type="button" class="btn btn-sm btn-light dropdown-toggle-menu" aria-expanded="false">
                                                 &#x22EE; {{-- ⋮ --}}
@@ -277,12 +242,12 @@
                                             </div>
                                         </div>
 
-                                        {{-- Título --}}
+
                                         <span class="flex-grow-1 text-truncate fw-semibold ms-2">
                         {{ $columna->nombre }}
                     </span>
 
-                                        {{-- Botón collapse --}}
+
                                         <button class="btn btn-link p-0 ms-auto collapse-toggle-btn"
                                                 type="button"
                                                 data-bs-target="#collapse{{ $columna->id }}">
@@ -291,7 +256,7 @@
 
                                     </div>
 
-                                    {{-- CUERPO DEL COLLAPSE --}}
+
                                     <div id="collapse{{ $columna->id }}"
                                          class="accordion-collapse collapse"
                                          aria-labelledby="heading{{ $columna->id }}">
@@ -302,7 +267,7 @@
                                             </a>
 
                                             @forelse ($columna->historias as $historia)
-                                                {{-- Tarjeta de historia --}}
+
                                                 <div class="card mb-2 p-2 text-dark position-relative card-historia"
                                                      data-href="{{ route('historias.show', $historia->id) }}"
                                                      style="cursor:pointer; z-index: 0;">
@@ -321,12 +286,19 @@
                                                     @endif
 
                                                     <div class="d-flex justify-content-end gap-2 mt-2">
-                                                        <a href="{{ route('historias.show', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
+                                                        <a href="{{ route('historias.edit', $historia->id) }}" class="btn btn-sm btn-outline-secondary">
                                                             Editar
                                                         </a>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $historia->id }}">
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger btn-open-accordion-modal"
+                                                                data-historia-id="{{ $historia->id }}"
+                                                                data-historia-nombre="{{ addslashes($historia->nombre) }}"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#deleteHistoriaAccordionModal">
                                                             Eliminar
                                                         </button>
+
+
                                                     </div>
                                                 </div>
                                             @empty
@@ -338,11 +310,114 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
-                    {{-- FIN: Accordion para móvil --}}
-                </div>
 
-                    <script>
+                        <div class="modal fade" id="deleteHistoriaAccordionModal" tabindex="-1" aria-labelledby="deleteHistoriaAccordionModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content text-center">
+                                    <div class="modal-header justify-content-center">
+                                        <h5 class="modal-title" id="deleteHistoriaAccordionModalLabel">
+                                            <i class="bi bi-exclamation-triangle text-danger"></i>
+                                            Confirmar Eliminación
+                                        </h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                        </div>
+                                        <p id="deleteHistoriaAccordionText">¿Está seguro de que desea eliminar esta historia?</p>
+                                    </div>
+                                    <div class="modal-footer justify-content-center">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="#" method="POST" id="deleteHistoriaAccordionForm" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- los modales nunca ban dentro de el foreach-->
+                    <!-- Modal único fuera del foreach -->
+<div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteHistoriaForm" action="" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para actualizar modal dinámicamente -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteHistoriaModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var historiaId = button.getAttribute('data-historia-id');
+            var historiaNombre = button.getAttribute('data-historia-nombre');
+
+            // Actualizar el texto del modal
+            var modalText = deleteModal.querySelector('#deleteHistoriaText');
+            modalText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+
+            // Actualizar el action del formulario dinámicamente
+            var form = deleteModal.querySelector('#deleteHistoriaForm');
+            form.action = `/historias/${historiaId}`; // aquí Laravel recibirá la solicitud DELETE correctamente
+        });
+    });
+</script>
+
+
+
+                <script>
+                    document.querySelectorAll('.btn-open-accordion-modal').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const historiaId = this.dataset.historiaId;
+                            const historiaNombre = this.dataset.historiaNombre;
+
+                            // Cambiar el texto del modal
+                            document.getElementById('deleteHistoriaAccordionText').textContent =
+                                `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+
+                            // Actualizar el action del form
+                            const form = document.getElementById('deleteHistoriaAccordionForm');
+                            form.action = `/historias/${historiaId}`;
+                        });
+                    });
+                </script>
+
+
+
+
+                <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             // Menú contextual columnas
                             document.querySelectorAll('.dropdown-toggle-menu').forEach(button => {
@@ -422,7 +497,7 @@
                         }
                     </style>
 
-                    {{-- Scripts existentes --}}
+
                 <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
 
                 <script>
@@ -569,183 +644,218 @@
                 </script>
 
                 <!-- Modal Bootstrap para agregar columna -->
-                <div class="modal fade" id="modalAgregarColumna" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
-                            @csrf
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Agregar nueva columna</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="nombre" class="form-label">Nombre de la columna</label>
-                                    <input type="text" name="nombre" id="nombre" class="form-control" required maxlength="30">
+                    <!-- Modal Agregar Columna -->
+                    <div class="modal fade" id="modalAgregarColumna" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" action="{{ route('columnas.store', $tablero->id) }}" class="modal-content">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Agregar nueva columna</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Modal para crear sprint -->
-                <div class="modal fade" id="modalCrearSprint" tabindex="-1" aria-labelledby="modalCrearSprintLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <form id="formCrearSprint" method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
-                            @csrf
-                            <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
-
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalCrearSprintLabel">
-                                    Crear Sprint <span id="numeroSprint"></span>
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                {{-- Mensajes de error en letras rojas --}}
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul class="mb-0">
-                                            @foreach ($errors->all() as $error)
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">Nombre de la columna</label>
+                                        <input type="text" name="nombre" id="nombre" class="form-control"
+                                               value="{{ old('nombre') }}" required maxlength="30">
+                                    </div>
+                                    @if ($errors->crearColumna->any())
+                                        <ul class="text-danger" style="list-style: none; padding: 0;">
+                                            @foreach ($errors->crearColumna->all() as $error)
                                                 <li>{{ $error }}</li>
                                             @endforeach
                                         </ul>
+                                    @endif
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Modal Crear Sprint -->
+                    <div class="modal fade" id="modalCrearSprint" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form method="POST" action="{{ route('sprints.store', $project->id) }}" class="modal-content">
+                                @csrf
+                                <input type="hidden" name="tablero_id" value="{{ $tablero->id }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Crear Sprint</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
+                                        <input type="date" name="fecha_inicio" id="fecha_inicio"
+                                               class="form-control" value="{{ old('fecha_inicio') }}" required>
                                     </div>
-                                @endif
+                                    <div class="mb-3">
+                                        <label for="fecha_fin" class="form-label">Fecha de fin</label>
+                                        <input type="date" name="fecha_fin" id="fecha_fin"
+                                               class="form-control" value="{{ old('fecha_fin') }}" required>
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label for="fecha_inicio" class="form-label">Fecha de inicio</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
-                                           value="{{ old('fecha_inicio') }}" required>
+                                    @if ($errors->crearSprint->any())
+                                        <ul class="text-danger" style="list-style: none; padding: 0;">
+                                            @foreach ($errors->crearSprint->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
-                                <div class="mb-3">
-                                    <label for="fecha_fin" class="form-label">Fecha de fin</label>
-                                    <input type="date" id="fecha_fin" name="fecha_fin" class="form-control"
-                                           value="{{ old('fecha_fin') }}" required>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Crear sprint</button>
                                 </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Script para reabrir modal según errores -->
+                    @if ($errors->crearColumna->any())
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                new bootstrap.Modal(document.getElementById('modalAgregarColumna')).show();
+                            });
+                        </script>
+                    @endif
+
+                    @if ($errors->crearSprint->any())
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                new bootstrap.Modal(document.getElementById('modalCrearSprint')).show();
+                            });
+                        </script>
+                    @endif
+
+
+
+                <!-- Modal Confirmar Eliminar Columna -->
+                <div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <form id="formEliminarColumna" method="POST" action="">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" name="modo" id="modoEliminar">
+
+                            <div class="modal-content border-0 rounded-4 shadow">
+
+                                <!-- Encabezado -->
+                                <div class="modal-header border-bottom">
+                                    <h5 class="modal-title text-black" id="eliminarColumnaLabel">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> Eliminar Columna
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+
+                                <!-- Cuerpo -->
+                                <div class="modal-body text-center">
+                                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                                    <p class="mt-3" id="mensajeEliminarColumna">
+                                        ¿Qué deseas hacer con las historias de esta columna?
+                                    </p>
+                                </div>
+
+                                <!-- Footer con opciones -->
+                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
+                                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
+                                        <i class="bi bi-trash3"></i>   Borrar columna y sus historias
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
+                                        <i class="bi bi-columns-gap"></i>   Borrar columna, conservar historias
+                                    </button>
+                                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
+                                        Cancelar
+                                    </button>
+                                </div>
+
                             </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear sprint</button>
-                            </div>
                         </form>
                     </div>
                 </div>
 
-                {{-- Script para reabrir el modal si hay errores --}}
-                @if ($errors->any())
+
+
+            @push('css')
+                    <style>
+                        .modal-content {
+                            border-radius: 12px;
+                        }
+                        .modal-header {
+                            background-color: #f8f9fa;
+                        }
+                    </style>
+                @endpush
+
+                @push('js')
+                    <script>
+                        function enviarFormularioEliminar(modo) {
+                            document.getElementById('modoEliminar').value = modo;
+                            document.getElementById('formEliminarColumna').submit();
+                        }
+                    </script>
+                @endpush
+
+
+
+                <!-- Modal para editar nombre de columna -->
+                    <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="formEditarColumna" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="inputNombreColumna" class="form-label">Nombre</label>
+                                            <input type="text"
+                                                   name="nombre"
+                                                   id="inputNombreColumna"
+                                                   class="form-control @error('nombre', 'editarColumna') is-invalid @enderror"
+                                                   placeholder="Nombre de la columna"
+                                                   maxlength="30"
+                                                   required>
+                                            @error('nombre', 'editarColumna')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                @if ($errors->editarColumna->any())
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
-                            var myModal = new bootstrap.Modal(document.getElementById('modalCrearSprint'));
-                            myModal.show();
+                            new bootstrap.Modal(document.getElementById('modalEditarColumna')).show();
                         });
                     </script>
                 @endif
 
+                    <script>
+                        function abrirModalEditarColumna(id, nombre) {
+                            const form = document.getElementById('formEditarColumna');
+                            form.action = `/columnas/${id}`; // Ruta a update
+                            document.getElementById('inputNombreColumna').value = nombre;
+                            new bootstrap.Modal(document.getElementById('modalEditarColumna')).show();
+                        }
+                    </script>
 
-              <!-- Modal Confirmar Eliminar Columna -->
-<div class="modal fade" id="modalConfirmarEliminarColumna" tabindex="-1" aria-labelledby="eliminarColumnaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form id="formEliminarColumna" method="POST" action="">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="modo" id="modoEliminar">
-
-            <div class="modal-content border-0 rounded-4 shadow">
-
-                <!-- Encabezado -->
-                <div class="modal-header border-bottom">
-                    <h5 class="modal-title text-black" id="eliminarColumnaLabel">
-                        <i class="bi bi-exclamation-triangle-fill"></i> Eliminar Columna
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-
-                <!-- Cuerpo -->
-                <div class="modal-body text-center">
-                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                    <p class="mt-3" id="mensajeEliminarColumna">
-                        ¿Qué deseas hacer con las historias de esta columna?
-                    </p>
-                </div>
-
-                <!-- Footer con opciones -->
-                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="enviarFormularioEliminar('eliminar_todo')">
-                        <i class="bi bi-trash3"></i> Borrar columna y sus historias
-                    </button>
-                    <button type="button" class="btn btn-outline-warning w-100 w-sm-auto" onclick="enviarFormularioEliminar('solo_columna')">
-                        <i class="bi bi-columns-gap"></i> Borrar columna, conservar historias
-                    </button>
-                    <button type="button" class="btn btn-secondary w-100 w-sm-auto" data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-                </div>
-
-            </div>
-        </form>
-    </div>
-</div>
-
-@push('css')
-<style>
-.modal-content {
-    border-radius: 12px;
-}
-.modal-header {
-    background-color: #f8f9fa;
-}
-</style>
-@endpush
-
-@push('js')
-<script>
-function enviarFormularioEliminar(modo) {
-    document.getElementById('modoEliminar').value = modo;
-    document.getElementById('formEliminarColumna').submit();
-}
-</script>
-@endpush
-
-
-                <!-- Modal para editar nombre de columna -->
-                <div class="modal fade" id="modalEditarColumna" tabindex="-1" aria-labelledby="modalEditarColumnaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <form id="formEditarColumna" method="POST" action="">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditarColumnaLabel">Editar columna</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="inputNombreColumna" class="form-label">Nombre</label>
-                                        <input type="text"
-                                               name="nombre"
-                                               id="inputNombreColumna"
-                                               class="form-control"
-                                               placeholder="Nombre de la columna"
-                                               maxlength="50"
-                                               required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <script>
+                    <script>
 
                     document.addEventListener('DOMContentLoaded', function () {
                         // Evitar que el clic en el menú cierre el acordeón
@@ -765,6 +875,7 @@ function enviarFormularioEliminar(modo) {
                             });
                         });
                     });
+
 
                     document.addEventListener("DOMContentLoaded", function () {
                         document.querySelectorAll(".editable-title").forEach(input => {
@@ -943,23 +1054,28 @@ function enviarFormularioEliminar(modo) {
                     });
                 </script>
 
-
                 <script>
-
                     document.addEventListener("DOMContentLoaded", function () {
                         const buscador = document.getElementById("buscadorHistorias");
                         const limpiarBtn = document.getElementById("limpiarBusqueda");
-                        const columnas = document.querySelectorAll(".historia-lista");
 
+                        // Función para normalizar texto (quita tildes y minúsculas)
+                        function normalizar(texto) {
+                            return texto
+                                .toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "");
+                        }
+
+                        // Función para filtrar historias
                         function realizarBusqueda() {
-                            const textoBusqueda = buscador.value.toLowerCase().trim();
+                            const textoBusqueda = normalizar(buscador.value.trim());
 
-                            // Seleccionar todas las tarjetas de historias
-                            const historias = document.querySelectorAll(".card.mb-4.p-2");
+                            // Selecciona solo las tarjetas de historias
+                            const historias = document.querySelectorAll(".card[data-historia-id]");
 
                             historias.forEach(historia => {
-                                // Buscar en el texto de la historia (nombre + descripción)
-                                const textoHistoria = historia.textContent.toLowerCase();
+                                const textoHistoria = normalizar(historia.textContent);
                                 if (textoHistoria.includes(textoBusqueda)) {
                                     historia.style.display = "block";
                                 } else {
@@ -968,24 +1084,18 @@ function enviarFormularioEliminar(modo) {
                             });
                         }
 
-                        // Buscar mientras se escribe (con retardo de 300ms para mejor performance)
-                        let timeoutBusqueda;
-                        buscador.addEventListener("input", () => {
-                            clearTimeout(timeoutBusqueda);
-                            timeoutBusqueda = setTimeout(realizarBusqueda, 300);
-                        });
+                        // Buscar mientras se escribe
+                        buscador.addEventListener("input", realizarBusqueda);
 
                         // Botón para limpiar la búsqueda
                         limpiarBtn.addEventListener("click", function () {
                             buscador.value = "";
-                            const historias = document.querySelectorAll(".card.mb-4.p-2");
+                            const historias = document.querySelectorAll(".card[data-historia-id]");
                             historias.forEach(h => h.style.display = "block");
                         });
                     });
-
-
-
                 </script>
+
 
                 <script>
                     document.addEventListener('click', function (e) {
@@ -993,6 +1103,17 @@ function enviarFormularioEliminar(modo) {
                             const menuWrapper = checkbox.closest('.menu-wrapper');
                             if (menuWrapper && !menuWrapper.contains(e.target)) {
                                 checkbox.checked = false;
+                            }
+                        });
+                    });
+                </script>
+                <script>
+                    document.addEventListener('show.bs.dropdown', function (event) {
+                       
+                        document.querySelectorAll('.dropdown-menu.show').forEach(function (menu) {
+                           
+                            if (!menu.closest('.dropdown').isSameNode(event.target.closest('.dropdown'))) {
+                                bootstrap.Dropdown.getInstance(menu.previousElementSibling)?.hide();
                             }
                         });
                     });
@@ -1036,17 +1157,16 @@ function enviarFormularioEliminar(modo) {
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            // Detecta clicks o toques en todo el documento
+
                             ['click', 'touchstart'].forEach(eventType => {
                                 document.addEventListener(eventType, function (e) {
-                                    // Evitar que botones, enlaces o inputs disparen la navegación
+
                                     if (
                                         e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target], .menu-wrapper, .dropdown-menu')
                                     ) {
                                         return;
                                     }
 
-                                    // Buscar si se hizo click/toque dentro de una tarjeta historia
                                     const card = e.target.closest('.card-historia');
                                     if (card) {
                                         const href = card.dataset.href;
@@ -1058,18 +1178,12 @@ function enviarFormularioEliminar(modo) {
                             });
                         });
                     </script>
-                </script>
 
-                <style>
-                     
-                    .modal-body p {
-    margin-top: 10px;
-    font-size: 16px;
-}
 
-.modal-footer .btn {
-    min-width: 180px; /* Botones uniformes */
-}
+
+
+
+
 
 
 
@@ -1546,7 +1660,52 @@ function enviarFormularioEliminar(modo) {
                         color: #000 !important;
                         font-weight: 600; /* seminegrita */
                     }
+                    @media (max-width: 767.98px) {
+                        .modal[id^="deleteHistoriaModal"] {
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            right: 0 !important;
+                            bottom: 0 !important;
+                            z-index: 2000 !important;
+                            display: block;
+                        }
+                        .modal[id^="deleteHistoriaModal"] .modal-dialog {
+                            margin: 1rem auto !important;
+                            max-width: 95% !important;
+                        }
+                    }
+                    @media (max-width: 767.98px) {
+                        .modal[id^="deleteHistoriaModal"] {
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            right: 0 !important;
+                            bottom: 0 !important;
+                            z-index: 2000 !important;
+                            display: block; /* asegura que no dependa del flujo del accordion */
+                        }
+                        .modal[id^="deleteHistoriaModal"] .modal-dialog {
+                            margin: 1rem auto !important;
+                            max-width: 95% !important;
+                        }
+                    }
+
+
+
+
+
+
 
                 </style>
+
+
+
+
+
+
+
+
+
 
 @endsection

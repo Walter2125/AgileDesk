@@ -83,10 +83,12 @@
                     <i class="fas fa-eye"></i> Ver
                 </a>
 
-                @if(auth()->user()->isSuperAdmin() || auth()->id() === $project->user_id)
+                @can('update', $project)
                     <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
+                @endcan
+                @can('delete', $project)
                     <button type="button"
         class="btn btn-delete"
         title="Eliminar Proyecto"
@@ -96,8 +98,7 @@
         data-project-name="{{ $project->name }}">
     <i class="fas fa-trash"></i> Eliminar
 </button>
-
-                @endif
+                @endcan
             </div>
         </div>
 
@@ -160,7 +161,7 @@
                 @endif
             </div>
             <div class="modal-footer" style="background-color: var(--github-bg); border-top: 1px solid var(--github-border);">
-                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background-color: var(--github-btn-bg); color: var(--github-text);">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

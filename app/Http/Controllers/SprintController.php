@@ -6,6 +6,8 @@ use App\Models\Sprint;
 use App\Models\Project;
 use App\Models\Tablero;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class SprintController extends Controller
 {
@@ -50,23 +52,32 @@ class SprintController extends Controller
      */
     public function store(Request $request, $projectId)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
             'tablero_id' => 'required|exists:tableros,id',
+        ], [
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_fin.required' => 'La fecha de fin es obligatoria.',
+            'fecha_fin.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
         ]);
 
-        $project = Project::findOrFail($projectId);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'crearSprint')
+                ->withInput();
+        }
 
-        // Obtener el último sprint por tablero
         $ultimoSprint = Sprint::where('tablero_id', $request->tablero_id)
             ->orderByDesc('fecha_fin')
             ->first();
 
         if ($ultimoSprint && $request->fecha_inicio <= $ultimoSprint->fecha_fin) {
-            return back()->withErrors([
-                'fecha_inicio' => 'La fecha de inicio del nuevo sprint debe ser posterior a la fecha de fin del sprint anterior (' . $ultimoSprint->fecha_fin . ').'
-            ])->withInput();
+            return redirect()->back()
+                ->withErrors([
+                    'fecha_inicio' => 'La fecha de inicio debe ser posterior al sprint anterior (' . $ultimoSprint->fecha_fin . ').'
+                ], 'crearSprint')
+                ->withInput();
         }
 
         $ultimoNumero = Sprint::where('tablero_id', $request->tablero_id)->max('numero_sprint') ?? 0;
@@ -83,6 +94,7 @@ class SprintController extends Controller
         return redirect()->route('tableros.show', $projectId)->with('success', 'Sprint creado correctamente.');
     }
 
+
     public function edit(Sprint $sprint)
     {
         $currentProject = $sprint->proyecto; // la relación debe estar definida
@@ -92,18 +104,31 @@ class SprintController extends Controller
 
     public function update(Request $request, Sprint $sprint)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
+        ], [
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_fin.required' => 'La fecha de fin es obligatoria.',
+            'fecha_fin.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'editarSprint')
+                ->withInput()
+                ->with('sprint_id', $sprint->id);
+        }
 
         $sprint->update([
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
 
-        return redirect()->route('sprints.index', $sprint->proyecto_id)->with('success', 'Sprint actualizado correctamente.');
+        return redirect()->route('sprints.index', $sprint->proyecto_id)
+            ->with('success', 'Sprint actualizado correctamente.');
     }
+
 
 
 

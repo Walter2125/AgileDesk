@@ -386,7 +386,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 <p>¿Está seguro de que desea restaurar el siguiente elemento?</p>
                 <div class="alert alert-info">
                     <strong id="restoreItemName"></strong>
@@ -394,19 +394,18 @@
                     <small class="text-muted">El elemento será restaurado a su estado anterior a la eliminación.</small>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="restoreForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-arrow-clockwise"></i> Restaurar
+                        <i class="bi bi-arrow-clockwise me-1"></i> Restaurar
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal de Eliminación Permanente -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -416,22 +415,21 @@
                     <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 <div class="alert alert-danger">
                     <i class="bi bi-exclamation-triangle"></i>
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
                 <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form id="deleteForm" method="POST" class="d-inline">
                     @csrf
-                    @method('DELETE')
+                    <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                        <i class="bi bi-trash3 me-1"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>

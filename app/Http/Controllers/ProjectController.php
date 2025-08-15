@@ -285,7 +285,7 @@ class ProjectController extends Controller
 
     // Superadmin puede eliminar cualquier proyecto, admin solo puede eliminar si es el dueño
     $canDelete = Auth::user()->isSuperAdmin() || 
-                 (Auth::user()->usertype == 'admin' && Auth::id() === $project->user_id);
+                 (Auth::user()->isAdmin() && Auth::id() === $project->user_id);
 
     if (!$canDelete) {
         return $request->expectsJson()

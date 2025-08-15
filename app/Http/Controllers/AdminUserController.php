@@ -12,41 +12,24 @@ class AdminUserController extends Controller
     public function index()
     {
         $currentUser = Auth::user();
-        
+
         // Filtrar usuarios según el rol del que está viendo
         if ($currentUser->isSuperAdmin()) {
-            // Superadmin puede ver todos los usuarios
             $users = User::orderBy('created_at', 'desc')->get();
-            Log::info('Superadmin accedió a vista de todos los usuarios', ['superadmin_id' => $currentUser->id]);
         } else {
-            // Administradores solo pueden ver colaboradores y otros administradores (no superadmins)
             $users = User::whereIn('usertype', ['admin', 'collaborator'])
                 ->orderBy('created_at', 'desc')
                 ->get();
-            Log::info('Administrador accedió a vista de usuarios limitada', ['admin_id' => $currentUser->id]);
         }
-        
-        // También obtener usuarios pendientes para otras funcionalidades si es necesario
-        $pendingUsers = User::where('usertype', 'collaborator')
-            ->where('is_approved', false)
-            ->where('is_rejected', false)
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return view('users.admin.users', compact('users', 'pendingUsers'));
+
+        // Vista única maneja aprobaciones y rechazos; no se pasa lista separada de pendientes
+        if (request()->ajax()) {
+            return response()->json(['data' => $users]);
+        }
+        return view('users.admin.users', compact('users'));
     }
     
-    public function pendingUsers()
-    {
-        // Obtener solo usuarios pendientes para la vista index
-        $pendingUsers = User::where('usertype', 'collaborator')
-            ->where('is_approved', false)
-            ->where('is_rejected', false)
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return view('users.admin.index', compact('pendingUsers'));
-    }
+    // Método pendingUsers eliminado: se centraliza lógica en index()
     
     public function approve(User $user, Request $request)
     {
@@ -62,7 +45,7 @@ class AdminUserController extends Controller
                     'message' => $message,
                 ], 400);
             }
-            return redirect()->route('admin.users.index')->with('error', $message);
+            return redirect()->route('admin.users')->with('error', $message);
         }
 
         if ($user->is_rejected) {
@@ -75,7 +58,7 @@ class AdminUserController extends Controller
                     'message' => $message,
                 ], 400);
             }
-            return redirect()->route('admin.users.index')->with('error', $message);
+            return redirect()->route('admin.users')->with('error', $message);
         }
 
         // Validar y procesar asignación de rol
@@ -166,7 +149,7 @@ class AdminUserController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', $message);
+    return redirect()->route('admin.users')->with('success', $message);
     }
 
     public function reject(User $user, Request $request)
@@ -262,19 +245,7 @@ class AdminUserController extends Controller
         $oldRole = $user->usertype;
 
         // Prevenir que se asigne el rol de superadmin a otros usuarios
-        // (solo puede haber un superadmin)
-        if ($newRole === 'superadmin' && $user->id !== Auth::user()->id) {
-            $message = 'Solo puede existir un superadministrador en el sistema.';
-            
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $message,
-                ], 400);
-            }
-            
-            return redirect()->back()->with('error', $message);
-        }
+    // Permitir múltiples superadministradores, sin restricción
 
         // Actualizar el rol
         $user->usertype = $newRole;
@@ -287,12 +258,15 @@ class AdminUserController extends Controller
         
         $user->save();
 
+        // Actualizar permisos según el nuevo rol
+        $this->updateUserPermissions($user, $oldRole, $newRole);
+
         // Registrar en el historial del sistema
         \App\Models\HistorialCambio::create([
             'fecha' => now(),
             'usuario' => Auth::user()->name,
             'accion' => 'Cambio de rol',
-            'detalles' => "Usuario '{$user->name}' cambió de rol de '{$oldRole}' a '{$newRole}'",
+            'detalles' => "Usuario '{$user->name}' cambió de rol de '{$oldRole}' a '{$newRole}' y se actualizaron sus permisos automáticamente",
             'sprint' => null,
             'proyecto_id' => null
         ]);
@@ -323,5 +297,94 @@ class AdminUserController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Actualiza los permisos del usuario según el cambio de rol
+     */
+    private function updateUserPermissions($user, $oldRole, $newRole)
+    {
+        // Definir permisos por rol
+        $permissions = [
+            'collaborator' => [
+                'view_projects',
+                'view_tasks',
+                'update_own_tasks',
+                'create_comments'
+            ],
+            'admin' => [
+                'view_projects',
+                'create_projects',
+                'update_projects',
+                'delete_projects',
+                'view_tasks',
+                'create_tasks',
+                'update_tasks',
+                'delete_tasks',
+                'view_users',
+                'manage_sprints',
+                'create_comments',
+                'moderate_comments'
+            ],
+            'superadmin' => [
+                'view_projects',
+                'create_projects',
+                'update_projects',
+                'delete_projects',
+                'view_tasks',
+                'create_tasks',
+                'update_tasks',
+                'delete_tasks',
+                'view_users',
+                'create_users',
+                'update_users',
+                'delete_users',
+                'assign_roles',
+                'manage_sprints',
+                'create_comments',
+                'moderate_comments',
+                'system_admin'
+            ]
+        ];
+
+        // Si el sistema de permisos de Laravel está habilitado
+        if (class_exists('\Spatie\Permission\Models\Permission')) {
+            // Remover permisos del rol anterior
+            if (isset($permissions[$oldRole])) {
+                foreach ($permissions[$oldRole] as $permission) {
+                    try {
+                        $user->revokePermissionTo($permission);
+                    } catch (\Exception $e) {
+                        // Permiso no existe o no está asignado, continuar
+                    }
+                }
+            }
+
+            // Asignar permisos del nuevo rol
+            if (isset($permissions[$newRole])) {
+                foreach ($permissions[$newRole] as $permission) {
+                    try {
+                        $user->givePermissionTo($permission);
+                    } catch (\Exception $e) {
+                        // Permiso no existe, continuar
+                    }
+                }
+            }
+        }
+
+        // Limpiar caché de permisos si existe
+        if (method_exists($user, 'forgetCachedPermissions')) {
+            $user->forgetCachedPermissions();
+        }
+
+        // Log detallado del cambio de permisos
+        Log::info("Permisos actualizados para usuario: {$user->name}", [
+            'user_id' => $user->id,
+            'old_role' => $oldRole,
+            'new_role' => $newRole,
+            'old_permissions' => $permissions[$oldRole] ?? [],
+            'new_permissions' => $permissions[$newRole] ?? [],
+            'updated_by' => Auth::user()->name
+        ]);
     }
 }

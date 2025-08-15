@@ -291,8 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const tareaId = checkbox.dataset.id;
             const estaMarcado = checkbox.checked;
 
-            fetch(`/tareas/${tareaId}/completar`, {
+            fetch(/tareas/${tareaId}/completar, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(response => {
                 if (response.ok) {
                     actualizarBarraProgreso();
-                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                    document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"]).forEach(cb => {
                         cb.checked = estaMarcado;
                     });
                 } else {
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             guardarEstadoCheckbox(tareaId, estaMarcado);
 
-            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+            document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"])
                 .forEach(cb => cb.checked = estaMarcado);
         }
     });

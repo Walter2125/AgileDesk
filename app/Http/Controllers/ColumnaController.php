@@ -6,6 +6,7 @@ use App\Models\Columna;
 use App\Models\Tablero;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 
 class ColumnaController extends Controller
@@ -15,15 +16,37 @@ class ColumnaController extends Controller
     {
         $tablero = Tablero::with('columnas')->findOrFail($tableroId);
 
-
         if ($tablero->columnas->count() >= 9) {
-            return redirect()->back()->withErrors('No se pueden crear más de 9 columnas en un tablero.');
+            return redirect()->back()
+                ->withErrors(['nombre' => 'No se pueden crear más de 9 columnas en un tablero.'], 'crearColumna')
+                ->withInput();
         }
 
-        $request->validate([
-            'nombre' => ['required', 'string', 'max:255', 'regex:/^[^\d]+$/'],
+        $validator = Validator::make($request->all(), [
+            'nombre' => [
+                'required',
+                'string',
+                'max:30',
+                'regex:/^[^\d]+$/',
+                'not_regex:/^\s*$/',
+                Rule::unique('columnas')->where(function ($query) use ($tablero) {
+                    return $query->where('tablero_id', $tablero->id);
+                }),
+            ],
             'posicion' => 'nullable|integer|min:1|max:9',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max' => 'El nombre no puede tener más de 30 caracteres.',
+            'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
+            'nombre.regex' => 'El nombre no debe contener números.',
+            'nombre.not_regex' => 'El nombre no puede estar vacío o contener solo espacios.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'crearColumna')
+                ->withInput();
+        }
 
         Columna::create([
             'nombre' => $request->nombre,
@@ -35,8 +58,9 @@ class ColumnaController extends Controller
             'project' => $tablero->proyecto_id,
             'tablero' => $tablero->id,
         ])->with('success', 'Columna creada exitosamente.');
-
     }
+
+
 
     // Mostrar formulario de edición
     public function edit(Columna $columna)
@@ -49,11 +73,11 @@ class ColumnaController extends Controller
     {
         $columna = Columna::findOrFail($id);
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => [
                 'required',
                 'max:50',
-                'regex:/^[^\d]*$/', // Evita números
+                'regex:/^[^\d]*$/',
                 Rule::unique('columnas')->ignore($columna->id)->where(function ($query) use ($columna) {
                     return $query->where('tablero_id', $columna->tablero_id);
                 }),
@@ -63,6 +87,12 @@ class ColumnaController extends Controller
             'nombre.unique' => 'Ya existe una columna con ese nombre en este tablero.',
             'nombre.regex' => 'El nombre no debe contener números.',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'editarColumna')
+                ->withInput();
+        }
 
         $columna->nombre = $request->nombre;
         $columna->save();

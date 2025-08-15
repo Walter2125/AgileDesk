@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+    @section('mensaje-superior')
+        Historial de Cambios
+    @endsection
 @section('content')
 <div class="container-fluid projects-container py-4">
     <div class="card shadow-sm border-0">
