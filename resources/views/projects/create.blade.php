@@ -1,14 +1,14 @@
 @extends('layouts.app')
-    @section('mensaje-superior')
-        Crear Nuevo Proyecto
-    @endsection
+
+@section('mensaje-superior')
+    Crear Nuevo Proyecto
+@endsection
 
 @section('styles')
 <style>
     .search-container {
         position: relative;
     }
-
     #searchResults {
         position: absolute;
         width: 100%;
@@ -20,7 +20,6 @@
         overflow-y: auto;
         display: none;
     }
-
     /* ✅ Estilo global para campos redondeados */
     .form-control {
         border-radius: 15px !important;
@@ -38,47 +37,34 @@
                 <!-- Nombre -->
                 <div class="form-group mb-3">
                     <label for="name">Nombre del Proyecto</label>
-                    <input id="name" type="text" maxlength="50"
-                        class="form-control @error('name') is-invalid @enderror"
-                        name="name"
-                        value="{{ old('name') }}"
-                        required maxlength="50" autofocus>
+                    <input id="name" type="text" maxlength="50" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required maxlength="50" autofocus>
                     @error('name')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <!-- Descripción -->
                 <div class="form-group mb-3">
                     <label for="descripcion">Descripción</label>
-                    <textarea id="descripcion" 
-                        class="form-control @error('descripcion') is-invalid @enderror" 
-                        name="descripcion" maxlength="255"
-                        rows="4">{{ old('descripcion') }} </textarea>
+                    <textarea id="descripcion" class="form-control @error('descripcion') is-invalid @enderror" name="descripcion" maxlength="255" rows="4">{{ old('descripcion') }} </textarea>
                     @error('descripcion')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="mb-3">
-    <label for="codigo" class="form-label">Código del Proyecto</label>
-    <input type="text" name="codigo" id="codigo" 
-           class="form-control @error('codigo') is-invalid @enderror" 
-           value="{{ old('codigo') }}" required maxlength="6">
-    <small class="form-text text-muted">Debe ser un código único (por ejemplo: PROY01).</small>
-    @error('codigo')
-        <span class="invalid-feedback d-block">{{ $message }}</span>
-    @enderror
-</div>
-
+                    <label for="codigo" class="form-label">Código del Proyecto</label>
+                    <input type="text" name="codigo" id="codigo" class="form-control @error('codigo') is-invalid @enderror" value="{{ old('codigo') }}" maxlength="6">
+                    <small class="form-text text-muted">Debe ser un código único (por ejemplo: PROY01).</small>
+                    @error('codigo')
+                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                    @enderror
+                </div>
 
                 <!-- Fecha Inicio -->
                 <div class="form-group mb-3">
                     <label for="fecha_inicio">Fecha de Inicio</label>
-                    <input id="fecha_inicio" type="date"
-                        class="form-control @error('fecha_inicio') is-invalid @enderror"
-                        name="fecha_inicio"
-                        value="{{ old('fecha_inicio') }}"
-                        required>
+                    <input id="fecha_inicio" type="date" class="form-control @error('fecha_inicio') is-invalid @enderror" name="fecha_inicio" value="{{ old('fecha_inicio') }}" required>
                     @error('fecha_inicio')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -87,11 +73,7 @@
                 <!-- Fecha Fin -->
                 <div class="form-group mb-3">
                     <label for="fecha_fin">Fecha de Finalización</label>
-                    <input id="fecha_fin" type="date"
-                        class="form-control @error('fecha_fin') is-invalid @enderror"
-                        name="fecha_fin"
-                        value="{{ old('fecha_fin') }}"
-                        required>
+                    <input id="fecha_fin" type="date" class="form-control @error('fecha_fin') is-invalid @enderror" name="fecha_fin" value="{{ old('fecha_fin') }}" required>
                     @error('fecha_fin')
                         <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -104,7 +86,6 @@
                         <input type="text" class="form-control" id="userSearch" placeholder="Escribe el nombre de un usuario...">
                         <div id="searchResults" class="mt-2"></div>
                     </div>
-
                     <div id="usersTableContainer">
                         @include('projects.partials.users_table', [
                             'users' => $users,
@@ -124,11 +105,14 @@
 
                 <!-- Botones -->
                 <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary me-2"> <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar Proyecto</button>
-                    <a href="{{ route('projects.my') }}" class="btn btn-secondary btn-form-actions me-2"> <i class="bi bi-x-lg me-2"></i>Cancelar</a>
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Guardar Proyecto
+                    </button>
+                    <a href="{{ route('projects.my') }}" class="btn btn-secondary btn-form-actions me-2">
+                        <i class="bi bi-x-lg me-2"></i>Cancelar
+                    </a>
                 </div>
             </form>
-            
         </div>
     </div>
 </div>
@@ -136,11 +120,19 @@
 
 @section('styles')
 <style>
-    .search-container { position: relative; }
+    .search-container {
+        position: relative;
+    }
     #searchResults {
-        position: absolute; width: 100%; z-index: 1000;
-        background: #fff; border: 1px solid #ddd; border-radius: 4px;
-        max-height: 300px; overflow-y: auto; display: none;
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
     }
 </style>
 @endsection
@@ -206,12 +198,9 @@ $(function () {
     $(document).on('click', '#usersTableContainer .pagination a', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
-
         $.ajax({
             url: url,
-            data: {
-                selected_users: selectedUsers
-            },
+            data: { selected_users: selectedUsers },
             success: function(data) {
                 $('#usersTableContainer').html(data.html + data.pagination);
                 applySelections();
@@ -226,32 +215,25 @@ $(function () {
     $('#userSearch').on('input', function() {
         const q = $(this).val().trim();
         if (q.length < 1) return $('#searchResults').hide();
-
         $.getJSON('{{ route("projects.searchUsers") }}', { query: q })
-            .done(users => {
-                if (!users.length) {
-                    return $('#searchResults').html('<div class="p-2">No se encontraron usuarios</div>').show();
-                }
-
-                let html = '<table class="table table-sm"><tbody>';
-                users.forEach(u => {
-                    const checked = selectedUsers.includes(String(u.id)) ? 'checked' : '';
-                    html += `
-                        <tr>
-                            <td>
-                                <input type="checkbox"
-                                       class="user-checkbox-search"
-                                       value="${u.id}"
-                                       id="search_user_${u.id}"
-                                       ${checked}>
-                            </td>
-                            <td>${u.name}</td>
-                            <td>${u.email}</td>
-                        </tr>`;
-                });
-                $('#searchResults').html(html + '</tbody></table>').show();
-            })
-            .fail(() => $('#searchResults').html('<div class="p-2">Error en la búsqueda</div>').show());
+        .done(users => {
+            if (!users.length) {
+                return $('#searchResults').html('<div class="p-2">No se encontraron usuarios</div>').show();
+            }
+            let html = '<table class="table table-sm"><tbody>';
+            users.forEach(u => {
+                const checked = selectedUsers.includes(String(u.id)) ? 'checked' : '';
+                html += `<tr>
+                    <td>
+                        <input type="checkbox" class="user-checkbox-search" value="${u.id}" id="search_user_${u.id}" ${checked}>
+                    </td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                </tr>`;
+            });
+            $('#searchResults').html(html + '</tbody></table>').show();
+        })
+        .fail(() => $('#searchResults').html('<div class="p-2">Error en la búsqueda</div>').show());
     });
 
     $(document).on('click', e => {
