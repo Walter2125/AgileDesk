@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <!-- Modal para confirmar eliminación de tarea -->
-<<<<<<< HEAD
+
       <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">
                       <div class="modal-content text-center"> <!-- Centramos todo -->
@@ -625,18 +625,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                   Confirmar Eliminación Permanente
                               </h5>
                </div>
-=======
-<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center"> <!-- Centramos todo -->
-
-            <div class="modal-header justify-content-center position-relative">
-                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger"></i>
-                    Confirmar Eliminación Permanente
-                </h5>
-            </div>
->>>>>>> main
 
             <div class="modal-body">
                 <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
@@ -645,7 +633,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
             </div>
-
             <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
