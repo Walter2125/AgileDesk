@@ -26,7 +26,7 @@ class ProjectController extends Controller
         $query->where('is_approved', true)
               ->where('is_rejected', false);
     })
-    ->orWhere('usertype', 'superadmin', 'admin') // incluye superadmin aunque no esté aprobado
+    ->orWhere('usertype', 'superadmin', 'admin') 
     ->paginate(5)
     ->withPath(route('projects.listUsers'));
 
