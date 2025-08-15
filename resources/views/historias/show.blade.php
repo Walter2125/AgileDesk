@@ -26,17 +26,17 @@
             padding-left: 10px;
             padding-right: 10px;
         }
-
+        
         .historia-header {
             flex-direction: column;
             gap: 15px;
         }
-
+        
         .historia-header .titulo-container {
             max-width: 100% !important;
             width: 100% !important;
         }
-
+        
         .historia-header .actions-container {
             align-self: flex-end;
             width: auto;
@@ -47,7 +47,7 @@
         .card-body {
             padding: 1rem 0.5rem;
         }
-
+        
         .btn-group .btn {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
@@ -280,8 +280,8 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
- </style>
-
+ </style>   
+ 
 @endsection
 
 
@@ -295,51 +295,47 @@
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
+   
 @if (session('success'))
-        <div id="success-alert"
-          class="alert alert-success alert-dismissible fade show mt-2"
-          style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
-
-          <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="alert alert-success alert-dismissible fade show mt-2"
+             style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center;">
                 <i class="bi bi-check-circle me-2"></i>
-                {{ session('success') }}
-                 </div>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const alert = document.getElementById('success-alert');
-                    if (alert) {
-                        setTimeout(function () {
-                            alert.style.transition = "opacity 0.5s ease";
-                            alert.style.opacity = 0;
-                            setTimeout(() => alert.remove(), 500);
-                        }, 3000);
-                    }
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const alerts = document.querySelectorAll('.alert-success');
+                alerts.forEach(alert => {
+                    setTimeout(() => {
+                        alert.style.transition = "opacity 0.5s ease";
+                        alert.style.opacity = 0;
+                        setTimeout(() => alert.remove(), 500);
+                    }, 3000);
                 });
-            </script>
-          </div>
-      </div>
-        @endif
+            });
+        </script>
+    @endif
 
-   @if ($errors->any())
-    <div class="alert alert-danger mt-2">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li> <!-- aquí ya se reemplazan :min, :max automáticamente -->
-            @endforeach
-        </ul>
-    </div>
-@endif
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
 
 <div class="container-fluid-m-2 mi-container m-2">
-
+   
 <div class="card-body">
 
 
-
+         
 <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
@@ -348,7 +344,7 @@
         <div class="mb-4 rounded gap-2">
             <label class="form-label rounded d-flex justify-content-between align-items-center">
                 Nombre de la Historia
-
+        
                     <div id="dropdownMenuContainer" class="dropdown ms-2">
                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
@@ -356,11 +352,11 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
                             <li>
-                                <button type="button"
-                                        class="dropdown-item"
+                                <button type="button" 
+                                        class="dropdown-item" 
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteHistoriaModal"
-                                        data-historia-id="{{ $historia->id }}"
+                                        data-historia-id="{{ $historia->id }}" 
                                         data-historia-nombre="{{ $historia->nombre }}">
                                     Eliminar
                                 </button>
@@ -370,16 +366,16 @@
                     </div>
             </label>
 
-
+            
             <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
                 <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
                     title="Haz clic para editar">
                     {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
                 </h2>
-
+                
             </div>
 
-
+            
             <input id="tituloInput" type="text" name="nombre" maxlength="100"
                   class="form-control formulario-editable rounded d-none mt-2"
                   value="{{ old('nombre', $historia->nombre) }}"
@@ -480,14 +476,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const tituloInput = document.getElementById("tituloInput");
     const nombreTexto = document.getElementById("nombreTexto");
 
-   
+    // Al hacer clic en el título → mostrar input
     tituloContainer.addEventListener("click", function () {
         tituloContainer.classList.add("d-none");
         tituloInput.classList.remove("d-none");
         tituloInput.focus();
     });
 
- 
+    // Al salir del input → volver a mostrar el título
     tituloInput.addEventListener("blur", function () {
         if (tituloInput.value.trim() !== "") {
             nombreTexto.textContent = tituloInput.value;
@@ -497,8 +493,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
-
-
 
 <!-- Modal para confirmar eliminación de historia -->
 <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
@@ -542,66 +536,87 @@ document.addEventListener('DOMContentLoaded', function() {
         const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
-        deleteHistoriaForm.action = `/historias/${historiaId}`;
+        deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
+        deleteHistoriaForm.action = /historias/${historiaId};
     });
 });
 </script>
 @endpush
 
-{{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
+{{-- ACORDEÓN DE TAREAS --}}
 <div class="mb-0">
+
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
-        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;" >
-            Tareas relacionadas
-        </button>
+    <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn"
+        data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
+        Tareas relacionadas
+    </button>
 
-        <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
-            @if($tareas->isEmpty())
-                <div class="alert alert-warning m-2 py-2 px-3">No hay tareas registradas para esta historia.</div>
-            @else
-                {{-- CONTENEDOR SCROLL --}}
-                <div class="accordion m-2" id="accordionListaTareas" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
-                    @foreach($tareas as $tarea)
-                        <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
-                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2 " type="button" 
-                                    onclick="toggleTarea(this)" style="font-size: 0.9rem;" >
-                                <input type="checkbox"
-                                       class="form-check-input me-2 tarea-checkbox"
-                                       data-id="{{ $tarea->id }}"
-                                       {{ $tarea->completada ? 'checked' : '' }}
-                                       onclick="event.stopPropagation();">
+    <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
 
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">{{ $tarea->nombre }}</h6>
-                                </div>
-                            </button>
+        @if($tareas->isEmpty())
+            <div class="alert alert-warning m-2 py-2 px-3">
+                No hay tareas registradas para esta historia.
+            </div>
+        @else
 
-                            <div class="contenido-tarea p-3 rounded-bottom" style="display: none; font-size: 0.85rem;">
-                                <p>
-                                    <strong> Descripción:</strong><br>
-                                    <span style="color: #555; white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">
-                                        {{ $tarea->descripcion }}
-                                    </span>
-                                </p>
+            {{-- ✅ Barra de progreso arriba de las tareas --}}
+            <div class="m-2 p-3 bg-white rounded shadow-sm">
+                <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
+                <div class="progress">
+                    <div id="progress-bar" class="progress-bar bg-primary" role="progressbar"
+                        style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0%
+                    </div>
+                </div>
+            </div>
 
-                                <p>
-                                    <strong> Fecha de creación:</strong><br>
-                                    <span style="color: #555;">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
-                                </p>
+            {{-- CONTENEDOR SCROLL --}}
+            <div class="accordion m-2" id="accordionListaTareas"
+                style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
 
-                                <p>
-                                    <strong> Tipo de actividad:</strong><br>
-                                    <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #6f42c1; font-size: 0.75rem;">
-                                        <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
-                                    </span>
-                                </p>
+                @foreach($tareas as $tarea)
+                    <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
+                        <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2"
+                            type="button" onclick="toggleTarea(this)" style="font-size: 0.9rem;">
+                            <input type="checkbox"
+                                class="form-check-input me-2 tarea-checkbox"
+                                data-id="{{ $tarea->id }}"
+                                {{ $tarea->completada ? 'checked' : '' }}
+                                onclick="event.stopPropagation();">
 
-                                <div class="d-flex justify-content-end gap-2 mt-2">
-                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <button class="btn btn-outline-danger btn-sm"
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">
+                                    {{ $tarea->nombre }}
+                                </h6>
+                            </div>
+                        </button>
+
+                        <div class="contenido-tarea p-3 rounded-bottom"
+                            style="display: none; font-size: 0.85rem;">
+                            <p>
+                                <strong>Descripción:</strong><br>
+                                <span style="color: #555; white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">
+                                    {{ $tarea->descripcion }}
+                                </span>
+                            </p>
+                            <p>
+                                <strong>Fecha de creación:</strong><br>
+                                <span style="color: #555;">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
+                            </p>
+                            <p>
+                                <strong>Tipo de actividad:</strong><br>
+                                <span class="badge px-3 py-2 rounded-pill text-white"
+                                    style="background-color: #6f42c1; font-size: 0.75rem;">
+                                    <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
+                                </span>
+                            </p>
+                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}"
+                                    class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteTareaModal"
                                     data-tarea-id="{{ $tarea->id }}"
@@ -609,23 +624,23 @@ document.addEventListener('DOMContentLoaded', function() {
                                     title="Eliminar">
                                     <i class="bi bi-trash3"></i>
                                 </button>
-                                </div>
                             </div>
                         </div>
+                    </div>
+                @endforeach
 
-                        <!-- Modal para confirmar eliminación de tarea -->
-
-      <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content text-center"> <!-- Centramos todo -->
-                          
-                          <div class="modal-header justify-content-center position-relative">
-                              <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
-                                  <i class="bi bi-exclamation-triangle text-danger"></i>
-                                  Confirmar Eliminación Permanente
-                              </h5>
-               </div>
-
+            </div>
+        @endif
+        <!-- Modal para confirmar eliminación de tarea -->
+<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
             <div class="modal-body">
                 <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
                     <i class="bi bi-exclamation-triangle"></i>
@@ -633,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
             </div>
-            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
                     @csrf
@@ -647,32 +662,85 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-                    @endforeach
-                </div>
-            @endif
-{{-- Botones finales --}}
-<div class="ms-3 mb-3">
-    {{-- Botón para crear tarea --}}
-    <a href="{{ route('tareas.index', $historia->id) }}"
-       class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-       style="width: 40px; height: 40px;"
-       title="Crear tarea">
-        <i class="bi bi-plus-lg"></i>
-    </a>
-
-    {{-- Ojito que siempre va a la lista --}}
-    <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id ?? 0]) }}"
-       class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-       style="width: 40px; height: 40px;"
-       title="Ver lista de tareas">
-        <i class="bi bi-eye"></i>
-    </a>
-</div>
-
+        {{-- Botones finales --}}
+        <div class="ms-3 mb-3">
+            <a href="{{ route('tareas.index', $historia->id) }}"
+                class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                style="width: 40px; height: 40px;" title="Crear tarea">
+                <i class="bi bi-plus-lg"></i>
+            </a>
         </div>
     </div>
 </div>
 
+{{-- ✅ Script para actualizar barra --}}
+<script>
+    function actualizarBarraProgreso() {
+        const checkboxes = document.querySelectorAll('.tarea-checkbox');
+        const total = checkboxes.length;
+        const completadas = [...checkboxes].filter(cb => cb.checked).length;
+        const porcentaje = total > 0 ? Math.round((completadas / total) * 100) : 0;
+
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.style.width = porcentaje + '%';
+            progressBar.setAttribute('aria-valuenow', porcentaje);
+            progressBar.textContent = porcentaje + '%';
+        }
+    }
+
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const checkbox = e.target;
+            const tareaId = checkbox.dataset.id;
+            const estaMarcado = checkbox.checked;
+
+            fetch(`/tareas/${tareaId}/completar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    actualizarBarraProgreso();
+                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                        cb.checked = estaMarcado;
+                    });
+                } else {
+                    alert('Error al guardar el progreso.');
+                    checkbox.checked = !checkbox.checked;
+                    actualizarBarraProgreso();
+                }
+            }).catch(() => {
+                alert('Error de red.');
+                checkbox.checked = !checkbox.checked;
+                actualizarBarraProgreso();
+            });
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
+</script>
+@push('js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteTareaModal = document.getElementById('deleteTareaModal');
+    const deleteTareaForm = document.getElementById('deleteTareaForm');
+    const deleteTareaText = document.getElementById('deleteTareaText');
+
+    deleteTareaModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const tareaId = button.getAttribute('data-tarea-id');
+        const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
+
+        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
+        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+    });
+});
+</script>
+@endpush
 
 {{-- BOTÓN: COMENTARIOS --}}
 <div class="mb-0">
@@ -759,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- Respuestas -->
                 @foreach ($comentario->respuestas as $respuesta)
-                  <div class="mt-3 ms-4 p-3 rounded-3 shadow-sm">
+                    <div class="mt-3 ms-4 p-3 rounded-3 shadow-sm" style="background-color: #e0f7fa;">
                     <div class="d-flex justify-content-between align-items-center">
                       <div>
                         <strong class="text-dark">{{ optional($respuesta->user)->name ?? 'Usuario eliminado' }}</strong>
@@ -784,32 +852,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
 
                     <!-- Modal Editar Respuesta -->
-<div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-  <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: auto;">
-    <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-      @csrf
-      @method('PUT')
-
-      <!-- Encabezado -->
-      <div class="mb-4 text-center">
-        <i class="bi bi-pencil-square text-warning fs-1"></i>
-        <h4 class="fw-bold text-dark">Editar Respuesta</h4>
-        <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
-      </div>
-
-      <!-- Textarea -->
-      <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
-
-      <!-- Botones -->
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
-        <button type="submit" class="btn btn-primary text-white">
-          <i class="bi bi-save-fill me-1"></i> Actualizar
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+                    <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+                      <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
+                        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+                          @csrf @method('PUT')
+                          <div class="mb-4 text-center">
+                            <i class="bi bi-pencil-square text-warning fs-1"></i>
+                            <h4 class="fw-bold text-dark">Editar Respuesta</h4>
+                            <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
+                          </div>
+                          <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100 mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
+                          <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.position-fixed').classList.add('d-none')">Cancelar</button>
+                            <button type="submit" class="btn btn-primary text-white">
+                              <i class="bi bi-save-fill me-1"></i> Actualizar
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
 
                     <!-- Modal Eliminar Respuesta (único por respuesta) -->
                     <div class="modal fade" id="deleteRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="deleteRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true">
@@ -860,8 +921,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                      @csrf
-                      @method('PUT')
+                      @csrf @method('PUT')
                       <div class="modal-body pt-0">
                         <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-3 w-100" rows="6" required>{{ $comentario->contenido }}</textarea>
                       </div>
@@ -919,8 +979,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <!-- Modal Nuevo Comentario -->
-  <!-- Modal Nuevo Comentario -->
-<div id="nuevoComentarioModal"
+    <div id="nuevoComentarioModal"
      class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center
             bg-black bg-opacity-50 d-none custom-modal"
      style="z-index: 1050;">
@@ -957,66 +1016,55 @@ document.addEventListener('DOMContentLoaded', function() {
 @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
   @foreach ($comentario->respuestas as $respuesta)
     <!-- Modal Editar Respuesta -->
-<div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-
-      <!-- Header -->
-      <div class="modal-header border-bottom-0">
-        <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
-          <i class="bi bi-pencil-square text-warning me-2"></i>
-          Editar Respuesta
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-
-      <!-- Body -->
-      <div class="modal-body">
-        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-          @csrf
-          @method('PUT')
-
-          <div class="mb-3">
-            <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
-            <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
+    <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
+              <i class="bi bi-pencil-square text-warning me-2"></i>
+              Editar Respuesta
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
-
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save-fill me-1"></i> Actualizar
-            </button>
+          <div class="modal-body">
+            <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+              @csrf @method('PUT')
+              <div class="mb-3">
+                <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
+                <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
+              </div>
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save-fill me-1"></i> Actualizar
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
-
     </div>
-  </div>
-</div>
 
-  <!-- Modal único para eliminar Comentario -->
-<div class="modal fade" id="deleteComentarioModal" tabindex="-1" aria-labelledby="deleteComentarioModalLabel" aria-hidden="true">
+  <!-- Modal para confirmar eliminación de tarea -->
+<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow text-center">
-
-            <div class="modal-header justify-content-center position-relative border-bottom-0">
-                <h5 class="modal-title fs-4 fw-bold text-danger" id="deleteComentarioModalLabel">
-                    <i class="bi bi-exclamation-triangle"></i>
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
                     Confirmar Eliminación Permanente
                 </h5>
             </div>
-
             <div class="modal-body">
                 <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
                     <i class="bi bi-exclamation-triangle"></i>
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
-                <p id="deleteComentarioText">¿Está seguro de que desea eliminar este comentario?</p>
+                <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
             </div>
-
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" class="d-inline">
+                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
@@ -1037,17 +1085,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteRespuestaText = document.getElementById('deleteRespuestaText');
 
     // Base URL con marcador para reemplazar
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
 
     deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const respuestaId = button.getAttribute('data-respuesta-id');
 
-
-
-        deleteRespuestaText.textContent = "¿Está seguro de que desea eliminar esta respuesta?";
-        deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
-
+        deleteRespuestaText.textContent = `¿Está seguro de que desea eliminar esta respuesta?`;
+        deleteRespuestaForm.action = baseDeleteUrl.replace('__ID__', respuestaId);
     });
 });
 </script>
@@ -1072,15 +1117,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteComentarioText = document.getElementById('deleteComentarioText');
 
     // Base de la URL de eliminación
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
 
     deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const comentarioId = button.getAttribute('data-comentario-id');
 
-        deleteComentarioText.textContent = "¿Está seguro de que desea eliminar este comentario?";
-        deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
-
+        deleteComentarioText.textContent = `¿Está seguro de que desea eliminar este comentario?`;
+        deleteComentarioForm.action = baseDeleteUrl.replace('__ID__', comentarioId);
     });
 });
 </script>
@@ -1091,6 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .modal-content {
     border-radius: 12px;
 }
+
 .modal-header {
     background-color: #f8f9fa;
 }
@@ -1104,6 +1149,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteTareaForm = document.getElementById('deleteTareaForm');
     const deleteTareaText = document.getElementById('deleteTareaText');
 
+
     deleteTareaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const tareaId = button.getAttribute('data-tarea-id');
@@ -1111,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
         deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
-
     });
 });
 </script>
@@ -1219,8 +1264,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Sincronizar checkboxes con el mismo data-id en la misma página
             document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
-                .forEach(cb => cb.checked = estaMarcado);
-
+                    .forEach(cb => cb.checked = estaMarcado);
         }
     });
 

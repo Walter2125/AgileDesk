@@ -201,7 +201,38 @@
                                             </div>
 
 
-                                            
+
+                                            <!-- Modal para confirmar eliminación de historia -->
+                                            <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content text-center"> <!-- Centramos todo -->
+                                                        <div class="modal-header justify-content-center">
+                                                            <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                                                                <i class="bi bi-exclamation-triangle text-danger"></i>
+                                                                Confirmar Eliminación Permanente
+                                                            </h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                                                <i class="bi bi-exclamation-triangle"></i>
+                                                                <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                                            </div>
+                                                            <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
 
                                         </div>
@@ -272,7 +303,7 @@
                                                      data-href="{{ route('historias.show', $historia->id) }}"
                                                      style="cursor:pointer; z-index: 0;">
                                                     <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
-                                                        {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                        {{ $historia->proyecto->codigo ?? 'H-' }}-{{ $historia->numero }} : {{ $historia->nombre }}
                                                     </strong>
                                                     @if ($historia->descripcion)
                                                         <div class="descripcion-limitada" style="
@@ -1054,28 +1085,23 @@
                     });
                 </script>
 
+
                 <script>
+
                     document.addEventListener("DOMContentLoaded", function () {
                         const buscador = document.getElementById("buscadorHistorias");
                         const limpiarBtn = document.getElementById("limpiarBusqueda");
+                        const columnas = document.querySelectorAll(".historia-lista");
 
-                        // Función para normalizar texto (quita tildes y minúsculas)
-                        function normalizar(texto) {
-                            return texto
-                                .toLowerCase()
-                                .normalize("NFD")
-                                .replace(/[\u0300-\u036f]/g, "");
-                        }
-
-                        // Función para filtrar historias
                         function realizarBusqueda() {
-                            const textoBusqueda = normalizar(buscador.value.trim());
+                            const textoBusqueda = buscador.value.toLowerCase().trim();
 
-                            // Selecciona solo las tarjetas de historias
-                            const historias = document.querySelectorAll(".card[data-historia-id]");
+                            // Seleccionar todas las tarjetas de historias
+                            const historias = document.querySelectorAll(".card.mb-4.p-2");
 
                             historias.forEach(historia => {
-                                const textoHistoria = normalizar(historia.textContent);
+                                // Buscar en el texto de la historia (nombre + descripción)
+                                const textoHistoria = historia.textContent.toLowerCase();
                                 if (textoHistoria.includes(textoBusqueda)) {
                                     historia.style.display = "block";
                                 } else {
@@ -1084,18 +1110,24 @@
                             });
                         }
 
-                        // Buscar mientras se escribe
-                        buscador.addEventListener("input", realizarBusqueda);
+                        // Buscar mientras se escribe (con retardo de 300ms para mejor performance)
+                        let timeoutBusqueda;
+                        buscador.addEventListener("input", () => {
+                            clearTimeout(timeoutBusqueda);
+                            timeoutBusqueda = setTimeout(realizarBusqueda, 300);
+                        });
 
                         // Botón para limpiar la búsqueda
                         limpiarBtn.addEventListener("click", function () {
                             buscador.value = "";
-                            const historias = document.querySelectorAll(".card[data-historia-id]");
+                            const historias = document.querySelectorAll(".card.mb-4.p-2");
                             historias.forEach(h => h.style.display = "block");
                         });
                     });
-                </script>
 
+
+
+                </script>
 
                 <script>
                     document.addEventListener('click', function (e) {
