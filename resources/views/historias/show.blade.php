@@ -561,7 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 No hay tareas registradas para esta historia.
             </div>
         @else
-
             {{-- ✅ Barra de progreso arriba de las tareas --}}
             <div class="m-2 p-3 bg-white rounded shadow-sm">
                 <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
@@ -633,6 +632,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             </div>
         @endif
+
+            {{-- Botones finales --}}
+            <div class="ms-3 mb-3">
+                <a href="{{ route('tareas.index', $historia->id) }}"
+                   class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                   style="width: 40px; height: 40px;" title="Crear tarea">
+                    <i class="bi bi-plus-lg"></i>
+                </a>
+            </div>
         <!-- Modal para confirmar eliminación de tarea -->
 <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -670,14 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
-        {{-- Botones finales --}}
-        <div class="ms-3 mb-3">
-            <a href="{{ route('tareas.index', $historia->id) }}"
-                class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-                style="width: 40px; height: 40px;" title="Crear tarea">
-                <i class="bi bi-plus-lg"></i>
-            </a>
-        </div>
+
     </div>
 </div>
 
