@@ -1034,23 +1034,28 @@
                     });
                 </script>
 
-
                 <script>
-
                     document.addEventListener("DOMContentLoaded", function () {
                         const buscador = document.getElementById("buscadorHistorias");
                         const limpiarBtn = document.getElementById("limpiarBusqueda");
-                        const columnas = document.querySelectorAll(".historia-lista");
 
+                        // Función para normalizar texto (quita tildes y minúsculas)
+                        function normalizar(texto) {
+                            return texto
+                                .toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "");
+                        }
+
+                        // Función para filtrar historias
                         function realizarBusqueda() {
-                            const textoBusqueda = buscador.value.toLowerCase().trim();
+                            const textoBusqueda = normalizar(buscador.value.trim());
 
-                            // Seleccionar todas las tarjetas de historias
-                            const historias = document.querySelectorAll(".card.mb-4.p-2");
+                            // Selecciona solo las tarjetas de historias
+                            const historias = document.querySelectorAll(".card[data-historia-id]");
 
                             historias.forEach(historia => {
-                                // Buscar en el texto de la historia (nombre + descripción)
-                                const textoHistoria = historia.textContent.toLowerCase();
+                                const textoHistoria = normalizar(historia.textContent);
                                 if (textoHistoria.includes(textoBusqueda)) {
                                     historia.style.display = "block";
                                 } else {
@@ -1059,24 +1064,18 @@
                             });
                         }
 
-                        // Buscar mientras se escribe (con retardo de 300ms para mejor performance)
-                        let timeoutBusqueda;
-                        buscador.addEventListener("input", () => {
-                            clearTimeout(timeoutBusqueda);
-                            timeoutBusqueda = setTimeout(realizarBusqueda, 300);
-                        });
+                        // Buscar mientras se escribe
+                        buscador.addEventListener("input", realizarBusqueda);
 
                         // Botón para limpiar la búsqueda
                         limpiarBtn.addEventListener("click", function () {
                             buscador.value = "";
-                            const historias = document.querySelectorAll(".card.mb-4.p-2");
+                            const historias = document.querySelectorAll(".card[data-historia-id]");
                             historias.forEach(h => h.style.display = "block");
                         });
                     });
-
-
-
                 </script>
+
 
                 <script>
                     document.addEventListener('click', function (e) {
@@ -1127,17 +1126,16 @@
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            // Detecta clicks o toques en todo el documento
+
                             ['click', 'touchstart'].forEach(eventType => {
                                 document.addEventListener(eventType, function (e) {
-                                    // Evitar que botones, enlaces o inputs disparen la navegación
+
                                     if (
                                         e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target], .menu-wrapper, .dropdown-menu')
                                     ) {
                                         return;
                                     }
 
-                                    // Buscar si se hizo click/toque dentro de una tarjeta historia
                                     const card = e.target.closest('.card-historia');
                                     if (card) {
                                         const href = card.dataset.href;
