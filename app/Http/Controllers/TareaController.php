@@ -119,6 +119,32 @@ return redirect()->route('historias.show', $historia->id)
 
     return response()->json(['success' => true]);
 }
+public function getProgress($historiaId)
+{
+    $total = Tarea::where('historia_id', $historiaId)->count();
+    $completadas = Tarea::where('historia_id', $historiaId)
+                        ->where('completada', true)
+                        ->count();
 
+    $progreso = $total > 0 ? ($completadas / $total) * 100 : 0;
+
+    return response()->json(['progreso' => $progreso]);
+}
+
+public function toggleComplete(Request $request, $id)
+{
+    $tarea = Tarea::findOrFail($id);
+    $tarea->completada = !$tarea->completada;
+    $tarea->save();
+
+    // Calcular nuevo progreso
+    $total = Tarea::where('historia_id', $tarea->historia_id)->count();
+    $completadas = Tarea::where('historia_id', $tarea->historia_id)
+                        ->where('completada', true)
+                        ->count();
+    $progreso = $total > 0 ? ($completadas / $total) * 100 : 0;
+
+    return response()->json(['progreso' => $progreso]);
+}
 
 }
