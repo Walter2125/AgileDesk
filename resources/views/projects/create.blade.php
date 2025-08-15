@@ -140,6 +140,7 @@
 @section('scripts')
 <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
 <script>
+sessionStorage.removeItem('projectFormData');
 $(function () {
     // Recuperar datos del sessionStorage si existen
     let selectedUsers = @json(old('selected_users', []));
