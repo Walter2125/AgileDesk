@@ -184,55 +184,25 @@
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             &#x22EE; {{-- ⋮ --}}
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
                                                                 <a class="dropdown-item"
-                                                                   href="#"
-                                                                   data-bs-toggle="modal"
-                                                                   data-bs-target="#deleteHistoriaModal"
-                                                                   data-historia-id="{{ $historia->id }}"
-                                                                   data-historia-nombre="{{ $historia->nombre }}">
+                                                                    href="#"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteHistoriaModal"
+                                                                    data-historia-id="{{ $historia->id }}"
+                                                                    data-historia-nombre="{{ $historia->nombre }}">
                                                                     Eliminar
-                                                                </a>
+                                                                    </a>
                                                             </li>
-
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
 
 
-                                            <!-- Modal para confirmar eliminación de historia -->
-                                            <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content text-center"> <!-- Centramos todo -->
-                                                        <div class="modal-header justify-content-center">
-                                                            <h5 class="modal-title" id="deleteHistoriaModalLabel">
-                                                                <i class="bi bi-exclamation-triangle text-danger"></i>
-                                                                Confirmar Eliminación Permanente
-                                                            </h5>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
-                                                                <i class="bi bi-exclamation-triangle"></i>
-                                                                <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                                                            </div>
-                                                            <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
-                                                        </div>
-                                                        <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                            <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                <input type="hidden" name="_method" value="DELETE">
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
 
 
                                         </div>
@@ -245,6 +215,7 @@
                             </div>
                         @endforeach
                     </div>
+                   
 
                 </div>
                     <div class="kanban-accordion">
@@ -372,6 +343,60 @@
                         </div>
 
                     </div>
+                    <!-- los modales nunca ban dentro de el foreach-->
+                    <!-- Modal único fuera del foreach -->
+<div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteHistoriaForm" action="" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para actualizar modal dinámicamente -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteHistoriaModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var historiaId = button.getAttribute('data-historia-id');
+            var historiaNombre = button.getAttribute('data-historia-nombre');
+
+            // Actualizar el texto del modal
+            var modalText = deleteModal.querySelector('#deleteHistoriaText');
+            modalText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+
+            // Actualizar el action del formulario dinámicamente
+            var form = deleteModal.querySelector('#deleteHistoriaForm');
+            form.action = `/historias/${historiaId}`; // aquí Laravel recibirá la solicitud DELETE correctamente
+        });
+    });
+</script>
+
+
 
                 <script>
                     document.querySelectorAll('.btn-open-accordion-modal').forEach(button => {
