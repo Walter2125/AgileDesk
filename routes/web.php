@@ -80,6 +80,8 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/columnas/{columna}/historias/create', [HistoriasController::class, 'createFromColumna'])->name('historias.create.fromColumna');
 
     //Rutas para las historias
+    Route::resource('historias', HistoriasController::class);
+
     Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
    // Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
     Route::get('/historias/create/fromColumna/{columna}', [HistoriasController::class, 'createFromColumna'])
@@ -211,8 +213,6 @@ Route::middleware(['auth', 'role:superadmin'])
         // Historial completo del sistema
         Route::get('/historial-sistema', [HistorialCambioController::class, 'sistema'])->name('historial.sistema');
         Route::delete('/historial-sistema/limpiar', [HistorialCambioController::class, 'limpiarHistorial'])->name('historial.limpiar');
-
-        Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
     });
 
 // Rutas de autenticación

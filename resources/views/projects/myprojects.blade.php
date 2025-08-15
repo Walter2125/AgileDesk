@@ -629,7 +629,6 @@ body {
         @endforelse
     </div>
 
-
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">
     @forelse($allProjects as $project)
