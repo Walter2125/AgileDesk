@@ -66,9 +66,10 @@ class RegisteredUserController extends Controller
         }
 
         // 2. Verificar si es el primer usuario (futuro superadministrador)
-        $isFirstUser = User::count() === 0;
+        //$isFirstUser = User::count() === 0;
         
         // Determinar el tipo de usuario y estado de aprobación
+        /*
         if ($isFirstUser) {
             $usertype = 'superadmin';
             $isApproved = true;  // El superadmin se aprueba automáticamente
@@ -76,14 +77,14 @@ class RegisteredUserController extends Controller
             $usertype = 'collaborator';
             $isApproved = false; // Los demás usuarios requieren aprobación
         }
-
+        */
         // 3. Creación del usuario con rol y flags por defecto
         $user = User::create([
             'name'         => $request->name,
             'email'        => $request->email,
             'password'     => $request->password,
-            'usertype'     => $usertype,
-            'is_approved'  => $isApproved,
+           // 'usertype'     => $usertype,
+            //'is_approved'  => $isApproved,
             'is_rejected'  => false,
         ]);
 
@@ -91,13 +92,14 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         // 5. Manejo del login según el tipo de usuario
-        if ($isFirstUser) {
+        /*if ($isFirstUser) {
             // El superadmin se loguea automáticamente
             Auth::login($user);
             return redirect()->route('dashboard');
         } else {
             // Los demás usuarios no se loguean hasta ser aprobados
+        */
             return view('pendiente');
-        }
+        //}
     }
 }

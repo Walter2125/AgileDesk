@@ -607,7 +607,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p>
                                 <strong>Tipo de actividad:</strong><br>
                                 <span class="badge px-3 py-2 rounded-pill text-white"
-                                    style="background-color: #9d81d0ff; font-size: 0.75rem;">
+                                    style="background-color: #6f42c1; font-size: 0.75rem;">
                                     <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
                                 </span>
                             </p>

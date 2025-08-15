@@ -87,22 +87,26 @@
             </form>
         @endif
 
-        <div class="d-flex gap-2 ms-auto">
-            <button class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCrearSprint"
-                    id="btnAbrirCrearSprint"
-                    style="height: 40px">
-                Crear sprint
-            </button>
+        @if(auth()->user()->usertype === 'admin' || auth()->user()->usertype === 'superadmin')
+            <div class="d-flex gap-2 ms-auto">
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint"
+                        style="height: 40px">
+                    Crear sprint
+                </button>
 
-            <button class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalAgregarColumna"
-                    style="height: 40px">
-                Agregar columna
-            </button>
-        </div>
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna"
+                        style="height: 40px">
+                    Agregar columna
+                </button>
+            </div>
+        @endif
+
+
 
     </div>
 
@@ -184,23 +188,18 @@
                                                         <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             &#x22EE; {{-- ⋮ --}}
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                         <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
-                                                                <a class="dropdown-item"
-                                                                   href="#"
-                                                                   data-bs-toggle="modal"
-                                                                   data-bs-target="#deleteHistoriaModal"
-                                                                   data-historia-id="{{ $historia->id }}"
-                                                                   data-historia-nombre="{{ $historia->nombre }}">
+                                                                <a class="dropdown-item"href="#" data-bs-toggle="modal"data-bs-target="#deleteHistoriaModal"  data-historia-id="{{ $historia->id }}"data-historia-nombre="{{ $historia->nombre }}">
                                                                     Eliminar
                                                                 </a>
                                                             </li>
-
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
+
 
 
                                             <!-- Modal para confirmar eliminación de historia -->
@@ -224,7 +223,8 @@
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                                             <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
                                                                 @csrf
-                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                @method('DELETE')
+
                                                                 <button type="submit" class="btn btn-danger">
                                                                     <i class="bi bi-trash3"></i> Eliminar Permanentemente
                                                                 </button>
@@ -245,6 +245,7 @@
                             </div>
                         @endforeach
                     </div>
+                   
 
                 </div>
                     <div class="kanban-accordion">
@@ -302,7 +303,7 @@
                                                      data-href="{{ route('historias.show', $historia->id) }}"
                                                      style="cursor:pointer; z-index: 0;">
                                                     <strong class="ellipsis-nombre" title="{{ $historia->nombre }}">
-                                                        {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-{{ $historia->numero }} : {{ $historia->nombre }}
+                                                        {{ $historia->proyecto->codigo ?? 'H-' }}-{{ $historia->numero }} : {{ $historia->nombre }}
                                                     </strong>
                                                     @if ($historia->descripcion)
                                                         <div class="descripcion-limitada" style="
@@ -372,6 +373,60 @@
                         </div>
 
                     </div>
+                    <!-- los modales nunca ban dentro de el foreach-->
+                    <!-- Modal único fuera del foreach -->
+<div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+                <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteHistoriaForm" action="" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para actualizar modal dinámicamente -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteHistoriaModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Botón que abrió el modal
+            var historiaId = button.getAttribute('data-historia-id');
+            var historiaNombre = button.getAttribute('data-historia-nombre');
+
+            // Actualizar el texto del modal
+            var modalText = deleteModal.querySelector('#deleteHistoriaText');
+            modalText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+
+            // Actualizar el action del formulario dinámicamente
+            var form = deleteModal.querySelector('#deleteHistoriaForm');
+            form.action = `/historias/${historiaId}`; // aquí Laravel recibirá la solicitud DELETE correctamente
+        });
+    });
+</script>
+
+
 
                 <script>
                     document.querySelectorAll('.btn-open-accordion-modal').forEach(button => {
@@ -1084,6 +1139,17 @@
                         });
                     });
                 </script>
+                <script>
+                    document.addEventListener('show.bs.dropdown', function (event) {
+                       
+                        document.querySelectorAll('.dropdown-menu.show').forEach(function (menu) {
+                           
+                            if (!menu.closest('.dropdown').isSameNode(event.target.closest('.dropdown'))) {
+                                bootstrap.Dropdown.getInstance(menu.previousElementSibling)?.hide();
+                            }
+                        });
+                    });
+                </script>
 
                 <script>
                     function abrirModalEditarColumna(id, nombre) {
@@ -1123,17 +1189,16 @@
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            // Detecta clicks o toques en todo el documento
+
                             ['click', 'touchstart'].forEach(eventType => {
                                 document.addEventListener(eventType, function (e) {
-                                    // Evitar que botones, enlaces o inputs disparen la navegación
+
                                     if (
                                         e.target.closest('a, button, input, textarea, select, [data-bs-toggle], [data-bs-target], .menu-wrapper, .dropdown-menu')
                                     ) {
                                         return;
                                     }
 
-                                    // Buscar si se hizo click/toque dentro de una tarjeta historia
                                     const card = e.target.closest('.card-historia');
                                     if (card) {
                                         const href = card.dataset.href;

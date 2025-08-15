@@ -18,7 +18,7 @@ class AdminUserSeeder extends Seeder
         'name' => 'Admin',
         'email' => 'admin@unah.hn',
         'password' => 'Rsbarm25',
-        'usertype' => 'admin',
+        'usertype' => 'superadmin',
         'is_approved' => true,
     ]);
 }
