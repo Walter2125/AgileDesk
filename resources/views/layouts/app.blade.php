@@ -496,63 +496,6 @@
         #page-content-wrapper {
             margin-left: 0 !important;
         }
-        
-        /* Asegurar que el user-dropdown sea visible en móviles */
-        .user-dropdown {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            position: relative !important;
-            margin-top: auto !important;
-            padding: 1rem !important;
-            border-top: 1px solid rgba(255,255,255,0.1) !important;
-        }
-        
-        .user-info.user-dropdown-btn {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            width: 100% !important;
-            min-height: 60px !important;
-            padding: 0.75rem !important;
-            background: rgba(255,255,255,0.05) !important;
-            border-radius: 0.5rem !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-        }
-        
-        .user-info.user-dropdown-btn:hover {
-            background: rgba(255,255,255,0.1) !important;
-            border-color: rgba(255,255,255,0.2) !important;
-        }
-        
-        .user-avatar {
-            display: flex !important;
-            width: 40px !important;
-            height: 40px !important;
-            min-width: 40px !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        
-        .sidebar-text {
-            display: flex !important;
-            flex-direction: column !important;
-            margin-left: 0.75rem !important;
-            flex: 1 !important;
-        }
-        
-        /* Asegurar que el sidebar tenga flexbox para posicionar el dropdown al final */
-        #sidebar-wrapper {
-            display: flex !important;
-            flex-direction: column !important;
-            min-height: 100vh !important;
-        }
-        
-        /* La navegación debe ocupar el espacio disponible */
-        .list-group.mb-auto {
-            flex: 1 !important;
-            margin-bottom: 0 !important;
-        }
     }
     
     /* Asegurar que todos los elementos usen el ancho completo */
@@ -789,6 +732,24 @@
     .user-dropdown {
         position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+        /* margin-top:auto removido para evitar que desaparezca en móviles */
+        padding-bottom: .5rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .sidebar .user-dropdown {
+            position: sticky;
+            bottom: 0;
+            background: rgba(0,0,0,0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding-top: .5rem;
+            z-index: 1200;
+        }
+        .sidebar .user-dropdown .dropdown-menu {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
     }
 
     .user-info {
