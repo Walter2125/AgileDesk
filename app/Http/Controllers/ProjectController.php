@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
     public function create(Request $request)
     {
-        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
+        $users = User::whereNotIn('usertype', ['superadmin']) // Solo excluir superadmin, permitir admin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)
@@ -132,7 +132,7 @@ class ProjectController extends Controller
         $query = $request->input('query');
 
         $users = User::where('name', 'like', "%{$query}%")
-            ->whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
+            ->whereNotIn('usertype', ['superadmin']) // Solo excluir superadmin, permitir admin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->where('id', '!=', Auth::id())
@@ -182,7 +182,8 @@ class ProjectController extends Controller
             return redirect()->route('projects.my')->with('error', 'No tienes permiso para editar este proyecto.');
         }
 
-        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
+
+        $users = User::whereNotIn('usertype', ['superadmin']) // Solo excluir superadmin, permitir admin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->where('id', '!=', $project->user_id)
@@ -293,7 +294,8 @@ class ProjectController extends Controller
 
     public function listUsers(Request $request)
     {
-        $users = User::whereNotIn('usertype', ['admin', 'superadmin']) // Excluir admin y superadmin
+
+        $users = User::whereNotIn('usertype', ['superadmin']) // Solo excluir superadmin, permitir admin
             ->where('is_approved', true)
             ->where('is_rejected', false)
             ->paginate(5)

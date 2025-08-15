@@ -10,7 +10,6 @@
         </thead>
         <tbody>
             @foreach($users as $user)
-                @if ($user->usertype !== 'admin')
                 <tr>
                     <td class="text-center">
                         <input type="checkbox"
@@ -37,7 +36,6 @@
                         <span class="badge {{ $roleData['class'] }}">{{ $roleData['label'] }}</span>
                     </td>
                 </tr>
-                @endif
             @endforeach
         </tbody>
     </table>
