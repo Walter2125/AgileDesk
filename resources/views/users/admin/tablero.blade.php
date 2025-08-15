@@ -88,22 +88,25 @@
             </form>
         @endif
 
-        <div class="d-flex gap-2 ms-auto">
-            <button class="btn btn-outline-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCrearSprint"
-                    id="btnAbrirCrearSprint"
-                    style="height: 40px">
-                Crear sprint
-            </button>
+        @if(auth()->user()->usertype === 'admin' || auth()->user()->usertype === 'superadmin')
+            <div class="d-flex gap-2 ms-auto">
+                <button class="btn btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCrearSprint"
+                        id="btnAbrirCrearSprint"
+                        style="height: 40px">
+                    Crear sprint
+                </button>
 
-            <button class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalAgregarColumna"
-                    style="height: 40px">
-                Agregar columna
-            </button>
-        </div>
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAgregarColumna"
+                        style="height: 40px">
+                    Agregar columna
+                </button>
+            </div>
+        @endif
+
 
     </div>
 

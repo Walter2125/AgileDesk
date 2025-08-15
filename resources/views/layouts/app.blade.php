@@ -2183,21 +2183,6 @@
         window.addEventListener('resize', adjust);
         adjust();
     });
-    document.addEventListener("DOMContentLoaded", function() {
-        const dropdownDiv = document.querySelector('.dropdown');
-
-        function ajustarDropdown() {
-            if (window.innerWidth < 768) {
-                dropdownDiv.classList.add('dropup');
-            } else {
-                dropdownDiv.classList.remove('dropup');
-            }
-        }
-
-        ajustarDropdown();
-        window.addEventListener('resize', ajustarDropdown);
-    });
-
     </script>
 
 
