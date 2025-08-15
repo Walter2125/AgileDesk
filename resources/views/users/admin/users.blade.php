@@ -6,6 +6,8 @@
     @endsection
 
 @section('styles')
+<!-- Meta CSRF token para peticiones AJAX -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- DataTables Bootstrap 5 CSS - Local -->
 <link rel="stylesheet" href="{{ asset('vendor/datatables/css/dataTables.bootstrap5.min.css') }}">
 <style>
@@ -311,9 +313,6 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-clock me-1"></i> Usuarios Pendientes
-                        </a>
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
                             <i class="bi bi-archive me-1"></i> Eliminados
                         </a>
@@ -330,7 +329,7 @@
                                         <th>Email</th>
                                         <th class="text-center">Rol</th>
                                         <th class="text-center">Estado</th>
-                                        <th class="text-center">Fecha de Registro</th>
+                                        <th class="text-center">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -405,7 +404,57 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                {{ $user->created_at->format('d/m/Y H:i') }}
+                                                @php
+                                                    $isCurrentUser = Auth::user()->id === $user->id;
+                                                    $currentUserRole = Auth::user()->usertype;
+                                                    $canManageUser = false;
+                                                    
+                                                    // Lógica de permisos basada en roles
+                                                    if ($currentUserRole === 'superadmin' && !$isCurrentUser) {
+                                                        $canManageUser = true;
+                                                    } elseif ($currentUserRole === 'admin' && $user->usertype === 'collaborator' && !$user->is_approved) {
+                                                        $canManageUser = true;
+                                                    }
+                                                @endphp
+                                                
+                                                @if($canManageUser)
+                                                    <div class="d-flex gap-1 justify-content-center" role="group">
+                                                        @if(!$user->is_approved && !$user->is_rejected)
+                                                            {{-- Botones de Aprobar y Rechazar para usuarios pendientes --}}
+                                                            <button type="button" class="btn btn-outline-success btn-sm px-2 py-1"
+                                                                    data-bs-toggle="modal" data-bs-target="#approveModal"
+                                                                    data-user-id="{{ $user->id }}"
+                                                                    data-user-name="{{ $user->name }}"
+                                                                    data-user-email="{{ $user->email }}"
+                                                                    title="Aprobar Usuario">
+                                                                <i class="bi bi-check-circle"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1"
+                                                                    data-bs-toggle="modal" data-bs-target="#rejectModal"
+                                                                    data-user-id="{{ $user->id }}"
+                                                                    data-user-name="{{ $user->name }}"
+                                                                    title="Rechazar Usuario">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        @else
+                                                            {{-- Botón de Eliminar para usuarios aprobados o rechazados --}}
+                                                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1"
+                                                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                    data-user-id="{{ $user->id }}"
+                                                                    data-user-name="{{ $user->name }}"
+                                                                    data-user-email="{{ $user->email }}"
+                                                                    data-user-type="{{ $user->usertype }}"
+                                                                    title="Eliminar Usuario">
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    {{-- Sin acciones disponibles --}}
+                                                    <span class="text-muted">
+                                                        <i class="bi bi-dash"></i>
+                                                    </span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -448,9 +497,13 @@ document.addEventListener('DOMContentLoaded', function() {
         ordering: false,
         info: true,
         lengthChange: true,
-        lengthMenu: [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+        lengthMenu: [ [5, 10, 20, 30], [5, 10, 20, 30] ],
         pageLength: 10,
         pagingType: 'full_numbers',
+        columnDefs: [
+            { orderable: false, targets: [5] }, // Desactivar ordenamiento en columna Acciones (nuevo índice 5)
+            { className: 'text-center', targets: [0, 3, 4, 5] } // Centrar columnas numéricas y de acciones
+        ],
         language: {
             emptyTable: 'No hay datos disponibles en la tabla',
             zeroRecords: 'No se encontraron resultados',
@@ -782,50 +835,370 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 5000);
     }
+
+    // ==========================================
+    // GESTIÓN DE MODALES PARA ACCIONES DE USUARIOS
+    // ==========================================
+    
+    // Función para limpiar completamente los modales
+    function cleanupModals() {
+        // Remover todos los backdrops
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        
+        // Restaurar el estado del body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Cerrar todos los modales que puedan estar abiertos
+        document.querySelectorAll('.modal.show').forEach(modal => {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+    }
+    
+    // Modal de Aprobación
+    document.querySelectorAll('[data-bs-target="#approveModal"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const userEmail = this.getAttribute('data-user-email');
+            
+            document.getElementById('approveUserId').value = userId;
+            document.getElementById('approveUserInfo').textContent = `${userName} (${userEmail})`;
+            document.getElementById('approveUserForm').action = `{{ url('/') }}/admin/users/${userId}/approve`;
+        });
+    });
+
+    // Modal de Rechazo
+    document.querySelectorAll('[data-bs-target="#rejectModal"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            
+            document.getElementById('rejectUserId').value = userId;
+            document.getElementById('rejectUserInfo').textContent = userName;
+            document.getElementById('rejectUserForm').action = `{{ url('/') }}/admin/users/${userId}/reject`;
+        });
+    });
+
+    // Modal de Eliminación (unificado y simplificado)
+    const BASE_URL = `{{ url('/') }}`;
+    document.addEventListener('click', function(e){
+        const trigger = e.target.closest('[data-bs-target="#deleteModal"]');
+        if(!trigger) return;
+        const userId = trigger.getAttribute('data-user-id');
+        const userName = trigger.getAttribute('data-user-name');
+        const userEmail = trigger.getAttribute('data-user-email');
+        const userType = trigger.getAttribute('data-user-type') || 'user';
+        // Llenar campos visibles
+        const infoEl = document.getElementById('deleteUserInfo');
+        if(infoEl) infoEl.textContent = `${userName} (${userEmail})`;
+        // Etiqueta tipo
+        const typeLabel = document.getElementById('deleteUserTypeLabel');
+        if(typeLabel) typeLabel.textContent = (userType === 'admin' ? 'administrador' : 'usuario');
+        // Aviso extra admin
+        const adminNotice = document.getElementById('adminExtraNotice');
+        if(adminNotice){
+            adminNotice.classList.toggle('d-none', userType !== 'admin');
+        }
+        // Form
+        const form = document.getElementById('deleteUserForm');
+        if(form){
+            form.dataset.userId = userId;
+            form.dataset.userRole = userType;
+            form.action = `${BASE_URL}/admin/users/${userId}/delete`;
+            console.log('Acción DELETE (users.blade):', form.action);
+        }
+    });
+
+    // Manejo de envío de formularios con feedback
+    const handleFormSubmit = (formId, successMessage, errorMessage) => {
+        const form = document.getElementById(formId);
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Cambiar estado del botón
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin me-1"></i> Procesando...';
+            
+            // Crear FormData
+            const formData = new FormData(form);
+            
+            // Enviar solicitud AJAX
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(successMessage, 'success');
+                    
+                    // Limpiar modales completamente
+                    cleanupModals();
+                    
+                    // Recargar página después de un breve delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification(data.message || errorMessage, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification(errorMessage, 'danger');
+                
+                // Limpiar modales en caso de error también
+                cleanupModals();
+            })
+            .finally(() => {
+                // Restaurar botón
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            });
+        });
+    };
+
+    // Configurar manejo de formularios
+    handleFormSubmit('approveUserForm', 'Usuario aprobado exitosamente', 'Error al aprobar el usuario');
+    handleFormSubmit('rejectUserForm', 'Usuario rechazado exitosamente', 'Error al rechazar el usuario');
+    // Eliminación: dejar envío tradicional del formulario (sin fetch) para evitar problemas de parsing JSON.
+
+    // Limpiar backdrop cuando se cierran los modales manualmente
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function () {
+            // Limpiar cualquier backdrop que pueda quedar
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            
+            // Restaurar scroll del body
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+    });
+
+    // Listener global para limpiar modales con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            setTimeout(cleanupModals, 100);
+        }
+    });
+
+    // Listener para clicks en backdrop
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            setTimeout(cleanupModals, 100);
+        }
+    });
+
+    // Reinicializar event listeners después de DataTables draw
+    $('#usersTable').on('draw.dt', function() {
+        // Reinicializar botones de modales
+        document.querySelectorAll('[data-bs-target="#approveModal"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const userName = this.getAttribute('data-user-name');
+                const userEmail = this.getAttribute('data-user-email');
+                
+                document.getElementById('approveUserId').value = userId;
+                document.getElementById('approveUserInfo').textContent = `${userName} (${userEmail})`;
+                document.getElementById('approveUserForm').action = `{{ url('/') }}/admin/users/${userId}/approve`;
+            });
+        });
+
+        document.querySelectorAll('[data-bs-target="#rejectModal"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const userName = this.getAttribute('data-user-name');
+                
+                document.getElementById('rejectUserId').value = userId;
+                document.getElementById('rejectUserInfo').textContent = userName;
+                document.getElementById('rejectUserForm').action = `{{ url('/') }}/admin/users/${userId}/reject`;
+            });
+        });
+
+        document.querySelectorAll('[data-bs-target="#deleteModal"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const userName = this.getAttribute('data-user-name');
+                const userEmail = this.getAttribute('data-user-email');
+                const userType = this.getAttribute('data-user-type');
+                
+                document.getElementById('deleteUserId').value = userId;
+                document.getElementById('deleteUserInfo').textContent = `${userName} (${userEmail})`;
+                // Mantener ruta unificada de soft delete siempre
+                document.getElementById('deleteUserForm').action = `{{ url('/') }}/admin/users/${userId}/delete`;
+            });
+        });
+    });
 });
 </script>
+
+{{-- Agregar estilos para la animación de carga --}}
+<style>
+    .spin {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
 
 <!-- Modal de Confirmación de Cambio de Rol -->
 <div class="modal fade" id="roleChangeModal" tabindex="-1" aria-labelledby="roleChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
+            <div class="modal-header">
                 <h5 class="modal-title" id="roleChangeModalLabel">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cambio de Rol
+                    <i class="bi bi-person-gear text-warning"></i>
+                    Confirmar Cambio de Rol
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-warning bg-opacity-25 rounded-circle p-3 me-3">
-                        <i class="bi bi-person-gear fs-2 text-warning"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1">Cambio de Rol de Usuario</h6>
-                        <small class="text-muted">Esta acción modificará los permisos del usuario</small>
-                    </div>
+            <div class="modal-body text-center">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción modificará los permisos del usuario.
                 </div>
-                <p class="mb-2">
-                    <strong>Usuario:</strong> <span id="modalUserName"></span>
-                </p>
-                <p class="mb-3">
-                    <strong>¿Estás seguro de que deseas cambiar el rol de este usuario a:</strong>
-                    <br>
-                    <span id="modalNewRole" class="badge bg-primary fs-6 mt-1"></span>
-                </p>
-                <div class="alert alert-info d-flex align-items-center">
-                    <i class="bi bi-info-circle-fill me-2"></i>
-                    <small>Los permisos del usuario se actualizarán automáticamente según su nuevo rol.</small>
-                </div>
+                <p>¿Está seguro de que desea cambiar el rol de <strong id="modalUserName"></strong> a <strong id="modalNewRole"></strong>?</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Cancelar
-                </button>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-warning" id="confirmRoleChange">
-                    <i class="bi bi-check-circle me-1"></i>Confirmar Cambio
+                    <i class="bi bi-check-circle me-1"></i> Confirmar Cambio
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal de Aprobación --}}
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="approveModalLabel">
+                    <i class="bi bi-check-circle text-success"></i>
+                    Aprobar Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="approveUserForm" action="#">
+                @csrf
+                @method('POST')
+                <input type="hidden" name="user_id" id="approveUserId" value="">
+                <div class="modal-body text-center">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>¿Confirmar aprobación?</strong>
+                    </div>
+                    <p>El usuario <strong id="approveUserInfo"></strong> será aprobado en el sistema.</p>
+                    
+                    @if(Auth::user()->isSuperAdmin())
+                        <div class="mb-3">
+                            <label for="userRole" class="form-label">Asignar Rol:</label>
+                            <select class="form-select" id="userRole" name="role" required>
+                                <option value="">Seleccionar rol...</option>
+                                <option value="collaborator">Colaborador</option>
+                                <option value="admin">Administrador</option>
+                                <option value="superadmin">Superadministrador</option>
+                            </select>
+                        </div>
+                    @else
+                        <input type="hidden" name="role" value="collaborator">
+                    @endif
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="approveSubmitBtn" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Aprobar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal de Rechazo --}}
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">
+                    <i class="bi bi-x-circle text-danger"></i>
+                    Rechazar Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="rejectUserForm" action="#">
+                @csrf
+                @method('POST')
+                <input type="hidden" name="user_id" id="rejectUserId" value="">
+                <div class="modal-body text-center">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                    </div>
+                    <p>¿Está seguro de que desea rechazar a <strong id="rejectUserInfo"></strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="rejectSubmitBtn" class="btn btn-danger">
+                        <i class="bi bi-trash3 me-1"></i> Rechazar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal de Eliminación --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-trash3 text-danger"></i>
+                    Eliminar Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="deleteUserForm" action="#">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="user_id" id="deleteUserId" value="">
+                <div class="modal-body text-center">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                    </div>
+                    <p>¿Está seguro de que desea eliminar permanentemente <span id="deleteUserTypeLabel">al usuario</span> <strong id="deleteUserInfo" class="text-danger"></strong>?</p>
+                    <div id="adminExtraNotice" class="mt-2 small text-warning d-none">
+                        <i class="bi bi-info-circle"></i> Los proyectos del administrador NO se eliminarán.
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" id="deleteSubmitBtn" class="btn btn-danger">
+                        <i class="bi bi-trash3 me-1"></i> Eliminar Usuario
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -164,8 +164,7 @@ Route::middleware(['auth', 'role:superadmin,admin'])
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
-        // Gestión de usuarios pendientes
-        Route::get('/miembros', [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
+    // (Eliminado) Ruta de usuarios pendientes '/miembros' sustituida por vista principal users
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');

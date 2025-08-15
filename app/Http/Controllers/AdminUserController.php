@@ -22,34 +22,14 @@ class AdminUserController extends Controller
                 ->get();
         }
 
-        $pendingUsers = User::where('usertype', 'collaborator')
-            ->where('is_approved', false)
-            ->where('is_rejected', false)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // Si la petición es AJAX (DataTables)
+        // Vista única maneja aprobaciones y rechazos; no se pasa lista separada de pendientes
         if (request()->ajax()) {
-            // Formato para DataTables
-            return response()->json([
-                'data' => $users
-            ]);
+            return response()->json(['data' => $users]);
         }
-
-        return view('users.admin.users', compact('users', 'pendingUsers'));
+        return view('users.admin.users', compact('users'));
     }
     
-    public function pendingUsers()
-    {
-        // Obtener solo usuarios pendientes para la vista index
-        $pendingUsers = User::where('usertype', 'collaborator')
-            ->where('is_approved', false)
-            ->where('is_rejected', false)
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return view('users.admin.index', compact('pendingUsers'));
-    }
+    // Método pendingUsers eliminado: se centraliza lógica en index()
     
     public function approve(User $user, Request $request)
     {
@@ -65,7 +45,7 @@ class AdminUserController extends Controller
                     'message' => $message,
                 ], 400);
             }
-            return redirect()->route('admin.users.index')->with('error', $message);
+            return redirect()->route('admin.users')->with('error', $message);
         }
 
         if ($user->is_rejected) {
@@ -78,7 +58,7 @@ class AdminUserController extends Controller
                     'message' => $message,
                 ], 400);
             }
-            return redirect()->route('admin.users.index')->with('error', $message);
+            return redirect()->route('admin.users')->with('error', $message);
         }
 
         // Validar y procesar asignación de rol
@@ -169,7 +149,7 @@ class AdminUserController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', $message);
+    return redirect()->route('admin.users')->with('success', $message);
     }
 
     public function reject(User $user, Request $request)

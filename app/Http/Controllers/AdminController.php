@@ -307,19 +307,103 @@ class AdminController extends Controller
      */
     public function deleteUser(User $user)
     {
+        $currentUser = Auth::user();
+
+        // Prevenir que un superadministrador se elimine a sí mismo (soft delete)
+        if ($currentUser->id === $user->id && $currentUser->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'No puedes eliminarte a ti mismo.');
+        }
+
         // Solo los superadministradores pueden eliminar usuarios administradores
-        if ($user->usertype === 'admin' && !Auth::user()->isSuperAdmin()) {
+        if ($user->usertype === 'admin' && !$currentUser->isSuperAdmin()) {
             return redirect()->back()->with('error', 'Solo los superadministradores pueden eliminar usuarios administradores.');
         }
         
-        // Si es un administrador, eliminar todos sus recursos en cascada
-        if ($user->usertype === 'admin') {
-            return $this->deleteAdminWithCascade($user);
-        }
-        
+        // Aplicar soft delete normal para todos los usuarios (incluidos administradores)
         $user->delete();
         
         return redirect()->back()->with('success', 'Usuario eliminado exitosamente.');
+    }
+
+    /**
+     * Force delete a user (only for superadmins)
+     */
+    public function forceDeleteUser(User $user)
+    {
+        // Solo superadministradores pueden hacer force delete
+        if (!Auth::user()->isSuperAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para realizar esta acción.'
+            ], 403);
+        }
+
+        // Prevenir auto-eliminación
+        if (Auth::user()->id === $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No puedes eliminarte a ti mismo.'
+            ], 400);
+        }
+
+        try {
+            DB::transaction(function () use ($user) {
+                // Si es un administrador, eliminar sus recursos en cascada
+                if ($user->usertype === 'admin') {
+                    $this->deleteAdminResourcesForce($user);
+                }
+                
+                // Force delete del usuario
+                $user->forceDelete();
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario eliminado permanentemente.'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar usuario permanentemente: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el usuario.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Force delete admin resources
+     */
+    private function deleteAdminResourcesForce(User $admin)
+    {
+        // Eliminar proyectos creados por el administrador con force delete
+        $projects = Project::where('created_by', $admin->id)->get();
+        foreach ($projects as $project) {
+            // Force delete sprints del proyecto
+            Sprint::where('project_id', $project->id)->forceDelete();
+            
+            // Force delete historias del proyecto
+            $historias = Historia::where('project_id', $project->id)->get();
+            foreach ($historias as $historia) {
+                // Force delete tareas de la historia
+                Tarea::where('historia_id', $historia->id)->forceDelete();
+                // Force delete comentarios de la historia
+                Comentario::where('historia_id', $historia->id)->forceDelete();
+            }
+            Historia::where('project_id', $project->id)->forceDelete();
+            
+            // Force delete columnas del proyecto
+            Columna::where('tablero_id', $project->id)->forceDelete();
+            
+            // Force delete el proyecto
+            $project->forceDelete();
+        }
+        
+        // Eliminar registros del historial de cambios
+        HistorialCambio::where('usuario_id', $admin->id)->forceDelete();
+        
+        // Desasociar de proyectos en los que participaba
+        $admin->projects()->detach();
     }
     
     /**

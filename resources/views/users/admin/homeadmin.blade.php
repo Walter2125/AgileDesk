@@ -785,25 +785,15 @@
                                                     </button>
                                                 @else
                                                     <!-- Botón para eliminar usuario -->
-                                                    @if($usuario->usertype === 'admin')
-                                                        <!-- Modal específico para administradores -->
-                                                        <button type="button" class="btn btn-outline-danger px-2 py-1" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#deleteAdminModal"
-                                                                data-user-id="{{ $usuario->id }}"
-                                                                data-user-name="{{ $usuario->name }}">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    @else
-                                                        <!-- Modal normal para colaboradores -->
-                                                        <button type="button" class="btn btn-outline-danger px-2 py-1" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#deleteUserModal"
-                                                                data-user-id="{{ $usuario->id }}"
-                                                                data-user-name="{{ $usuario->name }}">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    @endif
+                                                    <!-- Botón unificado para eliminar usuarios (admin o colaborador) -->
+                                                    <button type="button" class="btn btn-outline-danger px-2 py-1" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#deleteUserModal"
+                                                            data-user-id="{{ $usuario->id }}"
+                                                            data-user-name="{{ $usuario->name }}"
+                                                            data-user-role="{{ $usuario->usertype === 'admin' ? 'admin' : 'user' }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 @endif
                                             @endif
                                         </div>
@@ -1263,55 +1253,24 @@
                     <i class="bi bi-exclamation-triangle"></i>
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                 </div>
-                <p>¿Está seguro de que desea eliminar permanentemente el siguiente elemento?</p>
+                <p>¿Está seguro de que desea eliminar permanentemente <span id="deleteUserTypeLabel">al usuario</span> <strong id="deleteUserName" class="text-danger"></strong>?</p>
+                <div id="adminExtraNotice" class="mt-2 small text-warning" style="display:none;">
+                    <i class="bi bi-info-circle"></i> Los proyectos del administrador NO se eliminarán.
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form id="deleteUserForm" method="POST" class="d-inline">
+                <form id="deleteUserForm" method="POST" class="d-inline" data-user-id="" data-user-role="">
                     @csrf
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                        <i class="bi bi-trash3 me-1"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Modal para confirmar eliminación de administrador (con advertencia de cascada) -->
-<div class="modal fade" id="deleteAdminModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteAdminModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>
-                    Confirmar Eliminación
-                </h5>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-1"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                </div>
-                <p>¿Está seguro de que desea eliminar al siguiente administrador y todos sus recursos asociados?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-lg me-1"></i> Cancelar
-                </button>
-                <form id="deleteAdminForm" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteAdminBtn">
-                        <i class="bi bi-exclamation-triangle me-1"></i> Eliminar Administrador y sus Recursos
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 
 <!-- Modal para confirmar restauración de usuario -->
@@ -1337,7 +1296,7 @@
                 <form id="restoreUserForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-arrow-clockwise"></i> Restaurar
+                        <i class="bi bi-arrow-clockwise me-1"></i> Restaurar
                     </button>
                 </form>
             </div>
@@ -1368,7 +1327,7 @@
                     @csrf
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                        <i class="bi bi-trash3 me-1"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>
@@ -1485,6 +1444,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+    const BASE_URL = `{{ url('/') }}`;
         // Manejo del modal de eliminación (solo establece la acción del formulario)
         const deleteProjectModal = document.getElementById('deleteProjectModal');
         const deleteProjectForm = document.getElementById('deleteProjectForm');
@@ -1497,54 +1457,55 @@
             deleteProjectForm.dataset.projectName = projectName;
             // Configurar la acción del formulario
                 if (projectId) {
-            deleteProjectForm.action = `/admin/projects/${projectId}/admin-delete`;
+            deleteProjectForm.action = `{{ url('/') }}/admin/projects/${projectId}/admin-delete`;
                 }
         });
             // Sin confirm() adicional: el modal ya actúa como confirmación
             }
 
-        // Manejo del modal de eliminación de usuarios regulares
+        // Manejo del modal de eliminación de usuarios regulares (delegado)
         const deleteUserModal = document.getElementById('deleteUserModal');
         const deleteUserForm = document.getElementById('deleteUserForm');
-        
-        if (deleteUserModal && deleteUserForm) {
-            deleteUserModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const userId = button.getAttribute('data-user-id');
-                const userName = button.getAttribute('data-user-name');
-                
-                // Actualizar el contenido del modal
-                const deleteUserNameEl = document.getElementById('deleteUserName');
-                if (deleteUserNameEl) {
-                    deleteUserNameEl.textContent = userName;
-                }
-                
-                // Actualizar la acción del formulario
-                deleteUserForm.action = `/admin/users/${userId}/delete`;
+        document.addEventListener('click', function(e){
+            const trigger = e.target.closest('[data-bs-target="#deleteUserModal"]');
+            if(!trigger) return;
+            const userId = trigger.getAttribute('data-user-id');
+            const userName = trigger.getAttribute('data-user-name');
+            const userRole = trigger.getAttribute('data-user-role') || 'user';
+            console.log('Click eliminar usuario', {userId, userName, userRole});
+            const nameEl = document.getElementById('deleteUserName');
+            if(nameEl) nameEl.textContent = userName;
+            const typeEl = document.getElementById('deleteUserTypeLabel');
+            if(typeEl) typeEl.textContent = (userRole === 'admin' ? 'administrador' : 'usuario');
+            const adminNotice = document.getElementById('adminExtraNotice');
+            if(adminNotice){
+                adminNotice.classList.toggle('d-none', userRole !== 'admin');
+            }
+            if(deleteUserForm && userId){
+                deleteUserForm.dataset.userId = userId;
+                deleteUserForm.dataset.userRole = userRole;
+                deleteUserForm.action = `${BASE_URL}/admin/users/${userId}/delete`;
+                console.log('Acción usuario final:', deleteUserForm.action);
+            }
+        });
+
+        // Fallback al enviar (asegura action correcta)
+        if(deleteUserForm){
+            deleteUserForm.addEventListener('submit', function(e){
+                if(!this.action || this.action === '' || this.action.endsWith('/admin/homeadmin') || this.action.includes('ID_PLACEHOLDER')){
+                    const uid = this.dataset.userId;
+                    if(uid){
+                        this.action = `${BASE_URL}/admin/users/${uid}/delete`;
+                        console.warn('Action corregida justo antes de enviar (usuario):', this.action);
+                    } else {
+                        e.preventDefault();
+                        alert('No se pudo determinar el usuario a eliminar. Intenta de nuevo.');
+                    }
+    // (Eliminado código de modal de admin: se usa deleteUserModal)
             });
         }
 
-        // Manejo del modal de eliminación de administradores
-        const deleteAdminModal = document.getElementById('deleteAdminModal');
-        const deleteAdminForm = document.getElementById('deleteAdminForm');
-        const confirmDeleteAdminBtn = document.getElementById('confirmDeleteAdminBtn');
-        
-        if (deleteAdminModal && deleteAdminForm && confirmDeleteAdminBtn) {
-            deleteAdminModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const userId = button.getAttribute('data-user-id');
-                const userName = button.getAttribute('data-user-name');
-                
-                // Actualizar el contenido del modal
-                const deleteAdminNameEl = document.getElementById('deleteAdminName');
-                if (deleteAdminNameEl) {
-                    deleteAdminNameEl.textContent = userName;
-                }
-                
-                // Actualizar la acción del formulario
-                deleteAdminForm.action = `/admin/users/${userId}/delete`;
-            });
-        }
+    // (Código antiguo de deleteAdminModal eliminado: se usa modal unificado)
     });
 </script>
 @endpush
@@ -1586,7 +1547,7 @@
                             const projectName = button?.getAttribute('data-project-name') || '';
                             deleteProjectForm2.dataset.projectName = projectName;
                             if (projectId) {
-                                deleteProjectForm2.action = `/admin/projects/${projectId}/admin-delete`;
+                                deleteProjectForm2.action = `{{ url('/') }}/admin/projects/${projectId}/admin-delete`;
                             }
                         } catch (err) {
                             console.error('Error preparando modal de eliminación de proyecto:', err);
@@ -1607,7 +1568,7 @@
                             const deleteUserNameEl = document.getElementById('deleteUserName');
                             if (deleteUserNameEl) deleteUserNameEl.textContent = userName;
                             const form = document.getElementById('deleteUserForm');
-                            if (form && userId) form.action = `/admin/users/${userId}/delete`;
+                            if (form && userId) form.action = `{{ url('/') }}/admin/users/${userId}/delete`;
                         } catch (error) {
                             console.error('Error en modal de eliminación:', error);
                         }
@@ -1632,7 +1593,7 @@
                             // Actualizar la acción del formulario
                             const form = document.getElementById('restoreUserForm');
                             if (form && userId) {
-                                form.action = `/admin/users/${userId}/restore`;
+                                form.action = `{{ url('/') }}/admin/users/${userId}/restore`;
                             }
                         } catch (error) {
                             console.error('Error en modal de restauración:', error);
