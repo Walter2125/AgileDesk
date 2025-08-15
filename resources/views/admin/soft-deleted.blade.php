@@ -386,7 +386,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 <p>¿Está seguro de que desea restaurar el siguiente elemento?</p>
                 <div class="alert alert-info">
                     <strong id="restoreItemName"></strong>
@@ -399,7 +399,7 @@
                 <form id="restoreForm" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-arrow-clockwise"></i> Restaurar
+                        <i class="bi bi-arrow-clockwise me-1"></i> Restaurar
                     </button>
                 </form>
             </div>
@@ -416,7 +416,7 @@
                     Confirmar Eliminación Permanente
                 </h5>
             </div>
-            <div class="modal-body justify-content-center">
+            <div class="modal-body text-center">
                 <div class="alert alert-danger">
                     <i class="bi bi-exclamation-triangle"></i>
                     <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
@@ -429,7 +429,7 @@
                     @csrf
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                        <i class="bi bi-trash3 me-1"></i> Eliminar Permanentemente
                     </button>
                 </form>
             </div>

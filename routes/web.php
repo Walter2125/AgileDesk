@@ -58,7 +58,7 @@ Route::post('/historias/{id}/mover', [HistoriasController::class, 'mover'])->nam
 Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/homeuser', [UserController::class, 'index'])->name('homeuser');
     Route::get('/homeuser/project/{projectId}', [UserController::class, 'index'])->name('homeuser.project');
-    
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -102,6 +102,10 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::post('/tareas/{tarea}/completar', [TareaController::class, 'toggleCompletada'])->name('tareas.toggleCompletada');
     Route::get('/historias/{historia}/detalle', [HistoriasController::class, 'showDetalle'])->name('historias.detalle');
 
+    ////*/**/**/
+    Route::get('/historias/create', [HistoriasController::class, 'create'])->name('historias.create');
+    /// /*/*/*
+
 
     // Ruta para el listado AJAX de usuarios
     Route::get('/projects/users/list', [ProjectController::class, 'list'])->name('projects.list');
@@ -117,7 +121,7 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
         Route::delete('/{comentario}', [ComentarioController::class, 'destroy'])->name('destroy');
     });
     // Historial por proyecto (para usuarios)
-    Route::get('/colaboradores/proyectos/{project}/historial', 
+    Route::get('/colaboradores/proyectos/{project}/historial',
         [HistorialCambioController::class, 'porProyecto'])
         ->name('users.colaboradores.historial')
         ->where('project', '[0-9]+');
@@ -134,7 +138,7 @@ Route::middleware(['auth', 'role:superadmin,admin'])
     ->group(function () {
         Route::get('/homeadmin', [AdminController::class, 'index'])->name('homeadmin');
         Route::get('/homeadmin/project/{projectId}', [AdminController::class, 'index'])->name('homeadmin.project');
-        
+
         // Vista general de elementos soft-deleted (para ambos roles, pero con restricciones)
         Route::get('/soft-deleted', [AdminController::class, 'softDeletedItems'])->name('admin.soft-deleted');
         Route::post('/soft-deleted/restore/{model}/{id}', [AdminController::class, 'restoreItem'])->name('admin.soft-deleted.restore');
@@ -168,12 +172,11 @@ Route::middleware(['auth', 'role:superadmin,admin'])
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
-        // Gestión de usuarios pendientes
-        Route::get('/miembros', [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
+    // (Eliminado) Ruta de usuarios pendientes '/miembros' sustituida por vista principal users
         Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
         Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
-        
+
         // Vista de usuarios para administradores (con permisos limitados)
         Route::get('/users/manage', [AdminUserController::class, 'index'])->name('admin.users.manage');
 
@@ -181,7 +184,7 @@ Route::middleware(['auth', 'role:superadmin,admin'])
         Route::delete('columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
 
         // Historial por proyecto (para administradores)
-        Route::get('/users/admin/{project}/historial', 
+        Route::get('/users/admin/{project}/historial',
         [HistorialCambioController::class, 'porProyecto'])
             ->name('users.admin.historial')
             ->where('project', '[0-9]+');
@@ -198,14 +201,14 @@ Route::middleware(['auth', 'role:superadmin'])
     ->group(function () {
         // Vista de todos los usuarios del sistema
         Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
-        
+
         // Asignación de roles (solo superadmin)
         Route::post('/users/{user}/assign-role', [AdminUserController::class, 'assignRole'])->name('admin.users.assign-role');
         Route::patch('/users/{user}/role', [AdminUserController::class, 'assignRole'])->name('admin.users.update-role');
-        
+
         // Acceso total a gestión de usuarios
         Route::delete('/users/{user}/force-delete', [AdminController::class, 'forceDeleteUser'])->name('admin.users.force-delete');
-        
+
         // Historial completo del sistema
         Route::get('/historial-sistema', [HistorialCambioController::class, 'sistema'])->name('historial.sistema');
         Route::delete('/historial-sistema/limpiar', [HistorialCambioController::class, 'limpiarHistorial'])->name('historial.limpiar');

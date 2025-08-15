@@ -366,11 +366,7 @@ class ViewServiceProvider extends ServiceProvider
                     ['label' => 'Inicio',      'url' => route('dashboard')],
                     ['label' => 'Lista usuarios'],
                 ],
-                'admin.users.index'=> [
-                    ['label' => 'Inicio',      'url' => route('dashboard')],
-                    ['label' => 'Miembros'],
-                ],
-                'users.search'    => 'admin.users.index',
+                // Ruta admin.users.index eliminada (vista de usuarios pendientes unificada)
 
                 // Tareas
                 'tareas.index' => function() use ($tablero, $historia) {
@@ -471,18 +467,6 @@ class ViewServiceProvider extends ServiceProvider
                     ['label' => 'Inicio', 'url' => route('homeadmin')],
                     ['label' => 'Usuarios del Sistema'],
                 ],
-                'admin.users.index' => function() {
-                    // Determinar breadcrumbs según el rol del usuario
-                    $baseUrl = Auth::user() && Auth::user()->isSuperAdmin() 
-                        ? route('admin.users') 
-                        : route('admin.users.manage');
-                        
-                    return [
-                        ['label' => 'Inicio', 'url' => route('homeadmin')],
-                        ['label' => 'Usuarios del Sistema', 'url' => $baseUrl],
-                        ['label' => 'Usuarios Pendientes'],
-                    ];
-                },
                 'admin.soft-deleted' => [
                     ['label' => 'Inicio', 'url' => route('homeadmin')],
                     ['label' => 'Elementos Eliminados'],

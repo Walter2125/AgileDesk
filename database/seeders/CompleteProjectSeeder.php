@@ -22,7 +22,7 @@ class CompleteProjectSeeder extends Seeder
         'name' => 'Admin',
         'email' => 'admin@unah.hn',
         'password' => 'Rsbarm25',
-        'usertype' => 'admin',
+        'usertype' => 'superadmin',
         'is_approved' => true,
     ]);
         // Verificar si ya existen datos
@@ -32,25 +32,19 @@ class CompleteProjectSeeder extends Seeder
             return;
         }
 
-        // 1. Crear 10 usuarios regulares + 1 admin si no existe
-        // Verificar si existe admin
-        if (!User::where('usertype', 'admin')->exists()) {
-            User::factory()->admin()->create([
-                'name' => 'Administrador Principal',
-                'email' => 'admin@unah.hn'
-            ]);
+        // 1. Crear 10 usuarios regulares
+        $usuarios = User::factory()->count(10)->create();
+
+        // 2. Buscar admin, si no existe usar superadmin
+        $admin = User::where('usertype', 'admin')->first();
+        if (!$admin) {
+            $admin = User::where('usertype', 'superadmin')->first();
         }
 
-        // Crear 10 usuarios regulares
-        $usuarios = User::factory()->count(10)->create();
-       
-        // 2. Crear 1 proyecto
-        $admin = User::where('usertype', 'admin')->first();
-        
         $proyecto = Project::factory()->create([
             'name' => 'Sistema de Gestión Académica UNAH - ' . now()->format('Y-m-d'),
             'descripcion' => 'Desarrollo integral del sistema académico universitario con módulos de matrícula, calificaciones, horarios y reportes.',
-            'user_id' => $admin->id
+            'user_id' => $admin ? $admin->id : null
         ]);
 
         // Asignar todos los usuarios al proyecto
