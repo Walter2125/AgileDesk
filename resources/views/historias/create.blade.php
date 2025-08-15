@@ -14,7 +14,7 @@
 
 @section('content')
 <div class="container-fluid mi-container">
-    <!-- Mensajes de error -->
+  
     @if ($errors->any())
     <div class="alert alert-danger mt-2">
         <ul class="mb-0">
@@ -25,14 +25,14 @@
     </div>
     @endif
 
-    <!-- Formulario -->
-    <form action="{{ route('historias.store') }}" method="POST" autocomplete="off">
+   
+    <form action="{{ route('historias.store') }}" method="POST" autocomplete="off" >
         @csrf
         <input type="hidden" name="proyecto_id" value="{{ $proyecto ? $proyecto->id : '' }}">
         <input type="hidden" name="columna_id" value="{{ $columna ? $columna->id : '' }}">
 
         <div class="row mb-3">
-            <!-- Columna Izquierda -->
+          
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Nombre*</label>
@@ -69,7 +69,7 @@
 
             </div>
 
-            <!-- Columna Derecha -->
+           
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Prioridad</label>
@@ -123,7 +123,7 @@
 
 @push('scripts')
 <script>
-    // Limpiar formulario al navegar con cache
+   
     window.addEventListener("pageshow", function(event) {
         if (event.persisted) {
             const form = document.querySelector('form');

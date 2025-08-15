@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
 <div class="mb-0">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
-        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
+        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;" >
             Tareas relacionadas
         </button>
 
@@ -564,8 +564,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="accordion m-2" id="accordionListaTareas" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
                     @foreach($tareas as $tarea)
                         <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
-                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2" type="button"
-                                    onclick="toggleTarea(this)" style="font-size: 0.9rem;">
+                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2 " type="button" 
+                                    onclick="toggleTarea(this)" style="font-size: 0.9rem;" >
                                 <input type="checkbox"
                                        class="form-check-input me-2 tarea-checkbox"
                                        data-id="{{ $tarea->id }}"
