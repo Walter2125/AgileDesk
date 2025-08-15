@@ -93,9 +93,9 @@ class HistoriasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
+  public function store(Request $request)
 {
-    // Validación con mensajes personalizados
+    // Validación
     $request->validate([
         'nombre' => [
             'required',
@@ -132,7 +132,7 @@ class HistoriasController extends Controller
         $columna = Columna::with('tablero')->findOrFail($request->columna_id);
     }
 
-    // Crear historia
+    
     $historia = new Historia();
     $historia->nombre = $request->nombre;
     $historia->trabajo_estimado = $request->trabajo_estimado;
@@ -144,12 +144,13 @@ class HistoriasController extends Controller
     $historia->usuario_id = $request->usuario_id;
     $historia->sprint_id = $request->sprint_id;
 
-    // Generar código único
+    
+
+   
     $historia->codigo = 'H-' . uniqid();
 
     $historia->save();
 
-    // Guardar historial de cambios
     HistorialCambio::create([
         'fecha' => now(),
         'usuario' => Auth::user()->name,
@@ -159,7 +160,7 @@ class HistoriasController extends Controller
         'proyecto_id' => $historia->proyecto_id
     ]);
 
-    // Redirigir con mensaje de éxito
+    
     return redirect()->route('tableros.show', ['project' => $historia->proyecto_id])
         ->with('success', 'Historia creada con éxito');
 }

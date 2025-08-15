@@ -148,16 +148,13 @@
 
 
                                 <div class="p-2 border-bottom flex-shrink-0">
-                                    <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"
-                                       class="btn btn-sm btn-primary w-100">
-                                        Agregar historias
-                                    </a>
+                                    <a href="{{ route('historias.create.fromColumna', ['columna' => $columna->id]) }}"class="btn btn-sm btn-primary w-100">Agregar historias</a>
                                 </div>
 
 
                                 <div class="overflow-auto p-2" style="flex: 4;" data-columna-id="{{ $columna->id }}">
                                     @foreach ($columna->historias as $historia)
-                                        <div class="card mb-4 p-2 text-dark position-relative"
+                                        <div class="card mb-2 p-2 text-dark position-relative"
                                              style="width: 100%; word-break: break-word; overflow-wrap: break-word; max-width: 100%;"
                                              data-historia-id="{{ $historia->id }}">
 

@@ -344,64 +344,65 @@
     @method('PATCH')
     <div class="row mb-3">
 
-                <div class="mb-4 d-flex justify-content-between align-items-center rounded gap-2">
-                    <div class="flex-grow-1" style="min-width: 0; font-weight: bold;">
-                        <label class="form-label rounded">Nombre de la Historia</label>
-                        <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate"
-                            title="{{ $historia->nombre }}">
-                            H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-                        </h2>
-                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                              class="form-control formulario-editable rounded d-none"
-                              value="{{ old('nombre', $historia->nombre) }}"
-                              data-editable="true" />
+        <div class="mb-4 rounded gap-2">
+            <label class="form-label rounded d-flex justify-content-between align-items-center">
+                Nombre de la Historia
+        
+                    <div id="dropdownMenuContainer" class="dropdown ms-2">
+                        <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                            <li>
+                                <button type="button" 
+                                        class="dropdown-item" 
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteHistoriaModal"
+                                        data-historia-id="{{ $historia->id }}" 
+                                        data-historia-nombre="{{ $historia->nombre }}">
+                                    Eliminar
+                                </button>
+                            </li>
+                            <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                        </ul>
                     </div>
+            </label>
 
-                    <div class="flex-shrink-0">
-                        <div id="dropdownMenuContainer" class="dropdown">
-                            <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-    <li><button id="btnEditar" class="dropdown-item">Editar</button></li>
-    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-    <li>
-        <button type="button" 
-                class="dropdown-item " 
-                data-bs-toggle="modal"
-                data-bs-target="#deleteHistoriaModal"
-                data-historia-id="{{ $historia->id }}" 
-                data-historia-nombre="{{ $historia->nombre }}">
-             Eliminar
-        </button>
-    </li>
-    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-</ul>
-                        </div>
-                    </div>
-                </div>
-        <div class="col-lg-6 col-md-12 ">
-       
-          
+            
+            <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
+                <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
+                    title="Haz clic para editar">
+                    {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                </h2>
+                
+            </div>
+
+            
+            <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                  class="form-control formulario-editable rounded d-none mt-2"
+                  value="{{ old('nombre', $historia->nombre) }}"
+                  data-editable="true" />
+        </div>
+
+
+        <div class="col-lg-6 col-md-12">
             <div class="mb-3">
                 <label class="form-label rounded">Asignado a</label>
-      
-
-                   <select name="usuario_id" class="form-control formulario-editable" data-editable="true" disabled>
+                <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
                     <option value="">-- Seleccionar usuario --</option>
-                @foreach($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-                        {{ $usuario->name }}
-                    </option>
-                @endforeach
-
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                            {{ $usuario->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="mb-3">
                 <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-control formulario-editable" data-editable="true" disabled>
-                     <option value="">Sin Estado</option>
+                <select name="columna_id" class="form-control formulario-editable" data-editable="true">
+                    <option value="">Sin Estado</option>
                     @foreach ($columnas as $columna)
                         <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
                             {{ $columna->nombre }}
@@ -412,7 +413,7 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Prioridad</label>
-                 <select name="prioridad" class="form-control formulario-editable" data-editable="true" disabled>
+                <select name="prioridad" class="form-control formulario-editable" data-editable="true">
                     <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
                     <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
                     <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
@@ -425,14 +426,12 @@
                 <label class="form-label rounded">Horas estimadas</label>
                 <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
                     value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
-                    data-editable="true" readonly>
-                    
-                    
+                    data-editable="true">
             </div>
 
             <div class="mb-3">
                 <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-control formulario-editable" data-editable="true" disabled >
+                <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
                     <option value="">Ningún Sprint</option>
                     @foreach ($sprints as $sprint)
                         <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -444,29 +443,28 @@
 
             <div class="mb-3">
                 <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control formulario-editable"
-                    value="{{ $historia->updated_at->format('d/m/Y - H:i') }}"
-                    readonly>
+                <input type="text" class="form-control formulario-editable"value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" readonly>
             </div>
         </div>
-                <div class="mb-3">
-                <label class="form-label">Descripción</label>
-                <textarea class="form-control formulario-editable" name="descripcion"
-                    maxlength="5000"
-                    data-editable="true" rows="4" readonly>{{ old('descripcion', $historia->descripcion) }}</textarea>
-                 </div>
-            <div class="d-flex justify-content-end mb-3">
-            <button id="btnCancelar" type="button" class="btn btn-secondary d-none">
-                <i class="bi bi-x-lg me-2"></i> Cancelar
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control formulario-editable" name="descripcion"
+                maxlength="5000"
+                data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+
+            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2">
+                <i class="bi bi-arrow-repeat me-2"></i> Actualizar
             </button>
-    
-            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2 d-none">
-                <i class="bi bi-arrow-repeat me-2"></i> Actualizar</button>
-        
-            </div>
         </div>
-        
+    </div>
 </form>
+
+
+
 <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
     @csrf
     @method('DELETE')
@@ -475,44 +473,29 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-     document.querySelectorAll('textarea[readonly]').forEach(textarea => {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    });
-        const btnEditar = document.getElementById('btnEditar');
-        const btnGuardar = document.getElementById('btnGuardar');
-        const tituloTexto = document.getElementById('tituloTexto');
-        const tituloInput = document.getElementById('tituloInput');
-        const editableFields = document.querySelectorAll('[data-editable="true"]');
-        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+document.addEventListener("DOMContentLoaded", function () {
+    const tituloContainer = document.getElementById("tituloContainer");
+    const tituloTexto = document.getElementById("tituloTexto");
+    const tituloInput = document.getElementById("tituloInput");
+    const nombreTexto = document.getElementById("nombreTexto");
 
-        btnEditar.addEventListener('click', function (e) {
-            e.preventDefault();
-            tituloTexto.classList.add('d-none');
-            tituloInput.classList.remove('d-none');
-            editableFields.forEach(field => {
-                field.removeAttribute('readonly');
-                field.removeAttribute('disabled');
-              if (field.tagName === 'TEXTAREA') {
-            field.style.height = 'auto';
-            field.style.height = field.scrollHeight + 'px';
+    // Al hacer clic en el título → mostrar input
+    tituloContainer.addEventListener("click", function () {
+        tituloContainer.classList.add("d-none");
+        tituloInput.classList.remove("d-none");
+        tituloInput.focus();
+    });
+
+    // Al salir del input → volver a mostrar el título
+    tituloInput.addEventListener("blur", function () {
+        if (tituloInput.value.trim() !== "") {
+            nombreTexto.textContent = tituloInput.value;
         }
+        tituloInput.classList.add("d-none");
+        tituloContainer.classList.remove("d-none");
     });
-            btnGuardar.classList.remove('d-none');
-            if (dropdownMenuContainer) {
-                dropdownMenuContainer.classList.add('d-none');
-            }
-        });
-
-        const form = document.getElementById('formHistoria');
-        form.addEventListener('submit', function () {
-            console.log('Formulario enviado');
-        });
-    });
+});
 </script>
-
-
 
 <!-- Modal para confirmar eliminación de historia -->
 <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
