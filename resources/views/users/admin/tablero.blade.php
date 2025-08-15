@@ -187,14 +187,9 @@
                                                          <ul class="dropdown-menu dropdown-menu-end">
                                                             <li><a class="dropdown-item" href="{{ route('historias.show', $historia->id) }}">Editar</a></li>
                                                             <li>
-                                                                <a class="dropdown-item"
-                                                                    href="#"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#deleteHistoriaModal"
-                                                                    data-historia-id="{{ $historia->id }}"
-                                                                    data-historia-nombre="{{ $historia->nombre }}">
+                                                                <a class="dropdown-item"href="#" data-bs-toggle="modal"data-bs-target="#deleteHistoriaModal"  data-historia-id="{{ $historia->id }}"data-historia-nombre="{{ $historia->nombre }}">
                                                                     Eliminar
-                                                                    </a>
+                                                                </a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -1105,6 +1100,17 @@
                             const menuWrapper = checkbox.closest('.menu-wrapper');
                             if (menuWrapper && !menuWrapper.contains(e.target)) {
                                 checkbox.checked = false;
+                            }
+                        });
+                    });
+                </script>
+                <script>
+                    document.addEventListener('show.bs.dropdown', function (event) {
+                       
+                        document.querySelectorAll('.dropdown-menu.show').forEach(function (menu) {
+                           
+                            if (!menu.closest('.dropdown').isSameNode(event.target.closest('.dropdown'))) {
+                                bootstrap.Dropdown.getInstance(menu.previousElementSibling)?.hide();
                             }
                         });
                     });
