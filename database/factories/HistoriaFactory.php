@@ -64,7 +64,7 @@ class HistoriaFactory extends Factory
             'tablero_id' => Tablero::factory(),
             'proyecto_id' => Project::factory(),
             'usuario_id' => User::factory(),
-            'codigo' => null, // Se genera automáticamente en el modelo
+            'codigo' => 'HST-' . fake()->unique()->numberBetween(1000, 9999),
         ];
     }
 
