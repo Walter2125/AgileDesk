@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar DataTable con select de paginación generado por DataTables
     const usersTable = $('#usersTable').DataTable({
         paging: true,
-        searching: false, // usamos buscador personalizado
+        searching: true, // habilitamos búsqueda para el buscador personalizado
         ordering: false,
         info: true,
         lengthChange: true,
