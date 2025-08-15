@@ -480,14 +480,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const tituloInput = document.getElementById("tituloInput");
     const nombreTexto = document.getElementById("nombreTexto");
 
-    // Al hacer clic en el título → mostrar input
+   
     tituloContainer.addEventListener("click", function () {
         tituloContainer.classList.add("d-none");
         tituloInput.classList.remove("d-none");
         tituloInput.focus();
     });
 
-    // Al salir del input → volver a mostrar el título
+ 
     tituloInput.addEventListener("blur", function () {
         if (tituloInput.value.trim() !== "") {
             nombreTexto.textContent = tituloInput.value;
@@ -497,6 +497,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+
 
 <!-- Modal para confirmar eliminación de historia -->
 <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
@@ -612,6 +614,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
 
                         <!-- Modal para confirmar eliminación de tarea -->
+<<<<<<< HEAD
+      <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content text-center"> <!-- Centramos todo -->
+                          
+                          <div class="modal-header justify-content-center position-relative">
+                              <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
+                                  <i class="bi bi-exclamation-triangle text-danger"></i>
+                                  Confirmar Eliminación Permanente
+                              </h5>
+               </div>
+=======
 <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center"> <!-- Centramos todo -->
@@ -622,6 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Confirmar Eliminación Permanente
                 </h5>
             </div>
+>>>>>>> main
 
             <div class="modal-body">
                 <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
