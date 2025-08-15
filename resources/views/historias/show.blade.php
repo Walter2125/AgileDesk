@@ -26,17 +26,17 @@
             padding-left: 10px;
             padding-right: 10px;
         }
-        
+
         .historia-header {
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .historia-header .titulo-container {
             max-width: 100% !important;
             width: 100% !important;
         }
-        
+
         .historia-header .actions-container {
             align-self: flex-end;
             width: auto;
@@ -47,7 +47,7 @@
         .card-body {
             padding: 1rem 0.5rem;
         }
-        
+
         .btn-group .btn {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
@@ -280,8 +280,8 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
- </style>   
- 
+ </style>
+
 @endsection
 
 
@@ -295,7 +295,7 @@
     <script src="{{ asset('vendor/sortablejs/Sortable.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-   
+
 @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show mt-2"
              style="background-color: #d1e7dd; color: #0f5132; display: flex; align-items: center; justify-content: space-between;">
@@ -331,11 +331,11 @@
 
 
 <div class="container-fluid-m-2 mi-container m-2">
-   
+
 <div class="card-body">
 
 
-         
+
 <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
     @csrf
     @method('PATCH')
@@ -344,7 +344,7 @@
         <div class="mb-4 rounded gap-2">
             <label class="form-label rounded d-flex justify-content-between align-items-center">
                 Nombre de la Historia
-        
+
                     <div id="dropdownMenuContainer" class="dropdown ms-2">
                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical"></i>
@@ -352,11 +352,11 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
                             <li>
-                                <button type="button" 
-                                        class="dropdown-item" 
+                                <button type="button"
+                                        class="dropdown-item"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteHistoriaModal"
-                                        data-historia-id="{{ $historia->id }}" 
+                                        data-historia-id="{{ $historia->id }}"
                                         data-historia-nombre="{{ $historia->nombre }}">
                                     Eliminar
                                 </button>
@@ -366,16 +366,16 @@
                     </div>
             </label>
 
-            
+
             <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
                 <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
                     title="Haz clic para editar">
                     {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
                 </h2>
-                
+
             </div>
 
-            
+
             <input id="tituloInput" type="text" name="nombre" maxlength="100"
                   class="form-control formulario-editable rounded d-none mt-2"
                   value="{{ old('nombre', $historia->nombre) }}"
@@ -536,8 +536,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
-        deleteHistoriaForm.action = /historias/${historiaId};
+        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+        deleteHistoriaForm.action = `/historias/${historiaId}`;
+
+
     });
 });
 </script>
@@ -650,13 +652,19 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                    </button>
-                </form>
+                    @isset($tarea)
+                        <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                            </button>
+                        </form>
+                    @else
+                        <p class="text-muted">No hay tareas registradas para este proyecto.</p>
+                    @endisset
+                </div>
+
             </div>
         </div>
     </div>
