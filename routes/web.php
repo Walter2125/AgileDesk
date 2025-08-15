@@ -81,7 +81,9 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
 
     //Rutas para las historias
     Route::get('/historias',[HistoriasController::class,'index'])->name('historias.index');
-    Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
+   // Route::get('/historias/create',[HistoriasController::class, 'create'])->name('historias.create');
+    Route::get('/historias/create/fromColumna/{columna}', [HistoriasController::class, 'createFromColumna'])
+     ->name('historias.create.fromColumna');
     Route::post('/historias/store', [HistoriasController::class, 'store'])->name('historias.store');
     Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
     Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
