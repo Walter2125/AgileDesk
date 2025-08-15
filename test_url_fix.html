@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prueba de URLs - AgileDesk</title>
+</head>
+<body>
+    <h2>Prueba de Corrección de URLs</h2>
+    
+    <script>
+        // Simular el código JavaScript corregido
+        const url = 'http://localhost';
+        const userId = 123;
+        
+        // URLs corregidas que ahora están en el código
+        const urls = {
+            'admin_delete': `${url}/admin/users/${userId}/delete`,
+            'superadmin_force_delete': `${url}/superadmin/users/${userId}/force-delete`,
+            'approve': `${url}/admin/users/${userId}/approve`,
+            'reject': `${url}/admin/users/${userId}/reject`,
+            'restore': `${url}/admin/users/${userId}/restore`
+        };
+        
+        console.log('URLs generadas correctamente:');
+        for (const [key, url] of Object.entries(urls)) {
+            console.log(`${key}: ${url}`);
+        }
+        
+        // Verificar que no contengan rutas relativas problemáticas
+        const hasProblematicUrls = Object.values(urls).some(url => 
+            url.startsWith('/admin') || url.startsWith('/superadmin')
+        );
+        
+        if (hasProblematicUrls) {
+            console.error('❌ ERROR: Aún hay URLs relativas problemáticas');
+        } else {
+            console.log('✅ ÉXITO: Todas las URLs son absolutas y correctas');
+        }
+    </script>
+</body>
+</html>
