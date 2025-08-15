@@ -14,28 +14,38 @@ protected $fillable = [
     'trabajo_estimado',
     'prioridad',
     'descripcion',
-     'columna_id',
+    'columna_id',
     'tablero_id',
     'proyecto_id',
     'usuario_id',
-    'sprint_id'
+    'sprint_id',
+    'numero', 
+    'codigo'  
 ];
 
     public function columna() {
         return $this->belongsTo(Columna::class);
     }
+protected static function boot()
+{
+    parent::boot();
 
-    protected static function boot()
-    {
-        parent::boot();
+    static::creating(function ($historia) {
+        if ($historia->numero === null && $historia->proyecto_id !== null) {
+        
+            $maxNumero = self::withTrashed() 
+                            ->where('proyecto_id', $historia->proyecto_id)
+                            ->max('numero');
 
-        static::creating(function ($historia) {
-            if ($historia->numero === null && $historia->proyecto_id !== null) {
-                $ultimoNumero = self::where('proyecto_id', $historia->proyecto_id)->max('numero') ?? 0;
-                $historia->numero = $ultimoNumero + 1;
-            }
-        });
-    }
+            
+            $historia->numero = $maxNumero ? $maxNumero + 1 : 1;
+        }
+    });
+}
+
+
+
+
 
     public function sprints() {
         return $this->belongsTo(Sprint::class);
