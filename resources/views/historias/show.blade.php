@@ -556,8 +556,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
-        deleteHistoriaForm.action = `/historias/${historiaId}`;
+        deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
+        deleteHistoriaForm.action = /historias/${historiaId};
     });
 });
 </script>
@@ -933,29 +933,40 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
     <!-- Modal Nuevo Comentario -->
-    <div id="nuevoComentarioModal" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-      <div class="bg-white border-0 rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
-        <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
-          @csrf
-          <div class="mb-4 text-center">
-            <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
-            <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
-            <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
-          </div>
-          <div class="form-group mb-4">
-            <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-3 w-100" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
-          </div>
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('d-none')">Cancelar</button>
-            <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
-              <i class="bi bi-send-fill me-1"></i> Publicar
-            </button>
-          </div>
-        </form>
+  <!-- Modal Nuevo Comentario -->
+<div id="nuevoComentarioModal" 
+     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center 
+            bg-black bg-opacity-50 d-none custom-modal" 
+     style="z-index: 1050;">
+  
+  <div class="bg-white border-0 rounded-4 shadow-lg p-4 w-100" style="max-width: 600px; margin: 1rem;">
+    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+      @csrf
+      <div class="mb-4 text-center">
+        <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
+        <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+        <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
       </div>
-    </div>
+      <div class="form-group mb-4">
+        <textarea name="contenido" id="contenido" 
+                  class="form-control rounded-4 border border-info shadow-sm p-3 w-100" 
+                  rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
+      </div>
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" 
+                class="btn btn-outline-secondary rounded-3 px-4 py-2" 
+                onclick="document.getElementById('nuevoComentarioModal').classList.add('d-none')">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+          <i class="bi bi-send-fill me-1"></i> Publicar
+        </button>
+      </div>
+    </form>
   </div>
+
 </div>
+
 {{-- MODALES PARA RESPUESTAS (FUERA DEL ACORDEÓN) --}}
 @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
   @foreach ($comentario->respuestas as $respuesta)
@@ -1040,14 +1051,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteRespuestaText = document.getElementById('deleteRespuestaText');
 
     // Base URL con marcador para reemplazar
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const respuestaId = button.getAttribute('data-respuesta-id');
 
-        deleteRespuestaText.textContent = `¿Está seguro de que desea eliminar esta respuesta?`;
-        deleteRespuestaForm.action = baseDeleteUrl.replace('__ID__', respuestaId);
+        deleteRespuestaText.textContent = ¿Está seguro de que desea eliminar esta respuesta?;
+        deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
     });
 });
 </script>
@@ -1072,14 +1083,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteComentarioText = document.getElementById('deleteComentarioText');
 
     // Base de la URL de eliminación
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const comentarioId = button.getAttribute('data-comentario-id');
 
-        deleteComentarioText.textContent = `¿Está seguro de que desea eliminar este comentario?`;
-        deleteComentarioForm.action = baseDeleteUrl.replace('__ID__', comentarioId);
+        deleteComentarioText.textContent = ¿Está seguro de que desea eliminar este comentario?;
+        deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
     });
 });
 </script>
@@ -1108,8 +1119,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -1216,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function() {
             guardarEstadoCheckbox(tareaId, estaMarcado);
 
             // Sincronizar checkboxes con el mismo data-id en la misma página
-            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+            document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"])
                     .forEach(cb => cb.checked = estaMarcado);
         }
     });
