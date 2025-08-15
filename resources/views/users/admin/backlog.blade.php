@@ -57,7 +57,7 @@
                                     @if ($historia->columna)
                                         {{ $historia->columna->nombre }}
                                     @else
-                                        <span class="text-danger">No asignada</span>
+                                        <span class="text-danger">No asignado</span>
                                     @endif
                                 </small>
                             </div>
