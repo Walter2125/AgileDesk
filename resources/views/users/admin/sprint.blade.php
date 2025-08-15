@@ -11,7 +11,7 @@
 
         </div>
 
-        <!-- Lista de Sprints, ocupando todo el ancho -->
+
         <div class="mx-n3 mx-md-n4">
             @forelse ($proyecto->sprints as $sprint)
                 <div class="card mb-2 p-3">
@@ -25,67 +25,121 @@
                                 <i class="bi bi-pencil" style="font-size: 0.9rem;"></i>
                             </a>
 
-                            <button class="btn btn-outline-danger btn-sm px-2 py-1" data-bs-toggle="modal" data-bs-target="#modalEliminarSprint{{ $sprint->id }}">
+                            <button class="btn btn-outline-danger btn-sm px-2 py-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteSprintModal{{ $sprint->id }}">
                                 <i class="bi bi-trash" style="font-size: 0.9rem;"></i>
                             </button>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal de confirmación -->
-                <div class="modal fade" id="modalEliminarSprint{{ $sprint->id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel{{ $sprint->id }}" aria-hidden="true">
+                <div class="modal fade" id="deleteSprintModal{{ $sprint->id }}" tabindex="-1" aria-labelledby="deleteSprintModalLabel{{ $sprint->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0">
-                            <div class="modal-body text-center">
-                                <div class="mb-4">
-                                    <h5 class="modal-title text-danger" id="confirmDeleteLabel{{ $sprint->id }}">Confirmar Eliminación</h5>
-                                    <h5 class="modal-title text-danger">¿Deseas eliminar este sprint?</h5>
-                                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-                                    <div class="alert alert-danger d-flex align-items-center mt-3">
-                                        <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                        <div>"<strong>{{ $sprint->nombre }}</strong>" será eliminado permanentemente.</div>
-                                    </div>
+                        <div class="modal-content text-center">
+                            <div class="modal-header justify-content-center position-relative">
+                                <h5 class="modal-title" id="deleteSprintModalLabel{{ $sprint->id }}">
+                                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                                    Confirmar Eliminación Permanente
+                                </h5>
+                                <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                                 </div>
-
-                                <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
+                                <p>¿Está seguro de que desea eliminar el sprint <strong>{{ $sprint->nombre }}</strong>?</p>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                                    </div>
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            @empty
-                <div class="alert alert-info">
+            </div>
+        @empty
+            <div class="card mb-2 p-3">
+                <div class="text-muted">
                     No hay sprints registrados en este proyecto.
                 </div>
-            @endforelse
+            </div>
+        @endforelse
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteSprintModal" tabindex="-1" aria-labelledby="deleteSprintModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+
+            <div class="modal-header justify-content-center position-relative">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                    Confirmar Eliminación Permanente
+                </h5>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                </div>
+
         </div>
 
     </div>
-    <script>
-        document.querySelectorAll('.sidebar a').forEach(link => {
-            link.addEventListener('click', () => {
-                const sidebar = document.querySelector('.sidebar-collapse'); // Ajusta selector
-                if (window.innerWidth < 768) {
-                    sidebar.classList.remove('show');
-                }
-            });
-        });
 
-    </script>
-    <style>
-    @media (min-width: 768px) {
-    .boton-wrapper {
-    position: relative;
-    right: -20px;
-    }
-    }
-    </style>
+    @push('js')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const deleteSprintModal = document.getElementById('deleteSprintModal');
+                const deleteSprintForm = document.getElementById('deleteSprintForm');
+                const deleteSprintText = document.getElementById('deleteSprintText');
+
+                deleteSprintModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const sprintId = button.getAttribute('data-sprint-id');
+                    const sprintNombre = button.getAttribute('data-sprint-nombre') || '';
+
+                    deleteSprintText.textContent = `¿Está seguro de que desea eliminar el sprint "${sprintNombre}"?`;
+                    deleteSprintForm.action = `/sprints/${sprintId}`;
+
+
+                });
+            });
+        </script>
+    @endpush
+
+    @push('css')
+        <style>
+            .modal-content {
+                border: none;
+                border-radius: 12px;
+            }
+            .modal-header {
+                border-bottom: 1px solid #e1e4e8;
+                background-color: #f6f8fa;
+            }
+            .modal-body p {
+                margin-top: 10px;
+                font-size: 16px;
+            }
+
+            .modal-footer .btn {
+                min-width: 180px; /* Botones del mismo ancho */
+            }
+
+        </style>
+    @endpush
 
 
 @endsection

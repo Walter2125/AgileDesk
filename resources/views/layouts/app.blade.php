@@ -464,6 +464,17 @@
     
     /* Mediaquery para dispositivos móviles */
     @media (max-width: 768px) {
+        .sidebar-wrapper {
+            position: static; /* o relative, según el contexto */
+            display: block !important;
+            transform: none !important;
+            left: 0;
+            top: 0;
+            height: auto;
+            z-index: auto;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
         .content-wrapper {
             padding: 0 !important;
             margin: 0 !important;
@@ -647,6 +658,15 @@
         .navbar-optimized {
             margin-bottom: 0 !important;
         }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* En tablets, mostrar nombre de app */
@@ -742,6 +762,30 @@
         box-shadow: 0 2px 8px rgba(13,110,253,0.08);
         transition: background 0.3s, color 0.3s, box-shadow 0.3s;
         border: 2px solid #fff2;
+        /* Mejoras para centrado perfecto */
+        line-height: 1;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: 0;
+        text-transform: uppercase;
+        /* Eliminar cualquier padding o margin que pueda afectar el centrado */
+        padding: 0;
+        margin: 0;
+        /* Asegurar que el texto no tenga espacio extra */
+        white-space: nowrap;
+        overflow: hidden;
+        /* Centrado adicional para navegadores antiguos */
+        vertical-align: middle;
+        /* Compensar cualquier offset de la fuente */
+        position: relative;
+    }
+
+    .user-avatar::before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        width: 0;
     }
 
     .user-info.user-dropdown-btn {
@@ -769,8 +813,14 @@
         justify-content: center !important;
         align-items: center !important;
     }
-    body.sidebar-collapsed .user-info .sidebar-text {
-        display: none !important;
+    @media (max-width: 991.98px) {
+        body.sidebar-collapsed .user-info .sidebar-text {
+            display: flex !important;
+            flex-direction: column;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -947,6 +997,16 @@
         body.sidebar-collapsed .alerts-container {
             left: 0 !important;
         }
+
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* Animación de entrada para alertas */
@@ -1039,6 +1099,8 @@
             width: 32px;
             height: 32px;
             min-width: 32px;
+            font-size: 1rem;
+            line-height: 1;
         }
 
         .content-wrapper {
@@ -1119,6 +1181,15 @@
         .sidebar-heading .app-name {
             display: inline-block !important;
         }
+        .sidebar-wrapper {
+            position: static;
+            width: 100%;
+            height: auto;
+            display: block !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     }
 
     /* Pantallas medianas y pequeñas */
@@ -1178,14 +1249,26 @@
             display: block;
         }
         /* Mejorar el área de usuario en tablets */
-        .user-info {
-            padding: 0.5rem 0.25rem;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-        }
+         .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Espacio entre avatar y texto */
+        padding: 0.5rem 0.75rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 50%;
+        font-size: 1rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eee; /* o tu color base */
+        color: #333;            /* contraste del texto */
+    }
     }
 
     /* Pantallas grandes (desktops, 992px y más) */
@@ -1440,6 +1523,32 @@
 
         .user-avatar {
             font-weight: 600;
+            /* Centrado mejorado para pantallas de alta densidad */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    }
+
+    /* Ajustes adicionales para centrado perfecto del avatar en todos los navegadores */
+    .user-avatar {
+        /* Compatibilidad cross-browser para centrado perfecto */
+        place-items: center; /* CSS Grid fallback */
+        place-content: center; /* CSS Grid fallback */
+    }
+
+    /* Centrado específico para navegadores webkit */
+    @supports (-webkit-appearance: none) {
+        .user-avatar {
+            -webkit-text-align-last: center;
+            -webkit-user-select: none;
+        }
+    }
+
+    /* Centrado específico para Firefox */
+    @-moz-document url-prefix() {
+        .user-avatar {
+            -moz-text-align-last: center;
+            -moz-user-select: none;
         }
     }
 
@@ -1649,10 +1758,23 @@
                         <i class="bi bi-folder-fill"></i>
                         <span class="sidebar-text">Proyectos</span>
                      </a>
-                    <a href="{{ route('admin.users') }}" class="list-group-item list-group-item-action text-white" title="Proyectos">
-                        <i class="bi bi-person-lines-fill"></i>
-                        <span class="sidebar-text">Usuarios</span>
-                    </a>
+                    @if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()))
+                        @if(Auth::user()->isSuperAdmin())
+                            <a href="{{ route('admin.users') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span class="sidebar-text">Usuarios</span>
+                            </a>
+                            <a href="{{ route('historial.sistema') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
+                                <i class="bi bi-clock-history"></i>
+                                <span class="sidebar-text">Historial</span>
+                            </a>
+                        @else
+                            <a href="{{ route('admin.users.manage') }}" class="list-group-item list-group-item-action text-white" title="Usuarios">
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span class="sidebar-text">Usuarios</span>
+                            </a>
+                        @endif
+                    @endif
 
                     @if (isset($currentProject) && $currentProject instanceof \App\Models\Project)
                         <a href="{{ route('backlog.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
@@ -1665,10 +1787,12 @@
                             <span class="sidebar-text">Tablero</span>
                         </a>
 
-                        <a href="{{ route('sprints.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
-                            <i class="bi bi-calendar-range"></i>
-                            <span class="sidebar-text">Sprints</span>
-                        </a>
+                        @if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()))
+                            <a href="{{ route('sprints.index', ['project' => $currentProject->id]) }}" class="list-group-item list-group-item-action text-white">
+                                <i class="bi bi-calendar-range"></i>
+                                <span class="sidebar-text">Sprints</span>
+                            </a>
+                        @endif
 
                     @endif
 
@@ -1982,7 +2106,7 @@
                         max-height: 4rem !important;
                     }
                     .list-group-item { font-size: 1.1rem !important; padding: 0.85rem 1.4rem !important; }
-                    .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; }
+                    .user-avatar { width: 44px !important; height: 44px !important; font-size: 1.1rem !important; line-height: 1 !important; }
                 `;
 
             }

@@ -1,7 +1,9 @@
 @extends('layouts.app')
-
+    @section('mensaje-superior')
+        Historial de Cambios
+    @endsection
 @section('content')
-<div class="container py-4">
+<div class="container-fluid projects-container py-4">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-dark text-white">
             <h4 class="mb-0">
@@ -13,7 +15,7 @@
         <div class="card-body">
             <form method="GET" action="{{ route('users.admin.historial', ['project' => $project->id]) }}" class="mb-4">
                 <div class="input-group">
-                    <input type="text" name="busqueda" class="form-control" 
+                    <input type="text" name="busqueda" class="form-control rounded-start" 
                            placeholder="Buscar por usuario, acción, detalles o sprint..." 
                            value="{{ request('busqueda') }}"
                            aria-label="Buscar en historial">
@@ -30,9 +32,12 @@
             </form>
 
             @if($historial->isEmpty())
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i> No hay cambios registrados en este proyecto.
+            <div class="input-group mb-4">
+                <div class="form-control bg-info text-center text-dark fw-bold border border-1 border-secondary">
+                <i class="fas fa-info-circle me-2"></i>
+                No hay cambios registrados en este proyecto.
                 </div>
+            </div>
             @else
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -126,5 +131,24 @@
         font-weight: 500;
         padding: 5px 8px;
     }
+    .container-fluid.projects-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100%;
+}
+
+@media (min-width: 1200px) {
+    .container-fluid.projects-container {
+        max-width: 1140px; /* o el valor exacto que tenga tu barra */
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+.alert {
+    width: 100%;
+    display: block;
+}
+
+
 </style>
 @endsection

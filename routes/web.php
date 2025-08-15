@@ -34,8 +34,12 @@ Route::middleware(['auth', IsApproved::class])->get('dashboard', function () {
     $persistentError = Session::get('persistent_error');
     $persistentMessage = Session::get('persistent_message');
 
-    // Determinar la ruta a la que redirigir
-    $route = Auth::user()->usertype === 'admin' ? 'homeadmin' : 'homeuser';
+    // Determinar la ruta a la que redirigir según el nuevo sistema de roles
+    $route = match(Auth::user()->usertype) {
+        'superadmin', 'admin' => 'homeadmin',
+        'collaborator' => 'homeuser',
+        default => 'homeuser'
+    };
 
     // Si hay mensajes persistentes, pasarlos a la siguiente redirección
     if ($persistentError) {
@@ -120,24 +124,14 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
 
 });
 
-// Panel de administración — solo administradores
-Route::middleware(['auth', 'role:admin'])
+// Panel de administración — superadmin y admin
+Route::middleware(['auth', 'role:superadmin,admin'])
     ->prefix('admin')
     ->group(function () {
         Route::get('/homeadmin', [AdminController::class, 'index'])->name('homeadmin');
         Route::get('/homeadmin/project/{projectId}', [AdminController::class, 'index'])->name('homeadmin.project');
-        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
-        Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
-        Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
-
-        // Rutas para eliminar y restaurar usuarios
-        Route::delete('/users/{user}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
-        Route::patch('/users/{id}/restore', [AdminController::class, 'restoreUser'])->name('admin.users.restore');
-
-    // Ruta eliminada: vista específica de usuarios eliminados
-        Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
-
-        // Vista general de elementos soft-deleted
+        
+        // Vista general de elementos soft-deleted (para ambos roles, pero con restricciones)
         Route::get('/soft-deleted', [AdminController::class, 'softDeletedItems'])->name('admin.soft-deleted');
         Route::post('/soft-deleted/restore/{model}/{id}', [AdminController::class, 'restoreItem'])->name('admin.soft-deleted.restore');
         Route::delete('/soft-deleted/permanent-delete/{model}/{id}', [AdminController::class, 'permanentDeleteItem'])->name('admin.soft-deleted.permanent-delete');
@@ -145,7 +139,7 @@ Route::middleware(['auth', 'role:admin'])
         //historial de cambios
         Route::get('/historial', [HistorialCambioController::class, 'index'])->name('historial.index');
 
-        // CRUD de proyectos
+        // CRUD de proyectos (para admins solo sus proyectos, para superadmin todos)
         Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store');
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
@@ -160,7 +154,6 @@ Route::middleware(['auth', 'role:admin'])
         // Rutas adicionales para administración de proyectos desde homeadmin
         Route::delete('/projects/{project}/admin-delete', [AdminController::class, 'deleteProject'])->name('admin.projects.delete');
 
-
         // Crud de Sprints
         Route::get('/projects/{project}/tablero/sprints', [SprintController::class, 'index'])->name('sprints.index');
         Route::post('/projects/{project}/tablero/sprints', [SprintController::class, 'store'])->name('sprints.store');
@@ -168,26 +161,53 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/sprints/{sprint}', [SprintController::class, 'update'])->name('sprints.update');
         Route::delete('/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
 
-
-
         // Corregir el nombre del método al que apunta la ruta
         Route::get('/users/list', [ProjectController::class, 'list'])->name('users.list');
 
-        // Gestión de usuarios
-        Route::get('/miembros',    [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
+        // Gestión de usuarios pendientes
+        Route::get('/miembros', [AdminUserController::class, 'pendingUsers'])->name('admin.users.index');
+        Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
+        Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
         Route::get('/users/search',[UserController::class, 'search'])->name('users.search');
+        
+        // Vista de usuarios para administradores (con permisos limitados)
+        Route::get('/users/manage', [AdminUserController::class, 'index'])->name('admin.users.manage');
 
         // Operaciones exclusivas de administradores para columnas
         Route::delete('columnas/{columna}', [ColumnaController::class, 'destroy'])->name('columnas.destroy');
 
-       // Historial por proyecto (para administradores)
-      Route::get('/users/admin/{project}/historial', 
-      [HistorialCambioController::class, 'porProyecto'])
-          ->name('users.admin.historial')
-          ->where('project', '[0-9]+');
+        // Historial por proyecto (para administradores)
+        Route::get('/users/admin/{project}/historial', 
+        [HistorialCambioController::class, 'porProyecto'])
+            ->name('users.admin.historial')
+            ->where('project', '[0-9]+');
 
-        
+        // Rutas para eliminar y restaurar usuarios (solo admin sobre sus proyectos)
+        Route::delete('/users/{user}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+        Route::patch('/users/{id}/restore', [AdminController::class, 'restoreUser'])->name('admin.users.restore');
+        Route::delete('/users/{id}/permanent-delete', [AdminController::class, 'permanentDeleteUser'])->name('admin.users.permanent-delete');
 });
+
+// Rutas exclusivas del Superadministrador
+Route::middleware(['auth', 'role:superadmin'])
+    ->prefix('superadmin')
+    ->group(function () {
+        // Vista de todos los usuarios del sistema
+        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users');
+        
+        // Asignación de roles (solo superadmin)
+        Route::post('/users/{user}/assign-role', [AdminUserController::class, 'assignRole'])->name('admin.users.assign-role');
+        Route::patch('/users/{user}/role', [AdminUserController::class, 'assignRole'])->name('admin.users.update-role');
+        
+        // Acceso total a gestión de usuarios
+        Route::delete('/users/{user}/force-delete', [AdminController::class, 'forceDeleteUser'])->name('admin.users.force-delete');
+        
+        // Historial completo del sistema
+        Route::get('/historial-sistema', [HistorialCambioController::class, 'sistema'])->name('historial.sistema');
+        Route::delete('/historial-sistema/limpiar', [HistorialCambioController::class, 'limpiarHistorial'])->name('historial.limpiar');
+
+        Route::get('/historias/{historia}/tareas/lista', [TareaController::class, 'lista'])->name('tareas.show');
+    });
 
 // Rutas de autenticación
 require __DIR__.'/auth.php';

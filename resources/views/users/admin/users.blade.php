@@ -91,7 +91,9 @@
     .card-header .input-group {
         min-width: 250px;
     }
-
+    .input-group .form-control {
+            border-radius: 0.25rem 0 0 0.25rem;
+        }
     .card-header .form-control-sm {
         font-size: 0.875rem;
         border: 1px solid #ced4da;
@@ -156,9 +158,82 @@
         margin: 0 !important;
     }
     .card-header .dataTables_length label {
-        font-size: 0.875rem;
-        color: #6c757d;
-        white-space: nowrap;
+    font-size: 0.875rem;
+    color: #6c757d;
+    white-space: nowrap;
+    /* Centrar solo el texto de los números de paginación */
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    }
+    .card-header .dataTables_length select {
+    text-align: left !important;
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem !important;
+        border: 2px solid #ced4da !important;
+        border-radius: 0.375rem !important;
+        background-color: #fff !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        transition: all 0.15s ease-in-out !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 16px 12px !important;
+    }
+    
+    .card-header .dataTables_length select:focus {
+        border-color: #4a90e2 !important;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
+        outline: none !important;
+    }
+    
+    .card-header .dataTables_length select:hover {
+        border-color: #4a90e2 !important;
+    }
+
+    /* Estilos para el select de roles */
+    .role-select {
+        border-radius: 6px !important;
+        border: 2px solid #ced4da !important;
+        background-color: #fff !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        transition: all 0.15s ease-in-out !important;
+        font-size: 0.875rem !important;
+        padding: 0.25rem 1.5rem 0.25rem 0.5rem !important;
+        display: block;
+        margin: 0 auto;
+        min-width: 140px;
+        max-width: 180px;
+        text-align: center;
+    }
+    
+    .role-select:focus {
+        border-color: #4a90e2 !important;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
+        outline: none !important;
+    }
+    
+    .role-select:hover {
+        border-color: #4a90e2 !important;
+    }
+
+    /* Animación para el ícono de éxito */
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateY(-50%) scale(0.5); }
+        20% { opacity: 1; transform: translateY(-50%) scale(1.1); }
+        25% { opacity: 1; transform: translateY(-50%) scale(1); }
+        85% { opacity: 1; transform: translateY(-50%) scale(1); }
+        100% { opacity: 0; transform: translateY(-50%) scale(0.8); }
+    }
+
+    /* Estilos para el modal de confirmación */
+    .modal-content {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header.bg-warning {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
     }
 
     /* Estilos para badges de rol */
@@ -170,6 +245,27 @@
     .badge-collaborator {
         background-color: #0d6efd;
         color: white;
+    }
+
+    /* Nuevos estilos para los badges de roles usando clases Bootstrap */
+    .bg-danger {
+        background-color: #dc3545 !important;
+    }
+    
+    .bg-warning {
+        background-color: #ffc107 !important;
+    }
+    
+    .bg-primary {
+        background-color: #0d6efd !important;
+    }
+    
+    .text-dark {
+        color: #212529 !important;
+    }
+    
+    .text-white {
+        color: #ffffff !important;
     }
 
     /* Espaciado inferior */
@@ -196,6 +292,8 @@
 @stop
 
 @section('content')
+<!-- Contenedor de alertas globales -->
+<div id="global-alerts-container" class="container-fluid px-3 mt-2" style="max-width: 100%;"></div>
 <div class="container-fluid px-0">
     <div class="row">
         <div class="col-12">
@@ -214,10 +312,10 @@
                     </div>
                     <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary px-2 py-2">
-                            <i class="bi bi-clock"></i> Usuarios Pendientes
+                            <i class="bi bi-clock me-1"></i> Usuarios Pendientes
                         </a>
                         <a href="{{ route('admin.soft-deleted') }}" class="btn btn-outline-warning px-2 py-2">
-                            <i class="bi bi-archive"></i> Eliminados
+                            <i class="bi bi-archive me-1"></i> Eliminados
                         </a>
                     </div>
                 </div>
@@ -247,24 +345,57 @@
                                             </td>
                                             <td class="text-center">
                                                 @php
-                                                    $roleLabel = $user->usertype === 'admin' ? 'Administrador' : 'Colaborador';
-                                                    $badgeClass = $user->usertype === 'admin' ? 'badge-admin' : 'badge-collaborator';
+                                                    // Si el usuario está pendiente (no aprobado ni rechazado), mostrar "En proceso"
+                                                    if (!$user->is_approved && !$user->is_rejected && $user->usertype !== 'superadmin' && $user->usertype !== 'admin') {
+                                                        $roleData = ['label' => 'En proceso', 'class' => 'bg-info text-white'];
+                                                    } else {
+                                                        $roleData = match($user->usertype) {
+                                                            'superadmin' => ['label' => 'Superadministrador', 'class' => 'bg-danger text-white'],
+                                                            'admin' => ['label' => 'Administrador', 'class' => 'bg-warning text-dark'],
+                                                            'collaborator' => ['label' => 'Colaborador', 'class' => 'bg-primary text-white'],
+                                                            default => ['label' => 'Usuario', 'class' => 'bg-secondary text-white']
+                                                        };
+                                                    }
                                                 @endphp
-                                                <span class="badge {{ $badgeClass }}">{{ $roleLabel }}</span>
+
+                                                @if(Auth::user()->isSuperAdmin() && Auth::user()->id !== $user->id && $user->is_approved)
+                                                    {{-- Select para cambiar rol - Solo para superadmin editando a otro usuario aprobado --}}
+                                                    <select class="form-select form-select-sm role-select" 
+                                                            data-user-id="{{ $user->id }}" 
+                                                            data-current-role="{{ $user->usertype }}"
+                                                            style="width: auto; min-width: 140px;">
+                                                        <option value="collaborator" {{ $user->usertype === 'collaborator' ? 'selected' : '' }}>
+                                                            Colaborador
+                                                        </option>
+                                                        <option value="admin" {{ $user->usertype === 'admin' ? 'selected' : '' }}>
+                                                            Administrador
+                                                        </option>
+                                                        <option value="superadmin" {{ $user->usertype === 'superadmin' ? 'selected' : '' }}>
+                                                            Superadministrador
+                                                        </option>
+                                                    </select>
+                                                @else
+                                                    {{-- Badge normal para otros casos --}}
+                                                    <span class="badge {{ $roleData['class'] }}">{{ $roleData['label'] }}</span>
+                                                @endif
                                             </td>
                                             <td class="text-center">
-                                                @if($user->usertype === 'admin')
+                                                @if($user->usertype === 'superadmin')
                                                     <span class="status-approved">
-                                                        <i class="bi bi-shield-check"></i> Activo
+                                                        <i class="bi bi-shield-fill me-1"></i> Superadmin
+                                                    </span>
+                                                @elseif($user->usertype === 'admin')
+                                                    <span class="status-approved">
+                                                        <i class="bi bi-shield-check me-1"></i> Activo
                                                     </span>
                                                 @else
                                                     @if($user->is_approved)
                                                         <span class="status-approved">
-                                                            <i class="bi bi-check-circle"></i> Aprobado
+                                                            <i class="bi bi-check-circle me-1"></i> Aprobado
                                                         </span>
                                                     @elseif($user->is_rejected)
                                                         <span class="status-rejected">
-                                                            <i class="bi bi-x-circle"></i> Rechazado
+                                                            <i class="bi bi-x-circle me-1"></i> Rechazado
                                                         </span>
                                                     @else
                                                         <span class="status-pending">
@@ -310,75 +441,393 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar que DataTables esté disponible
-    if (!initializeDataTables()) {
-        return;
-    }
-
-    // Inicializar tabla de usuarios
-    const usersTable = DataTablesConfig.initTable(
-        '#usersTable',
-        DataTablesConfig.getUsersConfig()
-    );
-
-    if (usersTable) {
-        console.log('Tabla de usuarios inicializada correctamente');
-        // Inicializar tooltips al cargar y tras redraw
-        const initTooltips = () => {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.forEach(el => {
-                const existing = bootstrap.Tooltip.getInstance(el);
-                if (existing) existing.dispose();
-                new bootstrap.Tooltip(el, {
-                    container: 'body',
-                    boundary: 'window',
-                    placement: 'auto',
-                    html: false
-                });
-            });
-        };
-        initTooltips();
-        $('#usersTable').on('draw.dt', function() { initTooltips(); });
-        
-        // Conectar buscador personalizado
-        const searchInput = document.getElementById('usersSearchInput');
-        const searchButton = document.getElementById('btnSearchUsers');
-        
-        if (searchInput && searchButton) {
-            // Función para realizar búsqueda
-            function performSearch() {
-                const searchTerm = searchInput.value.trim();
-                usersTable.search(searchTerm).draw();
+    // Inicializar DataTable con select de paginación generado por DataTables
+    const usersTable = $('#usersTable').DataTable({
+        paging: true,
+        searching: false, // usamos buscador personalizado
+        ordering: false,
+        info: true,
+        lengthChange: true,
+        lengthMenu: [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+        pageLength: 10,
+        pagingType: 'full_numbers',
+        language: {
+            emptyTable: 'No hay datos disponibles en la tabla',
+            zeroRecords: 'No se encontraron resultados',
+            lengthMenu: '_MENU_',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_',
+            infoEmpty: 'Mostrando 0 a 0 de 0',
+            infoFiltered: '(filtrado de _MAX_)',
+            search: 'Buscar:',
+            searchPlaceholder: '',
+            loadingRecords: 'Cargando...',
+            processing: 'Procesando...',
+            paginate: {
+                first: '«',
+                previous: '‹',
+                next: '›',
+                last: '»'
             }
-
-            // Búsqueda en tiempo real mientras se escribe
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(performSearch, 300);
-            });
-
-            // Búsqueda al hacer clic en el botón
-            searchButton.addEventListener('click', performSearch);
-
-            // Búsqueda al presionar Enter
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    performSearch();
+        },
+        dom: 'ltip', // l=length, t=table, i=info, p=pagination
+        initComplete: function () {
+            try {
+                const api = this.api();
+                const wrapper = $(api.table().container());
+                const lengthDiv = wrapper.find('div.dataTables_length');
+                const target = document.getElementById('usersLengthContainer');
+                if (target && lengthDiv.length) {
+                    lengthDiv.addClass('mb-0');
+                    lengthDiv.find('label').addClass('mb-0 d-flex align-items-center gap-2');
+                    lengthDiv.find('select')
+                        .addClass('form-select form-select-sm rounded')
+                        .css({ width: 'auto', height: '35px' });
+                    target.innerHTML = '';
+                    target.appendChild(lengthDiv.get(0));
                 }
-            });
+            } catch (err) {
+                console.warn('No se pudo mover el selector de longitud:', err);
+            }
+        }
+    });
 
-            // Limpiar búsqueda al presionar Escape
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    this.value = '';
-                    usersTable.search('').draw();
-                    this.blur();
+    // Inicializar tooltips al cargar y tras redraw
+    const initTooltips = () => {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(el => {
+            const existing = bootstrap.Tooltip.getInstance(el);
+            if (existing) existing.dispose();
+            new bootstrap.Tooltip(el, {
+                container: 'body',
+                boundary: 'window',
+                placement: 'auto',
+                html: false
+            });
+        });
+    };
+    initTooltips();
+    $('#usersTable').on('draw.dt', function() { initTooltips(); });
+
+    // Conectar buscador personalizado
+    const searchInput = document.getElementById('usersSearchInput');
+    const searchButton = document.getElementById('btnSearchUsers');
+
+    if (searchInput && searchButton) {
+        // Función para realizar búsqueda
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            usersTable.search(searchTerm).draw();
+        }
+
+        // Búsqueda en tiempo real mientras se escribe
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300);
+        });
+
+        // Búsqueda al hacer clic en el botón
+        searchButton.addEventListener('click', performSearch);
+
+        // Búsqueda al presionar Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // Limpiar búsqueda al presionar Escape
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                usersTable.search('').draw();
+                this.blur();
+            }
+        });
+    }
+    // Variables globales para el modal de cambio de rol
+    let pendingRoleChange = null;
+    let isProcessingRoleChange = false;
+    
+    // Inicializar el modal una vez
+    const roleChangeModal = document.getElementById('roleChangeModal');
+    const confirmRoleChangeBtn = document.getElementById('confirmRoleChange');
+    
+    // Manejar cambios de rol
+    document.addEventListener('change', function(e) {
+        if (!e.target.classList.contains('role-select') || isProcessingRoleChange) {
+            return; // Ignorar si no es el select correcto o si ya hay un proceso en curso
+        }
+        
+        const select = e.target;
+        const userId = select.dataset.userId;
+        const currentRole = select.dataset.currentRole;
+        const newRole = select.value;
+        
+        if (newRole === currentRole) {
+            return; // No hay cambio
+        }
+        
+        // Obtener nombre del usuario de la tabla
+        const userRow = select.closest('tr');
+        const userName = userRow.querySelector('td:first-child').textContent.trim();
+        
+        // Configurar el modal
+        const roleNames = {
+            'collaborator': 'Colaborador',
+            'admin': 'Administrador',
+            'superadmin': 'Superadministrador'
+        };
+        
+        document.getElementById('modalUserName').textContent = userName;
+        document.getElementById('modalNewRole').textContent = roleNames[newRole];
+        
+        // Guardar datos para usar en la confirmación
+        pendingRoleChange = {
+            userId: userId,
+            newRole: newRole,
+            selectElement: select,
+            currentRole: currentRole
+        };
+        
+        // Revertir temporalmente el select hasta que se confirme
+        select.value = currentRole;
+        
+        // Mostrar el modal
+        const modal = new bootstrap.Modal(roleChangeModal);
+        modal.show();
+    });
+    
+    // Manejar confirmación del modal (remover listeners previos)
+    confirmRoleChangeBtn.replaceWith(confirmRoleChangeBtn.cloneNode(true));
+    const newConfirmBtn = document.getElementById('confirmRoleChange');
+    
+    newConfirmBtn.addEventListener('click', function() {
+        if (pendingRoleChange && !isProcessingRoleChange) {
+            isProcessingRoleChange = true;
+            
+            // Deshabilitar botón de confirmación
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+            
+            // Actualizar el select al nuevo valor
+            pendingRoleChange.selectElement.value = pendingRoleChange.newRole;
+            
+            // Realizar el cambio
+            updateUserRole(
+                pendingRoleChange.userId, 
+                pendingRoleChange.newRole, 
+                pendingRoleChange.selectElement
+            ).finally(() => {
+                // Cerrar modal y limpiar estado
+                const modal = bootstrap.Modal.getInstance(roleChangeModal);
+                if (modal) {
+                    modal.hide();
                 }
+                resetModalState();
             });
         }
+    });
+    
+    // Manejar cancelación del modal
+    roleChangeModal.addEventListener('hidden.bs.modal', function() {
+        if (pendingRoleChange && !isProcessingRoleChange) {
+            // Asegurar que el select vuelva al valor original
+            pendingRoleChange.selectElement.value = pendingRoleChange.currentRole;
+        }
+        resetModalState();
+    });
+    
+    // Función para resetear el estado del modal
+    function resetModalState() {
+        pendingRoleChange = null;
+        isProcessingRoleChange = false;
+        
+        // Resetear botón de confirmación
+        const confirmBtn = document.getElementById('confirmRoleChange');
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Confirmar Cambio';
+    }
+    
+    // Función para actualizar el rol del usuario (ahora retorna una Promise)
+    function updateUserRole(userId, newRole, selectElement) {
+        // Deshabilitar el select mientras se procesa
+        selectElement.disabled = true;
+        
+        // Obtener token CSRF fresco
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        if (!csrfToken) {
+            console.error('CSRF token no encontrado');
+            showNotification('Error: Token de seguridad no encontrado. Recarga la página.', 'error');
+            selectElement.disabled = false;
+            return Promise.reject('CSRF token not found');
+        }
+        
+        return fetch(`/superadmin/users/${userId}/role`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                role: newRole
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Actualizar el dataset del select
+                selectElement.dataset.currentRole = newRole;
+                // Mostrar mensaje de éxito con información de permisos
+                const roleNames = {
+                    'collaborator': 'Colaborador',
+                    'admin': 'Administrador', 
+                    'superadmin': 'Superadministrador'
+                };
+                // Agregar ícono de éxito temporal al select
+                showSuccessIcon(selectElement);
+                showNotification(`Rol actualizado a "${roleNames[newRole]}" y permisos sincronizados automáticamente`, 'success');
+                return data;
+            } else {
+                // Mostrar mensaje de error devuelto por el backend
+                selectElement.value = selectElement.dataset.currentRole;
+                showNotification(data.message || 'Error al actualizar el rol', 'error');
+                // NO recargar la tabla si hay error
+                throw new Error(data.message || 'Error al actualizar el rol');
+            }
+        })
+        .catch(error => {
+            // Manejo de error de red o validación
+            selectElement.value = selectElement.dataset.currentRole;
+            showNotification(error.message || 'Error de conexión al actualizar el rol', 'error');
+            // NO recargar la tabla si hay error
+        })
+        .finally(() => {
+            // Rehabilitar el select
+            selectElement.disabled = false;
+        });
+    }
+    
+    // Función para mostrar ícono de éxito temporal (mejorada)
+    function showSuccessIcon(selectElement) {
+        // Remover ícono existente si hay uno
+        const existingIcon = selectElement.parentElement.querySelector('.success-icon');
+        if (existingIcon) {
+            existingIcon.remove();
+        }
+        
+        // Crear ícono de éxito
+        const successIcon = document.createElement('i');
+        successIcon.className = 'bi bi-check-circle-fill text-success position-absolute success-icon';
+        successIcon.style.cssText = `
+            right: 25px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            font-size: 16px; 
+            z-index: 10;
+            pointer-events: none;
+            animation: fadeInOut 3s ease-in-out;
+        `;
+        
+        // Posicionar el contenedor del select como relativo
+        const container = selectElement.parentElement;
+        const currentPosition = getComputedStyle(container).position;
+        if (currentPosition === 'static') {
+            container.style.position = 'relative';
+        }
+        
+        // Agregar el ícono
+        container.appendChild(successIcon);
+        
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            if (successIcon.parentNode) {
+                successIcon.remove();
+            }
+        }, 3000);
+    }
+    
+    // Función auxiliar para mostrar notificaciones
+    function showNotification(message, type) {
+        // Crear un alert temporal en el contenedor global
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const iconClass = type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle';
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            <i class="bi ${iconClass} me-2"></i>${message}
+        `;
+
+        // Insertar en el contenedor global de alertas al inicio
+        const alertsContainer = document.getElementById('global-alerts-container');
+        if (alertsContainer) {
+            alertsContainer.insertBefore(alertDiv, alertsContainer.firstChild);
+        } else {
+            document.body.appendChild(alertDiv);
+        }
+
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
     }
 });
 </script>
+
+<!-- Modal de Confirmación de Cambio de Rol -->
+<div class="modal fade" id="roleChangeModal" tabindex="-1" aria-labelledby="roleChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="roleChangeModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cambio de Rol
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-warning bg-opacity-25 rounded-circle p-3 me-3">
+                        <i class="bi bi-person-gear fs-2 text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1">Cambio de Rol de Usuario</h6>
+                        <small class="text-muted">Esta acción modificará los permisos del usuario</small>
+                    </div>
+                </div>
+                <p class="mb-2">
+                    <strong>Usuario:</strong> <span id="modalUserName"></span>
+                </p>
+                <p class="mb-3">
+                    <strong>¿Estás seguro de que deseas cambiar el rol de este usuario a:</strong>
+                    <br>
+                    <span id="modalNewRole" class="badge bg-primary fs-6 mt-1"></span>
+                </p>
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <small>Los permisos del usuario se actualizarán automáticamente según su nuevo rol.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" id="confirmRoleChange">
+                    <i class="bi bi-check-circle me-1"></i>Confirmar Cambio
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stop
