@@ -90,8 +90,7 @@ Route::middleware(['auth', IsApproved::class])->group(function () {
     Route::get('/historas/{historia}/show',[HistoriasController::class,'show'])->name('historias.show');
     Route::get('/historias/{historia}/edit',[HistoriasController::class,'edit'])->name('historias.edit');
     Route::patch('/historias/{historia}/',[HistoriasController::class,'update'])->name('historias.update');
-    Route::delete('/historias/{historia}', [HistoriasController::class, 'destroy'])->name('historias.destroy');
-
+    Route::delete('/historias/{historia}/destroy',[HistoriasController::class,'destroy'])->name('historias.destroy');
 
     //Rutas para Tareas
     Route::get('/historias/{historia}/tareas', [TareaController::class, 'index'])->name('tareas.index');
