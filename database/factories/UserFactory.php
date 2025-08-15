@@ -32,7 +32,7 @@ class UserFactory extends Factory
 
         return [
             'name' => fake()->randomElement($nombresEspanol),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->userName() . '@unah.hn',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -62,7 +62,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'name' => 'Administrador ' . fake()->lastName(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => 'admin.' . fake()->unique()->userName() . '@unah.hn',
             'usertype' => 'admin',
             'is_approved' => true,
             'is_rejected' => false,

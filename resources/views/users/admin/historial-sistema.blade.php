@@ -319,15 +319,6 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
-                                        <!-- Botón de limpiar historial -->
-                                        <button type="button" 
-                                                class="btn btn-danger px-2 py-2" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#limpiarHistorialModal">
-                                            <i class="bi bi-trash me-1"></i> Limpiar Historial
-                                        </button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body p-0">
@@ -439,60 +430,6 @@
         </div>
     </div>
 
-    
-
-    
-
-<!-- Modal de confirmación para limpiar historial -->
-<div class="modal fade" id="limpiarHistorialModal" tabindex="-1" aria-labelledby="limpiarHistorialModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="limpiarHistorialModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Limpieza de Historial
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción es irreversible.
-                </div>
-                
-                <p class="mb-3">
-                    Estás a punto de eliminar <strong>{{ number_format($stats['total_cambios']) }} registros</strong> 
-                    del historial del sistema.
-                </p>
-                
-                <div class="bg-light p-3 rounded mb-3">
-                    <h6 class="fw-bold mb-2">Consecuencias de esta acción:</h6>
-                    <ul class="mb-0">
-                        <li>Se perderá todo el historial de cambios del sistema</li>
-                        <li>No se podrá recuperar la información eliminada</li>
-                        <li>Se mantendrá un registro de esta acción de limpieza</li>
-                        <li>Los datos de proyectos, usuarios y tareas no se verán afectados</li>
-                    </ul>
-                </div>
-                
-                <p class="mb-0">
-                    ¿Estás seguro de que deseas continuar con la limpieza del historial?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <form method="POST" action="{{ route('historial.limpiar') }}" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt me-1"></i>Sí, Limpiar Historial
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('styles')
@@ -724,41 +661,5 @@
             }
         }, 300000);
     });
-
-    function limpiarHistorial() {
-        const dias = document.getElementById('diasAntiguedad').value;
-        const actionUrl = "{{ route('historial.limpiar') }}";
-        
-        if (confirm(`¿Está seguro que desea eliminar todos los registros de más de ${dias} días?`)) {
-            // Crear y enviar formulario
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = actionUrl;
-            
-            // Token CSRF
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-            
-            // Method DELETE
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-            
-            // Días de antigüedad
-            const diasInput = document.createElement('input');
-            diasInput.type = 'hidden';
-            diasInput.name = 'dias';
-            diasInput.value = dias;
-            form.appendChild(diasInput);
-            
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
 </script>
 @endsection
