@@ -353,12 +353,12 @@
                             <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
                             <li>
                                 <button type="button"
-                                        class="dropdown-item"
+                                        class="dropdown-item text-danger"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteHistoriaModal"
                                         data-historia-id="{{ $historia->id }}"
                                         data-historia-nombre="{{ $historia->nombre }}">
-                                    Eliminar
+                                    <i class="bi bi-trash3 me-2"></i>Eliminar
                                 </button>
                             </li>
                             <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
@@ -515,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
                     @csrf
-                    <input type="hidden" name="_method" value="DELETE">
+                    @method('DELETE')
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash3"></i> Eliminar Permanentemente
                     </button>
@@ -528,18 +528,17 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const deleteHistoriaModal = document.getElementById('deleteHistoriaModal');
-    const deleteHistoriaForm = document.getElementById('deleteHistoriaForm');
     const deleteHistoriaText = document.getElementById('deleteHistoriaText');
 
     deleteHistoriaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
-        const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
-        deleteHistoriaForm.action = `/historias/${historiaId}`;
-
-
+        if (historiaNombre) {
+            deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
+        } else {
+            deleteHistoriaText.textContent = '¿Está seguro de que desea eliminar esta historia?';
+        }
     });
 });
 </script>
@@ -704,7 +703,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const tareaId = checkbox.dataset.id;
             const estaMarcado = checkbox.checked;
 
-            fetch(`/tareas/${tareaId}/completar`, {
+            fetch(/tareas/${tareaId}/completar, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -714,7 +713,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(response => {
                 if (response.ok) {
                     actualizarBarraProgreso();
-                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                    document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"]).forEach(cb => {
                         cb.checked = estaMarcado;
                     });
                 } else {
@@ -744,8 +743,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -1094,14 +1093,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteRespuestaText = document.getElementById('deleteRespuestaText');
 
     // Base URL con marcador para reemplazar
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const respuestaId = button.getAttribute('data-respuesta-id');
 
-        deleteRespuestaText.textContent = `¿Está seguro de que desea eliminar esta respuesta?`;
-        deleteRespuestaForm.action = baseDeleteUrl.replace('__ID__', respuestaId);
+        deleteRespuestaText.textContent = ¿Está seguro de que desea eliminar esta respuesta?;
+        deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
     });
 });
 </script>
@@ -1126,14 +1125,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteComentarioText = document.getElementById('deleteComentarioText');
 
     // Base de la URL de eliminación
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const comentarioId = button.getAttribute('data-comentario-id');
 
-        deleteComentarioText.textContent = `¿Está seguro de que desea eliminar este comentario?`;
-        deleteComentarioForm.action = baseDeleteUrl.replace('__ID__', comentarioId);
+        deleteComentarioText.textContent = ¿Está seguro de que desea eliminar este comentario?;
+        deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
     });
 });
 </script>
@@ -1164,8 +1163,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -1272,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', function() {
             guardarEstadoCheckbox(tareaId, estaMarcado);
 
             // Sincronizar checkboxes con el mismo data-id en la misma página
-            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+            document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"])
                     .forEach(cb => cb.checked = estaMarcado);
         }
     });
