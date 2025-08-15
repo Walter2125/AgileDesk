@@ -333,851 +333,852 @@
 
     <div class="container-fluid-m-2 mi-container m-2">
 
-                    <div class="card-body">
+        <div class="card-body">
 
 
 
-                        <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
-                            @csrf
-                            @method('PATCH')
-                            <div class="row mb-3">
+            <form id="formHistoria" action="{{ route('historias.update', $historia->id) }}" method="POST" autocomplete="off">
+                @csrf
+                @method('PATCH')
+                <div class="row mb-3">
 
-                                <div class="mb-4 rounded gap-2">
-                                    <label class="form-label rounded d-flex justify-content-between align-items-center">
-                                        Nombre de la Historia
+                    <div class="mb-4 rounded gap-2">
+                        <label class="form-label rounded d-flex justify-content-between align-items-center">
+                            Nombre de la Historia
 
-                                        <div id="dropdownMenuContainer" class="dropdown ms-2">
-                                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
-                                                <li>
-                                                    <button type="button"
-                                                            class="dropdown-item"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteHistoriaModal"
-                                                            data-historia-id="{{ $historia->id }}"
-                                                            data-historia-nombre="{{ $historia->nombre }}">
-                                                        Eliminar
-                                                    </button>
-                                                </li>
-                                                <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
-                                            </ul>
-                                        </div>
-                                    </label>
-
-
-                                    <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
-                                        <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
-                                            title="Haz clic para editar">
-                                            {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
-                                        </h2>
-
-                                    </div>
-
-
-                                    <input id="tituloInput" type="text" name="nombre" maxlength="100"
-                                           class="form-control formulario-editable rounded d-none mt-2"
-                                           value="{{ old('nombre', $historia->nombre) }}"
-                                           data-editable="true" />
-                                </div>
-
-
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Asignado a</label>
-                                        <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
-                                            <option value="">-- Seleccionar usuario --</option>
-                                            @foreach($usuarios as $usuario)
-                                                <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-                                                    {{ $usuario->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Estado</label>
-                                        <select name="columna_id" class="form-control formulario-editable" data-editable="true">
-                                            <option value="">Sin Estado</option>
-                                            @foreach ($columnas as $columna)
-                                                <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
-                                                    {{ $columna->nombre }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Prioridad</label>
-                                        <select name="prioridad" class="form-control formulario-editable" data-editable="true">
-                                            <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
-                                            <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
-                                            <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6 col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Horas estimadas</label>
-                                        <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
-                                               value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
-                                               data-editable="true">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Sprint</label>
-                                        <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
-                                            <option value="">Ningún Sprint</option>
-                                            @foreach ($sprints as $sprint)
-                                                <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
-                                                    {{ $sprint->nombre }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label rounded">Última modificación</label>
-                                        <input type="text" class="form-control formulario-editable"value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Descripción</label>
-                                    <textarea class="form-control formulario-editable" name="descripcion"
-                                              maxlength="5000"
-                                              data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
-                                </div>
-
-                                <div class="d-flex justify-content-end mb-3">
-
-                                    <button id="btnGuardar" type="submit" class="btn btn-primary ms-2">
-                                        <i class="bi bi-arrow-repeat me-2"></i> Actualizar
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-
-
-
-                        <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-
-
-
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const tituloContainer = document.getElementById("tituloContainer");
-                                const tituloTexto = document.getElementById("tituloTexto");
-                                const tituloInput = document.getElementById("tituloInput");
-                                const nombreTexto = document.getElementById("nombreTexto");
-
-                                // Al hacer clic en el título → mostrar input
-                                tituloContainer.addEventListener("click", function () {
-                                    tituloContainer.classList.add("d-none");
-                                    tituloInput.classList.remove("d-none");
-                                    tituloInput.focus();
-                                });
-
-                                // Al salir del input → volver a mostrar el título
-                                tituloInput.addEventListener("blur", function () {
-                                    if (tituloInput.value.trim() !== "") {
-                                        nombreTexto.textContent = tituloInput.value;
-                                    }
-                                    tituloInput.classList.add("d-none");
-                                    tituloContainer.classList.remove("d-none");
-                                });
-                            });
-                        </script>
-
-                        <!-- Modal para confirmar eliminación de historia -->
-                        <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content text-center"> <!-- Centramos todo -->
-                                    <div class="modal-header justify-content-center">
-                                        <h5 class="modal-title" id="deleteHistoriaModalLabel">
-                                            <i class="bi bi-exclamation-triangle text-danger"></i>
-                                            Confirmar Eliminación Permanente
-                                        </h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
-                                            <i class="bi bi-exclamation-triangle"></i>
-                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                                        </div>
-                                        <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn btn-danger">
-                                                <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @push('js')
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const deleteHistoriaModal = document.getElementById('deleteHistoriaModal');
-                                    const deleteHistoriaForm = document.getElementById('deleteHistoriaForm');
-                                    const deleteHistoriaText = document.getElementById('deleteHistoriaText');
-
-                                    deleteHistoriaModal.addEventListener('show.bs.modal', function(event) {
-                                        const button = event.relatedTarget;
-                                        const historiaId = button.getAttribute('data-historia-id');
-                                        const historiaNombre = button.getAttribute('data-historia-nombre') || '';
-
-                                        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
-                                        deleteHistoriaForm.action = `/historias/${historiaId}`;
-
-                                    });
-                                });
-                            </script>
-                        @endpush
-
-                        {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
-                        <div class="mb-0">
-                            {{-- BOTÓN: TAREAS RELACIONADAS --}}
-                            <div class="mb-0 border rounded">
-                                <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
-
-                                    Tareas relacionadas
+                            <div id="dropdownMenuContainer" class="dropdown ms-2">
+                                <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
                                 </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a href="{{ route('tableros.show', $historia->proyecto_id) }}" class="dropdown-item">Atrás</a></li>
+                                    <li>
+                                        <button type="button"
+                                                class="dropdown-item"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteHistoriaModal"
+                                                data-historia-id="{{ $historia->id }}"
+                                                data-historia-nombre="{{ $historia->nombre }}">
+                                            Eliminar
+                                        </button>
+                                    </li>
+                                    <li><a href="{{ route('tareas.show', $historia->id) }}" class="dropdown-item">Lista de Tareas</a></li>
+                                </ul>
+                            </div>
+                        </label>
 
-                                <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
-                                    @if($tareas->isEmpty())
-                                        <div class="alert alert-warning m-2 py-2 px-3">No hay tareas registradas para esta historia.</div>
-                                    @else
-                                        {{-- CONTENEDOR SCROLL --}}
-                                        <div class="accordion m-2" id="accordionListaTareas" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
-                                            @foreach($tareas as $tarea)
-                                                <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
-                                                    <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2" type="button"
-                                                            onclick="toggleTarea(this)" style="font-size: 0.9rem;">
-                                                        <input type="checkbox"
-                                                               class="form-check-input me-2 tarea-checkbox"
-                                                               data-id="{{ $tarea->id }}"
-                                                               {{ $tarea->completada ? 'checked' : '' }}
-                                                               onclick="event.stopPropagation();">
 
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">{{ $tarea->nombre }}</h6>
-                                                        </div>
-                                                    </button>
+                        <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
+                            <h2 id="tituloTexto" class="historia-title rounded m-0 text-truncate me-2"
+                                title="Haz clic para editar">
+                                {{ $historia->proyecto->codigo ?? 'SIN-CÓDIGO' }}-H{{ $historia->numero }} <span id="nombreTexto">{{ $historia->nombre }}</span>
+                            </h2>
 
-                                                    <div class="contenido-tarea p-3 rounded-bottom" style="display: none; font-size: 0.85rem;">
-                                                        <p>
-                                                            <strong> Descripción:</strong><br>
-                                                            <span style="color: #555;">{{ $tarea->descripcion }}</span>
-                                                        </p>
+                        </div>
 
-                                                        <p>
-                                                            <strong> Fecha de creación:</strong><br>
-                                                            <span style="color: #555;">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
-                                                        </p>
 
-                                                        <p>
-                                                            <strong> Tipo de actividad:</strong><br>
-                                                            <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #6f42c1; font-size: 0.75rem;">
+                        <input id="tituloInput" type="text" name="nombre" maxlength="100"
+                               class="form-control formulario-editable rounded d-none mt-2"
+                               value="{{ old('nombre', $historia->nombre) }}"
+                               data-editable="true" />
+                    </div>
+
+
+                    <div class="col-lg-6 col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label rounded">Asignado a</label>
+                            <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
+                                <option value="">-- Seleccionar usuario --</option>
+                                @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                                        {{ $usuario->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label rounded">Estado</label>
+                            <select name="columna_id" class="form-control formulario-editable" data-editable="true">
+                                <option value="">Sin Estado</option>
+                                @foreach ($columnas as $columna)
+                                    <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                                        {{ $columna->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label rounded">Prioridad</label>
+                            <select name="prioridad" class="form-control formulario-editable" data-editable="true">
+                                <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                                <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                                <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12">
+                        <div class="mb-3">
+                            <label class="form-label rounded">Horas estimadas</label>
+                            <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
+                                   value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
+                                   data-editable="true">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label rounded">Sprint</label>
+                            <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
+                                <option value="">Ningún Sprint</option>
+                                @foreach ($sprints as $sprint)
+                                    <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                        {{ $sprint->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label rounded">Última modificación</label>
+                            <input type="text" class="form-control formulario-editable"value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control formulario-editable" name="descripcion"
+                                  maxlength="5000"
+                                  data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end mb-3">
+
+                        <button id="btnGuardar" type="submit" class="btn btn-primary ms-2">
+                            <i class="bi bi-arrow-repeat me-2"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+
+
+            <form action="{{ route('historias.destroy', $historia->id) }}" method="post">
+                @csrf
+                @method('DELETE')
+            </form>
+
+
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const tituloContainer = document.getElementById("tituloContainer");
+                    const tituloTexto = document.getElementById("tituloTexto");
+                    const tituloInput = document.getElementById("tituloInput");
+                    const nombreTexto = document.getElementById("nombreTexto");
+
+                    // Al hacer clic en el título → mostrar input
+                    tituloContainer.addEventListener("click", function () {
+                        tituloContainer.classList.add("d-none");
+                        tituloInput.classList.remove("d-none");
+                        tituloInput.focus();
+                    });
+
+                    // Al salir del input → volver a mostrar el título
+                    tituloInput.addEventListener("blur", function () {
+                        if (tituloInput.value.trim() !== "") {
+                            nombreTexto.textContent = tituloInput.value;
+                        }
+                        tituloInput.classList.add("d-none");
+                        tituloContainer.classList.remove("d-none");
+                    });
+                });
+            </script>
+
+            <!-- Modal para confirmar eliminación de historia -->
+            <div class="modal fade" id="deleteHistoriaModal" tabindex="-1" aria-labelledby="deleteHistoriaModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center"> <!-- Centramos todo -->
+                        <div class="modal-header justify-content-center">
+                            <h5 class="modal-title" id="deleteHistoriaModalLabel">
+                                <i class="bi bi-exclamation-triangle text-danger"></i>
+                                Confirmar Eliminación Permanente
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                            </div>
+                            <p id="deleteHistoriaText">¿Está seguro de que desea eliminar esta historia?</p>
+                        </div>
+                        <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form action="{{ route('historias.destroy', $historia->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @push('js')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const deleteHistoriaModal = document.getElementById('deleteHistoriaModal');
+                        const deleteHistoriaForm = document.getElementById('deleteHistoriaForm');
+                        const deleteHistoriaText = document.getElementById('deleteHistoriaText');
+
+                        deleteHistoriaModal.addEventListener('show.bs.modal', function(event) {
+                            const button = event.relatedTarget;
+                            const historiaId = button.getAttribute('data-historia-id');
+                            const historiaNombre = button.getAttribute('data-historia-nombre') || '';
+
+                            deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
+                            deleteHistoriaForm.action = `/historias/${historiaId}`;
+
+                        });
+                    });
+                </script>
+            @endpush
+
+            {{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
+            <div class="mb-0">
+                {{-- BOTÓN: TAREAS RELACIONADAS --}}
+                <div class="mb-0 border rounded">
+                    <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
+
+                        Tareas relacionadas
+                    </button>
+
+                    <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
+                        @if($tareas->isEmpty())
+                            <div class="alert alert-warning m-2 py-2 px-3">No hay tareas registradas para esta historia.</div>
+                        @else
+                            {{-- CONTENEDOR SCROLL --}}
+                            <div class="accordion m-2" id="accordionListaTareas" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
+                                @foreach($tareas as $tarea)
+                                    <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
+                                        <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2" type="button"
+                                                onclick="toggleTarea(this)" style="font-size: 0.9rem;">
+                                            <input type="checkbox"
+                                                   class="form-check-input me-2 tarea-checkbox"
+                                                   data-id="{{ $tarea->id }}"
+                                                   {{ $tarea->completada ? 'checked' : '' }}
+                                                   onclick="event.stopPropagation();">
+
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">{{ $tarea->nombre }}</h6>
+                                            </div>
+                                        </button>
+
+                                        <div class="contenido-tarea p-3 rounded-bottom" style="display: none; font-size: 0.85rem;">
+                                            <p>
+                                                <strong> Descripción:</strong><br>
+                                                <span style="color: #555;">{{ $tarea->descripcion }}</span>
+                                            </p>
+
+                                            <p>
+                                                <strong> Fecha de creación:</strong><br>
+                                                <span style="color: #555;">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
+                                            </p>
+
+                                            <p>
+                                                <strong> Tipo de actividad:</strong><br>
+                                                <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #6f42c1; font-size: 0.75rem;">
                                         <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
                                     </span>
-                                                        </p>
+                                            </p>
 
-                                                        <div class="d-flex justify-content-end gap-2 mt-2">
-                                                            <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
-                                                                <i class="bi bi-pencil-square"></i>
-                                                            </a>
-                                                            <button class="btn btn-outline-danger btn-sm p-1 px-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
-                                                                <i class="bi bi-trash3"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {{-- Modal de confirmación de eliminacion--}}
-                                                <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content rounded-4 shadow">
-
-                                                            <!-- Encabezado -->
-                                                            <div class="modal-header border-bottom">
-                                                                <h5 class="modal-title text-danger">
-                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                    Confirmar Eliminación Permanente
-                                                                </h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                            </div>
-
-                                                            <!-- Cuerpo -->
-                                                            <div class="modal-body text-center">
-                                                                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                    <div>
-                                                                        <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                                                                    </div>
-                                                                </div>
-
-                                                                <p>¿Está seguro de que desea eliminar esta tarea?</p>
-                                                                <p><strong>{{ $tarea->nombre }}</strong> será eliminada permanentemente.</p>
-                                                            </div>
-
-                                                            <!-- Pie con botones -->
-                                                            <div class="modal-footer justify-content-center">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">
-                                                                        <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            @endforeach
+                                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                                <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <button class="btn btn-outline-danger btn-sm p-1 px-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $tarea->id }}" title="Eliminar">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    @endif
-
-                                    {{-- Botones finales --}}
-                                    <div class="ms-3 mb-3">
-                                        {{-- Botón para crear tarea --}}
-                                        <a href="{{ route('tareas.index', $historia->id) }}"
-                                           class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-                                           style="width: 40px; height: 40px;"
-                                           title="Crear tarea">
-                                            <i class="bi bi-plus-lg"></i>
-                                        </a>
-
-                                        {{-- Ojito que siempre va a la lista --}}
-                                        <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id ?? 0]) }}"
-                                           class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-                                           style="width: 40px; height: 40px;"
-                                           title="Ver lista de tareas">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
+                                    {{-- Modal de confirmación de eliminacion--}}
+                                    <div class="modal fade" id="deleteModal{{ $tarea->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content rounded-4 shadow">
 
-                        {{-- BOTÓN: COMENTARIOS --}}
-                        <div class="mb-0">
-                            <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
-                                Comentarios
-                            </button>
-                            <div id="comentarios-acordeon" class="contenido-acordeon" style="display: none;">
+                                                <!-- Encabezado -->
+                                                <div class="modal-header border-bottom">
+                                                    <h5 class="modal-title text-danger">
+                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                        Confirmar Eliminación Permanente
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
 
-                                <!-- Comentarios Modernizados -->
-                                <div class="card shadow border-0 rounded-4">
-                                    <div class="card-body bg-light px-4 py-3 scroll-comentarios">
-                                        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
-                                            <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
-                                            <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
-                                                <i class="bi bi-chat-left-text me-1"></i> Comentar
-                                            </button>
-                                        </div>
-
-                                        <div class="card-body bg-light px-4 py-3">
-                                            @if($historia->comentarios->count())
-                                                @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
-                                                    <div class="rounded-4 p-3 mb-3 bg-white shadow-sm">
-                                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                                            <div>
-                                                                <strong class="text-dark fs-6">{{ optional($comentario->user)->name ?? 'Usuario eliminado' }}</strong>
-                                                                <small class="text-muted ms-2">{{ $comentario->created_at->diffForHumans() }}</small>
-                                                            </div>
-                                                            @if(Auth::id() === $comentario->user_id)
-                                                                <div class="btn-group btn-group-sm">
-                                                                    <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
-                                                                        <i class="bi bi-pencil-square fs-5"></i>
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
-                                                                        <i class="bi bi-trash fs-5"></i>
-                                                                    </button>
-                                                                </div>
-                                                            @endif
+                                                <!-- Cuerpo -->
+                                                <div class="modal-body text-center">
+                                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                        <div>
+                                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
                                                         </div>
-
-                                                        <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
-
-                                                        <!-- BOTÓN Y FORMULARIO DE RESPUESTA EN LÍNEA -->
-                                                        <button class="btn btn-sm btn-outline-info" onclick="document.getElementById('form-responder-{{ $comentario->id }}').classList.toggle('d-none')">
-                                                            <i class="bi bi-reply-fill me-1"></i> Responder
-                                                        </button>
-                                                        <div id="form-responder-{{ $comentario->id }}" class="mt-3 d-none">
-                                                            <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="parent_id" value="{{ $comentario->id }}">
-                                                                <textarea name="contenido" class="form-control rounded-4 border shadow-sm p-3 mb-2" rows="3" placeholder="Escribe tu respuesta..." required></textarea>
-                                                                <div class="d-flex justify-content-end gap-2">
-                                                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('form-responder-{{ $comentario->id }}').classList.add('d-none')">Cancelar</button>
-                                                                    <button type="submit" class="btn btn-primary btn-sm">
-                                                                        <i class="bi bi-send-fill me-1"></i> Publicar
-                                                                    </button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                        <!-- FIN RESPUESTA EN LÍNEA -->
-
-                                                        {{-- RESPUESTAS --}}
-                                                        @foreach ($comentario->respuestas as $respuesta)
-                                                            <div class="mt-3 ms-4 p-3 rounded-3 shadow-sm respuesta-celeste">
-                                                                <div class="d-flex justify-content-between align-items-center">
-                                                                    <div>
-                                                                        <strong class="text-dark">{{ optional($respuesta->user)->name ?? 'Usuario eliminado' }}</strong>
-                                                                        <small class="text-muted ms-2">{{ $respuesta->created_at->diffForHumans() }}</small>
-                                                                    </div>
-                                                                    @if(Auth::id() === $respuesta->user_id)
-                                                                        <div class="btn-group btn-group-sm">
-                                                                            <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $respuesta->id }}').classList.remove('hidden')">
-                                                                                <i class="bi bi-pencil-square fs-5"></i>
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
-                                                                                <i class="bi bi-trash fs-5"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                                <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
-
-                                                                <!-- Modal Editar Respuesta -->
-                                                                <div id="editarComentarioModal{{ $respuesta->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                                                    <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
-                                                                        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-                                                                            @csrf @method('PUT')
-                                                                            <div class="mb-4 text-center">
-                                                                                <i class="bi bi-pencil-square text-warning fs-1"></i>
-                                                                                <h4 class="fw-bold text-dark">Editar Respuesta</h4>
-                                                                                <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
-                                                                            </div>
-                                                                            <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
-                                                                            <div class="d-flex justify-content-end gap-2">
-                                                                                <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
-                                                                                <button type="submit" class="btn btn-primary text-white">
-                                                                                    <i class="bi bi-save-fill me-1"></i> Actualizar
-                                                                                </button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Modal Confirmar Eliminar Respuesta -->
-                                                                <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content rounded-4 shadow">
-
-                                                                            <!-- Encabezado -->
-                                                                            <div class="modal-header border-bottom">
-                                                                                <h5 class="modal-title text-danger">
-                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                    Confirmar Eliminación Permanente
-                                                                                </h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                            </div>
-
-                                                                            <!-- Cuerpo -->
-                                                                            <div class="modal-body text-center">
-
-                                                                                <!-- Caja de advertencia -->
-                                                                                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                    <div>
-                                                                                        <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <!-- Mensaje principal -->
-                                                                                <p>¿Está seguro de que desea eliminar esta respuesta?</p>
-
-                                                                            </div>
-
-                                                                            <!-- Pie con botones -->
-                                                                            <div class="modal-footer justify-content-center">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                                <form action="{{ route('comentarios.destroy', $respuesta) }}" method="POST" class="d-inline">
-                                                                                    @csrf @method('DELETE')
-                                                                                    <button type="submit" class="btn btn-danger">
-                                                                                        <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
-                                                                                    </button>
-                                                                                </form>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                @endforeach
-
-                                                                <!-- Modal Editar Comentario -->
-                                                                <div id="editarComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                                                    <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
-                                                                        <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
-                                                                            @csrf @method('PUT')
-                                                                            <div class="mb-4 text-center">
-                                                                                <i class="bi bi-pencil-square text-warning fs-1"></i>
-                                                                                <h4 class="fw-bold text-dark">Editar Comentario</h4>
-                                                                                <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
-                                                                            </div>
-                                                                            <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
-                                                                            <div class="d-flex justify-content-end gap-2">
-                                                                                <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
-                                                                                <button type="submit" class="btn btn-primary text-white">
-                                                                                    <i class="bi bi-save-fill me-1"></i> Actualizar
-                                                                                </button>
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Modal Confirmar Eliminar Comentario -->
-                                                                <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content rounded-4 shadow">
-
-                                                                            <!-- Encabezado -->
-                                                                            <div class="modal-header border-bottom">
-                                                                                <h5 class="modal-title text-danger">
-                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                    Confirmar Eliminación Permanente
-                                                                                </h5>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                                            </div>
-
-                                                                            <!-- Cuerpo -->
-                                                                            <div class="modal-body text-center">
-
-                                                                                <!-- Caja de advertencia -->
-                                                                                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                    <div>
-                                                                                        <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <!-- Mensaje principal -->
-                                                                                <p>¿Está seguro de que desea eliminar este comentario?</p>
-
-                                                                            </div>
-
-                                                                            <!-- Pie con botones -->
-                                                                            <div class="modal-footer justify-content-center">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                                <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" class="d-inline">
-                                                                                    @csrf @method('DELETE')
-                                                                                    <button type="submit" class="btn btn-danger">
-                                                                                        <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
-                                                                                    </button>
-                                                                                </form>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        @endforeach
-                                                        @else
-                                                            <p class="text-muted text-center">No hay comentarios aún.</p>
-                                                        @endif
                                                     </div>
-                                        </div>
 
-                                        <!-- Modal Nuevo Comentario -->
-                                        <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                            <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+                                                    <p>¿Está seguro de que desea eliminar esta tarea?</p>
+                                                    <p><strong>{{ $tarea->nombre }}</strong> será eliminada permanentemente.</p>
+                                                </div>
+
+                                                <!-- Pie con botones -->
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
+                                                        </button>
+                                                    </form>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                @endforeach
+                            </div>
+                        @endif
+
+                        {{-- Botones finales --}}
+                        <div class="ms-3 mb-3">
+                            {{-- Botón para crear tarea --}}
+                            <a href="{{ route('tareas.index', $historia->id) }}"
+                               class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                               style="width: 40px; height: 40px;"
+                               title="Crear tarea">
+                                <i class="bi bi-plus-lg"></i>
+                            </a>
+
+                            {{-- Ojito que siempre va a la lista --}}
+                            <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id ?? 0]) }}"
+                               class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
+                               style="width: 40px; height: 40px;"
+                               title="Ver lista de tareas">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {{-- BOTÓN: COMENTARIOS --}}
+            <div class="mb-0">
+                <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="comentarios-acordeon" type="button">
+                    Comentarios
+                </button>
+                <div id="comentarios-acordeon" class="contenido-acordeon" style="display: none;">
+
+                    <!-- Comentarios Modernizados -->
+                    <div class="card shadow border-0 rounded-4">
+                        <div class="card-body bg-light px-4 py-3 scroll-comentarios">
+                            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center px-4 py-3">
+                                <h4 class="mb-0 text-dark"><i class="bi bi-chat-left-text me-2 text-info"></i>Comentarios</h4>
+                                <button class="btn btn-light btn-sm text-info fw-bold px-3 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.remove('hidden')">
+                                    <i class="bi bi-chat-left-text me-1"></i> Comentar
+                                </button>
+                            </div>
+
+                            <div class="card-body bg-light px-4 py-3">
+                                @if($historia->comentarios->count())
+                                    @foreach ($historia->comentarios->where('parent_id', null) as $comentario)
+                                        <div class="rounded-4 p-3 mb-3 bg-white shadow-sm">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    <strong class="text-dark fs-6">{{ optional($comentario->user)->name ?? 'Usuario eliminado' }}</strong>
+                                                    <small class="text-muted ms-2">{{ $comentario->created_at->diffForHumans() }}</small>
+                                                </div>
+                                                @if(Auth::id() === $comentario->user_id)
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $comentario->id }}').classList.remove('hidden')">
+                                                            <i class="bi bi-pencil-square fs-5"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteComentario{{ $comentario->id }}">
+                                                            <i class="bi bi-trash fs-5"></i>
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <p class="mb-3 text-secondary">{{ $comentario->contenido }}</p>
+
+                                            <!-- BOTÓN Y FORMULARIO DE RESPUESTA EN LÍNEA -->
+                                            <button class="btn btn-sm btn-outline-info" onclick="document.getElementById('form-responder-{{ $comentario->id }}').classList.toggle('d-none')">
+                                                <i class="bi bi-reply-fill me-1"></i> Responder
+                                            </button>
+                                            <div id="form-responder-{{ $comentario->id }}" class="mt-3 d-none">
                                                 <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
                                                     @csrf
-                                                    <div class="mb-4 text-center">
-                                                        <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
-                                                        <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
-                                                        <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
-                                                    </div>
-                                                    <div class="form-group mb-4">
-                                                        <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-4 w-full" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
-                                                    </div>
+                                                    <input type="hidden" name="parent_id" value="{{ $comentario->id }}">
+                                                    <textarea name="contenido" class="form-control rounded-4 border shadow-sm p-3 mb-2" rows="3" placeholder="Escribe tu respuesta..." required></textarea>
                                                     <div class="d-flex justify-content-end gap-2">
-                                                        <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">Cancelar</button>
-                                                        <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('form-responder-{{ $comentario->id }}').classList.add('d-none')">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm">
                                                             <i class="bi bi-send-fill me-1"></i> Publicar
                                                         </button>
                                                     </div>
                                                 </form>
                                             </div>
+                                            <!-- FIN RESPUESTA EN LÍNEA -->
+
+                                            {{-- RESPUESTAS --}}
+                                            @foreach ($comentario->respuestas as $respuesta)
+                                                <div class="mt-3 ms-4 p-3 rounded-3 shadow-sm respuesta-celeste">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong class="text-dark">{{ optional($respuesta->user)->name ?? 'Usuario eliminado' }}</strong>
+                                                            <small class="text-muted ms-2">{{ $respuesta->created_at->diffForHumans() }}</small>
+                                                        </div>
+                                                        @if(Auth::id() === $respuesta->user_id)
+                                                            <div class="btn-group btn-group-sm">
+                                                                <button class="btn btn-outline-secondary px-2 py-1" onclick="document.getElementById('editarComentarioModal{{ $respuesta->id }}').classList.remove('hidden')">
+                                                                    <i class="bi bi-pencil-square fs-5"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteRespuesta{{ $respuesta->id }}">
+                                                                    <i class="bi bi-trash fs-5"></i>
+                                                                </button>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
+
+                                                    <!-- Modal Editar Respuesta -->
+                                                    <div id="editarComentarioModal{{ $respuesta->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                                        <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
+                                                            <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+                                                                @csrf @method('PUT')
+                                                                <div class="mb-4 text-center">
+                                                                    <i class="bi bi-pencil-square text-warning fs-1"></i>
+                                                                    <h4 class="fw-bold text-dark">Editar Respuesta</h4>
+                                                                    <p class="text-muted">Puedes modificar tu respuesta aquí.</p>
+                                                                </div>
+                                                                <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $respuesta->contenido }}</textarea>
+                                                                <div class="d-flex justify-content-end gap-2">
+                                                                    <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
+                                                                    <button type="submit" class="btn btn-primary text-white">
+                                                                        <i class="bi bi-save-fill me-1"></i> Actualizar
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Modal Confirmar Eliminar Respuesta -->
+                                                    <div class="modal fade" id="confirmDeleteRespuesta{{ $respuesta->id }}" tabindex="-1">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content rounded-4 shadow">
+
+                                                                <!-- Encabezado -->
+                                                                <div class="modal-header border-bottom">
+                                                                    <h5 class="modal-title text-danger">
+                                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                        Confirmar Eliminación Permanente
+                                                                    </h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+
+                                                                <!-- Cuerpo -->
+                                                                <div class="modal-body text-center">
+
+                                                                    <!-- Caja de advertencia -->
+                                                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                        <div>
+                                                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Mensaje principal -->
+                                                                    <p>¿Está seguro de que desea eliminar esta respuesta?</p>
+
+                                                                </div>
+
+                                                                <!-- Pie con botones -->
+                                                                <div class="modal-footer justify-content-center">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                    <form action="{{ route('comentarios.destroy', $respuesta) }}" method="POST" class="d-inline">
+                                                                        @csrf @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger">
+                                                                            <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+
+                                                    <!-- Modal Editar Comentario -->
+                                                    <div id="editarComentarioModal{{ $comentario->id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                                        <div class="bg-white rounded-4 shadow-lg w-full max-w-3xl p-6">
+                                                            <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST">
+                                                                @csrf @method('PUT')
+                                                                <div class="mb-4 text-center">
+                                                                    <i class="bi bi-pencil-square text-warning fs-1"></i>
+                                                                    <h4 class="fw-bold text-dark">Editar Comentario</h4>
+                                                                    <p class="text-muted">Puedes actualizar tu comentario si deseas.</p>
+                                                                </div>
+                                                                <textarea name="contenido" class="form-control rounded-4 border border-warning shadow-sm p-4 w-full mb-4" rows="6" required>{{ $comentario->contenido }}</textarea>
+                                                                <div class="d-flex justify-content-end gap-2">
+                                                                    <button type="button" class="btn btn-outline-secondary" onclick="this.closest('.fixed').classList.add('hidden')">Cancelar</button>
+                                                                    <button type="submit" class="btn btn-primary text-white">
+                                                                        <i class="bi bi-save-fill me-1"></i> Actualizar
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Modal Confirmar Eliminar Comentario -->
+                                                    <div class="modal fade" id="confirmDeleteComentario{{ $comentario->id }}" tabindex="-1">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content rounded-4 shadow">
+
+                                                                <!-- Encabezado -->
+                                                                <div class="modal-header border-bottom">
+                                                                    <h5 class="modal-title text-danger">
+                                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                        Confirmar Eliminación Permanente
+                                                                    </h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+
+                                                                <!-- Cuerpo -->
+                                                                <div class="modal-body text-center">
+
+                                                                    <!-- Caja de advertencia -->
+                                                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                        <div>
+                                                                            <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Mensaje principal -->
+                                                                    <p>¿Está seguro de que desea eliminar este comentario?</p>
+
+                                                                </div>
+
+                                                                <!-- Pie con botones -->
+                                                                <div class="modal-footer justify-content-center">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                    <form action="{{ route('comentarios.destroy', $comentario) }}" method="POST" class="d-inline">
+                                                                        @csrf @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger">
+                                                                            <i class="bi bi-trash-fill me-1"></i> Eliminar Permanentemente
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            @endforeach
+                                            @else
+                                                <p class="text-muted text-center">No hay comentarios aún.</p>
+                                            @endif
                                         </div>
-
-                                    </div>
-                                </div>
-
-                                @push('js')
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            const deleteRespuestaModal = document.getElementById('deleteRespuestaModal');
-                                            const deleteRespuestaForm = document.getElementById('deleteRespuestaForm');
-                                            const deleteRespuestaText = document.getElementById('deleteRespuestaText');
-
-                                            // Base URL con marcador para reemplazar
-                                            const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
-
-                                            deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
-                                                const button = event.relatedTarget;
-                                                const respuestaId = button.getAttribute('data-respuesta-id');
-
-                                                deleteRespuestaText.textContent = "¿Está seguro de que desea eliminar esta respuesta?";
-                                                deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
-
-                                            });
-                                        });
-                                    </script>
-                                @endpush
-
-                                @push('css')
-                                    <style>
-                                        .modal-content {
-                                            border-radius: 12px;
-                                        }
-                                        .modal-header {
-                                            background-color: #f8f9fa;
-                                        }
-                                    </style>
-                                @endpush
-
-                                @push('js')
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            const deleteComentarioModal = document.getElementById('deleteComentarioModal');
-                                            const deleteComentarioForm = document.getElementById('deleteComentarioForm');
-                                            const deleteComentarioText = document.getElementById('deleteComentarioText');
-
-                                            // Base de la URL de eliminación
-                                            const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
-
-                                            deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
-                                                const button = event.relatedTarget;
-                                                const comentarioId = button.getAttribute('data-comentario-id');
-
-                                                deleteComentarioText.textContent = "¿Está seguro de que desea eliminar este comentario?";
-                                                deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
-
-                                            });
-                                        });
-                                    </script>
-                                @endpush
-
-                                @push('css')
-                                    <style>
-                                        .modal-content {
-                                            border-radius: 12px;
-                                        }
-                                        .modal-header {
-                                            background-color: #f8f9fa;
-                                        }
-                                    </style>
-                                @endpush
-                                {{-- Scripts para el modal (como en sprints/proyectos) --}}
-                                @push('js')
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            const deleteTareaModal = document.getElementById('deleteTareaModal');
-                                            const deleteTareaForm = document.getElementById('deleteTareaForm');
-                                            const deleteTareaText = document.getElementById('deleteTareaText');
-
-                                            deleteTareaModal.addEventListener('show.bs.modal', function(event) {
-                                                const button = event.relatedTarget;
-                                                const tareaId = button.getAttribute('data-tarea-id');
-                                                const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
-
-                                                deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-                                                deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
-
-                                            });
-                                        });
-                                    </script>
-                                @endpush
-
-                                @push('css')
-                                    <style>
-                                        .modal-content {
-                                            border: none;
-                                            border-radius: 12px;
-                                        }
-                                        .modal-header {
-                                            border-bottom: 1px solid #e1e4e8;
-                                            background-color: #f6f8fa;
-                                        }
-                                    </style>
-                                @endpush
-
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", function () {
-                                        // Ensure modals are appended to body to avoid layout/overflow issues with sidebars or parents
-                                        document.querySelectorAll('.modal').forEach(modal => {
-                                            if (modal.parentElement !== document.body) {
-                                                document.body.appendChild(modal);
-                                            }
-                                        });
-
-                                        const buttons = document.querySelectorAll('.toggle-btn');
-
-                                        buttons.forEach(button => {
-                                            button.addEventListener('click', function () {
-                                                const targetId = this.getAttribute('data-target');
-                                                const target = document.getElementById(targetId);
-
-                                                const isVisible = target.style.display === 'block';
-
-                                                // Cierra todos los acordeones principales
-                                                document.querySelectorAll('.contenido-acordeon').forEach(section => {
-                                                    section.style.display = 'none';
-                                                });
-
-                                                if (!isVisible) {
-                                                    target.style.display = 'block';
-                                                    localStorage.setItem('acordeonAbierto', targetId);
-                                                } else {
-                                                    localStorage.removeItem('acordeonAbierto');
-                                                }
-                                            });
-                                        });
-
-                                        // Abre acordeón guardado
-                                        const acordeonGuardado = localStorage.getItem('acordeonAbierto');
-                                        if (acordeonGuardado) {
-                                            const target = document.getElementById(acordeonGuardado);
-                                            if (target) {
-                                                target.style.display = 'block';
-                                            }
-                                        }
-
-                                        // SOLO UNA tarea puede estar abierta a la vez
-                                        window.toggleTarea = function (button) {
-                                            const currentContent = button.nextElementSibling;
-
-                                            // Cerrar todas las demás tareas
-                                            document.querySelectorAll('.contenido-tarea').forEach(content => {
-                                                if (content !== currentContent) {
-                                                    content.style.display = 'none';
-                                                }
-                                            });
-
-                                            // Abrir o cerrar la actual
-                                            if (currentContent && currentContent.classList.contains('contenido-tarea')) {
-                                                const isOpen = currentContent.style.display === 'block';
-                                                currentContent.style.display = isOpen ? 'none' : 'block';
-                                            }
-                                        };
-                                    });
-                                </script>
-
-                                <script>
-                                    function guardarEstadoCheckbox(tareaId, estado) {
-                                        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
-                                        estados[tareaId] = estado;
-                                        localStorage.setItem('tareasEstado', JSON.stringify(estados));
-                                    }
-
-                                    function cargarEstadoCheckboxes() {
-                                        let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
-                                        document.querySelectorAll('.tarea-checkbox').forEach(cb => {
-                                            const id = cb.dataset.id;
-                                            if (estados.hasOwnProperty(id)) {
-                                                cb.checked = estados[id];
-                                            }
-                                        });
-                                    }
-
-                                    document.addEventListener('change', function (e) {
-                                        if (e.target && e.target.classList.contains('tarea-checkbox')) {
-                                            const checkbox = e.target;
-                                            const tareaId = checkbox.dataset.id;
-                                            const estaMarcado = checkbox.checked;
-
-                                            // Guardar en localStorage
-                                            guardarEstadoCheckbox(tareaId, estaMarcado);
-
-                                            // Sincronizar checkboxes con el mismo data-id en la misma página
-                                            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
-                                                .forEach(cb => cb.checked = estaMarcado);
-
-                                        }
-                                    });
-
-                                    // Cargar estado al abrir la página
-                                    window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
-                                </script>
-
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        document.querySelectorAll('textarea[readonly]').forEach(textarea => {
-                                            textarea.style.height = 'auto';
-                                            textarea.style.height = textarea.scrollHeight + 'px';
-                                        });
-
-                                        const btnEditar = document.getElementById('btnEditar');
-                                        const btnGuardar = document.getElementById('btnGuardar');
-                                        const btnCancelar = document.getElementById('btnCancelar');
-                                        const tituloTexto = document.getElementById('tituloTexto');
-                                        const tituloInput = document.getElementById('tituloInput');
-                                        const editableFields = document.querySelectorAll('[data-editable="true"]');
-                                        const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
-
-                                        btnEditar.addEventListener('click', function (e) {
-                                            e.preventDefault();
-                                            tituloTexto.classList.add('d-none');
-                                            tituloInput.classList.remove('d-none');
-                                            editableFields.forEach(field => {
-                                                field.removeAttribute('readonly');
-                                                field.removeAttribute('disabled');
-                                                if (field.tagName === 'TEXTAREA') {
-                                                    field.style.height = 'auto';
-                                                    field.style.height = field.scrollHeight + 'px';
-                                                }
-                                            });
-                                            btnGuardar.classList.remove('d-none');
-                                            btnCancelar.classList.remove('d-none');  // Mostrar botón Cancelar
-                                            if (dropdownMenuContainer) {
-                                                dropdownMenuContainer.classList.add('d-none');
-                                            }
-                                        });
-
-                                        btnCancelar.addEventListener('click', function () {
-                                            // Revertir al modo sólo lectura / deshabilitado
-                                            tituloTexto.classList.remove('d-none');
-                                            tituloInput.classList.add('d-none');
-                                            editableFields.forEach(field => {
-                                                field.setAttribute('readonly', true);
-                                                field.setAttribute('disabled', true);
-                                                if (field.tagName === 'TEXTAREA') {
-                                                    field.style.height = 'auto';
-                                                    field.style.height = field.scrollHeight + 'px';
-                                                }
-                                            });
-                                            btnGuardar.classList.add('d-none');
-                                            btnCancelar.classList.add('d-none');
-                                            if (dropdownMenuContainer) {
-                                                dropdownMenuContainer.classList.remove('d-none');
-                                            }
-                                        });
-
-                                        const form = document.getElementById('formHistoria');
-                                        form.addEventListener('submit', function () {
-                                            console.log('Formulario enviado');
-                                        });
-                                    });
-                                </script>
                             </div>
-                        </div>
 
-        @endsection
+                            <!-- Modal Nuevo Comentario -->
+                            <div id="nuevoComentarioModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                <div class="bg-white border-0 rounded-4 shadow-lg w-full max-w-3xl p-6" style="background-color: #f9fafb;">
+                                    <form action="{{ route('comentarios.store', $historia->id) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-4 text-center">
+                                            <i class="bi bi-chat-left-text-fill text-primary fs-1"></i>
+                                            <h4 class="fw-bold mb-0 text-dark">Nuevo Comentario</h4>
+                                            <p class="text-muted">Participa compartiendo tu opinión o experiencia.</p>
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <textarea name="contenido" id="contenido" class="form-control rounded-4 border border-info shadow-sm p-4 w-full" rows="6" placeholder="Escribe tu comentario aquí..." required></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-outline-secondary rounded-3 px-4 py-2" onclick="document.getElementById('nuevoComentarioModal').classList.add('hidden')">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary text-white rounded-3 px-4 py-2">
+                                                <i class="bi bi-send-fill me-1"></i> Publicar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    @push('js')
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const deleteRespuestaModal = document.getElementById('deleteRespuestaModal');
+                                const deleteRespuestaForm = document.getElementById('deleteRespuestaForm');
+                                const deleteRespuestaText = document.getElementById('deleteRespuestaText');
+
+                                // Base URL con marcador para reemplazar
+                                const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
+
+                                deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
+                                    const button = event.relatedTarget;
+                                    const respuestaId = button.getAttribute('data-respuesta-id');
+
+                                    deleteRespuestaText.textContent = "¿Está seguro de que desea eliminar esta respuesta?";
+                                    deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
+
+                                });
+                            });
+                        </script>
+                    @endpush
+
+                    @push('css')
+                        <style>
+                            .modal-content {
+                                border-radius: 12px;
+                            }
+                            .modal-header {
+                                background-color: #f8f9fa;
+                            }
+                        </style>
+                    @endpush
+
+                    @push('js')
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const deleteComentarioModal = document.getElementById('deleteComentarioModal');
+                                const deleteComentarioForm = document.getElementById('deleteComentarioForm');
+                                const deleteComentarioText = document.getElementById('deleteComentarioText');
+
+                                // Base de la URL de eliminación
+                                const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
+
+                                deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
+                                    const button = event.relatedTarget;
+                                    const comentarioId = button.getAttribute('data-comentario-id');
+
+                                    deleteComentarioText.textContent = "¿Está seguro de que desea eliminar este comentario?";
+                                    deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
+
+                                });
+                            });
+                        </script>
+                    @endpush
+
+                    @push('css')
+                        <style>
+                            .modal-content {
+                                border-radius: 12px;
+                            }
+                            .modal-header {
+                                background-color: #f8f9fa;
+                            }
+                        </style>
+                    @endpush
+                    {{-- Scripts para el modal (como en sprints/proyectos) --}}
+                    @push('js')
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const deleteTareaModal = document.getElementById('deleteTareaModal');
+                                const deleteTareaForm = document.getElementById('deleteTareaForm');
+                                const deleteTareaText = document.getElementById('deleteTareaText');
+
+                                deleteTareaModal.addEventListener('show.bs.modal', function(event) {
+                                    const button = event.relatedTarget;
+                                    const tareaId = button.getAttribute('data-tarea-id');
+                                    const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
+
+                                    deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
+                                    deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+
+                                });
+                            });
+                        </script>
+                    @endpush
+
+                    @push('css')
+                        <style>
+                            .modal-content {
+                                border: none;
+                                border-radius: 12px;
+                            }
+                            .modal-header {
+                                border-bottom: 1px solid #e1e4e8;
+                                background-color: #f6f8fa;
+                            }
+                        </style>
+                    @endpush
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Ensure modals are appended to body to avoid layout/overflow issues with sidebars or parents
+                            document.querySelectorAll('.modal').forEach(modal => {
+                                if (modal.parentElement !== document.body) {
+                                    document.body.appendChild(modal);
+                                }
+                            });
+
+                            const buttons = document.querySelectorAll('.toggle-btn');
+
+                            buttons.forEach(button => {
+                                button.addEventListener('click', function () {
+                                    const targetId = this.getAttribute('data-target');
+                                    const target = document.getElementById(targetId);
+
+                                    const isVisible = target.style.display === 'block';
+
+                                    // Cierra todos los acordeones principales
+                                    document.querySelectorAll('.contenido-acordeon').forEach(section => {
+                                        section.style.display = 'none';
+                                    });
+
+                                    if (!isVisible) {
+                                        target.style.display = 'block';
+                                        localStorage.setItem('acordeonAbierto', targetId);
+                                    } else {
+                                        localStorage.removeItem('acordeonAbierto');
+                                    }
+                                });
+                            });
+
+                            // Abre acordeón guardado
+                            const acordeonGuardado = localStorage.getItem('acordeonAbierto');
+                            if (acordeonGuardado) {
+                                const target = document.getElementById(acordeonGuardado);
+                                if (target) {
+                                    target.style.display = 'block';
+                                }
+                            }
+
+                            // SOLO UNA tarea puede estar abierta a la vez
+                            window.toggleTarea = function (button) {
+                                const currentContent = button.nextElementSibling;
+
+                                // Cerrar todas las demás tareas
+                                document.querySelectorAll('.contenido-tarea').forEach(content => {
+                                    if (content !== currentContent) {
+                                        content.style.display = 'none';
+                                    }
+                                });
+
+                                // Abrir o cerrar la actual
+                                if (currentContent && currentContent.classList.contains('contenido-tarea')) {
+                                    const isOpen = currentContent.style.display === 'block';
+                                    currentContent.style.display = isOpen ? 'none' : 'block';
+                                }
+                            };
+                        });
+                    </script>
+
+                    <script>
+                        function guardarEstadoCheckbox(tareaId, estado) {
+                            let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+                            estados[tareaId] = estado;
+                            localStorage.setItem('tareasEstado', JSON.stringify(estados));
+                        }
+
+                        function cargarEstadoCheckboxes() {
+                            let estados = JSON.parse(localStorage.getItem('tareasEstado')) || {};
+                            document.querySelectorAll('.tarea-checkbox').forEach(cb => {
+                                const id = cb.dataset.id;
+                                if (estados.hasOwnProperty(id)) {
+                                    cb.checked = estados[id];
+                                }
+                            });
+                        }
+
+                        document.addEventListener('change', function (e) {
+                            if (e.target && e.target.classList.contains('tarea-checkbox')) {
+                                const checkbox = e.target;
+                                const tareaId = checkbox.dataset.id;
+                                const estaMarcado = checkbox.checked;
+
+                                // Guardar en localStorage
+                                guardarEstadoCheckbox(tareaId, estaMarcado);
+
+                                // Sincronizar checkboxes con el mismo data-id en la misma página
+                                document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+                                    .forEach(cb => cb.checked = estaMarcado);
+
+                            }
+                        });
+
+                        // Cargar estado al abrir la página
+                        window.addEventListener('DOMContentLoaded', cargarEstadoCheckboxes);
+                    </script>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.querySelectorAll('textarea[readonly]').forEach(textarea => {
+                                textarea.style.height = 'auto';
+                                textarea.style.height = textarea.scrollHeight + 'px';
+                            });
+
+                            const btnEditar = document.getElementById('btnEditar');
+                            const btnGuardar = document.getElementById('btnGuardar');
+                            const btnCancelar = document.getElementById('btnCancelar');
+                            const tituloTexto = document.getElementById('tituloTexto');
+                            const tituloInput = document.getElementById('tituloInput');
+                            const editableFields = document.querySelectorAll('[data-editable="true"]');
+                            const dropdownMenuContainer = document.getElementById('dropdownMenuContainer');
+
+                            btnEditar.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                tituloTexto.classList.add('d-none');
+                                tituloInput.classList.remove('d-none');
+                                editableFields.forEach(field => {
+                                    field.removeAttribute('readonly');
+                                    field.removeAttribute('disabled');
+                                    if (field.tagName === 'TEXTAREA') {
+                                        field.style.height = 'auto';
+                                        field.style.height = field.scrollHeight + 'px';
+                                    }
+                                });
+                                btnGuardar.classList.remove('d-none');
+                                btnCancelar.classList.remove('d-none');  // Mostrar botón Cancelar
+                                if (dropdownMenuContainer) {
+                                    dropdownMenuContainer.classList.add('d-none');
+                                }
+                            });
+
+                            btnCancelar.addEventListener('click', function () {
+                                // Revertir al modo sólo lectura / deshabilitado
+                                tituloTexto.classList.remove('d-none');
+                                tituloInput.classList.add('d-none');
+                                editableFields.forEach(field => {
+                                    field.setAttribute('readonly', true);
+                                    field.setAttribute('disabled', true);
+                                    if (field.tagName === 'TEXTAREA') {
+                                        field.style.height = 'auto';
+                                        field.style.height = field.scrollHeight + 'px';
+                                    }
+                                });
+                                btnGuardar.classList.add('d-none');
+                                btnCancelar.classList.add('d-none');
+                                if (dropdownMenuContainer) {
+                                    dropdownMenuContainer.classList.remove('d-none');
+                                }
+                            });
+
+                            const form = document.getElementById('formHistoria');
+                            form.addEventListener('submit', function () {
+                                console.log('Formulario enviado');
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+
+@endsection
+
