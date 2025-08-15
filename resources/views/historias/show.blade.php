@@ -618,130 +618,156 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-
-{{-- ACORDEÓN DE TAREAS Y COMENTARIOS --}}
+{{-- ACORDEÓN DE TAREAS --}}
 <div class="mb-0">
     {{-- BOTÓN: TAREAS RELACIONADAS --}}
-        <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn" data-target="tareas-acordeon" type="button" style="font-size: 0.95rem;">
-            Tareas relacionadas
-        </button>
+    <button class="w-100 text-start fw-bold p-3 bg-light toggle-btn"
+            data-target="tareas-acordeon"
+            type="button"
+            style="font-size: 0.95rem;">
+        Tareas relacionadas
+    </button>
 
-        <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
-            @if($tareas->isEmpty())
-                <div class="alert alert-warning m-2 py-2 px-3">No hay tareas registradas para esta historia.</div>
-            @else
-                {{-- CONTENEDOR SCROLL --}}
-                <div class="accordion m-2" id="accordionListaTareas" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
-                    @foreach($tareas as $tarea)
-                        <div class="accordion-item mb-2 p-2 rounded shadow-sm border-0 bg-white hover-card">
-                            <button class="accordion-button collapsed bg-white rounded-top d-flex align-items-center p-2" type="button"
-                                    onclick="toggleTarea(this)" style="font-size: 0.9rem;">
-                                <input type="checkbox"
-                                       class="form-check-input me-2 tarea-checkbox"
-                                       data-id="{{ $tarea->id }}"
-                                       {{ $tarea->completada ? 'checked' : '' }}
-                                       onclick="event.stopPropagation();">
+    {{-- Contenido del acordeón SIEMPRE visible al abrir --}}
+    <div id="tareas-acordeon" class="contenido-acordeon" style="display: none;">
+        @if($tareas->isEmpty())
+            <div class="alert alert-warning m-2 py-2 px-3">
+                No hay tareas registradas para esta historia.
+            </div>
+        @else
+            {{-- Barra de progreso --}}
+            <div class="m-3">
+                <label class="fw-bold mb-2">Progreso de tareas completadas:</label>
+                <div class="progress">
+                    <div id="progress-bar" class="progress-bar bg-primary" role="progressbar"
+                         style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        0%
+                    </div>
+                </div>
+            </div>
 
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">{{ $tarea->nombre }}</h6>
-                                </div>
-                            </button>
-
-                            <div class="contenido-tarea p-3 rounded-bottom" style="display: none; font-size: 0.85rem;">
-                                <p>
-                                    <strong> Descripción:</strong><br>
-                                    <span style="color: #555; white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">
-                                        {{ $tarea->descripcion }}
-                                    </span>
-                                </p>
-
-                                <p>
-                                    <strong> Fecha de creación:</strong><br>
-                                    <span style="color: #555;">{{ $tarea->created_at->format('d/m/Y H:i') }}</span>
-                                </p>
-
-                                <p>
-                                    <strong> Tipo de actividad:</strong><br>
-                                    <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #6f42c1; font-size: 0.75rem;">
-                                        <i class="bi bi-lightning-charge me-1"></i>{{ $tarea->actividad }}
-                                    </span>
-                                </p>
-
-                                <div class="d-flex justify-content-end gap-2 mt-2">
-                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}" class="btn btn-outline-warning btn-sm p-1 px-2" title="Editar">
+            {{-- Tabla de tareas --}}
+            <div class="table-responsive m-3">
+                <table class="table table-hover table-bordered text-dark">
+                    <thead>
+                        <tr class="text-center">
+                            <th>✓</th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Tipo de Actividad</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($tareas as $tarea)
+                            <tr>
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                           class="form-check-input tarea-checkbox"
+                                           data-id="{{ $tarea->id }}"
+                                           {{ $tarea->completada ? 'checked' : '' }}>
+                                </td>
+                                <td>{{ $tarea->id }}</td>
+                                <td class="nombre">{{ $tarea->nombre }}</td>
+                                <td class="descripcion">{{ $tarea->descripcion }}</td>
+                                <td>{{ $tarea->actividad }}</td>
+                                <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('tareas.edit', [$historia->id, $tarea->id]) }}"
+                                       class="btn btn-outline-warning btn-sm" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-outline-danger btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteTareaModal"
-                                    data-tarea-id="{{ $tarea->id }}"
-                                    data-tarea-nombre="{{ $tarea->nombre }}"
-                                    title="Eliminar">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteTareaModal-{{ $tarea->id }}"
+                                            title="Eliminar">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            {{-- Modal eliminar --}}
+                            <div class="modal fade" id="deleteTareaModal-{{ $tarea->id }}" tabindex="-1"
+                                 aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content text-center">
+                                        <div class="modal-header justify-content-center">
+                                            <h5 class="modal-title fs-4 fw-bold">
+                                                <i class="bi bi-exclamation-triangle text-danger"></i>
+                                                Confirmar Eliminación Permanente
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
+                                            </div>
+                                            <p>¿Está seguro de que desea eliminar la tarea "{{ $tarea->nombre }}"?</p>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-trash3"></i> Eliminar Permanentemente
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Modal para confirmar eliminación de tarea -->
-<div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center"> <!-- Centramos todo -->
-            
-            <div class="modal-header justify-content-center position-relative">
-                <h5 class="modal-title fs-4 fw-bold" id="deleteTareaModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger"></i>
-                    Confirmar Eliminación Permanente
-                </h5>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
+        @endif
 
-            <div class="modal-body">
-                <div class="alert alert-danger d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción no se puede deshacer.
-                </div>
-                <p id="deleteTareaText">¿Está seguro de que desea eliminar esta tarea?</p>
-            </div>
-
-            <div class="modal-footer justify-content-center"> <!-- Botones centrados -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form action="{{ route('tareas.destroy', [$historia->id, $tarea->id]) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash3"></i> Eliminar Permanentemente
-                    </button>
-                </form>
-            </div>
+        {{-- Botón nueva tarea --}}
+        <div class="ms-3 mb-3">
+            <a href="{{ route('tareas.index', $historia->id) }}"
+               class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+               style="width: 40px; height: 40px;"
+               title="Crear tarea">
+                <i class="bi bi-plus-lg"></i>
+            </a>
         </div>
     </div>
 </div>
 
-                    @endforeach
-                </div>
-            @endif
-{{-- Botones finales --}}
-<div class="ms-3 mb-3">
-    {{-- Botón para crear tarea --}}
-    <a href="{{ route('tareas.index', $historia->id) }}"
-       class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2"
-       style="width: 40px; height: 40px;"
-       title="Crear tarea">
-        <i class="bi bi-plus-lg"></i>
-    </a>
+{{-- Script de la barra de progreso --}}
+<script>
+    function actualizarBarraProgreso() {
+        const checkboxes = document.querySelectorAll('.tarea-checkbox');
+        const total = checkboxes.length;
+        const completadas = [...checkboxes].filter(cb => cb.checked).length;
+        const porcentaje = total > 0 ? Math.round((completadas / total) * 100) : 0;
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = porcentaje + '%';
+        progressBar.setAttribute('aria-valuenow', porcentaje);
+        progressBar.textContent = porcentaje + '%';
+    }
 
-    {{-- Ojito que siempre va a la lista --}}
-    <a href="{{ route('tareas.show', [$historia->id, $tareas->first()->id ?? 0]) }}"
-       class="btn btn-outline-primary rounded-circle d-inline-flex align-items-center justify-content-center"
-       style="width: 40px; height: 40px;"
-       title="Ver lista de tareas">
-        <i class="bi bi-eye"></i>
-    </a>
-</div>
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('tarea-checkbox')) {
+            const tareaId = e.target.dataset.id;
+            const estaMarcado = e.target.checked;
 
-        </div>
-    </div>
-</div>
+            fetch(`/tareas/${tareaId}/completar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(() => actualizarBarraProgreso());
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
+</script>
+
 
 {{-- BOTÓN: COMENTARIOS --}}
 <div class="mb-0">

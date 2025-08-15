@@ -594,7 +594,7 @@ body {
     {{-- Proyectos recientes --}}
     <h1 class="page-title">
         Proyectos recientes
-        @if (auth()->check() && auth()->user()->usertype == 'admin')
+        @if (auth()->check() && (auth()->user()->usertype == 'admin' || auth()->user()->isSuperAdmin()))
             <a href="{{ route('projects.create') }}" class="btn btn-link p-0" title="Crear nuevo proyecto">
                 <i class="fas fa-plus fa-lg text-primary"></i>
             </a>
@@ -607,7 +607,6 @@ body {
             <p class="text-muted">No hay proyectos recientes aún.</p>
         @endforelse
     </div>
-
 
     <h2 class="page-title mt-5">Proyectos</h2>
     <div class="list-group">
