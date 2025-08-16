@@ -50,8 +50,8 @@
                 <!-- Descripción -->
                 <div class="form-group mb-3">
                     <label for="descripcion">Descripción</label>
-                    <textarea id="descripcion" 
-                        class="form-control @error('descripcion') is-invalid @enderror" 
+                    <textarea id="descripcion"
+                        class="form-control @error('descripcion') is-invalid @enderror"
                         name="descripcion" maxlength="255"
                         rows="4">{{ old('descripcion') }} </textarea>
                     @error('descripcion')
@@ -61,8 +61,8 @@
 
                 <div class="mb-3">
     <label for="codigo" class="form-label">Código del Proyecto</label>
-    <input type="text" name="codigo" id="codigo" 
-           class="form-control @error('codigo') is-invalid @enderror" 
+    <input type="text" name="codigo" id="codigo"
+           class="form-control @error('codigo') is-invalid @enderror"
            value="{{ old('codigo') }}" required maxlength="6">
     <small class="form-text text-muted">Debe ser un código único (por ejemplo: PROY01).</small>
     @error('codigo')
@@ -128,7 +128,7 @@
                     <a href="{{ route('projects.my') }}" class="btn btn-secondary btn-form-actions me-2"> <i class="bi bi-x-lg me-2"></i>Cancelar</a>
                 </div>
             </form>
-            
+
         </div>
     </div>
 </div>
