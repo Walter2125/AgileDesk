@@ -561,22 +561,39 @@ document.addEventListener('DOMContentLoaded', function() {
     initTooltips();
     $('#usersTable').on('draw.dt', function() { initTooltips(); });
 
-    // Conectar buscador personalizado
+    // Conectar buscador personalizado optimizado
     const searchInput = document.getElementById('usersSearchInput');
     const searchButton = document.getElementById('btnSearchUsers');
 
     if (searchInput && searchButton) {
-        // Función para realizar búsqueda
-        function performSearch() {
-            const searchTerm = searchInput.value.trim();
-            usersTable.search(searchTerm).draw();
+        // Función optimizada para normalizar texto
+        function normalizarTexto(texto) {
+            if (!texto) return '';
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                .trim();
         }
 
-        // Búsqueda en tiempo real mientras se escribe
+        // Función para realizar búsqueda optimizada
+        function performSearch() {
+            const textoBusqueda = normalizarTexto(searchInput.value);
+            
+            if (textoBusqueda === '') {
+                usersTable.search('').draw();
+                return;
+            }
+            
+            // Búsqueda simple y rápida - usar smart search de DataTables
+            usersTable.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+        }
+
+        // Búsqueda en tiempo real con delay reducido
         let searchTimeout;
         searchInput.addEventListener('input', function() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(performSearch, 300);
+            searchTimeout = setTimeout(performSearch, 100); // Reducido a 100ms
         });
 
         // Búsqueda al hacer clic en el botón
@@ -586,7 +603,8 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                performSearch();
+                clearTimeout(searchTimeout); // Cancelar delay
+                performSearch(); // Buscar inmediatamente
             }
         });
 

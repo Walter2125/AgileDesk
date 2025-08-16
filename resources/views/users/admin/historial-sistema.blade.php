@@ -634,20 +634,49 @@
             }
         });
         
-        // Conectar el buscador personalizado
-        $('#historialSearchInput').on('keyup search', function() {
-            table.search(this.value).draw();
+        // Función optimizada para normalizar texto
+        function normalizarTexto(texto) {
+            if (!texto) return '';
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                .trim();
+        }
+        
+        // Función para búsqueda optimizada
+        function realizarBusquedaMejorada(input) {
+            const textoBusqueda = normalizarTexto(input.value || input);
+            
+            if (textoBusqueda === '') {
+                table.search('').draw();
+                return;
+            }
+            
+            // Búsqueda simple y rápida - usar smart search de DataTables
+            table.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+        }
+        
+        // Conectar el buscador personalizado optimizado con delay reducido
+        let searchTimeout;
+        $('#historialSearchInput').on('keyup search input', function() {
+            clearTimeout(searchTimeout);
+            const inputValue = this.value;
+            searchTimeout = setTimeout(() => {
+                realizarBusquedaMejorada(inputValue);
+            }, 100); // Reducido de 300ms a 100ms
         });
 
         $('#btnSearchHistorial').on('click', function() {
             var searchTerm = $('#historialSearchInput').val();
-            table.search(searchTerm).draw();
+            realizarBusquedaMejorada(searchTerm);
         });
 
-        // Permitir búsqueda con Enter
+        // Permitir búsqueda con Enter (inmediata)
         $('#historialSearchInput').on('keypress', function(e) {
             if (e.which === 13) {
-                table.search(this.value).draw();
+                clearTimeout(searchTimeout);
+                realizarBusquedaMejorada(this.value);
             }
         });
 
