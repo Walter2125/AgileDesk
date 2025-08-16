@@ -1993,7 +1993,7 @@
 
             const commonOpts = {
                 paging: true,
-                searching: false, // buscamos con inputs personalizados
+                searching: true, // habilitamos búsqueda para buscadores personalizados
                 ordering: false,
                 info: true,
                 lengthChange: true,
@@ -2066,10 +2066,35 @@
                 }
                 try {
                     const dt = $(cfg.id).DataTable(commonOpts);
-                    // Conectar buscador personalizado a DataTables (aunque searching:false, usamos API)
+                    
+                    // Función optimizada para normalizar texto
+                    function normalizarTexto(texto) {
+                        if (!texto) return '';
+                        return texto
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                            .trim();
+                    }
+                    
+                    // Conectar buscador personalizado optimizado
                     const input = document.querySelector(cfg.searchInput);
                     if (input) {
-                        input.addEventListener('input', () => dt.search(input.value).draw());
+                        let searchTimeout;
+                        input.addEventListener('input', function() {
+                            clearTimeout(searchTimeout);
+                            searchTimeout = setTimeout(() => {
+                                const textoBusqueda = normalizarTexto(this.value);
+                                
+                                if (textoBusqueda === '') {
+                                    dt.search('').draw();
+                                    return;
+                                }
+                                
+                                // Búsqueda simple y rápida - solo normalizar acentos
+                                dt.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+                            }, 150); // Reducido de 300ms a 150ms
+                        });
                     }
                 } catch (e) {
                     console.error('Error inicializando DataTable para', cfg.id, e);
