@@ -634,11 +634,6 @@
                 $('[data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        document.getElementById('historialSearchInput').addEventListener('input', function () {
-            // permite letras normales, letras con tilde, ñ, números y espacios
-            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]/g, "");
-        });
-
 
 
         // Función optimizada para normalizar texto
