@@ -33,7 +33,7 @@
     .user-dropdown .dropdown-menu {
         z-index: 1550 !important;
     }
-    
+
     .modal {
         z-index: 1600 !important;
     }
@@ -181,13 +181,13 @@
         background-position: right 0.75rem center !important;
         background-size: 16px 12px !important;
     }
-    
+
     .card-header .dataTables_length select:focus {
         border-color: #4a90e2 !important;
         box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
         outline: none !important;
     }
-    
+
     .card-header .dataTables_length select:hover {
         border-color: #4a90e2 !important;
     }
@@ -207,13 +207,13 @@
         max-width: 180px;
         text-align: center;
     }
-    
+
     .role-select:focus {
         border-color: #4a90e2 !important;
         box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
         outline: none !important;
     }
-    
+
     .role-select:hover {
         border-color: #4a90e2 !important;
     }
@@ -243,7 +243,7 @@
         background-color: #dc3545;
         color: white;
     }
-    
+
     .badge-collaborator {
         background-color: #0d6efd;
         color: white;
@@ -253,19 +253,19 @@
     .bg-danger {
         background-color: #dc3545 !important;
     }
-    
+
     .bg-warning {
         background-color: #ffc107 !important;
     }
-    
+
     .bg-primary {
         background-color: #0d6efd !important;
     }
-    
+
     .text-dark {
         color: #212529 !important;
     }
-    
+
     .text-white {
         color: #ffffff !important;
     }
@@ -280,12 +280,12 @@
         color: #198754;
         font-weight: 500;
     }
-    
+
     .status-pending {
         color: #fd7e14;
         font-weight: 500;
     }
-    
+
     .status-rejected {
         color: #dc3545;
         font-weight: 500;
@@ -359,8 +359,8 @@
 
                                                 @if(Auth::user()->isSuperAdmin() && Auth::user()->id !== $user->id && $user->is_approved)
                                                     {{-- Select para cambiar rol - Solo para superadmin editando a otro usuario aprobado --}}
-                                                    <select class="form-select form-select-sm role-select" 
-                                                            data-user-id="{{ $user->id }}" 
+                                                    <select class="form-select form-select-sm role-select"
+                                                            data-user-id="{{ $user->id }}"
                                                             data-current-role="{{ $user->usertype }}"
                                                             style="width: auto; min-width: 140px;">
                                                         <option value="collaborator" {{ $user->usertype === 'collaborator' ? 'selected' : '' }}>
@@ -408,7 +408,7 @@
                                                     $isCurrentUser = Auth::user()->id === $user->id;
                                                     $currentUserRole = Auth::user()->usertype;
                                                     $canManageUser = false;
-                                                    
+
                                                     // Lógica de permisos basada en roles
                                                     if ($currentUserRole === 'superadmin' && !$isCurrentUser) {
                                                         $canManageUser = true;
@@ -416,7 +416,7 @@
                                                         $canManageUser = true;
                                                     }
                                                 @endphp
-                                                
+
                                                 @if($canManageUser)
                                                     <div class="d-flex gap-1 justify-content-center" role="group">
                                                         @if(!$user->is_approved && !$user->is_rejected)
@@ -471,7 +471,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- Espaciado inferior adicional -->
             <div class="page-bottom-spacing"></div>
         </div>
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar DataTable con select de paginación generado por DataTables
     const usersTable = $('#usersTable').DataTable({
         paging: true,
-        searching: false, // usamos buscador personalizado
+        searching: true, // habilitamos búsqueda para el buscador personalizado
         ordering: false,
         info: true,
         lengthChange: true,
@@ -561,22 +561,39 @@ document.addEventListener('DOMContentLoaded', function() {
     initTooltips();
     $('#usersTable').on('draw.dt', function() { initTooltips(); });
 
-    // Conectar buscador personalizado
+    // Conectar buscador personalizado optimizado
     const searchInput = document.getElementById('usersSearchInput');
     const searchButton = document.getElementById('btnSearchUsers');
 
     if (searchInput && searchButton) {
-        // Función para realizar búsqueda
-        function performSearch() {
-            const searchTerm = searchInput.value.trim();
-            usersTable.search(searchTerm).draw();
+        // Función optimizada para normalizar texto
+        function normalizarTexto(texto) {
+            if (!texto) return '';
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                .trim();
         }
 
-        // Búsqueda en tiempo real mientras se escribe
+        // Función para realizar búsqueda optimizada
+        function performSearch() {
+            const textoBusqueda = normalizarTexto(searchInput.value);
+
+            if (textoBusqueda === '') {
+                usersTable.search('').draw();
+                return;
+            }
+
+            // Búsqueda simple y rápida - usar smart search de DataTables
+            usersTable.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+        }
+
+        // Búsqueda en tiempo real con delay reducido
         let searchTimeout;
         searchInput.addEventListener('input', function() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(performSearch, 300);
+            searchTimeout = setTimeout(performSearch, 100); // Reducido a 100ms
         });
 
         // Búsqueda al hacer clic en el botón
@@ -586,7 +603,8 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                performSearch();
+                clearTimeout(searchTimeout); // Cancelar delay
+                performSearch(); // Buscar inmediatamente
             }
         });
 
@@ -602,40 +620,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables globales para el modal de cambio de rol
     let pendingRoleChange = null;
     let isProcessingRoleChange = false;
-    
+
     // Inicializar el modal una vez
     const roleChangeModal = document.getElementById('roleChangeModal');
     const confirmRoleChangeBtn = document.getElementById('confirmRoleChange');
-    
+
     // Manejar cambios de rol
     document.addEventListener('change', function(e) {
         if (!e.target.classList.contains('role-select') || isProcessingRoleChange) {
             return; // Ignorar si no es el select correcto o si ya hay un proceso en curso
         }
-        
+
         const select = e.target;
         const userId = select.dataset.userId;
         const currentRole = select.dataset.currentRole;
         const newRole = select.value;
-        
+
         if (newRole === currentRole) {
             return; // No hay cambio
         }
-        
+
         // Obtener nombre del usuario de la tabla
         const userRow = select.closest('tr');
         const userName = userRow.querySelector('td:first-child').textContent.trim();
-        
+
         // Configurar el modal
         const roleNames = {
             'collaborator': 'Colaborador',
             'admin': 'Administrador',
             'superadmin': 'Superadministrador'
         };
-        
+
         document.getElementById('modalUserName').textContent = userName;
         document.getElementById('modalNewRole').textContent = roleNames[newRole];
-        
+
         // Guardar datos para usar en la confirmación
         pendingRoleChange = {
             userId: userId,
@@ -643,34 +661,34 @@ document.addEventListener('DOMContentLoaded', function() {
             selectElement: select,
             currentRole: currentRole
         };
-        
+
         // Revertir temporalmente el select hasta que se confirme
         select.value = currentRole;
-        
+
         // Mostrar el modal
         const modal = new bootstrap.Modal(roleChangeModal);
         modal.show();
     });
-    
+
     // Manejar confirmación del modal (remover listeners previos)
     confirmRoleChangeBtn.replaceWith(confirmRoleChangeBtn.cloneNode(true));
     const newConfirmBtn = document.getElementById('confirmRoleChange');
-    
+
     newConfirmBtn.addEventListener('click', function() {
         if (pendingRoleChange && !isProcessingRoleChange) {
             isProcessingRoleChange = true;
-            
+
             // Deshabilitar botón de confirmación
             this.disabled = true;
             this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
-            
+
             // Actualizar el select al nuevo valor
             pendingRoleChange.selectElement.value = pendingRoleChange.newRole;
-            
+
             // Realizar el cambio
             updateUserRole(
-                pendingRoleChange.userId, 
-                pendingRoleChange.newRole, 
+                pendingRoleChange.userId,
+                pendingRoleChange.newRole,
                 pendingRoleChange.selectElement
             ).finally(() => {
                 // Cerrar modal y limpiar estado
@@ -682,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Manejar cancelación del modal
     roleChangeModal.addEventListener('hidden.bs.modal', function() {
         if (pendingRoleChange && !isProcessingRoleChange) {
@@ -691,33 +709,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         resetModalState();
     });
-    
+
     // Función para resetear el estado del modal
     function resetModalState() {
         pendingRoleChange = null;
         isProcessingRoleChange = false;
-        
+
         // Resetear botón de confirmación
         const confirmBtn = document.getElementById('confirmRoleChange');
         confirmBtn.disabled = false;
         confirmBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Confirmar Cambio';
     }
-    
+
     // Función para actualizar el rol del usuario (ahora retorna una Promise)
     function updateUserRole(userId, newRole, selectElement) {
         // Deshabilitar el select mientras se procesa
         selectElement.disabled = true;
-        
+
         // Obtener token CSRF fresco
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        
+
         if (!csrfToken) {
             console.error('CSRF token no encontrado');
             showNotification('Error: Token de seguridad no encontrado. Recarga la página.', 'error');
             selectElement.disabled = false;
             return Promise.reject('CSRF token not found');
         }
-        
+
         return fetch(`/superadmin/users/${userId}/role`, {
             method: 'PATCH',
             headers: {
@@ -742,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Mostrar mensaje de éxito con información de permisos
                 const roleNames = {
                     'collaborator': 'Colaborador',
-                    'admin': 'Administrador', 
+                    'admin': 'Administrador',
                     'superadmin': 'Superadministrador'
                 };
                 // Agregar ícono de éxito temporal al select
@@ -768,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectElement.disabled = false;
         });
     }
-    
+
     // Función para mostrar ícono de éxito temporal (mejorada)
     function showSuccessIcon(selectElement) {
         // Remover ícono existente si hay uno
@@ -776,30 +794,30 @@ document.addEventListener('DOMContentLoaded', function() {
         if (existingIcon) {
             existingIcon.remove();
         }
-        
+
         // Crear ícono de éxito
         const successIcon = document.createElement('i');
         successIcon.className = 'bi bi-check-circle-fill text-success position-absolute success-icon';
         successIcon.style.cssText = `
-            right: 25px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            font-size: 16px; 
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
             z-index: 10;
             pointer-events: none;
             animation: fadeInOut 3s ease-in-out;
         `;
-        
+
         // Posicionar el contenedor del select como relativo
         const container = selectElement.parentElement;
         const currentPosition = getComputedStyle(container).position;
         if (currentPosition === 'static') {
             container.style.position = 'relative';
         }
-        
+
         // Agregar el ícono
         container.appendChild(successIcon);
-        
+
         // Remover después de 3 segundos
         setTimeout(() => {
             if (successIcon.parentNode) {
@@ -807,7 +825,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 3000);
     }
-    
+
     // Función auxiliar para mostrar notificaciones
     function showNotification(message, type) {
         // Crear un alert temporal en el contenedor global
@@ -839,18 +857,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // GESTIÓN DE MODALES PARA ACCIONES DE USUARIOS
     // ==========================================
-    
+
     // Función para limpiar completamente los modales
     function cleanupModals() {
         // Remover todos los backdrops
         const backdrops = document.querySelectorAll('.modal-backdrop');
         backdrops.forEach(backdrop => backdrop.remove());
-        
+
         // Restaurar el estado del body
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
-        
+
         // Cerrar todos los modales que puedan estar abiertos
         document.querySelectorAll('.modal.show').forEach(modal => {
             const modalInstance = bootstrap.Modal.getInstance(modal);
@@ -859,14 +877,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Modal de Aprobación
     document.querySelectorAll('[data-bs-target="#approveModal"]').forEach(btn => {
         btn.addEventListener('click', function() {
             const userId = this.getAttribute('data-user-id');
             const userName = this.getAttribute('data-user-name');
             const userEmail = this.getAttribute('data-user-email');
-            
+
             document.getElementById('approveUserId').value = userId;
             document.getElementById('approveUserInfo').textContent = `${userName} (${userEmail})`;
             document.getElementById('approveUserForm').action = `{{ url('/') }}/admin/users/${userId}/approve`;
@@ -878,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const userId = this.getAttribute('data-user-id');
             const userName = this.getAttribute('data-user-name');
-            
+
             document.getElementById('rejectUserId').value = userId;
             document.getElementById('rejectUserInfo').textContent = userName;
             document.getElementById('rejectUserForm').action = `{{ url('/') }}/admin/users/${userId}/reject`;
@@ -920,17 +938,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById(formId);
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.innerHTML;
-        
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             // Cambiar estado del botón
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin me-1"></i> Procesando...';
-            
+
             // Crear FormData
             const formData = new FormData(form);
-            
+
             // Enviar solicitud AJAX
             fetch(form.action, {
                 method: 'POST',
@@ -944,10 +962,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     showNotification(successMessage, 'success');
-                    
+
                     // Limpiar modales completamente
                     cleanupModals();
-                    
+
                     // Recargar página después de un breve delay
                     setTimeout(() => {
                         window.location.reload();
@@ -959,7 +977,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error:', error);
                 showNotification(errorMessage, 'danger');
-                
+
                 // Limpiar modales en caso de error también
                 cleanupModals();
             })
@@ -982,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Limpiar cualquier backdrop que pueda quedar
             const backdrops = document.querySelectorAll('.modal-backdrop');
             backdrops.forEach(backdrop => backdrop.remove());
-            
+
             // Restaurar scroll del body
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
@@ -1012,7 +1030,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const userId = this.getAttribute('data-user-id');
                 const userName = this.getAttribute('data-user-name');
                 const userEmail = this.getAttribute('data-user-email');
-                
+
                 document.getElementById('approveUserId').value = userId;
                 document.getElementById('approveUserInfo').textContent = `${userName} (${userEmail})`;
                 document.getElementById('approveUserForm').action = `{{ url('/') }}/admin/users/${userId}/approve`;
@@ -1023,7 +1041,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function() {
                 const userId = this.getAttribute('data-user-id');
                 const userName = this.getAttribute('data-user-name');
-                
+
                 document.getElementById('rejectUserId').value = userId;
                 document.getElementById('rejectUserInfo').textContent = userName;
                 document.getElementById('rejectUserForm').action = `{{ url('/') }}/admin/users/${userId}/reject`;
@@ -1036,7 +1054,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const userName = this.getAttribute('data-user-name');
                 const userEmail = this.getAttribute('data-user-email');
                 const userType = this.getAttribute('data-user-type');
-                
+
                 document.getElementById('deleteUserId').value = userId;
                 document.getElementById('deleteUserInfo').textContent = `${userName} (${userEmail})`;
                 // Mantener ruta unificada de soft delete siempre
@@ -1052,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .spin {
         animation: spin 1s linear infinite;
     }
-    
+
     @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
@@ -1108,7 +1126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <strong>¿Confirmar aprobación?</strong>
                     </div>
                     <p>El usuario <strong id="approveUserInfo"></strong> será aprobado en el sistema.</p>
-                    
+
                     @if(Auth::user()->isSuperAdmin())
                         <div class="mb-3">
                             <label for="userRole" class="form-label">Asignar Rol:</label>

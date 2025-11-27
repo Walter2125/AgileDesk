@@ -37,7 +37,7 @@ class UserController extends Controller
 
         // Obtener proyecto y validar
         $project = $projectId ? Project::with('users')->find($projectId) : null;
-        
+
         if (!$projectId || !$project) {
             return view('users.colaboradores.homeuser', [
                 'estadisticas' => collect(),
@@ -165,7 +165,7 @@ class UserController extends Controller
                 ],
                 'stories' => $historiasValidas->values()->map(function($historia) {
                     Log::info("Procesando historia: {$historia->nombre}");
-                    
+
                     // Verificar que la columna existe
                     if (!$historia->columna) {
                         Log::warning("Historia {$historia->id} no tiene columna asignada");
@@ -188,7 +188,7 @@ class UserController extends Controller
                                 'completada' => (bool)$tarea->completada,
                                 'user' => null // Por defecto null
                             ];
-                            
+
                             // Solo agregar datos del usuario si existe
                             if ($tarea->user) {
                                 $tareaData['user'] = [
@@ -197,7 +197,7 @@ class UserController extends Controller
                                     'photo' => $tarea->user->photo ? asset('storage/'.$tarea->user->photo) : null
                                 ];
                             }
-                            
+
                             return $tareaData;
                         })->toArray()
                     ];
@@ -211,29 +211,29 @@ class UserController extends Controller
         $todasLasTareas = Tarea::whereHas('historia', function($q) use ($projectId) {
             $q->where('proyecto_id', $projectId);
         })->get();
-        
+
         // Contar historias en proceso y terminadas basado en posición de columnas (solo si hay 3+ columnas)
         $historiasEnProceso = 0;
         $historiasTerminadas = 0;
-        
+
         if ($columnas->count() >= 3 && $primeraColumna && $ultimaColumna) {
-            // Historias "En Proceso": no están en la primera ni en la última columna  
+            // Historias "En Proceso": no están en la primera ni en la última columna
             $historiasEnProceso = Historia::where('proyecto_id', $projectId)
                 ->whereHas('columna', function($q) use ($primeraColumna, $ultimaColumna) {
                     $q->where('id', '!=', $primeraColumna->id)
                       ->where('id', '!=', $ultimaColumna->id);
                 })
                 ->count();
-            
+
             // Historias "Terminadas": están en la última columna
             $historiasTerminadas = Historia::where('proyecto_id', $projectId)
                 ->where('columna_id', $ultimaColumna->id)
                 ->count();
         }
-        
+
         $totalHistoriasProyecto = $todasLasHistorias->count();
         $totalTareasProyecto = $todasLasTareas->count();
-        
+
         // Mantener estadísticas específicas de usuarios para compatibilidad con modal
         $totalListo = $estadisticas->sum('listo');
         $totalProgreso = $estadisticas->sum('progreso');

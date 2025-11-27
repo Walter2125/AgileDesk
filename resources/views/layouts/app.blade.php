@@ -658,15 +658,6 @@
         .navbar-optimized {
             margin-bottom: 0 !important;
         }
-        .sidebar-wrapper {
-            position: static;
-            width: 100%;
-            height: auto;
-            display: block !important;
-            transform: none !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
     }
 
     /* En tablets, mostrar nombre de app */
@@ -732,24 +723,7 @@
     .user-dropdown {
         position: relative;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-        /* margin-top:auto removido para evitar que desaparezca en móviles */
-        padding-bottom: .5rem;
-    }
-
-    @media (max-width: 767.98px) {
-        .sidebar .user-dropdown {
-            position: sticky;
-            bottom: 0;
-            background: rgba(0,0,0,0.15);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            padding-top: .5rem;
-            z-index: 1200;
-        }
-        .sidebar .user-dropdown .dropdown-menu {
-            max-height: 50vh;
-            overflow-y: auto;
-        }
+        margin-top: auto;
     }
 
     .user-info {
@@ -830,14 +804,8 @@
         justify-content: center !important;
         align-items: center !important;
     }
-    @media (max-width: 991.98px) {
-        body.sidebar-collapsed .user-info .sidebar-text {
-            display: flex !important;
-            flex-direction: column;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    body.sidebar-collapsed .user-info .sidebar-text {
+        display: none !important;
     }
 
     /* Limita el ancho para evitar desbordamiento */
@@ -978,12 +946,6 @@
         to { opacity: 1; }
     }
 
-    @media (max-height: 600px) {
-        .user-dropdown .dropdown-menu {
-            max-height: 55vh;
-        }
-    }
-
     /* Asegurar que las alertas sean visibles por encima del navbar */
     .alert {
         position: relative !important;
@@ -1019,16 +981,6 @@
 
         body.sidebar-collapsed .alerts-container {
             left: 0 !important;
-        }
-
-        .sidebar-wrapper {
-            position: static;
-            width: 100%;
-            height: auto;
-            display: block !important;
-            transform: none !important;
-            visibility: visible !important;
-            opacity: 1 !important;
         }
     }
 
@@ -1203,15 +1155,6 @@
 
         .sidebar-heading .app-name {
             display: inline-block !important;
-        }
-        .sidebar-wrapper {
-            position: static;
-            width: 100%;
-            height: auto;
-            display: block !important;
-            transform: none !important;
-            visibility: visible !important;
-            opacity: 1 !important;
         }
     }
 
@@ -1827,8 +1770,8 @@
 
                 </div>
 
-                <!-- User dropdown in sidebar (ajustado para móviles) -->
-                <div class="user-dropdown">
+                <!-- User dropdown in sidebar -->
+                <div class="user-dropdown mt-auto">
                     <div class="dropdown">
                         <button class="user-info btn btn-link text-white p-0 w-100 text-start d-flex align-items-center gap-2 user-dropdown-btn"
                                 type="button"
@@ -2147,44 +2090,6 @@
     <!-- <script src="bootstrap.bundle.min.js"></script> -->
     <script src="{{ asset('js/dark-mode.js') }}"></script>
     <script src="{{ asset('js/breadcrumb-fix.js') }}"></script>
-
-    <script>
-    // Ajuste dinámico: evitar que el menú de usuario quede fuera de la pantalla en móviles
-    document.addEventListener('DOMContentLoaded', function(){
-        const wrapper = document.querySelector('.user-dropdown .dropdown');
-        const toggle = document.getElementById('userDropdown');
-        if(!wrapper || !toggle) return;
-
-        function adjust(){
-            if(window.innerWidth > 992){
-                wrapper.classList.remove('dropup');
-                return;
-            }
-            const menu = wrapper.querySelector('.dropdown-menu');
-            if(!menu) return;
-            // Mostrar temporalmente para medir
-            const prevDisplay = menu.style.display;
-            const prevVis = menu.style.visibility;
-            menu.style.display='block';
-            menu.style.visibility='hidden';
-            const menuHeight = menu.offsetHeight;
-            menu.style.display=prevDisplay;
-            menu.style.visibility=prevVis;
-            const toggleRect = toggle.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - toggleRect.bottom;
-            const spaceAbove = toggleRect.top;
-            if(menuHeight > spaceBelow && spaceAbove > spaceBelow){
-                wrapper.classList.add('dropup');
-            } else {
-                wrapper.classList.remove('dropup');
-            }
-        }
-        toggle.addEventListener('click', ()=> setTimeout(adjust, 60));
-        window.addEventListener('resize', adjust);
-        adjust();
-    });
-    </script>
-
 
 </body>
 </html>

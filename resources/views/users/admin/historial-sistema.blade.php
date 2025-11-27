@@ -10,55 +10,56 @@
     .bg-gradient-primary {
         background: linear-gradient(45deg, #007bff, #0056b3);
     }
-    
+
+
     .stat-item {
         padding: 0.5rem;
     }
-    
+
     .stat-number {
         font-size: 1.5rem;
         font-weight: bold;
         margin-bottom: 0.25rem;
     }
-    
+
     .stat-label {
         font-size: 0.875rem;
         color: #6c757d;
         font-weight: 500;
     }
-    
+
     .avatar-sm {
         width: 32px;
         height: 32px;
         font-size: 0.875rem;
         font-weight: 600;
     }
-    
+
     .details-cell {
         max-width: 300px;
         word-wrap: break-word;
     }
-    
+
     .table th {
         font-weight: 600;
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
+
     .table-hover tbody tr:hover {
         background-color: rgba(0, 123, 255, 0.05);
     }
-    
+
     .badge {
         font-weight: 500;
     }
-    
+
     .card {
         border-radius: 10px;
         overflow: hidden;
     }
-    
+
     .btn {
         border-radius: 6px;
     }
@@ -170,11 +171,11 @@
             font-size: 1rem;
             font-weight: bold;
         }
-        
+
         .table-responsive {
             font-size: 0.875rem;
         }
-        
+
         .stat-number {
             font-size: 1.25rem;
         }
@@ -211,13 +212,13 @@
         background-position: right 0.75rem center !important;
         background-size: 16px 12px !important;
     }
-    
+
     .card-header .dataTables_length select:focus {
         border-color: #4a90e2 !important;
         box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25) !important;
         outline: none !important;
     }
-    
+
     .card-header .dataTables_length select:hover {
         border-color: #4a90e2 !important;
     }
@@ -274,7 +275,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Estadísticas rápidas -->
                 <div class="card-body">
                     <div class="row text-center">
@@ -318,15 +319,6 @@
                                                 <i class="bi bi-search"></i>
                                             </button>
                                         </div>
-                                    </div>
-                                    <div class="d-flex gap-2 align-items-center flex-wrap" role="group">
-                                        <!-- Botón de limpiar historial -->
-                                        <button type="button" 
-                                                class="btn btn-danger px-2 py-2" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#limpiarHistorialModal">
-                                            <i class="bi bi-trash me-1"></i> Limpiar Historial
-                                        </button>
                                     </div>
                                 </div>
 
@@ -391,9 +383,9 @@
                                                                 <div class="details-cell">
                                                                     {{ Str::limit($cambio->detalles, 150) }}
                                                                     @if(strlen($cambio->detalles) > 150)
-                                                                        <button class="btn btn-sm btn-link p-0 ms-1" 
-                                                                                type="button" 
-                                                                                data-bs-toggle="tooltip" 
+                                                                        <button class="btn btn-sm btn-link p-0 ms-1"
+                                                                                type="button"
+                                                                                data-bs-toggle="tooltip"
                                                                                 title="{{ $cambio->detalles }}">
                                                                             <i class="fas fa-info-circle"></i>
                                                                         </button>
@@ -430,7 +422,7 @@
                                     </small>
                                 </div>
                             </div>
-                            
+
                             <!-- Espaciado inferior adicional -->
                             <div class="page-bottom-spacing"></div>
                         </div>
@@ -439,60 +431,6 @@
         </div>
     </div>
 
-    
-
-    
-
-<!-- Modal de confirmación para limpiar historial -->
-<div class="modal fade" id="limpiarHistorialModal" tabindex="-1" aria-labelledby="limpiarHistorialModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="limpiarHistorialModalLabel">
-                    <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Limpieza de Historial
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>¡ATENCIÓN!</strong> Esta acción es irreversible.
-                </div>
-                
-                <p class="mb-3">
-                    Estás a punto de eliminar <strong>{{ number_format($stats['total_cambios']) }} registros</strong> 
-                    del historial del sistema.
-                </p>
-                
-                <div class="bg-light p-3 rounded mb-3">
-                    <h6 class="fw-bold mb-2">Consecuencias de esta acción:</h6>
-                    <ul class="mb-0">
-                        <li>Se perderá todo el historial de cambios del sistema</li>
-                        <li>No se podrá recuperar la información eliminada</li>
-                        <li>Se mantendrá un registro de esta acción de limpieza</li>
-                        <li>Los datos de proyectos, usuarios y tareas no se verán afectados</li>
-                    </ul>
-                </div>
-                
-                <p class="mb-0">
-                    ¿Estás seguro de que deseas continuar con la limpieza del historial?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <form method="POST" action="{{ route('historial.limpiar') }}" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt me-1"></i>Sí, Limpiar Historial
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('styles')
@@ -500,64 +438,64 @@
     .bg-gradient-primary {
         background: linear-gradient(45deg, #007bff, #0056b3);
     }
-    
+
     .stat-item {
         padding: 0.5rem;
     }
-    
+
     .stat-number {
         font-size: 1.5rem;
         font-weight: bold;
         margin-bottom: 0.25rem;
     }
-    
+
     .stat-label {
         font-size: 0.875rem;
         color: #6c757d;
         font-weight: 500;
     }
-    
+
     .avatar-sm {
         width: 32px;
         height: 32px;
         font-size: 0.875rem;
         font-weight: 600;
     }
-    
+
     .details-cell {
         max-width: 300px;
         word-wrap: break-word;
     }
-    
+
     .table th {
         font-weight: 600;
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
+
     .table-hover tbody tr:hover {
         background-color: rgba(0, 123, 255, 0.05);
     }
-    
+
     .badge {
         font-weight: 500;
     }
-    
+
     .card {
         border-radius: 10px;
         overflow: hidden;
     }
-    
+
     .btn {
         border-radius: 6px;
     }
-    
+
     /* Estilos para DataTables */
     .dataTables_length {
         margin: 0;
     }
-    
+
     .dataTables_length select {
         padding: 0.375rem 1.75rem 0.375rem 0.75rem;
         border: 2px solid #ced4da;
@@ -571,27 +509,27 @@
         transition: all 0.15s ease-in-out;
         text-align: center;
     }
-    
+
     .dataTables_length select:focus {
         border-color: #4a90e2;
         box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
         outline: none;
     }
-    
+
     .dataTables_length select:hover {
         border-color: #4a90e2;
     }
-    
+
     .dataTables_info {
         padding-top: 0.75rem;
         color: #6c757d;
         font-size: 0.875rem;
     }
-    
+
     .dataTables_paginate {
         padding-top: 0.5rem;
     }
-    
+
     .dataTables_paginate .paginate_button {
         padding: 0.375rem 0.75rem;
         margin-left: 0.125rem;
@@ -601,35 +539,35 @@
         border: 1px solid #dee2e6;
         border-radius: 0.375rem;
     }
-    
+
     .dataTables_paginate .paginate_button:hover {
         color: #0056b3;
         background-color: #e9ecef;
         border-color: #dee2e6;
     }
-    
+
     .dataTables_paginate .paginate_button.current {
         color: #fff;
         background-color: #007bff;
         border-color: #007bff;
     }
-    
+
     .dataTables_paginate .paginate_button.disabled {
         color: #6c757d;
         background-color: #fff;
         border-color: #dee2e6;
         cursor: not-allowed;
     }
-    
+
     @media (max-width: 768px) {
         .table-responsive {
             font-size: 0.875rem;
         }
-        
+
         .stat-number {
             font-size: 1.25rem;
         }
-        
+
         .dataTables_length,
         .dataTables_info,
         .dataTables_paginate {
@@ -684,10 +622,10 @@
             "initComplete": function(settings, json) {
                 // Mover el selector de length al contenedor personalizado
                 $('#historialLengthContainer').append($('.dataTables_length'));
-                
+
                 // Ocultar el buscador original de DataTables
                 $('.dataTables_filter').hide();
-                
+
                 // Inicializar tooltips
                 $('[data-bs-toggle="tooltip"]').tooltip();
             },
@@ -696,21 +634,56 @@
                 $('[data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        
-        // Conectar el buscador personalizado
-        $('#historialSearchInput').on('keyup search', function() {
-            table.search(this.value).draw();
+        document.getElementById('historialSearchInput').addEventListener('input', function () {
+            // permite letras normales, letras con tilde, ñ, números y espacios
+            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]/g, "");
+        });
+
+
+
+        // Función optimizada para normalizar texto
+        function normalizarTexto(texto) {
+            if (!texto) return '';
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                .trim();
+        }
+
+        // Función para búsqueda optimizada
+        function realizarBusquedaMejorada(input) {
+            const textoBusqueda = normalizarTexto(input.value || input);
+
+            if (textoBusqueda === '') {
+                table.search('').draw();
+                return;
+            }
+
+            // Búsqueda simple y rápida - usar smart search de DataTables
+            table.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+        }
+
+        // Conectar el buscador personalizado optimizado con delay reducido
+        let searchTimeout;
+        $('#historialSearchInput').on('keyup search input', function() {
+            clearTimeout(searchTimeout);
+            const inputValue = this.value;
+            searchTimeout = setTimeout(() => {
+                realizarBusquedaMejorada(inputValue);
+            }, 100); // Reducido de 300ms a 100ms
         });
 
         $('#btnSearchHistorial').on('click', function() {
             var searchTerm = $('#historialSearchInput').val();
-            table.search(searchTerm).draw();
+            realizarBusquedaMejorada(searchTerm);
         });
 
-        // Permitir búsqueda con Enter
+        // Permitir búsqueda con Enter (inmediata)
         $('#historialSearchInput').on('keypress', function(e) {
             if (e.which === 13) {
-                table.search(this.value).draw();
+                clearTimeout(searchTimeout);
+                realizarBusquedaMejorada(this.value);
             }
         });
 
@@ -724,41 +697,5 @@
             }
         }, 300000);
     });
-
-    function limpiarHistorial() {
-        const dias = document.getElementById('diasAntiguedad').value;
-        const actionUrl = "{{ route('historial.limpiar') }}";
-        
-        if (confirm(`¿Está seguro que desea eliminar todos los registros de más de ${dias} días?`)) {
-            // Crear y enviar formulario
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = actionUrl;
-            
-            // Token CSRF
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-            form.appendChild(csrfInput);
-            
-            // Method DELETE
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-            
-            // Días de antigüedad
-            const diasInput = document.createElement('input');
-            diasInput.type = 'hidden';
-            diasInput.name = 'dias';
-            diasInput.value = dias;
-            form.appendChild(diasInput);
-            
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
 </script>
 @endsection
