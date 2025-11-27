@@ -13,6 +13,7 @@
         </div>
 
         <div class="card-body">
+            <input type="hidden" id="currentProjectId" value="{{ $project->id }}">
             <form method="GET" action="{{ route('users.admin.historial', ['project' => $project->id]) }}" class="mb-4">
                 <div class="input-group">
                     <input type="text" name="busqueda" class="form-control rounded-start" 
