@@ -642,7 +642,7 @@
             return texto
                 .toLowerCase()
                 .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+                .replace(/[\u0300-\u036f]/g, '') 
                 .trim();
         }
         
@@ -656,7 +656,7 @@
             }
             
             // Búsqueda simple y rápida - usar smart search de DataTables
-            table.search(textoBusqueda, false, true).draw(); // regex: false, smart: true
+            table.search(textoBusqueda, false, true).draw(); 
         }
         
         // Conectar el buscador personalizado optimizado con delay reducido
@@ -666,7 +666,7 @@
             const inputValue = this.value;
             searchTimeout = setTimeout(() => {
                 realizarBusquedaMejorada(inputValue);
-            }, 100); // Reducido de 300ms a 100ms
+            }, 100); 
         });
 
         $('#btnSearchHistorial').on('click', function() {
