@@ -313,7 +313,9 @@
                                         <div id="historialLengthContainer" class="d-flex align-items-center"></div>
                                         <!-- Buscador para historial -->
                                         <div class="input-group" style="width: 300px;">
-                                            <input type="text" class="form-control form-control-sm" id="historialSearchInput" placeholder="Buscar en historial..." style="height: 35px;">
+                                            <input type="text" class="form-control form-control-sm" id="historialSearchInput" placeholder="Buscar en historial..." style="height: 35px;"maxlength="50"
+                                                   pattern="[A-Za-z0-9ÁÉÍÓÚáéíóúñÑ\s]+"
+                                                   title="Solo se permiten letras, números y espacios">
                                             <button class="btn btn-outline-secondary" type="button" id="btnSearchHistorial">
                                                 <i class="bi bi-search"></i>
                                             </button>
@@ -691,4 +693,14 @@
         }, 300000);
     });
 </script>
+<script>
+document.getElementById("historialSearchInput").addEventListener("input", function () {
+    const allowed = /^[A-Za-z0-9ÁÉÍÓÚáéíóúñÑ\s]*$/;
+    
+    if (!allowed.test(this.value)) {
+        this.value = this.value.replace(/[^A-Za-z0-9ÁÉÍÓÚáéíóúñÑ\s]/g, "");
+    }
+});
+</script>
+
 @endsection
