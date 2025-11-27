@@ -918,6 +918,7 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    <input type="hidden" id="currentProjectId" value="{{ $proyecto_actual->id ?? '' }}">
                     <div class="table-responsive">
                         <table class="table table-hover admin-table historial-table align-middle" id="historialTable">
                             <thead>
@@ -1484,7 +1485,9 @@
             if(deleteUserForm && userId){
                 deleteUserForm.dataset.userId = userId;
                 deleteUserForm.dataset.userRole = userRole;
-                deleteUserForm.action = `${BASE_URL}/admin/users/${userId}/delete`;
+                const currentProjectEl = document.getElementById('currentProjectId');
+                const projectParam = currentProjectEl ? `?project_id=${currentProjectEl.value}` : '';
+                deleteUserForm.action = `${BASE_URL}/admin/users/${userId}/delete${projectParam}`;
                 console.log('Acción usuario final:', deleteUserForm.action);
             }
         });
@@ -1495,7 +1498,9 @@
                 if(!this.action || this.action === '' || this.action.endsWith('/admin/homeadmin') || this.action.includes('ID_PLACEHOLDER')){
                     const uid = this.dataset.userId;
                     if(uid){
-                        this.action = `${BASE_URL}/admin/users/${uid}/delete`;
+                        const currentProjectEl = document.getElementById('currentProjectId');
+                        const projectParam = currentProjectEl ? `?project_id=${currentProjectEl.value}` : '';
+                        this.action = `${BASE_URL}/admin/users/${uid}/delete${projectParam}`;
                         console.warn('Action corregida justo antes de enviar (usuario):', this.action);
                     } else {
                         e.preventDefault();
@@ -1568,7 +1573,11 @@
                             const deleteUserNameEl = document.getElementById('deleteUserName');
                             if (deleteUserNameEl) deleteUserNameEl.textContent = userName;
                             const form = document.getElementById('deleteUserForm');
-                            if (form && userId) form.action = `{{ url('/') }}/admin/users/${userId}/delete`;
+                            if (form && userId) {
+                                const currentProjectEl = document.getElementById('currentProjectId');
+                                const projectParam = currentProjectEl ? `?project_id=${currentProjectEl.value}` : '';
+                                form.action = `{{ url('/') }}/admin/users/${userId}/delete${projectParam}`;
+                            }
                         } catch (error) {
                             console.error('Error en modal de eliminación:', error);
                         }

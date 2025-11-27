@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar DataTable con select de paginación generado por DataTables
     const usersTable = $('#usersTable').DataTable({
         paging: true,
-        searching: true, // habilitamos búsqueda para el buscador personalizado
+        searching: false, // habilitamos búsqueda para el buscador personalizado
         ordering: false,
         info: true,
         lengthChange: true,
@@ -1058,7 +1058,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('deleteUserId').value = userId;
                 document.getElementById('deleteUserInfo').textContent = `${userName} (${userEmail})`;
                 // Mantener ruta unificada de soft delete siempre
-                document.getElementById('deleteUserForm').action = `{{ url('/') }}/admin/users/${userId}/delete`;
+                const currentProjectEl = document.getElementById('currentProjectId');
+                const projectParam = currentProjectEl ? `?project_id=${currentProjectEl.value}` : '';
+                document.getElementById('deleteUserForm').action = `{{ url('/') }}/admin/users/${userId}/delete${projectParam}`;
             });
         });
     });

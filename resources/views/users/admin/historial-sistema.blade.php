@@ -366,7 +366,8 @@
                                                                     $badgeClass = match(strtolower($cambio->accion)) {
                                                                         'creación', 'crear', 'registro' => 'success',
                                                                         'actualización', 'edición', 'modificación', 'actualizar', 'editar' => 'warning',
-                                                                        'eliminación', 'eliminar', 'borrar' => 'danger',
+                                                                        'eliminación', 'eliminar', 'borrar', 'eliminación de usuario' => 'danger',
+                                                                        'eliminación permanente de usuario' => 'dark',
                                                                         'aprobación', 'aprobar', 'aprobación de usuario' => 'info',
                                                                         'rechazo', 'rechazar', 'rechazo de usuario' => 'secondary',
                                                                         'cambio de rol' => 'primary',

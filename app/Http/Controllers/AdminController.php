@@ -305,7 +305,7 @@ class AdminController extends Controller
     /**
      * Soft delete a user
      */
-    public function deleteUser(User $user)
+    public function deleteUser(User $user, Request $request)
     {
         $currentUser = Auth::user();
 
@@ -321,14 +321,25 @@ class AdminController extends Controller
         
         // Aplicar soft delete normal para todos los usuarios (incluidos administradores)
         $user->delete();
-        
+
+        // Registrar en el historial del sistema (adjuntar proyecto si viene en la request o en sesión)
+        $projectId = $request->input('project') ?? $request->input('project_id') ?? $request->query('project') ?? session('admin_selected_project_id') ?? null;
+        HistorialCambio::create([
+            'fecha' => now(),
+            'usuario' => $currentUser->name,
+            'accion' => 'Eliminación de Usuario',
+            'detalles' => "Usuario '{$user->name}' ({$user->email}) eliminado (soft delete) con rol {$user->usertype}",
+            'sprint' => null,
+            'proyecto_id' => $projectId
+        ]);
+
         return redirect()->back()->with('success', 'Usuario eliminado exitosamente.');
     }
 
     /**
      * Force delete a user (only for superadmins)
      */
-    public function forceDeleteUser(User $user)
+    public function forceDeleteUser(User $user, Request $request)
     {
         // Solo superadministradores pueden hacer force delete
         if (!Auth::user()->isSuperAdmin()) {
@@ -347,7 +358,7 @@ class AdminController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($user) {
+            DB::transaction(function () use ($user, $request) {
                 // Si es un administrador, eliminar sus recursos en cascada
                 if ($user->usertype === 'admin') {
                     $this->deleteAdminResourcesForce($user);
@@ -355,6 +366,17 @@ class AdminController extends Controller
                 
                 // Force delete del usuario
                 $user->forceDelete();
+
+                // Registrar en el historial dentro de la transacción
+                $projectId = $request->input('project') ?? $request->input('project_id') ?? $request->query('project') ?? session('admin_selected_project_id') ?? null;
+                HistorialCambio::create([
+                    'fecha' => now(),
+                    'usuario' => Auth::user()->name,
+                    'accion' => 'Eliminación Permanente de Usuario',
+                    'detalles' => "Usuario '{$user->name}' ({$user->email}) eliminado permanentemente con rol {$user->usertype}",
+                    'sprint' => null,
+                    'proyecto_id' => $projectId
+                ]);
             });
 
             return response()->json([
