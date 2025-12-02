@@ -397,81 +397,83 @@
 
 
 
-        <div class="col-lg-6 col-md-12">
-            <div class="mb-3">
-                <label class="form-label rounded">Asignado a</label>
-                <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">-- Seleccionar usuario --</option>
-                    @foreach($usuarios as $usuario)
-                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-                            {{ $usuario->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <div class="row mb-3">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Asignado a</label>
+                                    <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
+                                        <option value="">-- Seleccionar usuario --</option>
+                                        @foreach($usuarios as $usuario)
+                                            <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                                                {{ $usuario->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select name="columna_id" class="form-control formulario-editable" data-editable="true">
+                                        <option value="">Sin Estado</option>
+                                        @foreach ($columnas as $columna)
+                                            <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                                                {{ $columna->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Prioridad</label>
+                                    <select name="prioridad" class="form-control formulario-editable" data-editable="true">
+                                        <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                                        <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                                        <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                    
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Horas estimadas</label>
+                                        <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
+                                            value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
+                                            data-editable="true">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Sprint</label>
+                                        <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
+                                            <option value="">Ningún Sprint</option>
+                                            @foreach ($sprints as $sprint)
+                                                <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                                    {{ $sprint->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Última modificación</label>
+                                        <input type="text" class="form-control formulario-editable" 
+                                            value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" 
+                                            readonly>
+                                    </div>
+                                </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-control formulario-editable" name="descripcion"
+                        maxlength="5000"
+                        data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
+                </div>
+                <div class="d-flex justify-content-end mb-3 mt-4">
+                    <button id="btnGuardar" type="submit" class="btn btn-primary btn-form-actions">
+                        <i class="bi bi-arrow-repeat me-2"></i> Actualizar
+                    </button>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">Sin Estado</option>
-                    @foreach ($columnas as $columna)
-                        <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
-                            {{ $columna->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-control formulario-editable" data-editable="true">
-                    <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
-                    <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
-                    <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-12">
-            <div class="mb-3">
-                <label class="form-label rounded">Horas estimadas</label>
-                <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
-                    value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
-                    data-editable="true">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">Ningún Sprint</option>
-                    @foreach ($sprints as $sprint)
-                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
-                            {{ $sprint->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control formulario-editable"value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" readonly>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea class="form-control formulario-editable" name="descripcion"
-                maxlength="5000"
-                data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
-        </div>
-
-        <div class="d-flex justify-content-end mb-3">
-
-            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2">
-                <i class="bi bi-arrow-repeat me-2"></i> Actualizar
-            </button>
-        </div>
-    </div>
 </form>
 
 

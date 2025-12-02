@@ -346,10 +346,11 @@
                                                             <td class="align-middle">
                                                                 <div class="d-flex flex-column">
                                                                     <span class="fw-medium">
-                                                                        {{ $cambio->created_at->format('d/m/Y') }}
+                                                                        
+                                                                        {{ $cambio->created_at->timezone('America/Mexico_City')->format('d/m/Y') }}
                                                                     </span>
                                                                     <small class="text-muted">
-                                                                        {{ $cambio->created_at->format('H:i:s') }}
+                                                                        {{ $cambio->created_at->timezone('America/Mexico_City')->format('H:i') }}
                                                                     </small>
                                                                 </div>
                                                             </td>
