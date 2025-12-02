@@ -396,6 +396,25 @@
                 });
             });
         </script>
+        <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdowns = document.querySelectorAll('.dropdown');
+
+        dropdowns.forEach(dd => {
+            dd.addEventListener('show.bs.dropdown', function () {
+                // Cerramos todos los dropdowns abiertos excepto este
+                dropdowns.forEach(otherDd => {
+                    if (otherDd !== dd) {
+                        const instance = bootstrap.Dropdown.getInstance(otherDd.querySelector('.dropdown-toggle, .btn'));
+                        if (instance) instance.hide();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+        
 
 
 

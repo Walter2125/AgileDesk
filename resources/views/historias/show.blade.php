@@ -341,11 +341,12 @@
     @method('PATCH')
     <div class="row mb-3">
 
-        <div class="mb-4 rounded gap-2">
-           <div class="d-flex align-items-center justify-content-between mb-1">
-                      <label class="form-label mb-0 fw-bold">
-                          Nombre de la Historia
-                      </label>
+       <div class="mb-4 rounded gap-2">
+   
+    <div class="d-flex align-items-center justify-content-between mb-1">
+        <label class="form-label mb-0 fw-bold">
+            Nombre de la Historia
+        </label>
 
                       <div id="dropdownMenuContainer" class="dropdown">
                           <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -367,6 +368,8 @@
                           </ul>
                       </div>
                   </div>
+       
+    </div>
 
                 
                   <div id="tituloContainer" class="d-flex align-items-center" style="cursor: pointer;">
@@ -376,6 +379,8 @@
                           <span id="nombreTexto">{{ $historia->nombre }}</span>
                       </h2>
                   </div>
+  
+    
 
                 
                   <input id="tituloInput" type="text" name="nombre" maxlength="100"
@@ -383,83 +388,92 @@
                         value="{{ old('nombre', $historia->nombre) }}"
                         data-editable="true" />
               </div>
+   
+    <input id="tituloInput" type="text" name="nombre" maxlength="100"
+          class="form-control formulario-editable rounded d-none mt-1"
+          value="{{ old('nombre', $historia->nombre) }}"
+          data-editable="true" />
+</div>
 
 
-        <div class="col-lg-6 col-md-12">
-            <div class="mb-3">
-                <label class="form-label rounded">Asignado a</label>
-                <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">-- Seleccionar usuario --</option>
-                    @foreach($usuarios as $usuario)
-                        <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
-                            {{ $usuario->name }}
-                        </option>
-                    @endforeach
-                </select>
+
+                <div class="row mb-3">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Asignado a</label>
+                                    <select name="usuario_id" class="form-control formulario-editable" data-editable="true">
+                                        <option value="">-- Seleccionar usuario --</option>
+                                        @foreach($usuarios as $usuario)
+                                            <option value="{{ $usuario->id }}" {{ old('usuario_id', $historia->usuario_id) == $usuario->id ? 'selected' : '' }}>
+                                                {{ $usuario->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Estado</label>
+                                    <select name="columna_id" class="form-control formulario-editable" data-editable="true">
+                                        <option value="">Sin Estado</option>
+                                        @foreach ($columnas as $columna)
+                                            <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
+                                                {{ $columna->nombre }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Prioridad</label>
+                                    <select name="prioridad" class="form-control formulario-editable" data-editable="true">
+                                        <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                                        <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                                        <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                    
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Horas estimadas</label>
+                                        <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
+                                            value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
+                                            data-editable="true">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Sprint</label>
+                                        <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
+                                            <option value="">Ningún Sprint</option>
+                                            @foreach ($sprints as $sprint)
+                                                <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                                    {{ $sprint->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Última modificación</label>
+                                        <input type="text" class="form-control formulario-editable" 
+                                            value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" 
+                                            readonly>
+                                    </div>
+                                </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-control formulario-editable" name="descripcion"
+                        maxlength="5000"
+                        data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
+                </div>
+                <div class="d-flex justify-content-end mb-3 mt-4">
+                    <button id="btnGuardar" type="submit" class="btn btn-primary btn-form-actions">
+                        <i class="bi bi-arrow-repeat me-2"></i> Actualizar
+                    </button>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Estado</label>
-                <select name="columna_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">Sin Estado</option>
-                    @foreach ($columnas as $columna)
-                        <option value="{{ $columna->id }}" {{ old('columna_id', $historia->columna_id) == $columna->id ? 'selected' : '' }}>
-                            {{ $columna->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Prioridad</label>
-                <select name="prioridad" class="form-control formulario-editable" data-editable="true">
-                    <option value="Alta" {{ old('prioridad', $historia->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
-                    <option value="Media" {{ old('prioridad', $historia->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
-                    <option value="Baja" {{ old('prioridad', $historia->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-lg-6 col-md-12">
-            <div class="mb-3">
-                <label class="form-label rounded">Horas estimadas</label>
-                <input type="number" class="form-control formulario-editable" name="trabajo_estimado"
-                    value="{{ old('trabajo_estimado', $historia->trabajo_estimado) }}"
-                    data-editable="true">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Sprint</label>
-                <select name="sprint_id" class="form-control formulario-editable" data-editable="true">
-                    <option value="">Ningún Sprint</option>
-                    @foreach ($sprints as $sprint)
-                        <option value="{{ $sprint->id }}" {{ old('sprint_id', $historia->sprint_id) == $sprint->id ? 'selected' : '' }}>
-                            {{ $sprint->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label rounded">Última modificación</label>
-                <input type="text" class="form-control formulario-editable"value="{{ $historia->updated_at->timezone('America/Tegucigalpa')->format('d/m/Y - H:i') }}" readonly>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea class="form-control formulario-editable" name="descripcion"
-                maxlength="5000"
-                data-editable="true" rows="4">{{ old('descripcion', $historia->descripcion) }}</textarea>
-        </div>
-
-        <div class="d-flex justify-content-end mb-3">
-
-            <button id="btnGuardar" type="submit" class="btn btn-primary ms-2">
-                <i class="bi bi-arrow-repeat me-2"></i> Actualizar
-            </button>
-        </div>
-    </div>
 </form>
 
 
@@ -538,8 +552,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const historiaId = button.getAttribute('data-historia-id');
         const historiaNombre = button.getAttribute('data-historia-nombre') || '';
 
-        deleteHistoriaText.textContent = `¿Está seguro de que desea eliminar la historia "${historiaNombre}"?`;
-        deleteHistoriaForm.action = `/historias/${historiaId}`;
+        deleteHistoriaText.textContent = ¿Está seguro de que desea eliminar la historia "${historiaNombre}"?;
+        deleteHistoriaForm.action = /historias/${historiaId};
 
 
     });
@@ -686,54 +700,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
 {{-- ✅ Script para actualizar barra --}}
 <script>
-    function actualizarBarraProgreso() {
-        const checkboxes = document.querySelectorAll('.tarea-checkbox');
-        const total = checkboxes.length;
-        const completadas = [...checkboxes].filter(cb => cb.checked).length;
-        const porcentaje = total > 0 ? Math.round((completadas / total) * 100) : 0;
+function actualizarBarraProgreso() {
+    const checkboxes = document.querySelectorAll('.tarea-checkbox');
+    const total = checkboxes.length;
+    const completadas = [...checkboxes].filter(cb => cb.checked).length;
+    const porcentaje = total > 0 ? Math.round((completadas / total) * 100) : 0;
 
-        const progressBar = document.getElementById('progress-bar');
-        if (progressBar) {
-            progressBar.style.width = porcentaje + '%';
-            progressBar.setAttribute('aria-valuenow', porcentaje);
-            progressBar.textContent = porcentaje + '%';
-        }
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) {
+        progressBar.style.width = porcentaje + '%';
+        progressBar.setAttribute('aria-valuenow', porcentaje);
+        progressBar.textContent = porcentaje + '%';
     }
+}
 
-    document.addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('tarea-checkbox')) {
-            const checkbox = e.target;
-            const tareaId = checkbox.dataset.id;
-            const estaMarcado = checkbox.checked;
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.classList.contains('tarea-checkbox')) {
+        const checkbox = e.target;
+        const tareaId = checkbox.dataset.id;
+        const estaMarcado = checkbox.checked;
 
-            fetch(`/tareas/${tareaId}/completar`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({})
-            }).then(response => {
-                if (response.ok) {
-                    actualizarBarraProgreso();
-                    document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
-                        cb.checked = estaMarcado;
-                    });
-                } else {
-                    alert('Error al guardar el progreso.');
-                    checkbox.checked = !checkbox.checked;
-                    actualizarBarraProgreso();
-                }
-            }).catch(() => {
-                alert('Error de red.');
+        fetch(`/tareas/${tareaId}/completar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        }).then(response => {
+            if (response.ok) {
+                actualizarBarraProgreso();
+                document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`).forEach(cb => {
+                    cb.checked = estaMarcado;
+                });
+            } else {
+                alert('Error al guardar el progreso.');
                 checkbox.checked = !checkbox.checked;
                 actualizarBarraProgreso();
-            });
-        }
-    });
+            }
+        }).catch(() => {
+            alert('Error de red.');
+            checkbox.checked = !checkbox.checked;
+            actualizarBarraProgreso();
+        });
+    }
+});
 
-    window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
+window.addEventListener('DOMContentLoaded', actualizarBarraProgreso);
 </script>
+
 @push('js')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -746,8 +761,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -863,8 +878,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-secondary mt-2 mb-0">{{ $respuesta->contenido }}</p>
 
                     <!-- Modal Editar Respuesta -->
-                    <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
-                      <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px; margin: 1rem;">
+                    <div id="editarComentarioModal{{ $respuesta->id }}" class="position-fixed top-0 start-0 w-100 vh-100 d-flex align-items-center justify-content-center bg-black bg-opacity-50 d-none custom-modal" style="z-index: 1050;">
+                      <div class="bg-white rounded-4 shadow-lg w-100 p-4" style="max-width: 600px;">
                         <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
                           @csrf @method('PUT')
                           <div class="mb-4 text-center">
@@ -882,6 +897,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </form>
                       </div>
                     </div>
+
 
                     <!-- Modal Eliminar Respuesta (único por respuesta) -->
                     <div class="modal fade" id="deleteRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="deleteRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true">
@@ -1028,33 +1044,34 @@ document.addEventListener('DOMContentLoaded', function() {
   @foreach ($comentario->respuestas as $respuesta)
     <!-- Modal Editar Respuesta -->
     <div class="modal fade" id="editarRespuestaModal{{ $respuesta->id }}" tabindex="-1" aria-labelledby="editarRespuestaModalLabel{{ $respuesta->id }}" aria-hidden="true" style="z-index: 10000;">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content rounded-4 shadow">
-          <div class="modal-header border-bottom-0">
-            <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
-              <i class="bi bi-pencil-square text-warning me-2"></i>
-              Editar Respuesta
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="editarRespuestaModalLabel{{ $respuesta->id }}">
+          <i class="bi bi-pencil-square text-warning me-2"></i>
+          Editar Respuesta
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
+          @csrf @method('PUT')
+          <div class="mb-3">
+            <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
+            <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
           </div>
-          <div class="modal-body">
-            <form action="{{ route('comentarios.update', $respuesta->id) }}" method="POST">
-              @csrf @method('PUT')
-              <div class="mb-3">
-                <label for="contenidoRespuesta{{ $respuesta->id }}" class="form-label">Contenido de la respuesta</label>
-                <textarea name="contenido" id="contenidoRespuesta{{ $respuesta->id }}" class="form-control rounded-3" rows="5" required>{{ $respuesta->contenido }}</textarea>
-              </div>
-              <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-save-fill me-1"></i> Actualizar
-                </button>
-              </div>
-            </form>
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save-fill me-1"></i> Actualizar
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
+  </div>
+</div>
+
 
   <!-- Modal para confirmar eliminación de tarea -->
 <div class="modal fade" id="deleteTareaModal" tabindex="-1" aria-labelledby="deleteTareaModalLabel" aria-hidden="true">
@@ -1096,14 +1113,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteRespuestaText = document.getElementById('deleteRespuestaText');
 
     // Base URL con marcador para reemplazar
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteRespuestaModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const respuestaId = button.getAttribute('data-respuesta-id');
 
-        deleteRespuestaText.textContent = `¿Está seguro de que desea eliminar esta respuesta?`;
-        deleteRespuestaForm.action = baseDeleteUrl.replace('__ID__', respuestaId);
+        deleteRespuestaText.textContent = ¿Está seguro de que desea eliminar esta respuesta?;
+        deleteRespuestaForm.action = baseDeleteUrl.replace('_ID_', respuestaId);
     });
 });
 </script>
@@ -1128,14 +1145,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteComentarioText = document.getElementById('deleteComentarioText');
 
     // Base de la URL de eliminación
-    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '__ID__']) }}";
+    const baseDeleteUrl = "{{ route('comentarios.destroy', ['comentario' => '_ID_']) }}";
 
     deleteComentarioModal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const comentarioId = button.getAttribute('data-comentario-id');
 
-        deleteComentarioText.textContent = `¿Está seguro de que desea eliminar este comentario?`;
-        deleteComentarioForm.action = baseDeleteUrl.replace('__ID__', comentarioId);
+        deleteComentarioText.textContent = ¿Está seguro de que desea eliminar este comentario?;
+        deleteComentarioForm.action = baseDeleteUrl.replace('_ID_', comentarioId);
     });
 });
 </script>
@@ -1166,8 +1183,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const tareaId = button.getAttribute('data-tarea-id');
         const tareaNombre = button.getAttribute('data-tarea-nombre') || '';
 
-        deleteTareaText.textContent = `¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?`;
-        deleteTareaForm.action = `/historias/{{ $historia->id }}/tareas/${tareaId}`;
+        deleteTareaText.textContent = ¿Está seguro de que desea eliminar la tarea "${tareaNombre}"?;
+        deleteTareaForm.action = /historias/{{ $historia->id }}/tareas/${tareaId};
     });
 });
 </script>
@@ -1274,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
             guardarEstadoCheckbox(tareaId, estaMarcado);
 
             // Sincronizar checkboxes con el mismo data-id en la misma página
-            document.querySelectorAll(`.tarea-checkbox[data-id="${tareaId}"]`)
+            document.querySelectorAll(.tarea-checkbox[data-id="${tareaId}"])
                     .forEach(cb => cb.checked = estaMarcado);
         }
     });

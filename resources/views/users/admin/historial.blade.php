@@ -59,7 +59,7 @@
                                             {{ \Carbon\Carbon::parse($cambio->fecha)->format('d/m/Y') }}
                                         </span>
                                         <small class="text-muted d-block">
-                                            {{ \Carbon\Carbon::parse($cambio->fecha)->format('H:i') }}
+                                           {{ \Carbon\Carbon::parse($cambio->fecha)->timezone('America/Mexico_City')->format('H:i') }}
                                         </small>
                                     </td>
                                     <td>
