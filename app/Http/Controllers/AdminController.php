@@ -812,24 +812,55 @@ class AdminController extends Controller
      * Restaurar un elemento eliminado
      */
     public function restoreItem(Request $request, $model, $id)
-    {
-        // Autorizar acción
-        if (!Gate::allows('soft-delete.restore')) {
-            abort(403, 'No tienes permisos para restaurar elementos.');
-        }
-        
-        try {
-            $modelClass = $this->getModelClass($model);
-            $item = $modelClass::onlyTrashed()->findOrFail($id);
-            
-            $item->restore();
-            
-            return redirect()->back()->with('success', $this->getModelNameInSpanish($model) . ' restaurado exitosamente.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al restaurar el elemento: ' . $e->getMessage());
-        }
+{
+    // Autorizar acción
+    if (!Gate::allows('soft-delete.restore')) {
+        abort(403, 'No tienes permisos para restaurar elementos.');
     }
+    
+    try {
+        $modelClass = $this->getModelClass($model);
+        $item = $modelClass::onlyTrashed()->findOrFail($id);
+        
+        // Restaurar el elemento (usuario, proyecto, historia, etc.)
+        $item->restore();
 
+        // 🔹 NUEVO: registrar en historial cuando se restaure un USUARIO
+        if ($model === 'users') {
+            // Obtener posible proyecto asociado (misma lógica que deleteUser)
+            $projectId = $request->input('project') 
+                ?? $request->input('project_id') 
+                ?? $request->query('project') 
+                ?? session('admin_selected_project_id') 
+                ?? null;
+
+            // Etiqueta bonita del rol (opcional)
+            $roleLabel = match($item->usertype) {
+                'superadmin'   => 'Superadministrador',
+                'admin'        => 'Administrador',
+                'collaborator' => 'Colaborador',
+                default        => ucfirst($item->usertype)
+            };
+
+            HistorialCambio::create([
+                'fecha'       => now(),
+                'usuario'     => Auth::user()->name, // quién hizo la acción
+                'accion'      => 'Restauración de Usuario',
+                'detalles'    => "Usuario '{$item->name}' ({$item->email}) restaurado con rol {$roleLabel}",
+                'sprint'      => null,
+                'proyecto_id' => $projectId,
+            ]);
+        }
+
+        return redirect()->back()->with(
+            'success', 
+            $this->getModelNameInSpanish($model) . ' restaurado exitosamente.'
+        );
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error al restaurar el elemento: ' . $e->getMessage());
+    }
+}
     /**
      * Eliminar permanentemente un elemento
      */
